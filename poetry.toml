@@ -1,0 +1,3 @@
+[repositories]
+[repositories.chipscope_artifactory]
+url = "http://xcoartifactory.xilinx.com/artifactory/api/pypi/chipscope-local"
