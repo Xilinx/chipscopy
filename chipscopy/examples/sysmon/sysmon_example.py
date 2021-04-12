@@ -16,8 +16,8 @@
 # !/usr/bin/env python
 # coding: utf-8
 
-# NoC Perfmon Example Dashboard
-# =============================
+# SysMon Example Script
+# =====================
 
 # Description
 # -----------
@@ -32,8 +32,8 @@
 # ------------
 # The following is required to run this demo:
 # 1. Local or remote access to a Versal device
-# 2. 2020.2+ cs_server and hw_server applications
-# 3. Python 3.7 environment
+# 2. 2021.1+ cs_server and hw_server applications
+# 3. Python 3.8 environment
 # 4. chipscopy package installed in your environment
 #
 # ---
@@ -47,7 +47,7 @@ import os
 
 # Specify locations of the running hw_server and cs_server below.
 from time import sleep
-
+from more_itertools import one
 
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
@@ -108,7 +108,7 @@ print(f"Discovering debug cores...", end="")
 versal_device.discover_and_setup_cores(sysmon_scan=True)
 print("Complete!")
 
-sysmon = versal_device.sysmon_root
+sysmon = one(versal_device.sysmon_root)
 
 
 all_sensors = sysmon.get_all_sensors()

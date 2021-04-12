@@ -103,7 +103,7 @@ device.program(PDI_FILE)
 device.discover_and_setup_cores(ibert_scan=True)
 
 if len(device.ibert_cores) == 0:
-    printer("No IBERT core found! Exiting...")
+    printer("No IBERT core found! Exiting...", level="info")
     exit()
 
 # Use the first available IBERT core from the device
@@ -112,10 +112,12 @@ ibert = device.ibert_cores.at(index=0)
 ibert.print_hierarchy()
 
 if len(ibert.gt_groups) == 0:
-    printer("No GT Groups available for use! Exiting...")
+    printer("No GT Groups available for use! Exiting...", level="info")
     exit()
 
-printer(f"GT Groups available - {[gt_group_obj.name for gt_group_obj in ibert.gt_groups]}")
+printer(
+    f"GT Groups available - {[gt_group_obj.name for gt_group_obj in ibert.gt_groups]}", level="info"
+)
 
 # %% [markdown]
 # ## Step 5 - Get first available Quad and all the 4 channels in it
@@ -134,7 +136,7 @@ ch_3 = one(first_quad.gts.filter_by(name="CH_3"))
 all_links = create_links(
     rxs=[ch_0.rx, ch_1.rx, ch_2.rx, ch_3.rx], txs=[ch_0.tx, ch_1.tx, ch_2.tx, ch_3.tx]
 )
-printer(f"Created new links {all_links}")
+printer(f"Created new links {all_links}", level="info")
 
 # %% [markdown]
 # ## Step 7 - Iterate over all links and do loopback test for each link
@@ -142,7 +144,9 @@ printer(f"Created new links {all_links}")
 
 # %% pycharm={"name": "#%%\n"}
 for link in get_all_links():
-    printer(f"Setting both patterns to 'PRBS 7' + Loopback to 'Near-End PCS' for {link}")
+    printer(
+        f"Setting both patterns to 'PRBS 7' + Loopback to 'Near-End PCS' for {link}", level="info"
+    )
 
     props = {
         link.rx.property_for_alias[PATTERN]: "PRBS 7",
@@ -157,11 +161,13 @@ for link in get_all_links():
 
     # Without PLL lock, the link will most likely not lock even if TX and RX patterns are the same
     if link.rx.pll.locked and link.tx.pll.locked:
-        printer(f"RX and TX PLLs are locked for {link}. Checking for link lock...")
+        printer(f"RX and TX PLLs are locked for {link}. Checking for link lock...", level="info")
         assert link.status != "No link"
-        printer(f"{link} is linked as expected ✔")
+        printer(f"{link} is linked as expected", level="info")
     else:
-        printer(f"RX and/or TX PLL are NOT locked for {link}. Skipping link lock check...")
+        printer(
+            f"RX and/or TX PLL are NOT locked for {link}. Skipping link lock check...", level="info"
+        )
 
     link.refresh()
     link.generate_report()
@@ -172,7 +178,7 @@ for link in get_all_links():
 
 # %%
 link_group_0 = one(create_link_groups("Link group with all loopback'd links"))
-printer(f"Created new link group {link_group_0}")
+printer(f"Created new link group {link_group_0}", level="info")
 link_group_0.add(all_links)
 
 # %% [markdown]
@@ -184,7 +190,7 @@ create_eye_scans(target_objs=all_links.at(0))
 
 link_with_scan = all_links.at(0)
 eye_scan_for_link = link_with_scan.eye_scan
-printer(f"Supported params for {eye_scan_for_link.name}")
+printer(f"Supported params for {eye_scan_for_link.name}", level="info")
 for param in eye_scan_for_link.params.values():
     print(
         f"{param.name}\n"

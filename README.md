@@ -80,18 +80,31 @@ Xilinx IT policies create additional certificate complications that must be addr
 
 For Microsoft Windows, we designed a script that help automate the install process. 
 
-Bring up a Windows Powershell. Make sure Python 3.8 is available in your path by checking the version as shown below.  If Python is not executable from the console, stop and check your installation. Make sure Python has been installed from the Microsoft Store or python.org. Nothing works without a functional Python installation.
+Bring up a **Windows Powershell**. Make sure Python 3.8 is available in your path by checking the version as shown below.  If Python is not executable from the console, stop and check your installation. Make sure Python has been installed from the Microsoft Store or python.org. Nothing works without a functional Python installation.
 
     PS > python --version
     Python 3.8.3
 
 
-Copy and paste the snippet below into the Powershell window. This will set up a virtual environment, install ChipScoPy, and install examples in one step. 
+On Windows, copy and paste the snippet below into the **Powershell** window. Follow the interactive installer. 
 
     (Invoke-WebRequest -Uri https://gitenterprise.xilinx.com/chipscope/chipscopy/raw/master/docs/internal/get-chipscopy.py -OutFile get-chipscopy.py); python .\get-chipscopy.py
 
 
-Invoking the above script will: create a virtual environment, install ChipScoPy, and install examples, so skip those steps below.
+On Linux, copy and past the snippet below into the **terminal**. Follow the interactive installer. 
+
+    curl -sSL https://gitenterprise.xilinx.com/chipscope/chipscopy/raw/master/docs/internal/get-chipscopy.py -o get-chipscopy.py; python get-chipscopy.py
+
+Invoking the above script will:
+
+1. Validate the python version used.
+2. Create the certificate bundle needed to install ChipScopy from Xilinx Artifactory
+3. Create a virtual environment install ChipScoPy (and opt dependencies) 
+4. Install the examples
+5. Optionally launch jupyter notebook server
+6. Optionally install a shortcut for the user
+
+So skip those steps below if the installer already performed them.
 
 Proceed to the [install jupyter notebook](#jupyter-notebook-optional)
 step below.

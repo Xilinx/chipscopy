@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING, ClassVar, Dict, List, Optional, Union
 from chipscopy.api.containers import QueryList
 from chipscopy.api.ibert.link import Link
 from chipscopy.api.ibert.scan import EyeScan
+from chipscopy.utils import printer
 
 if TYPE_CHECKING:
     from chipscopy.api.ibert.rx import RX
@@ -78,7 +79,13 @@ class EyeScanManager:
 
         new_eye_scans = QueryList()
 
+        rx_without_support = list()
+
         for rx in rxs:
+            if not hasattr(rx, "eye_scan"):
+                rx_without_support.append(rx.name)
+                continue
+
             EyeScanManager.last_scan_number += 1
             scan_name = f"{EyeScanManager.scan_name_prefix}{EyeScanManager.last_scan_number}"
 
@@ -90,6 +97,12 @@ class EyeScanManager:
 
             EyeScanManager.scans[new_scan.name] = new_scan
             new_eye_scans.append(new_scan)
+
+        if len(rx_without_support) > 0:
+            rxs = "\n".join(rx_without_support)
+            printer(
+                f"Eye scan creation isn't supported for following RX(s)\n{rxs}", level="warning"
+            )
 
         return new_eye_scans
 

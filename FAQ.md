@@ -7,12 +7,17 @@ This document covers frequently asked questions about ChipScoPy.
 
 **Q: What is ChipScoPy?**
 
-**A:** ChipScoPy stands for the ChipScope Python API. This package provides a simple Python interface to program and debug features for Versal devices.
+**A:** ChipScoPy stands for the ChipScope Python API. This package provides a simple Python interface to program and debug features for Xilinx Versal devices.
+
+
+**Q: How do you pronounce ChipScoPy?**
+
+**A:** chip-sco-pee and chip-sco-pie are both accepted. Sometimes it is entertaining to randomly flip during a conversation and see if others flip too.
 
 
 **Q: What is the minimum version of Vivado hw_server and cs_server required?**
 
-**A:** Version 2020.3 for both the hw_server and cs_server is the minimum tool requirement.
+**A:** Version 2021.1 for both the hw_server and cs_server is the minimum tool requirement.
 
 
 **Q: What is the minimum Python version required to use ChipScoPy?**
@@ -32,3 +37,14 @@ Using pip, you can specify install a specific version. `pip install chipscopy==2
 
 **A:** No. At this time, the ChipScoPy API only supports Versal devices and debug IP.
 
+**Q: How can I get the ChipScoPy version?**
+
+**A:** From an active ChipScoPy virtual environment:
+```
+(venv) >python
+Python 3.8.8 (tags/v3.8.8:024d805, Feb 19 2021, 13:18:16) [MSC v.1928 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import chipscopy
+>>> print(chipscopy.__version__)
+2021.1.1614310630
+```

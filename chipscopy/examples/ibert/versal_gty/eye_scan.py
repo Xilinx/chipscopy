@@ -69,7 +69,7 @@ from chipscopy.api.ibert import create_eye_scans, create_links
 from chipscopy.utils.printer import printer
 
 CS_URL = "TCP:localhost:3042"
-HW_URL = "TCP:xsjltlab40:3121"
+HW_URL = "TCP:localhost:3121"
 
 # NOTE - To get refclk info for this design,
 #  please see the DESIGN_INFO.txt file in the same folder as the PDI
@@ -101,7 +101,7 @@ device.program(PDI_FILE)
 device.discover_and_setup_cores(ibert_scan=True)
 
 if len(device.ibert_cores) == 0:
-    printer("No IBERT core found! Exiting...")
+    printer("No IBERT core found! Exiting...", level="info")
     exit()
 
 # Use the first available IBERT core from the device
@@ -110,10 +110,12 @@ ibert = device.ibert_cores.at(index=0)
 report_hierarchy(ibert)
 
 if len(ibert.gt_groups) == 0:
-    printer("No GT Groups available for use! Exiting...")
+    printer("No GT Groups available for use! Exiting...", level="info")
     exit()
 
-printer(f"GT Groups available - {[gt_group_obj.name for gt_group_obj in ibert.gt_groups]}")
+printer(
+    f"GT Groups available - {[gt_group_obj.name for gt_group_obj in ibert.gt_groups]}", level="info"
+)
 
 # %% [markdown]
 # ## Step 5 - Get first available Quad and all the 4 channels in it
@@ -131,9 +133,9 @@ ch_3 = one(first_quad.gts.filter_by(name="CH_3"))
 # %% pycharm={"name": "#%%\n"}
 eye_scan_0 = one(create_eye_scans(target_objs=ch_0.rx))
 
-printer(["Created new eye scan ", f"{eye_scan_0}"], styles=["", Style(bold=True)])
+printer(f"Created new eye scan {eye_scan_0}", level="info")
 
-printer(f"Supported params for {eye_scan_0.name}")
+printer(f"Supported params for {eye_scan_0.name}", level="info")
 for param in eye_scan_0.params.values():
     print(
         f"{param.name}\n"
@@ -180,9 +182,9 @@ link_0 = one(create_links(rxs=ch_1.rx, txs=ch_1.tx))
 
 eye_scan_1 = one(create_eye_scans(target_objs=link_0))
 
-printer(["Created new eye scan ", f"{eye_scan_1}"], styles=["", Style(bold=True)])
+printer(f"Created new eye scan {eye_scan_1}", level="info")
 
-printer(f"Supported params for {eye_scan_1.name}")
+printer(f"Supported params for {eye_scan_1.name}", level="info")
 for param in eye_scan_1.params.values():
     print(
         f"{param.name}\n"

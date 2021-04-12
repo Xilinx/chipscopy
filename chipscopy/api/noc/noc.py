@@ -22,6 +22,7 @@ from chipscopy.api._detail.debug_core import DebugCore
 from chipscopy.dm.harden.noc_perfmon.traffic_classes import PerfMonTrafficQOSClass
 from chipscopy.tcf.services import DoneHWCommand
 from chipscopy.client.noc_perfmon_core_client import NoCPerfMonCoreClient
+from chipscopy.utils import printer
 
 
 @dataclass
@@ -233,17 +234,17 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
         disabled = results["disabled"]
         invalid = results["invalid"]
         if len(disabled) != 0:
-            print(
+            printer(
                 "Warning: These nodes were requested but are disabled in the hardware, verify the design:"
             )
             for d in disabled:
-                print(f"  {d}")
+                printer(f"  {d}")
         if len(invalid) != 0:
-            print(
+            printer(
                 "Warning: These nodes were requested but are not valid for "
                 "this hardware, double check the device and the site names in "
                 "the design:"
             )
             for i in invalid:
-                print(f"  {i}")
+                printer(f"  {i}")
         return results["enabled"]

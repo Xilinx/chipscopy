@@ -33,8 +33,8 @@
 # ------------
 # The following is required to run this demo:
 # 1. Local or remote access to a Versal device
-# 2. 2020.2+ cs_server and hw_server applications
-# 3. Python 3.7 environment
+# 2. 2021.1+ cs_server and hw_server applications
+# 3. Python 3.8 environment
 # 4. chipscopy package installed in your environment
 #
 # ---
@@ -49,8 +49,7 @@ import matplotlib  # used by nbconvert'd script
 
 # Specify locations of the running hw_server and cs_server below.
 from time import sleep
-
-# TODO: dbk cleanup before release
+from more_itertools import one
 from chipscopy.client.util.xsa_utils import XSA
 from chipscopy.api.noc import (
     TC_BEW,
@@ -58,7 +57,6 @@ from chipscopy.api.noc import (
     NoCPerfMonNodeListener,
 )
 from chipscopy.api.noc.plotting_utils import MeasurementPlot
-
 
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
@@ -121,7 +119,7 @@ print(f"Discovering debug cores...", end="")
 versal_device.discover_and_setup_cores(noc_scan=True)
 print("Complete!")
 
-noc = versal_device.noc_core
+noc = one(versal_device.noc_core)
 
 print()
 scan_nodes = ["DDRMC_MAIN_0", "NOC_NMU512_X0Y0"]

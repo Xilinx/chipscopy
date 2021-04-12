@@ -13,9 +13,8 @@
 # limitations under the License.
 
 import re
-import os
 from enum import Enum
-from typing import Union
+from typing import Union, Optional
 
 from typing_extensions import Final, Literal
 
@@ -39,19 +38,18 @@ class Printer:
     def quiet(self, value):
         self.console.quiet = value
 
-    def __call__(self, *args, **kwargs):
-        if len(args) == 1:
-            if isinstance(args[0], str):
-                self._print_msg(args[0], level=kwargs.get("level", "general"))
-            elif isinstance(args[0], Table) or isinstance(args[0], Tree):
+    def __call__(self, *args, level: Optional[Literal["info", "warning"]] = None):
+        if isinstance(args[0], Table) or isinstance(args[0], Tree):
+            self.console.print(args[0])
+        elif len(args) == 1 and isinstance(args[0], str):
+            if level is not None:
+                self._print_msg(args[0], level=level)
+            else:
                 self.console.print(args[0])
+        else:
+            self.console.print(*args)
 
-    def _print_msg(self, msg, *, level: Literal["general", "info", "warning"]):
-        # If its a general msg, dont try to format it in any way. Print it directly as is
-        if level == "general":
-            self.console.print(msg)
-            return
-
+    def _print_msg(self, msg, *, level: Literal["info", "warning"]):
         custom_styles: Final[dict] = {
             "info": Style(bold=False),
             "warning": Style(color="yellow", bold=False, italic=True),

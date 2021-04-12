@@ -542,6 +542,9 @@ def export_waveform(
         sample_count (Optional[int]): Number of samples per window. Default is all samples.
 
     """
+    if not waveform:
+        raise TypeError('Function export_waveform() called with argument "waveform" set to "None".')
+
     if isinstance(fh_or_filepath, str):
         with open(fh_or_filepath, "w", buffering=16384) as fh:
             export_waveform_to_stream(
@@ -608,6 +611,11 @@ def get_waveform_data(
         Dict key: probe name. Dict value is list of int values, for a probe.
 
     """
+    if not waveform:
+        raise TypeError(
+            'Function get_waveform_data() called with argument "waveform" set to "None".'
+        )
+
     return get_waveform_data_values(
         waveform,
         probe_names,
@@ -645,6 +653,11 @@ def get_waveform_probe_data(
         List probe values.
 
     """
+    if not waveform:
+        raise TypeError(
+            'Function get_waveform_probe_data() called with argument "waveform" set to "None".'
+        )
+
     res_dict = get_waveform_data_values(
         waveform,
         [probe_name],

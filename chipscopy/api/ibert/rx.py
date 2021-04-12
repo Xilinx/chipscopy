@@ -23,6 +23,8 @@ from chipscopy.api.ibert.aliases import (
     PROPERTY_ENDPOINT,
     TYPE,
     RX_RESET,
+    RX_SUPPORTED_SCANS,
+    RX_EYE_SCAN,
 )
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from typing_extensions import final
@@ -52,17 +54,22 @@ class RX(SerialObjectBase["GT", None]):
         self.link: Optional[Link] = None
         """Link the RX is part of"""
 
-        self.eye_scan: Optional[EyeScan] = None
-        """Most recently run eye scan"""
-
-        self.eye_scan_names: List[str] = list()
-        """Name of all the eye scans run"""
+        if RX_SUPPORTED_SCANS in configuration:
+            if RX_EYE_SCAN in configuration[RX_SUPPORTED_SCANS]:
+                self.eye_scan: Optional[EyeScan] = None
+                """Most recently run eye scan"""
+                self.eye_scan_names: List[str] = list()
+                """Name of all the eye scans run"""
 
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
 
     def __repr__(self) -> str:
         return self.name
+
+    @property
+    def eye_scan_supported(self) -> bool:
+        return hasattr(self, "eye_scan")
 
     @property
     def pll(self) -> PLL:

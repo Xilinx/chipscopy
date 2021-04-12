@@ -30,8 +30,8 @@
 # ------------
 # The following is required to run this demo:
 # 1. Local or remote access to a Versal device
-# 2. 2020.2+ cs_server and hw_server applications
-# 3. Python 3.7 environment
+# 2. 2021.1+ cs_server and hw_server applications
+# 3. Python 3.8 environment
 # 4. The chipscopy package must be installed in your environment
 #
 # ---
@@ -42,8 +42,7 @@
 import os
 from time import sleep
 import matplotlib  # for nbconvert'd script
-
-# TODO: dbk cleanup before release
+from more_itertools import one
 from chipscopy.client.util.xsa_utils import XSA
 from chipscopy.api.noc import (
     TC_BEW,
@@ -55,9 +54,10 @@ from chipscopy.api.noc.plotting_utils import MeasurementPlot
 from chipscopy import create_session, report_versions
 
 # Specify locations of the running hw_server and cs_server below.
+
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
-HW_URL = os.getenv("HW_SERVER_URL", "TCP:xcodkopelov40x:31786")
-BOARD = os.getenv("HW_SERVER_BOARD", "vck190/es/1.0")
+HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
+BOARD = os.getenv("HW_SERVER_BOARD", "vck190/production/2.0")
 
 EXAMPLES_DIR = os.path.realpath(os.getcwd() + "/..")
 LTX_FILE = f"{EXAMPLES_DIR}/designs/{BOARD}/sptg_axi_mode/sptg_axi_mode_wrapper.ltx"
@@ -120,7 +120,7 @@ print(f"Discovering debug cores...", end="")
 versal_device.discover_and_setup_cores(noc_scan=True, ltx_file=LTX_FILE)
 print("Complete!")
 
-noc = versal_device.noc_core
+noc = one(versal_device.noc_core)
 
 print()
 scan_nodes = ["DDRMC_MAIN_0", "NOC_NMU512_X0Y0"]

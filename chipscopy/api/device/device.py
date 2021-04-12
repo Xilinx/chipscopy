@@ -275,13 +275,7 @@ class Device:
     def noc_core(self) -> NocPerfmon:
         """Returns:
         the NOC core for the device"""
-        wrappers = self._get_debug_core_wrappers(NoCPerfMonCoreClient)
-        # TODO: Why not return a querylist with 1 object? would be consistent...
-        assert len(wrappers) <= 1
-        impl = None
-        if len(wrappers) == 1:
-            impl = wrappers.get()
-        return impl
+        return self._get_debug_core_wrappers(NoCPerfMonCoreClient)
 
     @property
     def ddrs(self):
@@ -293,13 +287,7 @@ class Device:
     def sysmon_root(self) -> Sysmon:
         """Returns:
         the SysMon core for the device"""
-        wrappers = self._get_debug_core_wrappers(SysMonCoreClient)
-        # TODO: Why not return a querylist with 1 object? would be consistent...
-        assert len(wrappers) <= 1
-        impl = None
-        if len(wrappers) == 1:
-            impl = wrappers.get()
-        return impl
+        return self._get_debug_core_wrappers(SysMonCoreClient)
 
     @property
     # TODO: @chipscopy_deprecated("Use alternative session.mem.all() instead.")
