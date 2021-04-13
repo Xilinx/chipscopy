@@ -134,8 +134,10 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
         sanitized_data = PropertyCommands.sanitize_input(property_names, list)
         return self.core_tcf_node.commit_property(sanitized_data, self.endpoint_name)
 
-    def report(self, property_names: Union[str, List[str]]):
-        sanitized_data = PropertyCommands.sanitize_input(property_names, list)
+    def report(self, property_names: Union[str, List[str]] = None):
+        sanitized_data = []
+        if property_names is not None:
+            sanitized_data = PropertyCommands.sanitize_input(property_names, list)
         return self.core_tcf_node.report_property(sanitized_data, self.endpoint_name)
 
 

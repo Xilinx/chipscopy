@@ -21,6 +21,7 @@ The ChipScoPy API is under construction. Expect frequent changes and additions d
 -   [ChipScoPy API Documentation](#chipscopy-api-documentation)
 -   [Source Code](#source-code)
 -   [Custom Designs](#custom-designs)
+-   [License](#license)
 
 ## About The Project
 
@@ -187,3 +188,26 @@ ChipScoPy requires the PDI and LTX files from a Vivado implementation run to pro
 ![image](docs/images/chipscopy_vivado.png)
 
 Vivado is required to create a custom PDI and LTX file. It is NOT required to use ChipScoPy at runtime.
+
+## License
+
+Copyright 2021 Xilinx, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+**Additional Licenses**
+
+TCF source files are licensed under terms of the Eclipse Public License 2.0. 
+For additional details, see 
+
+https://www.eclipse.org/legal/epl-2.0/

@@ -33,3 +33,26 @@ ChipScoPy is a Xilinx Python API to communicate with Xilinx devices and debug co
 This API is an advanced hardware use case. Using this API assumes you are comfortable scripting with Python 3, including setting up virtual environments and pip for 3rd party package installation.
 
 As the first beta release, a main goal is gathering user feedback. The API and implementation is likely to change as we collect feedback from active users.
+
+## License
+
+Copyright 2021 Xilinx, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+**Additional Licenses**
+
+TCF source files are licensed under terms of the Eclipse Public License 2.0. 
+For additional details, see 
+
+https://www.eclipse.org/legal/epl-2.0/
