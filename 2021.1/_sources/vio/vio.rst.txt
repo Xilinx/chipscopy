@@ -1,0 +1,35 @@
+Details
+=======
+
+Inputs
+^^^^^^
+Inputs to the VIO are driven by the user design. The input values are a snapshot at any given time of the user design
+logic. Software is slower to reading values than to the speed of the design, so values may change many times between
+API port value reading. Activity detectors report changes to the VIO port inputs between software reads.
+
+Activity Detectors
+------------------
+A VIO core input optionally has additional cells to capture the presence of transitions on the input. Because the design
+clock is most likely much faster than the sample period of the Analyzer, it is possible for the signal being monitored
+to transition many times between successive samples. The activity detectors capture this behavior and the results are
+returned with the port values.
+
+Outputs
+^^^^^^^
+Outputs from the VIO are driven to the surrounding user design. The output values are driven to 1s and 0s by the
+ChipScoPy API. Initial output values are set to desired values during IP generation time.
+
+VIO output ports follow a naming convention "probe_out<#>[x:y]" where <#> is an index from 0-1023, and [x:y] is the
+bit width.
+
+Probes
+^^^^^^
+There is a logical mapping between ports of a VIO core and elements in the user's design. This port mapping is recorded
+in the LTX file in the Vivado design flow.
+
+When an LTX file is read, the HDL net/bus name mapping is available. This enables reading and writing probe values in
+the context of the HDL design.
+
+For example, if an HDL design mapped "counter[31:0]" to a VIO input port 0, ``read_probes("counter")`` returns the
+value of the counter attached to that VIO input. This is equivalent to ``read_ports("probe0_in")``, but allows
+you to identify nets in the context of the source HDL design.

@@ -1,0 +1,23 @@
+* {
+    font-family: 'Fira Sans', sans-serif;  
+    font-size: 15px;
+}
+
+.contents {
+    text-align: center;
+}
+
+.contents h1 {
+    font-size: 250%;
+}
+
+li {
+    padding-bottom: 20px;
+    list-style: none;
+}
+
+a:visited, a:link {
+    color: "0f03fc";
+    text-decoration: none;
+    font-size: 175%;
+}
