@@ -19,8 +19,8 @@ description = "Open-source project from Xilinx® that enables high-level control
 authors = ["Xilinx LabTools <labtools@xilinx.com>"]
 maintainers = ["Xilinx LabTools <labtools@xilinx.com>"]
 license = "Apache-2.0"
-repository = "https://gitenterprise.xilinx.com/chipscope/chipscopy"
-documentation = "https://pages.gitenterprise.xilinx.com/chipscope/chipscopy/master/html/"
+repository = "https://github.com/Xilinx/chipscopy"
+documentation = "https://xilinx.github.io/chipscopy/master/html/"
 
 [tool.poetry.dependencies]
 python = "^3.7.1"
@@ -58,7 +58,7 @@ chipscopy-get-examples = "chipscopy._cli.example_delivery:main"
 chipscopy = "chipscopy._cli._chipscopy:main"
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://gitenterprise.xilinx.com/chipscope/chipscopy/issues"
+"Bug Tracker" = "https://github.com/Xilinx/chipscopy/issues"
 
 [tool.poetry.extras]
 pandas = ["pandas"]
