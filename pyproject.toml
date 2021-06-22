@@ -14,14 +14,15 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2021.1.1624384824"
+version = "2021.1.1624393699"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx LabTools <labtools@xilinx.com>"]
 maintainers = ["Xilinx LabTools <labtools@xilinx.com>"]
-license = "Apache-2.0"
+license = "Apache-2.0 AND EPL-2.0"
 repository = "https://github.com/Xilinx/chipscopy"
 documentation = "https://xilinx.github.io/chipscopy/"
 readme = "README.md"
+include = ["LICENSE", "epl-v20.html"]
 
 [tool.poetry.dependencies]
 python = "^3.7.1"
