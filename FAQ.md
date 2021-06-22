@@ -2,7 +2,7 @@
 
 This document covers frequently asked questions about ChipScoPy.
 
-- General information about ChipScoPy - [README.rst](README.rst)
+- General information about ChipScoPy - [README.md](README.md)
 
 
 **Q: What is ChipScoPy?**

@@ -61,7 +61,7 @@ def deliver_examples(src_path, dst_fullpath, name):
             dirs.remove(".ipynb_checkpoints")
         if "__init__.py" in files:
             files.remove("__init__.py")
-        keepers = [".ipynb", ".py", ".pdi", ".ltx"]
+        keepers = [".ipynb", ".py", ".pdi", ".ltx", ".png"]
         for f in files:
             extension = os.path.splitext(f)[1]
             if extension in keepers:
