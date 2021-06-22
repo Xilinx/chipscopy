@@ -20,7 +20,7 @@ authors = ["Xilinx LabTools <labtools@xilinx.com>"]
 maintainers = ["Xilinx LabTools <labtools@xilinx.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/Xilinx/chipscopy"
-documentation = "https://xilinx.github.io/chipscopy/master/html/"
+documentation = "https://xilinx.github.io/chipscopy/"
 
 [tool.poetry.dependencies]
 python = "^3.7.1"
