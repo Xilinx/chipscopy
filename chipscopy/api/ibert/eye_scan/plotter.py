@@ -50,7 +50,7 @@ if TYPE_CHECKING:
 def check_for_plotly():
     if not _plotly_available:
         raise ImportError(
-            f"Plotting packages not installed! Please run 'pip install chipscopy[plotly]'"
+            f"Plotting packages not installed! Please run 'pip install chipscopy[core-addons]'"
         )
 
 

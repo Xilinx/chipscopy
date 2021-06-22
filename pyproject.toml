@@ -14,10 +14,10 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2021.1.1624393699"
+version = "2021.1.1624403243"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
-authors = ["Xilinx LabTools <labtools@xilinx.com>"]
-maintainers = ["Xilinx LabTools <labtools@xilinx.com>"]
+authors = ["Xilinx ChipScope Team"]
+maintainers = ["Xilinx ChipScope Team"]
 license = "Apache-2.0 AND EPL-2.0"
 repository = "https://github.com/Xilinx/chipscopy"
 documentation = "https://xilinx.github.io/chipscopy/"
@@ -63,10 +63,8 @@ chipscopy = "chipscopy._cli._chipscopy:main"
 "Bug Tracker" = "https://github.com/Xilinx/chipscopy/issues"
 
 [tool.poetry.extras]
-pandas = ["pandas"]
-plotly = ["plotly", "kaleido"]
+core-addons = ["plotly", "kaleido", "matplotlib", "PyQt5", "pandas"]
 jupyter = ["notebook", "ipywidgets"]
-noc = ["matplotlib", "PyQt5"]
 
 [tool.pytest.ini_options]
 addopts = "--strict-markers --verbose"

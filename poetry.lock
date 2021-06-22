@@ -1464,15 +1464,13 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "jaraco.test (>=3.2.0)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [extras]
+core-addons = ["plotly", "kaleido", "matplotlib", "PyQt5", "pandas"]
 jupyter = ["notebook", "ipywidgets"]
-noc = ["matplotlib", "PyQt5"]
-pandas = ["pandas"]
-plotly = ["plotly", "kaleido"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "7f371b2e8c900d3b21eed7d5fbf29de6a371fbc6cd45db434bb088e78a03630e"
+content-hash = "72cb1310d2c17416a545015e40ddb723369f25baf20e920f710b4890e0418566"
 
 [metadata.files]
 alabaster = [

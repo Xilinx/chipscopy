@@ -34,7 +34,7 @@
 # - Python 3.8 or greater installed
 # - ChipScoPy 2021.1 or greater installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
-# - Matplotlib support installed - Please do so, using the command `pip install chipscopy[noc]`
+# - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
