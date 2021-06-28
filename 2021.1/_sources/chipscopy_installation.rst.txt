@@ -13,54 +13,56 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
+
 .. _chipscopy_installation:
 
 ChipScoPy Installation
 ======================
 
-ChipScoPy requires an installed Python. There are several ways to configure your system with Python. We recommend and document a no-frills
-`Basic Python Installation`_.
+ChipScoPy requires an installed Python. There are several ways to configure your system with Python. We recommend and document a no-frills `Basic Python Installation`_.
 
-If you're a seasoned Python user you can skip ahead to the section, this will assume you've got Python and you know how
-to manage environments, packages, and pip configuration:
-`Manual Installation`_.
+If you're a seasoned python user, you can skip ahead to `Manual Installation`_. This assumes you have python installed and know how to manage environments, packages, and pip configuration.
+
 
 Basic Python Installation
 -------------------------
 
-This section covers installing the Python base interpreter. Two options for obtaining a suitable Python are noted
-in this section. The first, `Vivado Distributed Python`_, describes how to use the Python bundled with Vivado. The
-alternate section, `Dedicated Python`_, is for non Vivado users or users who want a different version of Python
-installed for use with ChipScoPy. A single version of Python will execute ChipScoPy--ergo, do not install
-multiple Pythons via different methods.
+This section covers installing the Python base interpreter. Two options for obtaining a suitable Python are noted in this section. The first, `Vivado Distributed Python`_, describes how to use the Python bundled with Vivado. The alternate section, `Dedicated Python`_, is for non Vivado users or users who want a different version of Python installed for use with ChipScoPy. A single version of Python will execute ChipScoPy--ergo, do not install multiple Pythons via different methods.
+
 
 Vivado Distributed Python
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python during the install operation. This
-Python is located at the following operating system-dependent locations:
+Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python during the install operation. This Python is located at the following operating system-dependent locations:
 
-.. code-block::
+* Linux
 
-   Linux
-   /path_to_xilinx_tools/Vivado/<ver>/tps/lnx64/python-<ver>
-   e.g.:
-   /opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3
+    .. code-block::
 
-   To use this Python, set your path and loader path by (bash syntax):
-   export PATH=$PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/bin
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/lib
+       /path_to_xilinx_tools/Vivado/<vivado_version>/tps/lnx64/python-<python_version>
+       e.g.:
+       /opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3
 
+    To use this Python, set your path and loader path by (bash syntax):
 
-.. code-block::
+    .. code-block::
 
-   Windows
-   <drive_spec>:\path_to_xilinx_tools\Vivado\<ver>\tps\win64\python-<ver>
-   e.g.:
-   C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3
+       export PATH=$PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/bin
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/lib
 
-   To use this Python, amend this to your user or system-wide %PATH% environment variable
-   C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3\bin
+* Windows
+
+    .. code-block::
+
+       <drive_spec>:\path_to_xilinx_tools\Vivado\<vivado_version>\tps\win64\python-<python_version>
+       e.g.:
+       C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3
+
+    To use this Python, amend this to your user or system-wide %PATH% environment variable
+
+    .. code-block::
+
+       C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3\bin
 
 
 Dedicated Python
@@ -69,9 +71,7 @@ Dedicated Python
 To install a dedicated Python, one that was not shipped as part of Vivado, navigate to:
 `<https://www.python.org/downloads/>`_. ChipScoPy requires Python 3.8 or newer.
 
-Windows 10 (v1909) users may opt to install a dedicated Python through the Microsoft Store. Simply search for Python and
-select the language version you want to install. At this time Python 3.8 offers the most stability and usability. Python
-3.9 has not been tested with ChipScoPy.
+Windows 10 (v1909) users can install python through the Microsoft Store by searching for Python and selecting the language version you want to install. At this time, Python 3.8 offers the most stability and usability. Python 3.9 has not been tested with ChipScoPy.
 
 Download and install Python. When it asks if you want to update the ``PATH`` variable, it's highly recommended you
 take that action. Once you have Python installed, you may use the setup script in
@@ -97,38 +97,30 @@ Automated Installer
 
 An installation script is provided to simplify the installation of ChipScoPy in a Python virtual environment.
 
-Copy and paste the snippet below into the Powershell window, if running Windows; or into your terminal if running Linux.
-This will set up a virtual environment, install ChipScoPy, and dependencies. Then it will unpack the examples delivered
-with ChipScoPy, optionally start jupyter notebook server, and ask the user if they want a shortcut installed on the
-desktop for future sessions.
+1. Copy and paste the snippet below into the Powershell window, if running Windows; or into your terminal if running Linux.
 
-Windows:
+    This will set up a virtual environment, install ChipScoPy, and dependencies. Then it will unpack the examples delivered with ChipScoPy, optionally start jupyter notebook server, and ask the user if they want a shortcut installed on the desktop for future sessions.
 
+    * Windows:
 
-.. code-block:: powershell
+        .. code-block:: powershell
 
-    Invoke-WebRequest -Uri "https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py" -OutFile get-chipscopy.py; python get-chipscopy.py
+            Invoke-WebRequest -Uri "https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py" -OutFile get-chipscopy.py; python get-chipscopy.py
 
+    * Linux:
 
+        .. code-block:: shell
 
-Linux:
-
-.. code-block:: shell
-
-    curl -sSL https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py -o get-chipscopy.py; python get-chipscopy.py
+            curl -sSL https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py -o get-chipscopy.py; python get-chipscopy.py
 
 
+2. Follow the interactive script prompts. It will ask where the virtual environment should be created. After the environment is created, pip will proceed with the installation of chipscopy.
 
-Follow the interactive script. It will ask where the virtual environment should be created. Example installer output:
-And after the environment is created, pip will proceed with the installation of chipscopy.
+.. note:: These scripts will install the latest version of the ChipScoPy package. To install alternate versions of the package see the alternate invocation in `Install ChipScoPy`_.
 
-.. note:: These scripts will install the latest version of the ChipScoPy package. To install alternate versions of the
-          package see the alternate invocation in `Install ChipScoPy`_.
+3. The final step in the installer is to unpack the examples. Pay attention to the script output as extraction will fail if the examples are already unpacked in the target location.
 
-The final step in the installer is to unpack the examples. Pay attention to the script output as extraction will
-fail if the examples are already unpacked in the target location--user's home directory.
-
-The script terminates with instructions on how to activate the virtual environment. The user must activate the
+The script terminates with instructions on how to activate the virtual environment. You must activate the
 virtualenv subsequently, and every time the shell is re-launched.
 
 Installation is complete. The rest of this document outlines the manual installation process. It is not necessary to
@@ -143,41 +135,44 @@ The next step is to explore the examples.
 Manual Installation
 -------------------
 
-This section is for advanced Python users. It describes the manual steps to setup the environment. If anything is
-unfamiliar here, or there are issues, feel free to use the installer described in `Automated Installer`_. 
+This section is for advanced Python users. It describes the manual steps to setup the environment. If anything here is unfamiliar, or there are issues, feel free to use the installer described in `Automated Installer`_.
+
 
 Install ChipScoPy
 ^^^^^^^^^^^^^^^^^
 
-If you used one of the installer scripts above, this section was already done by the installer script. Skip ahead to the
-section `Setup Dependencies`_.
+If you used one of the installer scripts above, this section was already done by the installer script. Skip ahead to the section `Setup Dependencies`_.
 
-It's time to install the ChipScoPy package itself. With your Python environment active run:
+It's time to install the ChipScoPy package itself.
 
-.. code-block:: shell
+* To install the latest version of ChipScoPy into the active Python virtual environment:
 
-    (chipscopy) > python -m pip install chipscopy
-    [or]
-    (chipscopy) > python -m pip install chipscopy==2021.1.*   # installs latest version of 2021.1
+    .. code-block:: shell
+
+        (chipscopy) > python -m pip install chipscopy
+
+* To install a specific version of ChipScoPy into the active Python virtual environment:
+
+    .. code-block:: shell
+
+        (chipscopy) > python -m pip install chipscopy==2021.1.*
 
 
 Setup Dependencies
 ^^^^^^^^^^^^^^^^^^
 
-With the environment active you may need to install some additional packages that aren't listed in the ChipScoPy
-project-level dependencies. If you intend to use any of these client examples, then
-you'll need to get additional items.
+With the environment active you may need to install some additional packages that aren't listed in the ChipScoPy project-level dependencies. If you intend to use any of these client examples, then you'll need to get additional items.
 
 .. code-block:: none
 
-    pcie        -- networkx                        -- python -m pip install networkx
-    noc-perfmon -- pyqt (5+) , matplotlib          -- python -m pip install PyQt5 matplotlib
-    all         -- jupyter (for running notebooks) -- python -m pip install juypter
+    python -m pip install chipscopy[jupyter]
+    python -m pip install chipscopy[core-addons]
 
-Use pip to install these as well, be sure your environment is active.
 
-Congrats--if you're still awake and you've followed the steps till here, you are the proud owner of a functional Python
-setup. Next steps are to start exploring the examples.
+Be sure your virtual environment is active before installing these additional dependencies.
+
+
+Congratulations -- if you're still awake and you've followed the steps till here, you are the proud owner of a functional Python setup. The next step is to start exploring the examples.
 
 
 Install ChipScoPy Examples
@@ -189,14 +184,14 @@ chosen by the user.
 .. code-block:: shell
 
     (chipscopy) > chipscopy-get-examples
-    The following examples  will be delivered to `/home/dkopelov/chipscopy-examples`:
+    The following examples  will be delivered to `/home/user/chipscopy-examples`:
     - ddr_example.ipynb
     - ddr_example.py
     - basic_detect.py
     ...
 
 
-Make note of the location to which these are extracted.
+Note where these files are extracted.
 
 
 Starting Jupyter
@@ -219,8 +214,7 @@ deployed the ChipScoPy examples and then you may run any notebook included with 
 ChipScoPy Updates
 ^^^^^^^^^^^^^^^^^
 
-As the development team pushes fixes and features; ``pip``, again, is the recommended tool for grabbing the latest
-software.
+As the development team pushes fixes and features; ``pip``, again, is the recommended tool for grabbing the latest software.
 
 .. code-block:: shell
 

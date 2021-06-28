@@ -308,7 +308,7 @@ By default, Plotly is not installed with ChipScoPy. In order to install it, plea
 
 .. code-block::
 
-    pip install chipscopy[plotly]
+    pip install chipscopy[core-addons]
 
 This will pull in the packages needed to provide the eye scan plotting functionality.
 

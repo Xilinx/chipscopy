@@ -444,49 +444,49 @@
             
   <div class="section" id="chipscopy-installation">
 <span id="id1"></span><h1>ChipScoPy Installation<a class="headerlink" href="#chipscopy-installation" title="Permalink to this headline">¶</a></h1>
-<p>ChipScoPy requires an installed Python. There are several ways to configure your system with Python. We recommend and document a no-frills
-<a class="reference internal" href="#basic-python-installation">Basic Python Installation</a>.</p>
-<p>If you’re a seasoned Python user you can skip ahead to the section, this will assume you’ve got Python and you know how
-to manage environments, packages, and pip configuration:
-<a class="reference internal" href="#manual-installation">Manual Installation</a>.</p>
+<p>ChipScoPy requires an installed Python. There are several ways to configure your system with Python. We recommend and document a no-frills <a class="reference internal" href="#basic-python-installation">Basic Python Installation</a>.</p>
+<p>If you’re a seasoned python user, you can skip ahead to <a class="reference internal" href="#manual-installation">Manual Installation</a>. This assumes you have python installed and know how to manage environments, packages, and pip configuration.</p>
 <div class="section" id="basic-python-installation">
 <h2>Basic Python Installation<a class="headerlink" href="#basic-python-installation" title="Permalink to this headline">¶</a></h2>
-<p>This section covers installing the Python base interpreter. Two options for obtaining a suitable Python are noted
-in this section. The first, <a class="reference internal" href="#vivado-distributed-python">Vivado Distributed Python</a>, describes how to use the Python bundled with Vivado. The
-alternate section, <a class="reference internal" href="#dedicated-python">Dedicated Python</a>, is for non Vivado users or users who want a different version of Python
-installed for use with ChipScoPy. A single version of Python will execute ChipScoPy–ergo, do not install
-multiple Pythons via different methods.</p>
+<p>This section covers installing the Python base interpreter. Two options for obtaining a suitable Python are noted in this section. The first, <a class="reference internal" href="#vivado-distributed-python">Vivado Distributed Python</a>, describes how to use the Python bundled with Vivado. The alternate section, <a class="reference internal" href="#dedicated-python">Dedicated Python</a>, is for non Vivado users or users who want a different version of Python installed for use with ChipScoPy. A single version of Python will execute ChipScoPy–ergo, do not install multiple Pythons via different methods.</p>
 <div class="section" id="vivado-distributed-python">
 <h3>Vivado Distributed Python<a class="headerlink" href="#vivado-distributed-python" title="Permalink to this headline">¶</a></h3>
-<p>Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python during the install operation. This
-Python is located at the following operating system-dependent locations:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Linux
-/path_to_xilinx_tools/Vivado/&lt;ver&gt;/tps/lnx64/python-&lt;ver&gt;
-e.g.:
-/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3
-
-To use this Python, set your path and loader path by (bash syntax):
-export PATH=$PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/bin
+<p>Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python during the install operation. This Python is located at the following operating system-dependent locations:</p>
+<ul>
+<li><p>Linux</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path_to_xilinx_tools</span><span class="o">/</span><span class="n">Vivado</span><span class="o">/&lt;</span><span class="n">vivado_version</span><span class="o">&gt;/</span><span class="n">tps</span><span class="o">/</span><span class="n">lnx64</span><span class="o">/</span><span class="n">python</span><span class="o">-&lt;</span><span class="n">python_version</span><span class="o">&gt;</span>
+<span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">:</span>
+<span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">xilinx</span><span class="o">/</span><span class="n">Vivado</span><span class="o">/</span><span class="mf">2021.1</span><span class="o">/</span><span class="n">tps</span><span class="o">/</span><span class="n">lnx64</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">3</span>
+</pre></div>
+</div>
+<p>To use this Python, set your path and loader path by (bash syntax):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PATH=$PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/lib
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Windows</span>
-<span class="o">&lt;</span><span class="n">drive_spec</span><span class="o">&gt;</span><span class="p">:</span>\<span class="n">path_to_xilinx_tools</span>\<span class="n">Vivado</span>\<span class="o">&lt;</span><span class="n">ver</span><span class="o">&gt;</span>\<span class="n">tps</span>\<span class="n">win64</span>\<span class="n">python</span><span class="o">-&lt;</span><span class="n">ver</span><span class="o">&gt;</span>
+</div></blockquote>
+</li>
+<li><p>Windows</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">drive_spec</span><span class="o">&gt;</span><span class="p">:</span>\<span class="n">path_to_xilinx_tools</span>\<span class="n">Vivado</span>\<span class="o">&lt;</span><span class="n">vivado_version</span><span class="o">&gt;</span>\<span class="n">tps</span>\<span class="n">win64</span>\<span class="n">python</span><span class="o">-&lt;</span><span class="n">python_version</span><span class="o">&gt;</span>
 <span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">:</span>
 <span class="n">C</span><span class="p">:</span>\<span class="n">Xilinx</span>\<span class="n">Vivado</span>\<span class="mf">2021.1</span>\<span class="n">tps</span>\<span class="n">win64</span>\<span class="n">python</span><span class="o">-</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">3</span>
-
-<span class="n">To</span> <span class="n">use</span> <span class="n">this</span> <span class="n">Python</span><span class="p">,</span> <span class="n">amend</span> <span class="n">this</span> <span class="n">to</span> <span class="n">your</span> <span class="n">user</span> <span class="ow">or</span> <span class="n">system</span><span class="o">-</span><span class="n">wide</span> <span class="o">%</span><span class="n">PATH</span><span class="o">%</span> <span class="n">environment</span> <span class="n">variable</span>
-<span class="n">C</span><span class="p">:</span>\<span class="n">Xilinx</span>\<span class="n">Vivado</span>\<span class="mf">2021.1</span>\<span class="n">tps</span>\<span class="n">win64</span>\<span class="n">python</span><span class="o">-</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">3</span>\<span class="nb">bin</span>
 </pre></div>
 </div>
+<p>To use this Python, amend this to your user or system-wide %PATH% environment variable</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">Xilinx</span>\<span class="n">Vivado</span>\<span class="mf">2021.1</span>\<span class="n">tps</span>\<span class="n">win64</span>\<span class="n">python</span><span class="o">-</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">3</span>\<span class="nb">bin</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
 </div>
 <div class="section" id="dedicated-python">
 <h3>Dedicated Python<a class="headerlink" href="#dedicated-python" title="Permalink to this headline">¶</a></h3>
 <p>To install a dedicated Python, one that was not shipped as part of Vivado, navigate to:
 <a class="reference external" href="https://www.python.org/downloads/">https://www.python.org/downloads/</a>. ChipScoPy requires Python 3.8 or newer.</p>
-<p>Windows 10 (v1909) users may opt to install a dedicated Python through the Microsoft Store. Simply search for Python and
-select the language version you want to install. At this time Python 3.8 offers the most stability and usability. Python
-3.9 has not been tested with ChipScoPy.</p>
+<p>Windows 10 (v1909) users can install python through the Microsoft Store by searching for Python and selecting the language version you want to install. At this time, Python 3.8 offers the most stability and usability. Python 3.9 has not been tested with ChipScoPy.</p>
 <p>Download and install Python. When it asks if you want to update the <code class="docutils literal notranslate"><span class="pre">PATH</span></code> variable, it’s highly recommended you
 take that action. Once you have Python installed, you may use the setup script in
 <a class="reference internal" href="#automated-installer">Automated Installer</a> to complete the rest of the installation.</p>
@@ -511,28 +511,38 @@ practice.</p>
 <div class="section" id="automated-installer">
 <h2>Automated Installer<a class="headerlink" href="#automated-installer" title="Permalink to this headline">¶</a></h2>
 <p>An installation script is provided to simplify the installation of ChipScoPy in a Python virtual environment.</p>
-<p>Copy and paste the snippet below into the Powershell window, if running Windows; or into your terminal if running Linux.
-This will set up a virtual environment, install ChipScoPy, and dependencies. Then it will unpack the examples delivered
-with ChipScoPy, optionally start jupyter notebook server, and ask the user if they want a shortcut installed on the
-desktop for future sessions.</p>
-<p>Windows:</p>
-<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py&quot;</span> <span class="n">-OutFile</span> <span class="nb">get-chipscopy</span><span class="p">.</span><span class="n">py</span><span class="p">;</span> <span class="n">python</span> <span class="nb">get-chipscopy</span><span class="p">.</span><span class="n">py</span>
+<ol class="arabic">
+<li><p>Copy and paste the snippet below into the Powershell window, if running Windows; or into your terminal if running Linux.</p>
+<blockquote>
+<div><p>This will set up a virtual environment, install ChipScoPy, and dependencies. Then it will unpack the examples delivered with ChipScoPy, optionally start jupyter notebook server, and ask the user if they want a shortcut installed on the desktop for future sessions.</p>
+<ul>
+<li><p>Windows:</p>
+<blockquote>
+<div><div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py&quot;</span> <span class="n">-OutFile</span> <span class="nb">get-chipscopy</span><span class="p">.</span><span class="n">py</span><span class="p">;</span> <span class="n">python</span> <span class="nb">get-chipscopy</span><span class="p">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<p>Linux:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl -sSL https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py -o get-chipscopy.py<span class="p">;</span> python get-chipscopy.py
+</div></blockquote>
+</li>
+<li><p>Linux:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl -sSL https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py -o get-chipscopy.py<span class="p">;</span> python get-chipscopy.py
 </pre></div>
 </div>
-<p>Follow the interactive script. It will ask where the virtual environment should be created. Example installer output:
-And after the environment is created, pip will proceed with the installation of chipscopy.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Follow the interactive script prompts. It will ask where the virtual environment should be created. After the environment is created, pip will proceed with the installation of chipscopy.</p></li>
+</ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>These scripts will install the latest version of the ChipScoPy package. To install alternate versions of the
-package see the alternate invocation in <a class="reference internal" href="#install-chipscopy">Install ChipScoPy</a>.</p>
+<p>These scripts will install the latest version of the ChipScoPy package. To install alternate versions of the package see the alternate invocation in <a class="reference internal" href="#install-chipscopy">Install ChipScoPy</a>.</p>
 </div>
-<p>The final step in the installer is to unpack the examples. Pay attention to the script output as extraction will
-fail if the examples are already unpacked in the target location–user’s home directory.</p>
-<p>The script terminates with instructions on how to activate the virtual environment. The user must activate the
+<ol class="arabic simple" start="3">
+<li><p>The final step in the installer is to unpack the examples. Pay attention to the script output as extraction will fail if the examples are already unpacked in the target location.</p></li>
+</ol>
+<p>The script terminates with instructions on how to activate the virtual environment. You must activate the
 virtualenv subsequently, and every time the shell is re-launched.</p>
 <p>Installation is complete. The rest of this document outlines the manual installation process. It is not necessary to
 perform these steps when the installer script is used.</p>
@@ -541,46 +551,51 @@ perform these steps when the installer script is used.</p>
 <hr class="docutils" />
 <div class="section" id="manual-installation">
 <h2>Manual Installation<a class="headerlink" href="#manual-installation" title="Permalink to this headline">¶</a></h2>
-<p>This section is for advanced Python users. It describes the manual steps to setup the environment. If anything is
-unfamiliar here, or there are issues, feel free to use the installer described in <a class="reference internal" href="#automated-installer">Automated Installer</a>.</p>
+<p>This section is for advanced Python users. It describes the manual steps to setup the environment. If anything here is unfamiliar, or there are issues, feel free to use the installer described in <a class="reference internal" href="#automated-installer">Automated Installer</a>.</p>
 <div class="section" id="install-chipscopy">
 <h3>Install ChipScoPy<a class="headerlink" href="#install-chipscopy" title="Permalink to this headline">¶</a></h3>
-<p>If you used one of the installer scripts above, this section was already done by the installer script. Skip ahead to the
-section <a class="reference internal" href="#setup-dependencies">Setup Dependencies</a>.</p>
-<p>It’s time to install the ChipScoPy package itself. With your Python environment active run:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>chipscopy<span class="o">)</span> &gt; python -m pip install chipscopy
-<span class="o">[</span>or<span class="o">]</span>
-<span class="o">(</span>chipscopy<span class="o">)</span> &gt; python -m pip install <span class="nv">chipscopy</span><span class="o">==</span><span class="m">2021</span>.1.*   <span class="c1"># installs latest version of 2021.1</span>
+<p>If you used one of the installer scripts above, this section was already done by the installer script. Skip ahead to the section <a class="reference internal" href="#setup-dependencies">Setup Dependencies</a>.</p>
+<p>It’s time to install the ChipScoPy package itself.</p>
+<ul>
+<li><p>To install the latest version of ChipScoPy into the active Python virtual environment:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>chipscopy<span class="o">)</span> &gt; python -m pip install chipscopy
 </pre></div>
 </div>
+</div></blockquote>
+</li>
+<li><p>To install a specific version of ChipScoPy into the active Python virtual environment:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>chipscopy<span class="o">)</span> &gt; python -m pip install <span class="nv">chipscopy</span><span class="o">==</span><span class="m">2021</span>.1.*
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
 </div>
 <div class="section" id="setup-dependencies">
 <h3>Setup Dependencies<a class="headerlink" href="#setup-dependencies" title="Permalink to this headline">¶</a></h3>
-<p>With the environment active you may need to install some additional packages that aren’t listed in the ChipScoPy
-project-level dependencies. If you intend to use any of these client examples, then
-you’ll need to get additional items.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pcie        -- networkx                        -- python -m pip install networkx
-noc-perfmon -- pyqt (5+) , matplotlib          -- python -m pip install PyQt5 matplotlib
-all         -- jupyter (for running notebooks) -- python -m pip install juypter
+<p>With the environment active you may need to install some additional packages that aren’t listed in the ChipScoPy project-level dependencies. If you intend to use any of these client examples, then you’ll need to get additional items.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m pip install chipscopy[jupyter]
+python -m pip install chipscopy[core-addons]
 </pre></div>
 </div>
-<p>Use pip to install these as well, be sure your environment is active.</p>
-<p>Congrats–if you’re still awake and you’ve followed the steps till here, you are the proud owner of a functional Python
-setup. Next steps are to start exploring the examples.</p>
+<p>Be sure your virtual environment is active before installing these additional dependencies.</p>
+<p>Congratulations – if you’re still awake and you’ve followed the steps till here, you are the proud owner of a functional Python setup. The next step is to start exploring the examples.</p>
 </div>
 <div class="section" id="install-chipscopy-examples">
 <h3>Install ChipScoPy Examples<a class="headerlink" href="#install-chipscopy-examples" title="Permalink to this headline">¶</a></h3>
 <p>Now that the ChipScoPy package has been installed, there is an alias to install the examples into a particular directory
 chosen by the user.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>chipscopy<span class="o">)</span> &gt; chipscopy-get-examples
-The following examples  will be delivered to <span class="sb">`</span>/home/dkopelov/chipscopy-examples<span class="sb">`</span>:
+The following examples  will be delivered to <span class="sb">`</span>/home/user/chipscopy-examples<span class="sb">`</span>:
 - ddr_example.ipynb
 - ddr_example.py
 - basic_detect.py
 ...
 </pre></div>
 </div>
-<p>Make note of the location to which these are extracted.</p>
+<p>Note where these files are extracted.</p>
 </div>
 <div class="section" id="starting-jupyter">
 <h3>Starting Jupyter<a class="headerlink" href="#starting-jupyter" title="Permalink to this headline">¶</a></h3>
@@ -595,8 +610,7 @@ deployed the ChipScoPy examples and then you may run any notebook included with 
 </div>
 <div class="section" id="chipscopy-updates">
 <h3>ChipScoPy Updates<a class="headerlink" href="#chipscopy-updates" title="Permalink to this headline">¶</a></h3>
-<p>As the development team pushes fixes and features; <code class="docutils literal notranslate"><span class="pre">pip</span></code>, again, is the recommended tool for grabbing the latest
-software.</p>
+<p>As the development team pushes fixes and features; <code class="docutils literal notranslate"><span class="pre">pip</span></code>, again, is the recommended tool for grabbing the latest software.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>chipscopy<span class="o">)</span> &gt; python -m pip install --upgrade chipscopy
 </pre></div>
 </div>
@@ -641,7 +655,7 @@ software.</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 16, 2021.
+        Last updated on June 28, 2021.
       </span>
 
     </p>

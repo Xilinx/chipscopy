@@ -24,11 +24,15 @@ access to a rich API for hardware interaction. The main features of the ChipScoP
 - Device detection, programming, and status
 - Memory subsystems support
 - Fabric Debug Core support
-   - Integrated Logic Analyzer (ILA)
-   - Virtual Input Output (VIO)
+
+  - Integrated Logic Analyzer (ILA)
+  - Virtual Input Output (VIO)
+
+
 - Hardened Core support
-   - DDR Memory Controller (DDRMC)
-   - Integrated Bit Error Ratio Tester (IBERT)
-   - System Monitor (SysMon)
-   - Network on Chip Performance Monitor (NoC PerfMon)
-   - PCI Express (PCIe)
+
+  - DDR Memory Controller (DDRMC)
+  - Integrated Bit Error Ratio Tester (IBERT)
+  - System Monitor (SysMon)
+  - Network on Chip Performance Monitor (NoC PerfMon)
+  - PCI Express (PCIe)
