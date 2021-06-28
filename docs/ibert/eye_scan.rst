@@ -18,8 +18,7 @@ Eye Scan
 
 .. py:currentmodule:: chipscopy.api.ibert
 
-**--> ADD GENERAL EYE SCAN INFO HERE <--**
-
+A 2D statistically eye scan helps us perform margin analysis on the channel over which the RX is receiving data.
 
 Create eye scan
 ---------------

@@ -30,7 +30,7 @@ Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
 -------------------------------------------------------------------------------
 
-[Developer Installation](https://xilinx.github.io/chipscopy/2021.1/dev_setup.html)
+[ChipScoPy Examples](https://github.com/Xilinx/chipscopy/tree/master/chipscopy/examples)
 
 -------------------------------------------------------------------------------
 

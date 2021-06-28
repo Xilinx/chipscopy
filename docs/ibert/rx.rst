@@ -18,7 +18,7 @@ RX
 
 .. py:currentmodule:: chipscopy.api.ibert
 
-**--> ADD GENERAL RX INFO HERE <--**
+An RX object is used to represent each receiver in the GTs.
 
 Reset
 -----
