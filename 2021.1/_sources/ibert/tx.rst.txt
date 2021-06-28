@@ -18,7 +18,7 @@ TX
 
 .. py:currentmodule:: chipscopy.api.ibert
 
-**--> ADD GENERAL TX INFO HERE <--**
+A TX object is used to represent each transmitter in the GTs.
 
 Reset
 -----

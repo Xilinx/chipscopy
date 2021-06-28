@@ -220,6 +220,9 @@ default value, valid set of values (in case the property is an enumerated proper
 
 As shown above, the ``Valid values`` key will be present in the report only if the property is an enumerated property.
 
+.. note:: Calling ``report`` without any arguments, fetches information for all available properties.
+
+
 Watchlist
 ---------
 

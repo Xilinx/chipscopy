@@ -18,7 +18,7 @@ GT
 
 .. py:currentmodule:: chipscopy.api.ibert
 
-**--> ADD GENERAL GT INFO HERE <--**
+A GT object represents each individual transceiver in HW. It also includes TX and RX objects as it's children.
 
 Reset
 -----

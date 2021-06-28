@@ -18,7 +18,7 @@ Link Group
 
 .. py:currentmodule:: chipscopy.api.ibert
 
-**--> ADD GENERAL LINK GROUP INFO HERE <--**
+A link group object holds a set of link objects. This container makes it easy to group and interact with multiple links at the same time.
 
 
 Create link group
