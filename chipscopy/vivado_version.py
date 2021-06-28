@@ -13,5 +13,5 @@
 # limitations under the License.
 
 # Vivado version - each time a rel branch is cut, this needs to change
-# expected format is 'YYYY.release.patch' e.g.: '2019.2', '2020.1.1'
-__vivado_version__ = "2021.1.0"
+# expected format is 'YYYY.release' e.g.: '2019.2', '2020.1'
+__vivado_version__ = "2021.1"
