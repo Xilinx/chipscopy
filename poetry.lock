@@ -819,7 +819,7 @@ name = "pexpect"
 version = "4.8.0"
 description = "Pexpect allows easy control of interactive console applications."
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [package.dependencies]
@@ -911,7 +911,7 @@ name = "ptyprocess"
 version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [[package]]
@@ -921,25 +921,6 @@ description = "library with cross-python path, ini-parsing, io, code, log facili
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-
-[[package]]
-name = "pyboardbarn"
-version = "4.1.1"
-description = "Simple python package to acess and leverage the boardfarm from python scripts"
-category = "dev"
-optional = false
-python-versions = "^3.7"
-develop = false
-
-[package.dependencies]
-loguru = "^0.5.0"
-pexpect = "^4.8.0"
-
-[package.source]
-type = "git"
-url = "https://gitenterprise.xilinx.com/chipscope/pyboardbarn"
-reference = "master"
-resolved_reference = "871f9bd96b4026672052833565fb432f3d0e8418"
 
 [[package]]
 name = "pycparser"
@@ -1470,7 +1451,7 @@ jupyter = ["notebook", "ipywidgets"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "72cb1310d2c17416a545015e40ddb723369f25baf20e920f710b4890e0418566"
+content-hash = "356a4ec8119b7122c8c828b02b7e6a39ae570adcd085c267ea8b5d159e06aa41"
 
 [metadata.files]
 alabaster = [
@@ -2054,7 +2035,6 @@ py = [
     {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
     {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
 ]
-pyboardbarn = []
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},
     {file = "pycparser-2.20.tar.gz", hash = "sha256:2d475327684562c3a96cc71adf7dc8c4f0565175cf86b6d7a404ff4c771f15f0"},

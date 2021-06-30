@@ -46,6 +46,7 @@
 # %%
 import pprint
 import os
+import json
 from chipscopy import create_session, report_versions
 from chipscopy import get_design_files
 
@@ -103,39 +104,68 @@ versal_device.program(PDI_FILE)
 versal_device.discover_and_setup_cores()
 print(f"Debug cores setup and ready for use.")
 
+# %% [markdown]
+# ## 5 - Show enabled DDRs in the device. Pick one to use
+
 # %%
-# print(f"Getting DDR by DDRMC Index")
-# ddr = versal_device.get_ddr(0)
-# props = ddr.get_property_group([])
-# print(pprint.pformat(sorted(props.items()), indent=2))
-
 ddr_list = versal_device.ddrs
+for ddr in ddr_list:
+    print(ddr, "  Enabled:", ddr.is_enabled)
 
-# ** Getting individual DDR from the list and exercise properties **
-# ddr = ddr_list.at(0)
-# props = ddr.ddr_node.get_property_group([])
-# print(pprint.pformat(sorted(props.items()), indent=2))
-
+# Grab the first enabled DDR
 for ddr in ddr_list:
     if ddr.is_enabled:
-        # Use Status string base API directly
-        print(ddr.name, "is enabled.")
-        print("Calibration status is: ", ddr.get_cal_status())
+        print("Using Enabled DDR: ", ddr)
+        break
 
-        # Use Property Group to get dictionary base of results
-        props = ddr.ddr_node.get_property_group(["status"])
-        print(pprint.pformat(props, indent=2))
+# %% [markdown]
+# ## 6 - Getting the Calibration Status
+#
+# There are several methods available to collect memory calibration information.
 
-        # Use get Cal Stages API directly to also get dictionary results
-        props = ddr.get_cal_stages()
-        print(pprint.pformat(sorted(props.items()), indent=2))
+# %% [markdown]
+# ### Method 1 - Calibration PASS/FAIL status
 
-        # Use a single report command to get all latest essential
-        # Status and decoded data collected as it presents
-        ddr.report()
-        # Specify True to argument 1, and name/path to argument 2
-        # to get the report output generated and saved to a file
-        ddr.report(True, "test_out.txt")
-        print("Report Done.\n")
-    else:
-        print(ddr.name, "is NOT enabled.")
+# %%
+# Method 1 - Use Status string base API directly
+print(ddr, "calibration status:", ddr.get_cal_status())
+
+# %% [markdown]
+# ### Method 2 - Calibration from the status property group
+
+# %%
+# Use Property Group to get dictionary base of results
+props = ddr.ddr_node.get_property_group(["status"])
+print(pprint.pformat(props, indent=2))
+
+# %% [markdown]
+# ### Method 3 - Detailed calibration status for each stage
+
+# %%
+# Use get Cal Stages API directly to also get dictionary results
+props = ddr.get_cal_stages()
+print(pprint.pformat(sorted(props.items()), indent=2))
+
+# %% [markdown]
+# ## 7 - Generate Full DDRMC Report
+#
+# The report() API call creates a full DDRMC status report to stdout or a file. This report includes memory configuration, margin analysis, calibration, and health status information.
+
+# %%
+# Use a single report command to get all latest essential
+# Status and decoded data collected as it presents
+ddr.report()
+# Specify True to argument 1, and name/path to argument 2
+# to get the report output generated and saved to a file
+ddr.report(True, "test_out.txt")
+print("Report Done.\n")
+
+# %% [markdown]
+# ## 8 - Dump the complete set of internal properties as json
+#
+# This demonstrates how to get a Python dictionary of all the low level DDR properties. These can be converted to JSON easily for export to other tools.
+
+# %%
+props = ddr.ddr_node.get_property_group([])
+json_props = json.dumps(props, indent=4)
+print(json_props)

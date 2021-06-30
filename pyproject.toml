@@ -14,7 +14,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2021.1.1624909624"
+version = "2021.1.1625015598"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -41,7 +41,6 @@ matplotlib = { version = "^3.4.0", optional = true }
 PyQt5 = { version = "^5.15.4", optional = true }
 
 [tool.poetry.dev-dependencies]
-pyboardbarn = { git = "https://gitenterprise.xilinx.com/chipscope/pyboardbarn" }
 black = "^20.8b1"
 sphinx = "^3.0.3"
 sphinx-rtd-theme = "^0.4.3"
