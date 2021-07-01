@@ -111,7 +111,7 @@ An installation script is provided to simplify the installation of ChipScoPy in 
 
         .. code-block:: shell
 
-            curl -sSL https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py -o get-chipscopy.py; python get-chipscopy.py
+            curl -sSL https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py -o get-chipscopy.py; python3 get-chipscopy.py
 
 
 2. Follow the interactive script prompts. It will ask where the virtual environment should be created. After the environment is created, pip will proceed with the installation of chipscopy.

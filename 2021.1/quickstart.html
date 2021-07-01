@@ -56,8 +56,8 @@
   <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Device" href="device.html" />
-    <link rel="prev" title="VIO" href="vio.html" /> 
+    <link rel="next" title="ChipScoPy Installation" href="chipscopy_installation.html" />
+    <link rel="prev" title="System Requirements" href="system_requirements.html" /> 
 	</head>
 	<body>
 		<div class="xilinx-bs3"/>
@@ -331,10 +331,10 @@
             
             
               <p class="caption"><span class="caption-text">Introduction</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">ChipScoPy Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">ChipScoPy Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ChipScoPy Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chipscopy_installation.html">ChipScoPy Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_setup.html">Developer Installation</a></li>
 </ul>
@@ -350,8 +350,8 @@
 <li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Containers</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="report.html">Report</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Session</a></li>
@@ -361,7 +361,7 @@
 			
 			<p class="caption"><span class="caption-text">This Page</span></p>
 				<ul class="current">
-				  <li class="toctree-l1"><a href="_sources/containers.rst.txt"
+				  <li class="toctree-l1"><a href="_sources/quickstart.rst.txt"
 						rel="nofollow">Show Source</a></li>
 				</ul>
           
@@ -407,13 +407,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Containers</li>
+      <li>ChipScoPy Quick Start</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/containers.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -426,118 +426,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-chipscopy.api.containers">
-<span id="containers"></span><h1>Containers<a class="headerlink" href="#module-chipscopy.api.containers" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="chipscopy.api.containers.QueryList">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.containers.</span></code><code class="sig-name descname"><span class="pre">QueryList</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList" title="Permalink to this definition">¶</a></dt>
-<dd><p>QueryList is a simple custom list with a few extra bells and whistles.</p>
-<p>QueryList elements can be any object. If the elements contain a dictionary member called “filter_by”,
-those key/value pairs in the dictionary are used for filtering.</p>
-<p>A custom matching function can be specified in this querylist using set_custom_match_function. Any
-custom match function takes priority when matching over the optional filter_by attribute.</p>
-<dl class="py method">
-<dt id="chipscopy.api.containers.QueryList.set_custom_match_function">
-<code class="sig-name descname"><span class="pre">set_custom_match_function</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.set_custom_match_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.set_custom_match_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets an optional custom match function for the QueryList. If a custom match function is set,
-each list item is compared using the match function. The match function is expected to return
-True if the list_item matches the passed in key/value pair.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>match_function</strong> (<em>list_item</em><em>, </em><em>key</em><em>, </em><em>value</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.containers.QueryList.all">
-<code class="sig-name descname"><span class="pre">all</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns: every element in list</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[~T]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.containers.QueryList.get">
-<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get one list item matching the filter. If exactly one list item does not match the filter, a ValueError
-is raised.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>(</strong><strong>)</strong> (<em>**filters</em>) – </p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>~T</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The one element matching the filter</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.containers.QueryList.at">
-<code class="sig-name descname"><span class="pre">at</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.at" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return value from index</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>index</strong> – Index of the element to get</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>~T</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Element at index</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.containers.QueryList.filter_by">
-<code class="sig-name descname"><span class="pre">filter_by</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.filter_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.filter_by" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate through list and return only those elements that match specifications in filters.
-For an item to qualify as ‘filterable’, the item must be an object and have an attribute
-named <cite>filter_by</cite> of type Dict[str, Any].</p>
-<p>This function will use the filters provided to it and match all the specifications
-against the data in the <cite>filter_by</cite> attribute of the each element in the list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>**filters</strong> – </p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[~T]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of elements that match the specifications provided</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="chipscopy.api.containers.QueryDict">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.containers.</span></code><code class="sig-name descname"><span class="pre">QueryDict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryDict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary with bells and whistles</p>
-<dl class="py method">
-<dt id="chipscopy.api.containers.QueryDict.flatten">
-<code class="sig-name descname"><span class="pre">flatten</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort_by_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryDict.flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryDict.flatten" title="Permalink to this definition">¶</a></dt>
-<dd><p>Flatten a nested dictionary</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sort_by_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – True if keys should be sorted alphabetically</p></li>
-<li><p><strong>separator</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The character(s) to use when joining parent and child key</p></li>
+  <div class="section" id="chipscopy-quick-start">
+<h1>ChipScoPy Quick Start<a class="headerlink" href="#chipscopy-quick-start" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic">
+<li><p>Install Python 3.8</p>
+<ul class="simple">
+<li><p>Download from: <a class="reference external" href="https://www.python.org/downloads/">https://www.python.org/downloads/</a></p></li>
+<li><p>Make sure to check “Add Python 3.8 to Path” when installing</p></li>
+<li><p>Linux systems often use ‘python3’ instead of ‘python’ as the executable name. Use your python executable name for all python commands</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+</li>
+<li><p>Install ChipScoPy using the script below.</p>
+<ul class="simple">
+<li><p>Windows Powershell:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Invoke</span><span class="o">-</span><span class="n">WebRequest</span> <span class="o">-</span><span class="n">Uri</span> <span class="s2">&quot;https://github.com/Xilinx/chipscopy/raw/master/utils/get-chipscopy.py&quot;</span> <span class="o">-</span><span class="n">OutFile</span> <span class="n">get</span><span class="o">-</span><span class="n">chipscopy</span><span class="o">.</span><span class="n">py</span><span class="p">;</span> <span class="n">python</span> <span class="n">get</span><span class="o">-</span><span class="n">chipscopy</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Linux:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">sSL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitenterprise</span><span class="o">.</span><span class="n">xilinx</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">chipscope</span><span class="o">/</span><span class="n">chipscopy</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">utils</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">chipscopy</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">o</span> <span class="n">get</span><span class="o">-</span><span class="n">chipscopy</span><span class="o">.</span><span class="n">py</span><span class="p">;</span> <span class="n">python3</span> <span class="n">get</span><span class="o">-</span><span class="n">chipscopy</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+<li><p>The script terminates with instructions on how to activate the virtual environment.</p>
+<ul class="simple">
+<li><p>You must activate the virtualenv subsequently, and every time the shell is re-launched.</p></li>
+<li><p>Installation is complete.</p></li>
+</ul>
+</li>
+</ol>
+<p>If you encounter issues, or would like more detailed instructions, see the full <a class="reference internal" href="chipscopy_installation.html"><span class="doc">ChipScoPy Installation</span></a> instructions.</p>
 </div>
 
 
@@ -556,10 +476,10 @@ against the data in the <cite>filter_by</cite> attribute of the each element in 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="device.html" class="btn btn-neutral float-right" title="Device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chipscopy_installation.html" class="btn btn-neutral float-right" title="ChipScoPy Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="vio.html" class="btn btn-neutral float-left" title="VIO" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="system_requirements.html" class="btn btn-neutral float-left" title="System Requirements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
