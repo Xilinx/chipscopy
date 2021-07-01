@@ -46,10 +46,11 @@
 # - File paths to example files are set correctly
 
 # %%
+import sys
 import os
 from chipscopy import get_design_files
 from chipscopy import create_session, report_versions
-from chipscopy.api.ila import get_waveform_data
+from chipscopy.api.ila import get_waveform_data, export_waveform
 
 # %%
 # Make sure to start the hw_server and cs_server prior to running.
@@ -270,3 +271,17 @@ if upload_successful:
         )
 else:
     print("Failed to upload ILA data from core")
+
+# %% [markdown]
+# ## 6 - Waveform Export - VCD (or CSV)
+#
+#  Demonstrate how to export waveform data to a VCD file for visualizing waveform in other tools.
+#
+#  Export includes complete waveform with probe, _TRIGGER, and _WINDOW.
+#
+#  - For CSV export, substitute "CSV" for "VCD" argument.
+#  - To export to a file, substitute the filename for 'sys.stdout'
+
+# %%
+if upload_successful:
+    export_waveform(ila.waveform, "VCD", sys.stdout)

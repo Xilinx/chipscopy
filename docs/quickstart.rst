@@ -19,11 +19,11 @@ ChipScoPy Quick Start
 
 1. Install Python 3.8
 
-   - Download from: https://www.python.org/downloads/
+   - Download from: `<https://www.python.org/downloads/>`_
    - Make sure to check "Add Python 3.8 to Path" when installing
    - Linux systems often use 'python3' instead of 'python' as the executable name. Use your python executable name for all python commands
 
-2. Install ChipScoPy using script below.
+2. Install ChipScoPy using the script below.
 
    - Windows Powershell:
 
@@ -41,3 +41,6 @@ ChipScoPy Quick Start
 
    - You must activate the virtualenv subsequently, and every time the shell is re-launched.
    - Installation is complete.
+
+
+If you encounter issues, or would like more detailed instructions, see the full :doc:`chipscopy_installation` instructions.
