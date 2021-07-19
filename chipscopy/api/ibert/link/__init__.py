@@ -29,7 +29,7 @@ from chipscopy.utils.printer import printer
 from rich.box import SQUARE as BOX_SQUARE
 from rich.table import Table
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.eye_scan import EyeScan
 
 

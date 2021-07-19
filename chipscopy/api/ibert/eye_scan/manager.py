@@ -21,7 +21,7 @@ from chipscopy.api.ibert.link import Link
 from chipscopy.api.ibert.eye_scan import EyeScan
 from chipscopy.utils import printer
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.rx import RX
 
 
@@ -121,7 +121,7 @@ class EyeScanManager:
         if scans_to_delete is None:
             scans_to_delete = [eye_scan for eye_scan in EyeScanManager.scans.values()]
 
-        if isinstance(scans_to_delete, Link):
+        if isinstance(scans_to_delete, EyeScan):
             scans_to_delete = [scans_to_delete]
 
         for eye_scan in scans_to_delete:

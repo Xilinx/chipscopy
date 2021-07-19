@@ -52,7 +52,7 @@ from chipscopy.api.ibert.eye_scan.plotter import EyeScanPlot
 from chipscopy.utils.printer import printer, PercentProgressBar
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.dm import Node
 
 common_progress = PercentProgressBar()

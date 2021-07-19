@@ -26,7 +26,7 @@ from chipscopy.api.ibert.aliases import (
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from typing_extensions import final
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.gt_group import GT
 
 

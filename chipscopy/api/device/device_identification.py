@@ -76,9 +76,10 @@ class DeviceIdentification:
         return raw_json
 
     def __str__(self):
-        raw_json = self.__repr__()
-        family = json.loads(raw_json)["family"]
-        dna = json.loads(raw_json)["dna"]
+        json_obj = self.__repr__()
+        d = json.loads(json_obj)
+        family = d.get("family", "unknown_family")
+        dna = hex(d.get("dna", "0x0"))
         return f"{family}:{dna}"
 
     def find_top_level_device_node(self, hw_server):

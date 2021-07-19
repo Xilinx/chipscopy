@@ -24,7 +24,7 @@ from chipscopy.api.containers import QueryList
 from chipscopy.client.ibert_core_client import IBERTCoreClient
 from typing_extensions import Final
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert import IBERT
 
 

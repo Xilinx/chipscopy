@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 from chipscopy.api.containers import QueryList
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.link import Link
 
 

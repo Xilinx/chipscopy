@@ -31,7 +31,7 @@ from chipscopy.api.ibert.tx import TX
 from more_itertools import one
 from typing_extensions import final
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.gt_group import GTGroup
     from chipscopy.api.ibert.pll import PLL
 

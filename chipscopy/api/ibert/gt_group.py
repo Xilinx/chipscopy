@@ -32,7 +32,7 @@ from chipscopy.api.ibert.pll import PLL
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from typing_extensions import final
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.ibert import IBERT
 
 

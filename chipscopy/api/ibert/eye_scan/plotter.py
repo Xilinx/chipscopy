@@ -43,7 +43,7 @@ except ImportError:
 
 from chipscopy.api.ibert.aliases import EYE_SCAN_HORZ_RANGE
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.eye_scan import EyeScan
 
 
@@ -259,7 +259,7 @@ class EyeScanPlot:
         return str(output_path.resolve())
 
 
-class EyeScanImporter:
+class EyeScanImporter:  # pragma: no cover
     @staticmethod
     def load_from_vivado_csv(file_path: Path = None):
         if file_path is None:

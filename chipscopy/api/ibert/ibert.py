@@ -26,7 +26,7 @@ from chipscopy.api.report import report_hierarchy
 from chipscopy.utils import deprecated_api
 from typing_extensions import Final, final
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.client.ibert_core_client import IBERTCoreClient
 
 

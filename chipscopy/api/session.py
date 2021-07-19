@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import sys
 from typing import Optional, Dict, Any, List, Union, Callable
 
 from chipscopy.dm import chipscope
@@ -99,6 +99,13 @@ class Session:
             if self._xvc_server_url:
                 self._cs_server.connect_xvc(self._xvc_server_url, self._hw_server_url)
         Session._add_connection(self._hw_server, self._cs_server, self)
+        try:
+            # Quick sanity check - throws RuntimeError on version mismatch
+            self._version_check()
+        except RuntimeError:
+            self.disconnect()
+            t, v, tb = sys.exc_info()
+            raise t(v).with_traceback(tb)
 
     def disconnect(self):
         Session._remove_connection(self)
@@ -273,7 +280,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
     #         It is possible to disable the setup_debug_cores detection
     #         if it is likely to interfere with an existing hw_server
     disable_core_scan = kwargs.get("disable_core_scan", False)
-    bypass_version_check = kwargs.get("bypass_version_check", True)
+    bypass_version_check = kwargs.get("bypass_version_check", False)
     xvc_server_url = kwargs.get("xvc_server_url", None)
 
     # Create session even if there already exists a session with the same cs_server and hw_server
