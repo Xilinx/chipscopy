@@ -467,7 +467,7 @@
 
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.aliases</span> <span class="kn">import</span> <span class="n">EYE_SCAN_HORZ_RANGE</span>
 
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.eye_scan</span> <span class="kn">import</span> <span class="n">EyeScan</span>
 
 
@@ -683,7 +683,7 @@
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">EyeScanImporter</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">EyeScanImporter</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_from_vivado_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">file_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -739,7 +739,7 @@
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on July 01, 2021.
+        Last updated on July 19, 2021.
       </span>
 
     </p>
