@@ -62,7 +62,7 @@ Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python
 
     .. code-block::
 
-       C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3\bin
+       C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3
 
 
 Dedicated Python
