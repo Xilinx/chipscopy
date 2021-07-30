@@ -304,7 +304,6 @@ proc create_hier_cell_noc_tg_bc { parentCell nameHier } {
    CONFIG.USER_C_AXI_WRITE_SIZE {1} \
    CONFIG.USER_DEBUG_INTF {TRUE} \
    CONFIG.USER_PERF_TG {SYNTHESIZABLE} \
-   CONFIG.USER_SYNTH_DEFINED_PATTERN_CSV {../../../../../../../../../../../../../xbuilds/2021.1_daily_latest/installs/lin64/Vivado/2021.1/data/ip/xilinx/perf_axi_tg_v1_0/utils/default_aximm_synth_tg.csv} \
    CONFIG.USER_TRAFFIC_SHAPING_EN {FALSE} \
  ] $noc_tg
 
@@ -4177,7 +4176,7 @@ PS_USE_PS_NOC_PCI_1 0}\
    CONFIG.DEBUG_MODE {Custom} \
    CONFIG.DESIGN_MODE {1} \
    CONFIG.DEVICE_INTEGRITY_MODE {Custom} \
-   CONFIG.PS_BOARD_INTERFACE {cips_fixed_io} \
+   CONFIG.PS_BOARD_INTERFACE {ps_pmc_fixed_io} \
    CONFIG.PS_PMC_CONFIG {AURORA_LINE_RATE_GPBS 10.0 BOOT_SECONDARY_PCIE_ENABLE 0 CLOCK_MODE Custom\
 Component_Name chipscopy_ex_versal_cips_0_0 DDR_MEMORY_MODE {Connectivity to\
 DDR via NOC} DESIGN_MODE 1 DEVICE_INTEGRITY_MODE Custom DIS_AUTO_POL_CHECK 0\

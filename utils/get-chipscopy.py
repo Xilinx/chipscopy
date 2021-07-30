@@ -198,9 +198,7 @@ def build_venv(home_dir, activate_script, examples_installer, python_binary_name
     print("upgrading pip")
     sp.check_call([venv_python_path, "-m", "pip", "install", "--upgrade", "pip"])
     print("installing chipscopy and dependencies")
-    sp.check_call(
-        [venv_python_path, "-m", "pip", "install", "chipscopy[jupyter,pandas,plotly,noc]"]
-    )
+    sp.check_call([venv_python_path, "-m", "pip", "install", "chipscopy[core-addons,jupyter]"])
     # finally get the examples
     print("extracting chipscopy examples")
     example_ext_dir = (
