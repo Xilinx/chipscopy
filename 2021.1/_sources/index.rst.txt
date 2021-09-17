@@ -51,7 +51,6 @@ Indices and Tables
 
    overview.rst
    system_requirements.rst
-   quickstart.rst
    chipscopy_installation.rst
    dev_setup.rst
 

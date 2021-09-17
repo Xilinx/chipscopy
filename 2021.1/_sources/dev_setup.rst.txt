@@ -17,8 +17,8 @@ Developer Installation
 ======================
 
 This installation method is crafted for Python developers who intend to play an active development role for the
-ChipScoPy project. For other intended uses, the other setup options are more appropriate, please see the top level
-documentation for links to those install methods.
+ChipScoPy project. For other intended uses, the other setup options are more appropriate, please see the 
+:doc:`chipscopy_installation` instructions.
 
 .. warning:: No matter which configuration of Python is used, **NEVER** invoke ``sudo``. Best case, you don't get what
              you want, worst case you will corrupt your operating system.
@@ -89,14 +89,14 @@ Either through your IDE or using the terminal, you'll need to clone the project.
 .. code-block:: shell
 
 
-    git clone git@github.com:Xilinx/chipscopy.git <optional_local_name>
+    git clone git@github.com:Xilinx/chipscopy.git
 
 
 
-If ``<optional_local_name>`` is omitted then the project will be cloned into the local directory `chipscopy.` Another thing to
-note the repo is read-only for non team members. To contribute there will be a guide on how to submit patches for
-review to the team. It will most likely require forking the repo and submitting pull requests from the downstream to
-main.
+The ChipScoPy repo is read-only. To report issues or suggest enhancements, 
+please use the online Xilinx support forum. We do not actively monitor pull requests
+on the github site.
+
 
 
 Install Dependencies
