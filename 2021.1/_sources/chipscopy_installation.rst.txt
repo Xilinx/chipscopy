@@ -122,7 +122,7 @@ It's time to install the ChipScoPy package itself. With your Python environment 
 .. code-block:: shell
 
     # installs latest version 
-    (chipscopy) > python -m pip install chipscopy
+    (venv) > python -m pip install chipscopy
 
 
 If you want to install a specific version, run:
@@ -130,7 +130,7 @@ If you want to install a specific version, run:
 .. code-block:: shell
 
     # installs latest version of 2021.1
-    (chipscopy) > python -m pip install chipscopy==2021.1.*   
+    (venv) > python -m pip install chipscopy==2021.1.*   
 
 
 Install Dependencies
@@ -142,8 +142,8 @@ Run the following commands to install the additional support packages:
 
 .. code-block:: shell
 
-    (chipscopy) > python -m pip install chipscopy[core-addons]
-    (chipscopy) > python -m pip install chipscopy[jupyter]
+    (venv) > python -m pip install chipscopy[core-addons]
+    (venv) > python -m pip install chipscopy[jupyter]
 
 
 Congrats--if you're still awake and you've followed the steps till here, you are the proud owner of a functional Python setup. Next steps are to start exploring the examples.
@@ -156,7 +156,7 @@ Now that the ChipScoPy package has been installed, there is a script to install 
 
 .. code-block:: shell
 
-    (chipscopy) > chipscopy-get-examples
+    (venv) > chipscopy-get-examples
 
     The following examples  will be delivered to `/home/user/chipscopy-examples`:
     - ddr_example.ipynb
@@ -177,7 +177,7 @@ Launch the server:
 
 .. code-block:: shell
 
-    (chipscopy) > jupyter notebook
+    (venv) > jupyter notebook
 
 
 This should launch the server in a browser window on your local machine. Follow the instructions and  navigate to the directory to which you deployed the ChipScoPy examples. Run any of the notebooks included with the release.
@@ -190,18 +190,18 @@ As the development team pushes fixes and features; ``pip``, again, is the recomm
 
 .. code-block:: shell
 
-    (chipscopy) > python -m pip install --upgrade chipscopy
+    (venv) > python -m pip install --upgrade chipscopy
 
 
 To get the latest software for a specific release (2021.1 in this example):
 
 .. code-block:: shell
 
-    (chipscopy) > python -m pip install --upgrade chipscopy==2021.1.*
+    (venv) > python -m pip install --upgrade chipscopy==2021.1.*
 
 
 And don't forget to extract the latest examples after each package update:
 
 .. code-block:: shell
 
-    (chipscopy) > chipscopy-get-examples
+    (venv) > chipscopy-get-examples
