@@ -88,7 +88,7 @@ report_versions(session)
 
 # %%
 # Typical case - one device on the board - get it.
-versal_device = session.devices.get()
+versal_device = session.devices.filter_by(family="versal").get()
 versal_device.program(PDI_FILE)
 
 # %% [markdown]

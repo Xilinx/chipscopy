@@ -83,5 +83,5 @@ report_versions(session)
 
 # %%
 # Typical case - one device on the board - get it.
-device = session.devices.get()
+device = session.devices.filter_by(family="versal").get()
 device.program(PROGRAMMING_FILE)

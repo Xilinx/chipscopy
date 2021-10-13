@@ -18,16 +18,24 @@
 ChipScoPy Installation
 ======================
 
-ChipScoPy requires an installed Python. There are several ways to configure your system with Python. We recommend and document the 
-`Basic Python Installation`_.
+ChipScoPy requires Python 3.8 or greater. There are several ways to configure your system to use the ChipScoPy API. This page will cover the following step-by-step installation procedure.
+
+    - `Step 1: Python Installation`_
+    - `Step 2: Set up Virtual Environment`_
+    - `Step 3: Install ChipScoPy`_
+    - `Step 4: Install Dependencies`_
+    - `Step 5: Install Examples`_
+    - `Step 6: Open Jupyter Notebook`_
+    - `Step 7: Update ChipScoPy`_
+    - `Step 8: Update ChipScoPy Examples`_
 
 
-Basic Python Installation
--------------------------
+Step 1: Python Installation
+---------------------------
 
 This section covers installing the Python base interpreter. Two options for obtaining a suitable Python are noted in this section. 
 
-- `Option 1 - Dedicated Python`_ is for users who are able to download and install the official Python. This is the recommended approach.
+- `Option 1 - Install Python from python.org`_ is for users who are able to download and install the official Python. This is the recommended approach.
 
 - `Option 2 - Vivado Distributed Python`_ describes how to use the Python bundled with Vivado. 
 
@@ -35,8 +43,8 @@ A single version of Python will execute ChipScoPy--ergo, do not install multiple
 
 .. warning:: **NEVER** invoke ``sudo`` to install Python packages. Installing Python packages with ``sudo`` can accidentally overwrite existing system files.
 
-Option 1 - Dedicated Python
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option 1 - Install Python from python.org
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This is the recommended installation procedure to get the latest available Python interpreter from Python.org.
 
@@ -76,8 +84,8 @@ Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python
    C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3\bin
 
 
-Virtual Environments 
---------------------
+Step 2: Set up Virtual Environment
+----------------------------------
 
 A virtual environment is an isolated Python environment. It allows ChipScoPy and its dependencies to be installed without interfering with the behavior of any other Python applications. The use of virtual environments is best practice.
 
@@ -86,6 +94,9 @@ For more information about Python virtual environments, check out the official
 
 .. note:: Linux systems often name the python command 'python3' instead of 'python'. In that case, substitute 'python3' as needed in the commands below.
           
+
+2.1: Install Virtual Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following will create a virtual environment sandbox and install python into the virtual environment. 
 
@@ -96,15 +107,19 @@ Installation assumes you are using bash on linux, or the PowerShell on Windows. 
 
     > python -m venv venv
 
-Activate the virtual environment. The location of the activate script is different depending on operating system. 
 
-Windows:
+2.2: Activate Virtual Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Activate the virtual environment. The location of the activate script is different depending on operating system. You will need to re-activate the virtual environment whenever you reopen a fresh bash or PowerShell terminal.
+
+**Windows:**
 
 .. code-block:: shell
 
     > venv/Scripts/activate
 
-Linux:
+**Linux:**
 
 .. code-block:: shell
 
@@ -114,8 +129,8 @@ Linux:
 .. note:: Make sure to always activate the Python virtual environment before you use ChipScoPy.
 
 
-Install ChipScoPy
-^^^^^^^^^^^^^^^^^
+Step 3: Install ChipScoPy
+-------------------------
 
 It's time to install the ChipScoPy package itself. With your Python environment active run:
 
@@ -133,8 +148,8 @@ If you want to install a specific version, run:
     (venv) > python -m pip install chipscopy==2021.1.*   
 
 
-Install Dependencies
-^^^^^^^^^^^^^^^^^^^^
+Step 4: Install Dependencies
+----------------------------
 
 With the virtual environment active you may want to install some additional packages that aren't listed in the ChipScoPy project-level dependencies. If you intend to use any of these client examples, then you’ll need to get additional packages.
 
@@ -149,8 +164,8 @@ Run the following commands to install the additional support packages:
 Congrats--if you're still awake and you've followed the steps till here, you are the proud owner of a functional Python setup. Next steps are to start exploring the examples.
 
 
-Install ChipScoPy Examples
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Step 5: Install Examples
+------------------------
 
 Now that the ChipScoPy package has been installed, there is a script to install the examples into a particular directory chosen by the user.
 
@@ -168,39 +183,44 @@ Now that the ChipScoPy package has been installed, there is a script to install 
 Make note of the location to which these are extracted. This location contains example python code and example designs.
 
 
-Starting Jupyter
-^^^^^^^^^^^^^^^^
+Step 6: Open Jupyter Notebook
+-----------------------------
 
-Assuming you installed the ``jupyter`` package into your virtual environment, you can use the notebooks provided with the examples.
+Assuming you installed the ``jupyter`` package into your virtual environment, you can use the jupyter notebooks provided with the examples. 
 
-Launch the server:
+Launch the jupyter notebook server:
 
 .. code-block:: shell
 
     (venv) > jupyter notebook
 
 
-This should launch the server in a browser window on your local machine. Follow the instructions and  navigate to the directory to which you deployed the ChipScoPy examples. Run any of the notebooks included with the release.
+This should launch the server in a browser window on your local machine. Follow the link sent to the console, and then navigate to the directory to which you deployed the ChipScoPy examples. Run any of the notebooks installed previously. Notebook example files have the '.ipynb' extension.
 
 
-ChipScoPy Updates
-^^^^^^^^^^^^^^^^^
+Step 7: Update ChipScoPy
+------------------------
 
 As the development team pushes fixes and features; ``pip``, again, is the recommended tool for grabbing the latest software.
+
+To get the latest software release:
 
 .. code-block:: shell
 
     (venv) > python -m pip install --upgrade chipscopy
 
 
-To get the latest software for a specific release (2021.1 in this example):
+To get the latest numbered software release (2021.1 in this example):
 
 .. code-block:: shell
 
     (venv) > python -m pip install --upgrade chipscopy==2021.1.*
 
 
-And don't forget to extract the latest examples after each package update:
+Step 8: Update ChipScoPy Examples
+---------------------------------
+
+ChipScoPy examples are updated frequently. To extract the latest examples after each ChipScoPy update, run this command again:
 
 .. code-block:: shell
 

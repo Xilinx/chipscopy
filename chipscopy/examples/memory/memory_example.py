@@ -73,7 +73,7 @@ report_versions(session)
 
 # %% pycharm={"name": "#%%\n"}
 # Typical case - one device on the board - get it.
-versal_device = session.devices.get()
+versal_device = session.devices.filter_by(family="versal").get()
 print(versal_device)
 
 # %% [markdown]

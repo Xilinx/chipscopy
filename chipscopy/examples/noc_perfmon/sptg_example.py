@@ -98,7 +98,7 @@ report_versions(session)
 # - Device is programmed with the example programming file
 
 # %%
-versal_device = session.devices.get()
+versal_device = session.devices.filter_by(family="versal").get()
 versal_device.program(PROGRAMMING_FILE)
 
 # %% [markdown]

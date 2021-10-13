@@ -115,7 +115,7 @@ report_versions(session)
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 # Typical case - one device on the board - get it.
-device = session.devices.get()
+device = session.devices.filter_by(family="versal").get()
 device.program(PDI_FILE)
 
 # %% [markdown]
