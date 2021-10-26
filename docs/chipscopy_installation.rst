@@ -195,7 +195,28 @@ Launch the jupyter notebook server:
     (venv) > jupyter notebook
 
 
-This should launch the server in a browser window on your local machine. Follow the link sent to the console, and then navigate to the directory to which you deployed the ChipScoPy examples. Run any of the notebooks installed previously. Notebook example files have the '.ipynb' extension.
+This should launch the server in a browser window on your local machine. Follow the link sent to the console, and then navigate to the directory to which you deployed the ChipScoPy examples. Notebook example files have the '.ipynb' extension.
+
+.. note:: The examples assume you have a hw_server and cs_server running on the local machine connected to the board.
+
+Make sure to start the hw_server and cs_server applications in separate terminal windows on the board's host, and note the URL connection info for each, if not the localhost.  You will need this URL info for the respective example Jupyter notebooks).
+
+Start the hardware server:
+
+.. code-block:: shell
+
+    hw_server
+
+Start the chipscope server:
+
+.. code-block:: shell
+
+    cs_server
+
+
+The hw_server and cs_server applications are included in Vivado and
+Vivado Lab Edition. They can be downloaded from
+https://www.xilinx.com/support/download.html
 
 
 Step 7: Update ChipScoPy
