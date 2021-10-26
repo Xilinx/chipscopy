@@ -582,7 +582,23 @@ The following examples  will be delivered to <span class="sb">`</span>/home/user
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>venv<span class="o">)</span> &gt; jupyter notebook
 </pre></div>
 </div>
-<p>This should launch the server in a browser window on your local machine. Follow the link sent to the console, and then navigate to the directory to which you deployed the ChipScoPy examples. Run any of the notebooks installed previously. Notebook example files have the ‘.ipynb’ extension.</p>
+<p>This should launch the server in a browser window on your local machine. Follow the link sent to the console, and then navigate to the directory to which you deployed the ChipScoPy examples. Notebook example files have the ‘.ipynb’ extension.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The examples assume you have a hw_server and cs_server running on the local machine connected to the board.</p>
+</div>
+<p>Make sure to start the hw_server and cs_server applications in separate terminal windows on the board’s host, and note the URL connection info for each, if not the localhost.  You will need this URL info for the respective example Jupyter notebooks).</p>
+<p>Start the hardware server:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>hw_server
+</pre></div>
+</div>
+<p>Start the chipscope server:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cs_server
+</pre></div>
+</div>
+<p>The hw_server and cs_server applications are included in Vivado and
+Vivado Lab Edition. They can be downloaded from
+<a class="reference external" href="https://www.xilinx.com/support/download.html">https://www.xilinx.com/support/download.html</a></p>
 </div>
 <div class="section" id="step-7-update-chipscopy">
 <h2>Step 7: Update ChipScoPy<a class="headerlink" href="#step-7-update-chipscopy" title="Permalink to this headline">¶</a></h2>
@@ -634,7 +650,7 @@ The following examples  will be delivered to <span class="sb">`</span>/home/user
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on September 21, 2021.
+        Last updated on October 26, 2021.
       </span>
 
     </p>
