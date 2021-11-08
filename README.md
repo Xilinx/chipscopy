@@ -6,7 +6,7 @@
 
 ![](https://raw.githubusercontent.com/Xilinx/chipscopy/master/docs/images/chipscopy_logo_head_right_transparent_background.png)
 
-ChipScoPy is an open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware.
+ChipScoPy is an open-source project from Xilinx® that enables high-level control of debug IP running in Versal-based hardware.
 Using a simple Python API, developers can control and communicate with ChipScope® debug IP such as the Integrated Logic
 Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
