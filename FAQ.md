@@ -20,8 +20,7 @@ This document covers frequently asked questions about ChipScoPy.
 
 **A:** Python 3.8 or above is required. To install Python, Go to python.org or the Microsoft Store and download Python 3.8 or better. 
 
-**Q: How do I know which version of ChipScoPy to use with Vivado**
-cs_server and hw_server?**
+**Q: How do I know which version of ChipScoPy to use with Vivado cs_server and hw_server?**
 
 **A:** The major and minor version of ChipScopy should always match the major and minor version of the Xilinx cs_server and hw_server tools. For instance, ChipScoPy 2021.1 will work against the 2021.1 cs_server and 2021.1 hw_server combination. ChipScoPy stores the matching tool information is stored in the variable `__vivado_version__`.
 
