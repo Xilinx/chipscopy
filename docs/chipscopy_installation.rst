@@ -123,7 +123,7 @@ Activate the virtual environment. The location of the activate script is differe
 
 .. code-block:: shell
 
-    > venv/bin/activate
+    > source venv/bin/activate
 
 
 .. note:: Make sure to always activate the Python virtual environment before you use ChipScoPy.

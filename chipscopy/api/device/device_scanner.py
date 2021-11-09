@@ -313,26 +313,23 @@ class DeviceScanner:
                     if dna_values_already_found.get(dna_128) is None:
                         jtag_device_info = get_jtag_device_for_dna(self.hw_server, dna_128)
                         if jtag_device_info:
+                            # NOTE: it is possible that a single cs_server has multiple hw_server connections.
+                            # In that case, jtag_device_info is None for the other hw_server nodes.
+                            # We only add cs_server nodes for the correct hw_server.
                             jtag_cable_context = jtag_device_info.cable_ctx
                             jtag_cable_name = jtag_device_info.cable_name
                             jtag_index = jtag_device_info.chain_index
                             family = jtag_device_info.family
-                        else:
-                            jtag_cable_context = None
-                            jtag_cable_name = None
-                            jtag_index = -1
-                            family = None
-
-                        device_id = _DeviceIdentificationTuple(
-                            family=family,
-                            node_identification=node_id_list,
-                            dna=dna_128,
-                            cable_context=jtag_cable_context,
-                            cable_name=jtag_cable_name,
-                            jtag_index=jtag_index,
-                        )
-                        dna_values_already_found[dna_128] = device_id
-                        devices_found.append(device_id)
+                            device_id = _DeviceIdentificationTuple(
+                                family=family,
+                                node_identification=node_id_list,
+                                dna=dna_128,
+                                cable_context=jtag_cable_context,
+                                cable_name=jtag_cable_name,
+                                jtag_index=jtag_index,
+                            )
+                            dna_values_already_found[dna_128] = device_id
+                            devices_found.append(device_id)
                     else:
                         # Duplicate entry - just add the name we found to the list. Happens for Versal and DPC
                         dna_values_already_found[dna_128].node_identification.extend(node_id_list)
