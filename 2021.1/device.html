@@ -344,7 +344,6 @@
 <li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
 </ul>
@@ -551,12 +550,13 @@ the memory access for the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.program">
-<code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdi_file_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.program" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdi_file_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.program" title="Permalink to this definition">¶</a></dt>
 <dd><p>Program the device with a given PDI file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pdi_file_path</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – PDI file path</p></li>
+<li><p><strong>skip_reset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False = Do not reset device prior to program</p></li>
 <li><p><strong>show_progress_bar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False if the progress bar doesn’t need to be shown</p></li>
 <li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional async future callback</p></li>
 </ul>
@@ -648,7 +648,7 @@ context and do all the operations in batch.</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on October 26, 2021.
+        Last updated on November 24, 2021.
       </span>
 
     </p>

@@ -35,4 +35,4 @@ access to a rich API for hardware interaction. The main features of the ChipScoP
   - Integrated Bit Error Ratio Tester (IBERT)
   - System Monitor (SysMon)
   - Network on Chip Performance Monitor (NoC PerfMon)
-  - PCI Express (PCIe)
+  - PCI Express (PCIe) - *COMING SOON*

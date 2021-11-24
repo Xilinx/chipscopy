@@ -342,7 +342,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../vio.html">VIO</a></li>
 </ul>
@@ -537,16 +536,19 @@
             <span class="c1"># Custom match function works across all list elements without regard to filter_by property.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_match_function</span><span class="p">:</span>
                 <span class="c1"># Non-default match function - this is the first priority to check for a match</span>
+                <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">filters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_match_function</span><span class="p">(</span><span class="n">list_item</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-                        <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_item</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_match_function</span><span class="p">(</span><span class="n">list_item</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+                        <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
+                    <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_item</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># To support filtering the object must have &#39;filter_by&#39; attribute as a second priority to</span>
                 <span class="c1"># the custom match function.</span>
                 <span class="c1"># filter_by is a dict where the key is a property name, and value is a property value.</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">list_item</span><span class="p">,</span> <span class="s2">&quot;filter_by&quot;</span><span class="p">):</span>
                     <span class="k">continue</span>
-
+                <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">filters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="c1"># If the object has it&#39;s own staticmethod &#39;check_for_filter_match()&#39;, call it</span>
                     <span class="c1"># else use the static &#39;check_for_filter_match&#39; in this class</span>
@@ -557,11 +559,12 @@
                     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                         <span class="k">pass</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">match_function</span><span class="p">(</span><span class="n">list_item</span><span class="o">.</span><span class="n">filter_by</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-                        <span class="k">continue</span>
+                        <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
                     <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_item</span><span class="p">)</span>
-                    <span class="k">break</span>
 
         <span class="k">return</span> <span class="n">retval</span></div>
+
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">check_for_filter_match</span><span class="p">(</span><span class="n">filters_dict</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">,</span> <span class="n">match_value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -628,7 +631,7 @@
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on October 26, 2021.
+        Last updated on November 24, 2021.
       </span>
 
     </p>
