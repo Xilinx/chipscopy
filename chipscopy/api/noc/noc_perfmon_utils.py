@@ -342,9 +342,10 @@ class NoCMasterSlave(NoCElement):
                 (tcf_node[f"reg_perf_mon{mon}_cnt_and_ofl"] & 0xFF) << 32
             )
             raw_trace_data[ch]["flags"] = (tcf_node[f"reg_perf_mon{mon}_cnt_and_ofl"] & 0x1F00) >> 8
-            raw_trace_data[ch]["lacc"] = tcf_node[f"reg_perf_mon{mon}_latency_acc_lwr"] + (
-                (tcf_node[f"reg_perf_mon{mon}_latency_acc_upr"] & 0xFF) << 32
-            )
+            raw_trace_data[ch]["lacc"] = (
+                tcf_node[f"reg_perf_mon{mon}_latency_acc_lwr"]
+                + ((tcf_node[f"reg_perf_mon{mon}_latency_acc_upr"] & 0xFF) << 32)
+            ) << self.tslide
             raw_trace_data[ch]["lmax"] = tcf_node[f"reg_perf_mon{mon}_latency_max"] << self.tslide
             raw_trace_data[ch]["lmin"] = tcf_node[f"reg_perf_mon{mon}_latency_min"] << self.tslide
 

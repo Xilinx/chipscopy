@@ -317,6 +317,7 @@ class Device:
         self,
         pdi_file_path: Union[str, Path],
         *,
+        skip_reset: bool = False,
         show_progress_bar: bool = True,
         done: request.DoneFutureCallback = None,
     ):
@@ -325,6 +326,7 @@ class Device:
 
         Args:
             pdi_file_path: PDI file path
+            skip_reset: False = Do not reset device prior to program
             show_progress_bar: False if the progress bar doesn't need to be shown
             done: Optional async future callback
         """
@@ -373,7 +375,9 @@ class Device:
         jtag_programming_node = self.device_identification.find_jtag_node(self.hw_server)
         assert jtag_programming_node is not None
         # TODO: Log the jtag node information to a log or something that we are about to program
-        jtag_programming_node.future().reset()
+        if not skip_reset:
+            jtag_programming_node.future().reset()
+
         jtag_programming_node.future(
             progress=progress_update, done=done_programming, final=finalize_program
         ).config(str(pdi_file_path.resolve()))

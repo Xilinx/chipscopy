@@ -47,7 +47,6 @@
 import os
 from time import sleep
 import matplotlib  # for nbconvert'd script
-from chipscopy.client.util.xsa_utils import HardwareHandoff
 from chipscopy.api.noc import (
     TC_BEW,
     TC_BER,
@@ -71,13 +70,11 @@ design_files = get_design_files("vck190/production/chipscopy_ced")
 
 PROGRAMMING_FILE = design_files.programming_file
 PROBES_FILE = design_files.probes_file
-HWH_FILE = design_files.hwh_file
 
 print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
-print(f"HWH_FILE:{HWH_FILE}")
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
@@ -137,11 +134,7 @@ enable_list = noc.enumerate_noc_elements(scan_nodes)
 print("complete!")
 
 # %%
-hw_handoff = HardwareHandoff(HWH_FILE)
-
-supported_periods = noc.get_supported_sampling_periods(
-    *hw_handoff.get_ref_clk_freqs(), hw_handoff.get_ddrmc_freq_mhz()
-)
+supported_periods = noc.get_supported_sampling_periods(100 / 3, 100 / 3, {"DDRMC_MAIN_0": 800.0})
 print("Supported sampling periods:")
 for domain, periods in supported_periods.items():
     print(f"  {domain}:")
@@ -232,12 +225,7 @@ tg_vio.write_probes(
     {f"{tg_vio_bc}/noc_sim_trig_rst_n": 0x1, f"{tg_vio_bc}/noc_tg_tg_rst_n": 0x1}
 )  # clear nrst on trigger and tg
 
-first_tg_ba = None
-for tg_inst, tg_desc in hw_handoff.axi_tgs.items():
-    print(f"{tg_inst}: ")
-    print(f"   {tg_desc}")
-    first_tg_ba = tg_desc["c_baseaddr"]
-    break
+first_tg_ba = 0x201_8000_0000
 tg = PerfTGController(first_tg_ba, versal_device, vio=tg_vio)
 
 # %% [markdown]

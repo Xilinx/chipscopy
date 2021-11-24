@@ -116,16 +116,19 @@ class QueryList(UserList, Sequence[T]):
             # Custom match function works across all list elements without regard to filter_by property.
             if self.custom_match_function:
                 # Non-default match function - this is the first priority to check for a match
+                matched = True
                 for key, value in filters.items():
-                    if self.custom_match_function(list_item, key, value):
-                        retval.append(list_item)
+                    if not self.custom_match_function(list_item, key, value):
+                        matched = False
+                if matched:
+                    retval.append(list_item)
             else:
                 # To support filtering the object must have 'filter_by' attribute as a second priority to
                 # the custom match function.
                 # filter_by is a dict where the key is a property name, and value is a property value.
                 if not hasattr(list_item, "filter_by"):
                     continue
-
+                matched = True
                 for key, value in filters.items():
                     # If the object has it's own staticmethod 'check_for_filter_match()', call it
                     # else use the static 'check_for_filter_match' in this class
@@ -136,9 +139,9 @@ class QueryList(UserList, Sequence[T]):
                     except AttributeError:
                         pass
                     if not match_function(list_item.filter_by, key, value):
-                        continue
+                        matched = False
+                if matched:
                     retval.append(list_item)
-                    break
 
         return retval
 
