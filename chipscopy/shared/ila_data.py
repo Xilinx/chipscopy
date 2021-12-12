@@ -82,7 +82,7 @@ def process_raw_data(
     Remove invalid data from partially captured window.
     """
     if not raw_trace:
-        raise Exception("Uploaded waveform data is empty.")
+        raise ValueError("Uploaded waveform data is empty.")
 
     repacked_trace = align_samples_to_1_byte(
         raw_trace,
@@ -153,7 +153,7 @@ def unroll_data(data: bytearray, trace_info: TraceInfo) -> bytearray:
                 break
 
         if trigger_mark_sample_idx < 0:
-            raise Exception("Corrupt waveform data. Missing window trigger mark.")
+            raise ValueError("Corrupt waveform data. Missing window trigger mark.")
 
         start_of_window_sample = trigger_mark_sample_idx - trace_info.trigger_position
         if start_of_window_sample == 0:

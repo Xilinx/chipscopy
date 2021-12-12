@@ -28,9 +28,6 @@ class NoCPerfMonProxy(CorePropertyProxy, NoCPerfMonService):
         super(NoCPerfMonProxy, self).__init__(channel)
         self.listeners = {}
 
-    def get_properties(self, args, done):
-        return self.send_command("getProperties", (args,), done)
-
     def initialize(self, node_id: str, done: DoneHWCommand) -> None:
         return self.send_xicom_command("initialize", (node_id,), done)
 
@@ -45,7 +42,7 @@ class NoCPerfMonProxy(CorePropertyProxy, NoCPerfMonService):
             "getSupportedSamplingPeriods", (params["node_id"], params), done
         )
 
-    def get_clk_info(self, node_id: str, done: DoneHWCommand):
+    def get_clk_info(self, node_id: str, done: DoneHWCommand):  # pragma: no cover
         return self.send_xicom_command("getClkInfo", (node_id,), done)
 
     def enumerate_noc_elements(self, params, done: DoneHWCommand):

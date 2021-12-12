@@ -29,22 +29,8 @@ class SysMonProxy(CorePropertyProxy, SysMonService):
         super(SysMonProxy, self).__init__(channel)
         self.listeners = {}
 
-    def get_properties(self, args, done):
-        return self.send_command("getProperties", (args,), done)
-
-    def initialize(self, node_id: str, done: DoneHWCommand) -> None:
-        return self.send_xicom_command("initialize", (node_id,), done)
-
-    def read_temp(self, node_id: str, done: DoneHWCommand) -> None:
-        return self.send_xicom_command("readTemp", (node_id,), done)
-
     def stream_sensor_data(self, node_id: str, interval: int, done: DoneHWCommand) -> None:
         return self.send_xicom_command("streamSensorData", (node_id, interval), done)
-
-    def stream_specific_measurements(
-        self, node_id: str, measurements: List[str], done: DoneHWCommand
-    ) -> None:
-        return self.send_xicom_command("streamSpecificMeasurements", (node_id, measurements), done)
 
     def initialize_sensors(self, node_id: str, done: DoneHWCommand) -> None:
         return self.send_xicom_command("initializeSensors", (node_id,), done)
@@ -54,9 +40,6 @@ class SysMonProxy(CorePropertyProxy, SysMonService):
 
     def get_measurements(self, node_id: str, done: DoneHWCommand) -> None:
         return self.send_xicom_command("getMeasurements", (node_id,), done)
-
-    def get_supported_sensors(self, node_id: str, done: DoneHWCommand) -> None:
-        return self.send_xicom_command("getSupportedSensors", (node_id,), done)
 
     def get_all_sensors(self, node_id: str, done: DoneHWCommand) -> None:
         return self.send_xicom_command("getAllSensors", (node_id,), done)
@@ -68,5 +51,5 @@ class SysMonProxy(CorePropertyProxy, SysMonService):
             "configureMeasurementSchedule", (node_id, measurements), done
         )
 
-    def configure_temp_and_vccint(self, node_id: str, done: DoneHWCommand):
+    def configure_temp_and_vccint(self, node_id: str, done: DoneHWCommand):  # pragma: no cover
         return self.send_xicom_command("configureTempAndVCCINT", (node_id,), done)

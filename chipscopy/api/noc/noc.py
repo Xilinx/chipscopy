@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, ClassVar
+from typing import List, Set
 from dataclasses import dataclass
 
 from chipscopy.api import CoreType
@@ -40,41 +40,10 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name}
 
-    def get_property(self, property_name_list=None):
-        return_dict = {}
-        items = self.get_properties()
-        if (property_name_list is None) or (len(property_name_list) == 0):
-            return_dict = items
-        else:
-            for key in property_name_list:
-                if key in items:
-                    return_dict[key] = items[key]
-        return return_dict
-
-    def get_properties(self):
-        items = {"name": self.name}
-        items.update(self.core_tcf_node.props)
-        return items
-
     def __str__(self):
         return self.name
 
-    def refresh_property_group(self, groups: List[str], done: DoneHWCommand = None) -> List[str]:
-        """
-
-        Args:
-            groups (List[str]): list of property group names. For NoC PerfMon the groups are ``control``, ``status``,
-                and ``perfmon``.
-            done: Optional command callback that will be invoked when the response is received.
-
-        Returns:
-            Property name/value pairs from the requested group(s).
-
-        """
-        property_pairs = self.core_tcf_node.refresh_property_group(groups, done)
-        return property_pairs
-
-    def initialize(self, done: DoneHWCommand = None):
+    def initialize(self, done: DoneHWCommand = None):  # pragma: no cover
         """
         This method collects the clocking information for client use later in the configuration of this service. It
         also refreshes the client's view of specific properties for the root node *ONLY*.
@@ -116,7 +85,7 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
 
     def configure_monitors(
         self,
-        monitors: {str},
+        monitors: Set[str],
         sampling_intervals: dict,
         traffic_class: PerfMonTrafficQOSClass,
         sample_count: int,
@@ -213,8 +182,10 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
         )
         return sampling_dict
 
-    def get_clk_info(self, done: DoneHWCommand = None) -> dict:
+    def get_clk_info(self, done: DoneHWCommand = None) -> dict:  # pragma: no cover
         """
+        DEPRECATED will remove in 2022.1
+
         Reports NPI and NoC clock information from the running design. These are parameters set by the designer in
         Vivado.
 
@@ -229,7 +200,9 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
         frequency_dict = self.core_tcf_node.get_clk_info(done)
         return frequency_dict
 
-    def enumerate_noc_elements(self, scan_nodes, done: DoneHWCommand = None) -> List[str]:
+    def enumerate_noc_elements(
+        self, scan_nodes, done: DoneHWCommand = None, raw_mode=False
+    ) -> List[str]:
         results = self.core_tcf_node.enumerate_noc_elements(scan_nodes, done)
         disabled = results["disabled"]
         invalid = results["invalid"]
@@ -247,4 +220,7 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
             )
             for i in invalid:
                 printer(f"  {i}")
-        return results["enabled"]
+        if raw_mode:
+            return results
+        else:
+            return results["enabled"]

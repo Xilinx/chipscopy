@@ -183,6 +183,8 @@ class ILAStatus:
     """Trigger is armed."""
     is_full: bool
     """Data buffer is full."""
+    is_trigger_at_startup: bool
+    """ILA is armed at startup."""
     samples_captured: int
     """Number of samples captured in current data window."""
     windows_captured: int
@@ -204,6 +206,7 @@ ILA_STATUS_MEMBERS = dataclass_fields(ILAStatus)
 # ILAStatus functions
 def post_process_status(props: {}) -> None:
     props["capture_state"] = ILAState[props["capture_state"]]
+    props["is_trigger_at_startup"] = props.get("is_tas", False)
     props["samples_requested"] = props.get("window_depth_readback")
     props["windows_requested"] = props.get("window_count_readback")
     props["trigger_position_requested"] = props.get("trigger_pos_readback")

@@ -83,7 +83,7 @@ def deliver_examples(src_path, dst_fullpath, name):
                         files_to_copy_tmp[os.path.join(root, f2)] = file_dst_path
                     files_to_copy.update(files_to_copy_tmp)
                     files_to_move.update(files_to_move_tmp)
-                except FileNotFoundError as e:
+                except FileNotFoundError as e:  # pragma: no cover
                     if relpath:
                         nb_str = os.path.join(name, relpath)
                         print(
@@ -96,7 +96,7 @@ def deliver_examples(src_path, dst_fullpath, name):
             print("The example module '{}' could not be delivered. ".format(name))
         else:
             _copy_and_move_files(files_to_copy, files_to_move)
-    except (Exception, KeyboardInterrupt) as e:
+    except (Exception, KeyboardInterrupt) as e:  # pragma: no cover
         print("Exception detected. Delivery process did not complete...")
         raise e
 
@@ -117,7 +117,7 @@ def find_examples(example_dir=SOURCE_EXAMPLE_DIR, full_path=False):
     return examples_list
 
 
-class _GetExamplesParser(argparse.ArgumentParser):
+class _GetExamplesParser(argparse.ArgumentParser):  # pragma: no cover
     @property
     def epilog(self):
         return "Available example modules: {}".format(", ".join(find_examples()))
@@ -128,7 +128,7 @@ class _GetExamplesParser(argparse.ArgumentParser):
         pass
 
 
-def _get_examples_parser():
+def _get_examples_parser():  # pragma: no cover
     """Initialize and return the argument parser."""
     parser = _GetExamplesParser(description="Deliver available ChipScoPy examples")
     parser.add_argument(
@@ -155,7 +155,7 @@ def _get_examples_parser():
     return parser
 
 
-def main():
+def main():  # pragma: no cover
     parser = _get_examples_parser()
     args = parser.parse_args()
     examples_list = find_examples()
@@ -218,5 +218,5 @@ def main():
     sys.exit(0)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

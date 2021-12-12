@@ -59,6 +59,10 @@ ILA.get_probe_capture_value
 """""""""""""""""""""""""""
 .. automethod:: chipscopy.api.ila.ila.ILA.get_probe_capture_value
 
+ILA.get_probe_enum
+"""""""""""""""""""""""""""
+.. automethod:: chipscopy.api.ila.ila.ILA.get_probe_enum
+
 ILA.get_probe_trigger_value
 """""""""""""""""""""""""""
 .. automethod:: chipscopy.api.ila.ila.ILA.get_probe_trigger_value
@@ -70,6 +74,10 @@ ILA.reset_probes
 ILA.set_probe_capture_value
 """""""""""""""""""""""""""
 .. automethod:: chipscopy.api.ila.ila.ILA.set_probe_capture_value
+
+ILA.set_probe_enum
+"""""""""""""""""""""""""""
+.. automethod:: chipscopy.api.ila.ila.ILA.set_probe_enum
 
 ILA.set_probe_trigger_value
 """""""""""""""""""""""""""

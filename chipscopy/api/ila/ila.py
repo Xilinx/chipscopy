@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import enum
 import json
 import sys
 from io import TextIOBase
@@ -47,6 +48,8 @@ from chipscopy.api.ila.ila_probe import (
     verify_ports,
     verify_probe_value,
     create_probes_from_ports_and_ltx,
+    ILAProbeRadix,
+    verify_probe_enum_def,
 )
 from chipscopy.api.ila.ila_waveform import (
     export_waveform_to_stream,
@@ -209,10 +212,9 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
 
         """
 
-        def to_tcf_trigger_value(values: [], bit_width: int) -> [str]:
-            """ Only int and binary string values supported at this point. """
+        def to_tcf_trigger_value(values: [], bit_width: int, enum_def: enum.EnumMeta) -> [str]:
             it = iter(values)
-            res = [op + to_bin_str(val, bit_width) for op, val in zip(it, it)]
+            res = [op + to_bin_str(val, bit_width, enum_def) for op, val in zip(it, it)]
             return res
 
         def probe_values_to_dict(probe_values: {str, ILAProbeValues}) -> {}:
@@ -221,11 +223,11 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
                 vals = {}
                 if p_values.trigger_value:
                     vals["trigger_value"] = to_tcf_trigger_value(
-                        p_values.trigger_value, p_values.bit_width
+                        p_values.trigger_value, p_values.bit_width, p_values.enum_def
                     )
                 if self.static_info.has_capture_control and p_values.capture_value:
                     vals["capture_value"] = to_tcf_trigger_value(
-                        p_values.capture_value, p_values.bit_width
+                        p_values.capture_value, p_values.bit_width, p_values.enum_def
                     )
                 if vals:
                     res[name] = vals
@@ -251,8 +253,13 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
 
         control_props = control_to_tcf(self.control)
         self.core_tcf_node.set_property(control_props)
+        self._arm2()
         self.core_tcf_node.arm()
         self.waveform = None
+
+    def _arm2(self):
+        # NYI feature
+        pass
 
     def run_advanced_trigger(
         self,
@@ -424,6 +431,13 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
                 Example: Dont-care value, written as an empty list.
                    []
 
+            Some probes have associated enum values, which can be used when setting values.
+
+                Example: Use an Enum value.
+                    ['==', Colors.BLUE]
+
+                Example: Use Enum name string.
+                    ['==', "BLUE"]
 
         Args:
            name (str): Probe name.
@@ -439,7 +453,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
            capture_value: List with two items: [<operator>, <value>].   See :class:`~.ILAProbeValues`
         """
         if not self.static_info.has_capture_control:
-            raise Exception(
+            raise ValueError(
                 f'Cannot set capture value for Probe "{name}", '
                 f'since ILA "{self.name}" does not support basic capture control.'
             )
@@ -456,7 +470,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         """
         values = self.probe_values.get(name, None)
         if not values:
-            raise Exception(f"Probe {name} is not a defined trigger probe.")
+            raise KeyError(f"Probe {name} is not a defined trigger probe.")
         return values.trigger_value
 
     def get_probe_capture_value(self, name: str) -> []:
@@ -470,15 +484,15 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         """
         values = self.probe_values.get(name, None)
         if not values:
-            raise Exception(f"Probe {name} is not a defined trigger probe.")
+            raise KeyError(f"Probe {name} is not a defined trigger probe.")
         return values.capture_value
 
     def _set_probe_value(self, name: str, value: [], is_trigger: bool) -> None:
         probe = self.probes.get(name, None)
-        values = self.probe_values.get(name, None)
+        values: ILAProbeValues = self.probe_values.get(name, None)
         if not probe or not values:
-            raise Exception(f"Probe {name} is not a defined trigger probe.")
-        verify_probe_value(probe, value, is_trigger)
+            raise KeyError(f"Probe {name} is not a defined trigger probe.")
+        verify_probe_value(value, is_trigger, probe, values.enum_def)
         if is_trigger:
             values.trigger_value = value
         else:
@@ -498,11 +512,17 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         if ltx:
             verify_ports(ltx, core_info.uuid, ports)
 
-        probes, probe_to_port_seqs, cell_name = create_probes_from_ports_and_ltx(
+        probes, probe_to_port_seqs, cell_name, enum_defs = create_probes_from_ports_and_ltx(
             tcf_ila, ports, ltx, core_info.uuid
         )
         probe_values = {
-            probe.name: ILAProbeValues(probe.bit_width, [], [])
+            probe.name: ILAProbeValues(
+                probe.bit_width,
+                [],
+                [],
+                ILAProbeRadix.ENUM if probe.name in enum_defs else ILAProbeRadix.HEX,
+                enum_defs.get(probe.name, None),
+            )
             for probe in probes.values()
             if probe.is_trigger
         }
@@ -520,6 +540,41 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             "probe_values": probe_values,
         }
 
+    def get_probe_enum(self, name: str) -> Optional[enum.EnumMeta]:
+        """Get enum class, which defines valid enum values for the probe.
+
+        Args:
+           name (str): Probe name.
+
+        Returns:
+            Enum class defining the enum values or None.
+        """
+        probe = self.probes.get(name, None)
+        values: ILAProbeValues = self.probe_values.get(name, None)
+        if not probe or not values:
+            raise KeyError(f"Probe {name} is not a defined probe.")
+        return values.enum_def
+
+    def set_probe_enum(
+        self, name: str, enum_def: enum.EnumMeta, display_as_enum: bool = True
+    ) -> None:
+        """Set enum values for a probe, by providing a enum class.
+
+        Args:
+           name (str): Probe name.
+           enum_def (enum.EnumMeta): Enum class defining enum values, e.g. an enum.IntEnum class.
+           display_as_enum (bool): If true, sets probe display index to ``ILAProbeRadix.ENUM``
+        """
+
+        probe = self.probes.get(name, None)
+        values: ILAProbeValues = self.probe_values.get(name, None)
+        if not probe or not values:
+            raise KeyError(f"Probe {name} is not a defined probe.")
+        verify_probe_enum_def(probe, enum_def)
+        values.enum_def = enum_def
+        if display_as_enum:
+            values.display_radix = ILAProbeRadix.ENUM
+
     def _make_waveform_probes(self) -> {str, ILAWaveformProbe}:
         return {
             p.name: ILAWaveformProbe(
@@ -529,7 +584,8 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
                 p.is_bus,
                 p.bus_left_index,
                 p.bus_right_index,
-                p.display_radix,
+                self.probe_values[p.name].display_radix,
+                self.probe_values[p.name].enum_def,
             )
             for p in self.probes.values()
             if p.is_data

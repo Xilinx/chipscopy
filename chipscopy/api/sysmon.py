@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, ClassVar
+from typing import List, ClassVar, Dict
 from dataclasses import dataclass
 
 from chipscopy.api import CoreType
@@ -32,39 +32,8 @@ class Sysmon(DebugCore["SysMonCoreClient"]):
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name}
 
-    def get_property(self, property_name_list=None):
-        return_dict = {}
-        items = self.get_properties()
-        if (property_name_list is None) or (len(property_name_list) == 0):
-            return_dict = items
-        else:
-            for key in property_name_list:
-                if key in items:
-                    return_dict[key] = items[key]
-        return return_dict
-
-    def get_properties(self):
-        items = {"name": self.name}
-        items.update(self.core_tcf_node.props)
-        return items
-
     def __str__(self):
         return self.name
-
-    def refresh_property_group(self, groups: List[str], done: DoneHWCommand = None) -> List[str]:
-        """
-
-        Args:
-            groups: list of property group names. For SysMon the groups are ``control``, ``status``,
-                ``sensor``, ``temp``, and ``vccint``.
-            done: Optional command callback that will be invoked when the response is received.
-
-        Returns:
-            Property name/value pairs from the requested group(s).
-
-        """
-        property_pairs = self.core_tcf_node.refresh_property_group(groups, done)
-        return property_pairs
 
     def initialize_sensors(self, done: DoneHWCommand = None):
         """
@@ -79,34 +48,35 @@ class Sysmon(DebugCore["SysMonCoreClient"]):
         """
         self.core_tcf_node.initialize_sensors(done)
 
-    def refresh_measurement_schedule(self, done: DoneHWCommand = None) -> List[str]:
+    def refresh_measurement_schedule(self, done: DoneHWCommand = None) -> Dict[int, str]:
         """
-        Dynamically scans the SysMon to determine the sensors scheduled into the system.
+        Dynamically scans the SysMon to determine the sensors scheduled into the system, in order.
 
-        This list will serve as the set from which elements may be chosen for runtime performance analysis.
 
         Args:
             done: Optional command callback that will be invoked when the response is received.
 
         Returns:
-            Returns a list of active NMU, NSU/DDRMC_NOC, and NPS elements. Unrouted, disabled elements are not returned
-            and cannot be monitored.
+            Returns a dict where the keys are the root IDs and the values are the named sensors.
 
         """
         sensors = self.core_tcf_node.refresh_measurement_schedule(done)
         return sensors
 
-    def get_supported_sensors(self, done: DoneHWCommand = None):
-
+    def get_measurements(self, done: DoneHWCommand = None) -> List[object]:
         """
-        Returns the list of customer sensors for the device. Not to be confused with the measurement schedule. This is
-        the list of all customer sensors that can be configured.
+        Advanced API
+
+        Returns the measurement objects
+
+        Args:
+            done: Optional command callback that will be invoked when the response is received.
 
         Returns:
-            A list of strings representing all customer sensors for the connected device.
+            Returns a list of measurement configuration objects
 
         """
-        sensors = self.core_tcf_node.get_supported_sensors(done=done)
+        sensors = self.core_tcf_node.get_measurements(done)
         return sensors
 
     def get_all_sensors(self, done: DoneHWCommand = None) -> dict:
@@ -123,6 +93,11 @@ class Sysmon(DebugCore["SysMonCoreClient"]):
         """
         sensors = self.core_tcf_node.get_all_sensors(done)
         return sensors
+
+    def configure_measurement_schedule(
+        self, measurements: Dict[str, str], done: DoneHWCommand = None
+    ) -> None:
+        self.core_tcf_node.configure_measurement_schedule(measurements, done)
 
     def stream_sensor_data(self, interval: int, done: DoneHWCommand = None) -> None:
         """

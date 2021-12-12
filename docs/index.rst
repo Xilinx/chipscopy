@@ -65,6 +65,7 @@ Indices and Tables
    ila.rst
    memory.rst
    noc.rst
+   pcie.rst
    sysmon.rst
    vio.rst
 

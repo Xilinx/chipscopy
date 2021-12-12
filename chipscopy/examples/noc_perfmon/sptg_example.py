@@ -29,10 +29,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2021.1 or greater
-# - Xilinx cs_server 2021.1 or greater
+# - Xilinx hw_server 2021.2 installed and running
+# - Xilinx cs_server 2021.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2021.1 or greater installed
+# - ChipScoPy 2021.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
@@ -123,7 +123,7 @@ print(f"Debug cores setup and ready for use.")
 
 noc = versal_device.noc_core.get()
 
-scan_nodes = ["DDRMC_MAIN_0", "NOC_NMU512_X0Y0"]
+scan_nodes = ["DDRMC_X0Y0", "NOC_NMU512_X0Y0"]
 print("\nEnumerating nodes: ", end="")
 for node in scan_nodes:
     print(f"{node}, ", end="")
@@ -134,7 +134,7 @@ enable_list = noc.enumerate_noc_elements(scan_nodes)
 print("complete!")
 
 # %%
-supported_periods = noc.get_supported_sampling_periods(100 / 3, 100 / 3, {"DDRMC_MAIN_0": 800.0})
+supported_periods = noc.get_supported_sampling_periods(100 / 3, 100 / 3, {"DDRMC_X0Y0": 800.0})
 print("Supported sampling periods:")
 for domain, periods in supported_periods.items():
     print(f"  {domain}:")
@@ -215,7 +215,7 @@ for index, vio_core in enumerate(vio_cores):
     print("PROBE_NAMES:", vio_core.probe_names)
 
 # tg_vio_bc = "sptg_axi_i"
-tg_vio_bc = "chipscopy_ex_i/noc_tg_bc"
+tg_vio_bc = "chipscopy_i/noc_tg_bc"
 tg_vio_name = f"{tg_vio_bc}/axis_vio_0"
 print(tg_vio_name)
 tg_vio = versal_device.vio_cores.get(name=tg_vio_name)

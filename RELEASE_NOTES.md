@@ -1,5 +1,17 @@
 # ChipScoPy Release Notes
 
+## 2021.2 - December 11, 2021
+
+### Minor release
+
+- Compatibility with 2021.2 hw_server & cs_server versions
+- ChipScoPy example design moving to a CED (https://github.com/Xilinx/XilinxCEDStore)
+- Enum support for ILA Probes
+- Added Jupyter notebook examples:
+  - DDR 2D Eye Scan
+  - NoC Performance Monitor
+  
+
 ## 2021.1 - April 26, 2021
 
 ### What's New

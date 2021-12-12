@@ -44,6 +44,7 @@ def get_noc_typedef_from_name(name) -> str:
     nsu_re = re.compile(".*NSU.*", flags=re.IGNORECASE)
     ddrmc_noc_re = re.compile(".*DDRMC_NOC.*", flags=re.IGNORECASE)
     ddrmc_main_re = re.compile(".*DDRMC_MAIN.*", flags=re.IGNORECASE)
+    ddrmc_re = re.compile(".*DDRMC_X.*", flags=re.IGNORECASE)
 
     if nmu_re.match(name):
         return noc_nmu_typedef
@@ -51,7 +52,7 @@ def get_noc_typedef_from_name(name) -> str:
         return noc_nsu_typedef
     elif ddrmc_noc_re.match(name):
         return ddrmc_noc_typedef
-    elif ddrmc_main_re.match(name):
+    elif ddrmc_main_re.match(name) or ddrmc_re.match(name):
         return ddrmc_main_typedef
     else:
         # log[DOMAIN].error(f'unknown type for name: {name}')
@@ -95,7 +96,7 @@ class NoCElement(ABC):
         self.raw_trace_data = {}
 
     @abstractmethod
-    def update_node(self, tcf_node, updated_keys):
+    def update_node(self, tcf_node, updated_keys):  # pragma: no cover
         pass
 
     def record_bw_lat(
@@ -446,7 +447,7 @@ class NoCPerfMonNodeListener(NodeListener):
                 alt_name = "ddrmc_noc_" + elem.split("_")[-1]
                 node = DDRMC(
                     elem.lower(),
-                    alt_name,
+                    alt_name.lower(),
                     num_samples,
                     sampling_period_ms["NoC"],
                     record_to_file,
@@ -454,9 +455,9 @@ class NoCPerfMonNodeListener(NodeListener):
                     noc_clk_freq / 1000000.0,
                 )
                 self.noc_elements[elem.lower()] = node
-                self.noc_elements[alt_name] = node
+                self.noc_elements[alt_name.lower()] = node
                 self.unique_elements[elem.lower()] = node
-            else:
+            else:  # pragma: no cover
                 raise Exception(f"Error, unsupported node: {elem}, type: {node_type}")
 
     def node_changed(self, node, updated_keys):

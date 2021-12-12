@@ -8,7 +8,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.10.1
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -49,10 +49,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2021.1 or greater
-# - Xilinx cs_server 2021.1 or greater
+# - Xilinx hw_server 2021.2 installed and running
+# - Xilinx cs_server 2021.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2021.1 or greater installed
+# - ChipScoPy 2021.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 

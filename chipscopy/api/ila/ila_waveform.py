@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import enum
 import json
 from abc import abstractmethod
 from collections import defaultdict
@@ -34,7 +35,7 @@ class ILAWaveformProbe:
     """Name of probe."""
     map: str
     """Location string"""
-    map_range: [ILABitRange]
+    map_range: List[ILABitRange]
     """List of bit ranges. See :class:`~chipscopy.api.ila.ILABitRange`"""
     is_bus: bool
     """True for bus probes"""
@@ -44,6 +45,8 @@ class ILAWaveformProbe:
     """Bus right index. E.g. 0 in probe ``counter[5:0]``"""
     display_radix: ILAProbeRadix = ILAProbeRadix.HEX
     """Display radix, when exporting waveform data. Default is ILAProbeRadix.HEX"""
+    enum_def: Optional[enum.EnumMeta] = None
+    """Enum class defining {name:int} enum values, for this probe."""
 
     def length(self) -> int:
         return sum(mr.length for mr in self.map_range)
@@ -66,11 +69,11 @@ class ILAWaveform:
     """Sample bit width."""
     sample_count: int
     """Number of data samples."""
-    trigger_position: [int]
+    trigger_position: List[int]
     """Trigger position index, for each data window."""
     window_size: int
     """Number of samples in a window."""
-    probes: {str, ILAWaveformProbe}
+    probes: Dict[str, ILAWaveformProbe]
     """Dict of {probe name, waveform probe}   See :class:`ILAWaveformProbe`"""
     data: bytearray
     """
@@ -100,7 +103,7 @@ class ILAWaveform:
 
     def __repr__(self) -> str:
         data_size = len(self.data) if self.data else 0
-        ret_dict = {
+        json_dict = {
             "width": self.width,
             "sample_count": self.sample_count,
             "trigger_position": self.trigger_position,
@@ -108,8 +111,8 @@ class ILAWaveform:
             "probes": {key: asdict(val) for key, val in self.probes.items()},
             "data size": hex(data_size),
         }
-        json_dict = json.dumps(ret_dict, cls=Enum2StrEncoder, indent=4)
-        return json_dict
+        ret = json.dumps(json_dict, cls=Enum2StrEncoder, indent=4)
+        return ret
 
 
 def tcf_get_waveform_data(tcf_node) -> {}:
@@ -366,9 +369,7 @@ def export_waveform_to_stream(
         probes = [waveform.probes.get(p_name, None) for p_name in probe_names]
         if not all(probes):
             bad_names = set(probe_names) - set(waveform.probes.keys())
-            raise Exception(
-                f"export_waveform() called with non-existent probe_name:\n  {bad_names}"
-            )
+            raise KeyError(f"export_waveform() called with non-existent probe_name:\n  {bad_names}")
     else:
         probes = waveform.probes.values()
 
@@ -377,7 +378,7 @@ def export_waveform_to_stream(
     elif export_format.upper() == "VCD":
         waveform_writer = WaveformWriterVCD(stream_handle, probes)
     else:
-        raise Exception(f'export_waveform() called with non-supported format "{export_format}"')
+        raise ValueError(f'export_waveform() called with non-supported format "{export_format}"')
 
     _export_waveform(
         waveform,
@@ -406,8 +407,8 @@ def get_waveform_data_values(
         probes = [waveform.probes.get(p_name, None) for p_name in probe_names]
         if not all(probes):
             bad_names = set(probe_names) - set(waveform.probes.keys())
-            raise Exception(
-                f"get_waveform_probe_data() called with non-existent probe_name:\n  {bad_names}"
+            raise KeyError(
+                f"get_waveform_probe_data() called with non-existent probe name(s):\n  {bad_names}"
             )
     else:
         probes = waveform.probes.values()
@@ -456,23 +457,23 @@ def _export_waveform(
     w_size = waveform.window_size
     max_window_count = (waveform.sample_count + w_size - 1) // w_size
     if start_window_idx < 0 or start_window_idx >= max_window_count:
-        raise Exception(
+        raise ValueError(
             f'{calling_function} function argument start_window="{start_window_idx}" '
             f"must be in the range [0-{max_window_count - 1}]"
         )
     if start_sample_idx < 0 or start_sample_idx >= w_size:
-        raise Exception(
+        raise ValueError(
             f'{calling_function} function argument "start_sample="{start_sample_idx}" '
             f"must be in the range [0-{w_size - 1}]"
         )
     if sample_count < 1 or sample_count > w_size - start_sample_idx:
-        raise Exception(
+        raise ValueError(
             f'{calling_function} function argument "sample_count="{sample_count}" '
             f"must be in the range [1-{w_size - start_sample_idx}], "
             f'since start_sample_idx="{start_sample_idx}".'
         )
     if window_count < 1 or window_count > max_window_count - start_window_idx:
-        raise Exception(
+        raise ValueError(
             f'{calling_function} function argument "window_count="{window_count}" '
             f"must be in the range [1-{max_window_count - start_window_idx}], "
             f'since start_window_idx="{start_window_idx}".'

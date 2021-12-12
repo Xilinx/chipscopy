@@ -23,7 +23,7 @@ from chipscopy import CoreType
 from chipscopy.api._detail.ltx import Ltx
 from chipscopy.api._detail.trace import Trace
 from chipscopy.api.containers import QueryList
-from chipscopy.api.ddr import DDR
+from chipscopy.api.ddr.ddr import DDR
 from chipscopy.api.ibert import IBERT
 from chipscopy.api.ila import ILA
 from chipscopy.api.memory import Memory

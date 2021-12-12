@@ -98,7 +98,7 @@ class PercentProgressBar:
         self.progress_meter = Progress(
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
-            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            TextColumn("{task.percentage:>3.0f}%", style="bold bright_magenta"),
             TextColumn("{task.fields[status]}"),
             console=printer.console,
             auto_refresh=False,

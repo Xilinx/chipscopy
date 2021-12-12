@@ -46,14 +46,14 @@ class ILAMatchUnitType(enum.Enum):
 
 class ILAProbeRadix(enum.Enum):
     """
-    Radix for probe data values.
+    Display radix for probe data values.
 
     =====================  ================================
     Enum Value             Description
     =====================  ================================
-    BIN                    Binary string.
-    ENUM                   Not supported.
-    HEX                    Not supported.
+    BIN                    Not Supported.
+    ENUM                   Enumeration
+    HEX                    Default.
     SIGNED                 Not supported.
     UNSIGNED               Not supported.
     =====================  ================================
@@ -112,8 +112,6 @@ class ILAProbe:
     """Bus left index. E.g. 5 in probe ``counter[5:0]``"""
     bus_right_index: Optional[int] = None
     """Bus right index. E.g. 0 in probe ``counter[5:0]``"""
-    display_radix: ILAProbeRadix = ILAProbeRadix.HEX
-    """Display radix, when exporting waveform data. Default is ILAProbeRadix.HEX"""
 
 
 ILA_PROBE_MEMBERS = dataclass_fields(ILAProbe)
@@ -198,8 +196,10 @@ class ILAProbeValues:
     """Trigger compare values, in a list."""
     capture_value: []
     """Basic capture compare value. A two item list with [<operator>, <value>]"""
-    radix: ILAProbeRadix = ILAProbeRadix.BIN
-    """Display radix, when exporting waveform data."""
+    display_radix: ILAProbeRadix = ILAProbeRadix.HEX
+    """Display radix, when exporting waveform data. Default is ILAProbeRadix.HEX"""
+    enum_def: Optional[enum.EnumMeta] = None
+    """Enum class defining {name:int} enum values, for this probe."""
 
     def default_value(self):
         return ["==", "x" * self.bit_width]
@@ -250,11 +250,22 @@ def ports_from_tcf_props(props) -> [ILAPort]:
 #
 # probes functions
 #
-def verify_probe_value(probe: ILAProbe, value_list: [], is_trigger: bool):
+def verify_probe_value(value_list: [], is_trigger: bool, probe: ILAProbe, enum_def=None):
     """
-    int values, binary string and hex strings are supported for now.
-    Fuller verification is done by the cs_server.
+    int values, enums, binary string and hex strings are supported for now.
+    More verification is done by the cs_server.
+
+    Args:
+        enum_def ():
     """
+
+    def is_valid_enum_str(number) -> bool:
+        try:
+            enum = enum_def[number]
+        except KeyError:
+            return False
+        verify_enum_value(enum)
+        return True
 
     def get_hex_char_bit_len(ch: str) -> int:
         if ch in "x01":
@@ -266,85 +277,98 @@ def verify_probe_value(probe: ILAProbe, value_list: [], is_trigger: bool):
         else:
             return 4
 
+    def verify_int_bit_length(number):
+        val_len = int.bit_length(number)
+        if val_len > probe.bit_width:
+            raise ValueError(
+                f'Probe "{probe.name}" has bit width:{probe.bit_width} and cannot be assigned'
+                f' value "{number}" which has bit width:{val_len}.'
+            )
+
+    def verify_enum_value(enum: enum.Enum):
+        if not isinstance(enum, enum_def):
+            raise TypeError(f'Probe "{probe.name}" cannot be assigned enum value {enum}.')
+        verify_int_bit_length(enum.value)
+
     def verify_one_hex_value(op: str, hex_number: str):
         valid_hex_chars = "x0123456789abcdef_"
         value_no_underscore = "".join([ch for ch in hex_number[2:].lower() if ch != "_"])
         hex_val_len = len(value_no_underscore)
         if hex_val_len == 0:
-            raise Exception(
+            raise ValueError(
                 f'Probe "{probe.name}" has cannot be assigned invalid value "{hex_number}".'
             )
         if not all([ch in valid_hex_chars for ch in value_no_underscore]):
-            raise Exception(
+            raise ValueError(
                 f'Probe "{probe.name}" value "{hex_number}" has invalid character(s).'
                 f' Valid characters are {valid_hex_chars}".'
             )
         required_hex_ch_len = (probe.bit_width + 3) // 4
         if hex_val_len != required_hex_ch_len:
-            raise Exception(
+            raise ValueError(
                 f'Probe "{probe.name}" has bit width:{probe.bit_width} requiring {required_hex_ch_len} hex character(s)'
                 f' but value "{hex_number}" has only {hex_val_len} hex character(s).'
             )
         bin_val_len = (hex_val_len - 1) * 4 + get_hex_char_bit_len(value_no_underscore[0])
         if bin_val_len > probe.bit_width:
             # Too many bits in first hex char.
-            raise Exception(
+            raise ValueError(
                 f'Probe "{probe.name}" has bit width:{probe.bit_width} and cannot be assigned'
                 f' value "{hex_number}" which has bit width:{bin_val_len}.'
             )
         if (op not in ["==", "!="]) and ("x" in value_no_underscore):
-            raise Exception(
+            raise ValueError(
                 f'Probe "{probe.name}" is assigned value "{op} {hex_number}". '
                 f"""The operator cannot be used when the value has a don't care "x"."""
             )
 
     def verify_value_pair(op: str, number):
         if op not in ILA_MATCH_OPERATORS:
-            raise Exception(
+            raise ValueError(
                 f'Probe "{probe.name}" operator "{op}" is not one of the allowed operators: '
                 f"{ILA_MATCH_OPERATORS}."
             )
 
         if isinstance(number, int):
-            val_len = int.bit_length(number)
-            if val_len > probe.bit_width:
-                raise Exception(
-                    f'Probe "{probe.name}" has bit width:{probe.bit_width} and cannot be assigned'
-                    f' value "{number}" which has bit width:{val_len}.'
-                )
+            verify_int_bit_length(number)
+        elif enum_def and isinstance(number, enum.Enum):
+            verify_enum_value(number)
         elif isinstance(number, str) and (number.startswith("0x") or number.startswith("0X")):
             verify_one_hex_value(op, number)
+        elif enum_def and is_valid_enum_str(number):
+            # is_valid_enum_str() will did the checking if it is an enum string for this probe.
+            pass
         elif isinstance(number, str):
             # binary value
             if not all([ch in ILA_MATCH_BIT_VALUES for ch in number]):
-                raise Exception(
+                raise TypeError(
                     f'Probe "{probe.name}" value "{number}" has invalid character(s).'
                     f' Valid characters are "{ILA_MATCH_BIT_VALUES}".'
                 )
 
             val_len = len(number) - number.count("_")
             if val_len != probe.bit_width:
-                raise Exception(
+                raise ValueError(
                     f'Probe "{probe.name}" has bit width:{probe.bit_width} and cannot be assigned'
                     f' value "{number}" which has bit width:{val_len}.'
                 )
             if (op not in ["==", "!="]) and not all([ch in "01_" for ch in number]):
-                raise Exception(
+                raise TypeError(
                     f'Probe "{probe.name}" is assigned value "{op} {number}". '
                     f'The operator "{op}" can only be used with "0" and "1" bit values.'
                 )
 
     # Empty list are allowed. Used for DONT_CARE values.
     if not isinstance(value_list, list):
-        raise Exception(
+        raise TypeError(
             f'Probe "{probe.name}" trigger/capture set value {value_list} is required to be a list.'
         )
     if len(value_list) > 2 and not is_trigger:
-        raise Exception(
+        raise ValueError(
             f'Probe "{probe.name}" capture set value {value_list} list length cannot be more than 2.'
         )
     if len(value_list) % 2 != 0:
-        raise Exception(
+        raise TypeError(
             f'Probe "{probe.name}" trigger/capture set value {value_list} is required to be a list'
             " with even number of items. Odd items are operators and even items are numbers."
         )
@@ -354,8 +378,8 @@ def verify_probe_value(probe: ILAProbe, value_list: [], is_trigger: bool):
 
 def create_probes_from_ports_and_ltx(
     tcf_ila: TCF_AxisIlaCoreClient, ports: [ILAPort], ltx: Ltx, uuid: str
-) -> ({}, {}, str):
-    """ Returns:  probes, map_to_port_seqs, cell_name """
+) -> ({}, {}, str, {}):
+    """ Returns:  probes, map_to_port_seqs, cell_name, probe enum defs"""
 
     def process_one_tcf_probe(attrs: {str, Any}) -> {}:
         res = {
@@ -401,11 +425,18 @@ def create_probes_from_ports_and_ltx(
                     }
                 )
 
+    def get_probe_enum_defs(p_dicts: {}, ltx_probes: [LtxProbe]) -> {}:
+        res = {}
+        for ltx_p in ltx_probes:
+            if ltx_p.enum_def and ltx_p.name in p_dicts:
+                res[ltx_p.name] = ltx_p.enum_def
+        return res
+
     cell_name = ""
     tcf_ila.undefine_probe([])
     ltx_core = ltx.get_core(CoreType.AXIS_ILA, uuid) if ltx else None
     if ltx and not ltx_core:
-        raise Exception(f"Unable to find ILA core with uuid:{uuid} in LTX file.")
+        raise IndexError(f"Unable to find ILA core with uuid:{uuid} in LTX file.")
     if ltx_core:
         cell_name = ltx_core.cell_name
         probe_defs = ltx_probes_to_tcf_pdefs(ltx_core)
@@ -418,8 +449,24 @@ def create_probes_from_ports_and_ltx(
     probe_dicts = {p_name: process_one_tcf_probe(attrs) for p_name, attrs in tcf_probes.items()}
     # Add bus information
     add_probe_bus_info(probe_dicts, ltx_core.probes)
+    enum_defs = get_probe_enum_defs(probe_dicts, ltx_core.probes)
     map_to_port_seqs = {
         attrs["map"]: process_one_tcf_probe_mapping(attrs) for p_name, attrs in tcf_probes.items()
     }
     probes = {p_name: ILAProbe(**probe) for p_name, probe in probe_dicts.items()}
-    return probes, map_to_port_seqs, cell_name
+    return probes, map_to_port_seqs, cell_name, enum_defs
+
+
+def verify_probe_enum_def(probe: ILAProbe, enum_def: enum.EnumMeta):
+    if not isinstance(enum_def, enum.EnumMeta):
+        raise TypeError(
+            f"enum definition need to be an Enum class. Type '{type(enum_def)}' was passed in."
+        )
+    for ei in enum_def:
+        if type(ei.value) is not int:
+            raise TypeError(f'enum {ei} value must be of type "int" for probe "{probe.name}".')
+        if ei.value.bit_length() > probe.bit_width:
+            raise ValueError(
+                f"Enum value {ei} has bit length:{ei.value.bit_length()}, "
+                f'which is more than probe "{probe.name}" bit length:{probe.bit_width}.'
+            )

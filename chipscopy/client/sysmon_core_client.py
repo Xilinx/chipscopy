@@ -43,12 +43,6 @@ class SysMonCoreClient(CoreClient):
         service, done_cb = self.make_done(done)
         return self.add_pending(service.stream_sensor_data(self.ctx, interval, done_cb))
 
-    def stream_specific_measurements(self, measurements: List[str], done: DoneHWCommand = None):
-        service, done_cb = self.make_done(done)
-        return self.add_pending(
-            service.stream_specific_measurements(self.ctx, measurements, done_cb)
-        )
-
     def initialize_sensors(self, done: DoneHWCommand = None):
         service, done_cb = self.make_done(done)
         return self.add_pending(service.initialize_sensors(self.ctx, done_cb))
@@ -60,10 +54,6 @@ class SysMonCoreClient(CoreClient):
     def get_measurements(self, done: DoneHWCommand = None):
         service, done_cb = self.make_done(done)
         return self.add_pending(service.get_measurements(self.ctx, done_cb))
-
-    def get_support_sensors(self, done: DoneHWCommand = None):
-        service, done_cb = self.make_done(done)
-        return self.add_pending(service.get_supported_sensors(self.ctx, done_cb))
 
     def get_all_sensors(self, done: DoneHWCommand = None):
         service, done_cb = self.make_done(done)
@@ -77,6 +67,6 @@ class SysMonCoreClient(CoreClient):
             service.configure_measurement_schedule(self.ctx, measurements, done_cb)
         )
 
-    def configure_temp_and_vccint(self, done: DoneHWCommand = None):
+    def configure_temp_and_vccint(self, done: DoneHWCommand = None):  # pragma: no cover
         service, done_cb = self.make_done(done)
         return self.add_pending(service.configure_temp_and_vccint(self.ctx, done_cb))

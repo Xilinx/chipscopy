@@ -340,15 +340,19 @@ def tree(view, show_context, glyph_type):
     tree_printer.print(show_context=show_context, glyph_type=glyph_type)
 
 
-def main():
+def _add_commands():
     _chipscopy.add_command(tree)
     _chipscopy.add_command(program)
     _chipscopy.add_command(ls)
     _chipscopy.add_command(info)
     _chipscopy.add_command(json_devices)
     _chipscopy.add_command(report)
+
+
+def main():  # pragma: no cover
+    _add_commands()
     _chipscopy()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

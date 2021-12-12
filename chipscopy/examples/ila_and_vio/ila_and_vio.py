@@ -31,10 +31,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2021.1 or greater
-# - Xilinx cs_server 2021.1 or greater
+# - Xilinx hw_server 2021.2 installed and running
+# - Xilinx cs_server 2021.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2021.1 or greater installed
+# - ChipScoPy 2021.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -142,8 +142,8 @@ for index, vio_core in enumerate(vio_cores):
 # As shown above, a counter is connected to the ILA core.
 # The VIO core controls the counter.
 
-ila = device.ila_cores.get(name="chipscopy_ex_i/counters/ila_slow_counter_0")
-vio = device.vio_cores.get(name="chipscopy_ex_i/counters/vio_slow_counter_0")
+ila = device.ila_cores.get(name="chipscopy_i/counters/ila_slow_counter_0")
+vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 
 print(f"Using ILA: {ila.core_info.uuid}  {ila.name}")
 print(f"Using VIO: {vio.core_info.uuid}  {vio.name}")
@@ -171,11 +171,11 @@ for probe in vio.probes:
 vio.reset_vio()
 vio.write_probes(
     {
-        "chipscopy_ex_i/counters/slow_counter_0_SCLR": 0,
-        "chipscopy_ex_i/counters/slow_counter_0_L": 0x00000000,
-        "chipscopy_ex_i/counters/slow_counter_0_LOAD": 0,
-        "chipscopy_ex_i/counters/slow_counter_0_UP": 1,
-        "chipscopy_ex_i/counters/slow_counter_0_CE": 1,
+        "chipscopy_i/counters/slow_counter_0_SCLR": 0,
+        "chipscopy_i/counters/slow_counter_0_L": 0x00000000,
+        "chipscopy_i/counters/slow_counter_0_LOAD": 0,
+        "chipscopy_i/counters/slow_counter_0_UP": 1,
+        "chipscopy_i/counters/slow_counter_0_CE": 1,
     }
 )
 print("Counter is now free-running and counting up")
@@ -190,7 +190,7 @@ print("Counter is now free-running and counting up")
 # This will show the counter is free running, and counting up
 
 ila.reset_probes()
-ila.set_probe_trigger_value("chipscopy_ex_i/counters/slow_counter_0_Q_1", ["==", "0xXXXX_0000"])
+ila.set_probe_trigger_value("chipscopy_i/counters/slow_counter_0_Q_1", ["==", "0xXXXX_0000"])
 ila.run_basic_trigger(window_count=1, window_size=32, trigger_position=16)
 print("ILA is running - looking for trigger")
 
@@ -203,7 +203,7 @@ upload_successful = ila.upload()
 if upload_successful:
     samples = get_waveform_data(
         ila.waveform,
-        ["chipscopy_ex_i/counters/slow_counter_0_Q_1"],
+        ["chipscopy_i/counters/slow_counter_0_Q_1"],
         include_trigger=True,
         include_sample_info=True,
     )
@@ -238,7 +238,7 @@ else:
 # Once transition happens, trigger in the middle of the buffer.
 
 ila.reset_probes()
-ila.set_probe_trigger_value("chipscopy_ex_i/counters/slow_counter_0_UP_1", ["==", "B"])
+ila.set_probe_trigger_value("chipscopy_i/counters/slow_counter_0_UP_1", ["==", "B"])
 ila.run_basic_trigger(window_count=1, window_size=32, trigger_position=16)
 
 print("ILA is running - looking for trigger")
@@ -247,7 +247,7 @@ print("ILA is running - looking for trigger")
 # VIO: Turn counter up/down switch to DOWN position.
 # This will cause the running ILA to trigger on the transition edge from up to down.
 
-vio.write_probes({"chipscopy_ex_i/counters/slow_counter_0_UP": 0})
+vio.write_probes({"chipscopy_i/counters/slow_counter_0_UP": 0})
 
 print("VIO changed up/down counter to count down")
 
@@ -260,7 +260,7 @@ upload_successful = ila.upload()
 if upload_successful:
     samples = get_waveform_data(
         ila.waveform,
-        ["chipscopy_ex_i/counters/slow_counter_0_Q_1"],
+        ["chipscopy_i/counters/slow_counter_0_Q_1"],
         include_trigger=True,
         include_sample_info=True,
     )

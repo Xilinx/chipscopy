@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from enum import Enum
+from enum import Enum, EnumMeta
 import inspect
 import json
 import struct
@@ -92,4 +91,7 @@ class Enum2StrEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Enum):
             return str(obj)
+        if isinstance(obj, EnumMeta):
+            items = {item.name: item.value for item in list(obj)}
+            return items
         return json.JSONEncoder.default(self, obj)
