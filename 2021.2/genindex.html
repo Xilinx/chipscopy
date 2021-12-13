@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
 	</head>
@@ -345,7 +342,6 @@
 <li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
 </ul>
@@ -456,7 +452,7 @@
         <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTWatchlist.add">(in module chipscopy.api.ibert.serial_object_base.IBERTWatchlist)</a>
 </li>
       </ul></li>
-      <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.aliases">aliases (chipscopy.api.ibert.serial_object_base.SerialObjectBase property)</a>
+      <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.aliases">aliases() (chipscopy.api.ibert.serial_object_base.SerialObjectBase property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -473,14 +469,12 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.ScanPoint.ber">ber (chipscopy.api.ibert.eye_scan.ScanPoint attribute)</a>
-
-      <ul>
-        <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.ber">(chipscopy.api.ibert.link.Link property)</a>
 </li>
-      </ul></li>
+      <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.ber">ber() (chipscopy.api.ibert.link.Link property)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.Plot2DData.ber_floor_value">ber_floor_value (chipscopy.api.ibert.eye_scan.Plot2DData attribute)</a>
 </li>
-      <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.bit_count">bit_count (chipscopy.api.ibert.link.Link property)</a>
+      <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.bit_count">bit_count() (chipscopy.api.ibert.link.Link property)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAPort.bit_width">bit_width (chipscopy.api.ila.ILAPort attribute)</a>
 
@@ -536,10 +530,10 @@
 </li>
       </ul></li>
       <li>
-    chipscopy.api.ddr
+    chipscopy.api.ddr.ddr
 
       <ul>
-        <li><a href="ddr.html#module-chipscopy.api.ddr">module</a>
+        <li><a href="ddr.html#module-chipscopy.api.ddr.ddr">module</a>
 </li>
       </ul></li>
       <li>
@@ -633,7 +627,9 @@
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStaticInfo.data_width">data_width (chipscopy.api.ila.ILAStaticInfo attribute)</a>
 </li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.ddrs">ddrs (chipscopy.api.device.device.Device property)</a>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR">DDR (class in chipscopy.api.ddr.ddr)</a>
+</li>
+      <li><a href="device.html#chipscopy.api.device.device.Device.ddrs">ddrs() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="ibert/references/scan_params.html#chipscopy.api.ibert.eye_scan.params.EyeScanParam.default_value">default_value (chipscopy.api.ibert.eye_scan.params.EyeScanParam attribute)</a>
 </li>
@@ -651,13 +647,15 @@
 </li>
       <li><a href="device.html#chipscopy.api.device.device.Device">Device (class in chipscopy.api.device.device)</a>
 </li>
-      <li><a href="session/references.html#chipscopy.api.session.Session.devices">devices (chipscopy.api.session.Session property)</a>
+      <li><a href="session/references.html#chipscopy.api.session.Session.devices">devices() (chipscopy.api.session.Session property)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIOProbe.direction">direction (chipscopy.api.vio.VIOProbe attribute)</a>
 </li>
       <li><a href="device.html#chipscopy.api.device.device.Device.discover_and_setup_cores">discover_and_setup_cores() (chipscopy.api.device.device.Device method)</a>
 </li>
       <li><a href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon.discover_noc_elements">discover_noc_elements() (chipscopy.api.noc.noc.NocPerfmon method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.display_eye_scan">display_eye_scan() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAProbeValues.display_radix">display_radix (chipscopy.api.ila.ILAProbeValues attribute)</a>
 
@@ -684,11 +682,9 @@
 </li>
       </ul></li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.RawData.error_count">error_count (chipscopy.api.ibert.eye_scan.RawData attribute)</a>
-
-      <ul>
-        <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.error_count">(chipscopy.api.ibert.link.Link property)</a>
 </li>
-      </ul></li>
+      <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.error_count">error_count() (chipscopy.api.ibert.link.Link property)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.ScanPoint.errors">errors (chipscopy.api.ibert.eye_scan.ScanPoint attribute)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.export_waveform">export_waveform() (chipscopy.api.ila method)</a>
@@ -696,11 +692,11 @@
       <li><a href="ibert/references/scan_plotter.html#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.eye_scan">eye_scan (chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot attribute)</a>
 
       <ul>
-        <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.eye_scan">(chipscopy.api.ibert.link.Link property)</a>
-</li>
         <li><a href="ibert/references/rx.html#chipscopy.api.ibert.rx.RX.eye_scan">(chipscopy.api.ibert.rx.RX attribute)</a>
 </li>
       </ul></li>
+      <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.eye_scan">eye_scan() (chipscopy.api.ibert.link.Link property)</a>
+</li>
       <li><a href="ibert/appendix/scan.html#chipscopy.api.ibert.aliases.EYE_SCAN_ABORTED">EYE_SCAN_ABORTED (in module chipscopy.api.ibert.aliases)</a>
 </li>
       <li><a href="ibert/appendix/scan.html#chipscopy.api.ibert.aliases.EYE_SCAN_DONE">EYE_SCAN_DONE (in module chipscopy.api.ibert.aliases)</a>
@@ -746,13 +742,15 @@
 </li>
         <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.filter_by">(chipscopy.api.ibert.link.Link attribute)</a>
 </li>
-        <li><a href="memory.html#chipscopy.api.memory.Memory.filter_by">(chipscopy.api.memory.Memory property)</a>
-</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="containers.html#chipscopy.api.containers.QueryList.filter_by">filter_by() (chipscopy.api.containers.QueryList method)</a>
+
+      <ul>
+        <li><a href="memory.html#chipscopy.api.memory.Memory.filter_by">(chipscopy.api.memory.Memory property)</a>
 </li>
+      </ul></li>
       <li><a href="containers.html#chipscopy.api.containers.QueryDict.flatten">flatten() (chipscopy.api.containers.QueryDict method)</a>
 </li>
   </ul></td>
@@ -781,23 +779,29 @@
 </li>
       <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.get_all_sensors">get_all_sensors() (chipscopy.api.sysmon.Sysmon method)</a>
 </li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.get_cal_margin_mode">get_cal_margin_mode() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.get_cal_stages">get_cal_stages() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.get_cal_status">get_cal_status() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
       <li><a href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon.get_clk_info">get_clk_info() (chipscopy.api.noc.noc.NocPerfmon method)</a>
 </li>
-      <li><a href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe.get_dot">get_dot() (chipscopy.api.pcie.PCIe method)</a>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.get_eye_scan_vref_percentage">get_eye_scan_vref_percentage() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
       <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.get_measurements">get_measurements() (chipscopy.api.sysmon.Sysmon method)</a>
 </li>
-      <li><a href="session/references.html#chipscopy.api.session.Session.get_param">get_param() (chipscopy.api.session.Session method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe.get_plt">get_plt() (chipscopy.api.pcie.PCIe method)</a>
+      <li><a href="session/references.html#chipscopy.api.session.Session.get_param">get_param() (chipscopy.api.session.Session method)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.get_probe_capture_value">get_probe_capture_value() (chipscopy.api.ila.ila.ILA method)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.get_probe_enum">get_probe_enum() (chipscopy.api.ila.ila.ILA method)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.get_probe_trigger_value">get_probe_trigger_value() (chipscopy.api.ila.ila.ILA method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.get_property">get_property() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
       <li><a href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon.get_supported_sampling_periods">get_supported_sampling_periods() (chipscopy.api.noc.noc.NocPerfmon method)</a>
 </li>
@@ -851,13 +855,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ibert/references/ibert.html#chipscopy.api.ibert.IBERT">IBERT (class in chipscopy.api.ibert)</a>
 </li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.ibert_cores">ibert_cores (chipscopy.api.device.device.Device property)</a>
+      <li><a href="device.html#chipscopy.api.device.device.Device.ibert_cores">ibert_cores() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="ibert/appendix/serial_object_base.html#chipscopy.api.ibert.aliases.IBERT_KEY">IBERT_KEY (in module chipscopy.api.ibert.aliases)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA">ILA (class in chipscopy.api.ila.ila)</a>
 </li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.ila_cores">ila_cores (chipscopy.api.device.device.Device property)</a>
+      <li><a href="device.html#chipscopy.api.device.device.Device.ila_cores">ila_cores() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILA_MATCH_BIT_VALUES">ILA_MATCH_BIT_VALUES (chipscopy.api.ila attribute)</a>
 </li>
@@ -897,12 +901,10 @@
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAWaveformProbe">ILAWaveformProbe (class in chipscopy.api.ila)</a>
 </li>
-      <li><a href="ila.html#chipscopy.api.ila.ILABitRange.index">index (chipscopy.api.ila.ILABitRange property)</a>
-
-      <ul>
-        <li><a href="ila.html#chipscopy.api.ila.ILAPort.index">(chipscopy.api.ila.ILAPort attribute)</a>
+      <li><a href="ila.html#chipscopy.api.ila.ILAPort.index">index (chipscopy.api.ila.ILAPort attribute)</a>
 </li>
-      </ul></li>
+      <li><a href="ila.html#chipscopy.api.ila.ILABitRange.index">index() (chipscopy.api.ila.ILABitRange property)</a>
+</li>
       <li><a href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon.initialize">initialize() (chipscopy.api.noc.noc.NocPerfmon method)</a>
 </li>
       <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.initialize_sensors">initialize_sensors() (chipscopy.api.sysmon.Sysmon method)</a>
@@ -915,7 +917,7 @@
         <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.invalidate">(chipscopy.api.ibert.link.Link method)</a>
 </li>
       </ul></li>
-      <li><a href="vio.html#chipscopy.api.vio.VIO.is_activity_supported">is_activity_supported (chipscopy.api.vio.VIO property)</a>
+      <li><a href="vio.html#chipscopy.api.vio.VIO.is_activity_supported">is_activity_supported() (chipscopy.api.vio.VIO property)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStatus.is_armed">is_armed (chipscopy.api.ila.ILAStatus attribute)</a>
 </li>
@@ -945,15 +947,17 @@
       </ul></li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStatus.is_trigger_at_startup">is_trigger_at_startup (chipscopy.api.ila.ILAStatus attribute)</a>
 </li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.is_user_enabled">is_user_enabled() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="ila.html#chipscopy.api.ila.ILABitRange.length">length (chipscopy.api.ila.ILABitRange property)</a>
+      <li><a href="ila.html#chipscopy.api.ila.ILABitRange.length">length() (chipscopy.api.ila.ILABitRange property)</a>
 </li>
-      <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.line_rate">line_rate (chipscopy.api.ibert.link.Link property)</a>
+      <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.line_rate">line_rate() (chipscopy.api.ibert.link.Link property)</a>
 </li>
       <li><a href="ibert/references/rx.html#chipscopy.api.ibert.rx.RX.link">link (chipscopy.api.ibert.rx.RX attribute)</a>
 
@@ -969,7 +973,9 @@
 </li>
       <li><a href="ibert/references/link_group.html#chipscopy.api.ibert.link.group.LinkGroup">LinkGroup (class in chipscopy.api.ibert.link.group)</a>
 </li>
-      <li><a href="ibert/references/link_group.html#chipscopy.api.ibert.link.group.LinkGroup.links">links (chipscopy.api.ibert.link.group.LinkGroup property)</a>
+      <li><a href="ibert/references/link_group.html#chipscopy.api.ibert.link.group.LinkGroup.links">links() (chipscopy.api.ibert.link.group.LinkGroup property)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.load_eye_scan_data">load_eye_scan_data() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -993,9 +999,9 @@
       </ul></li>
       <li><a href="ila.html#chipscopy.api.ila.ILAPort.match_unit_type">match_unit_type (chipscopy.api.ila.ILAPort attribute)</a>
 </li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.memory">memory (chipscopy.api.device.device.Device property)</a>
-</li>
       <li><a href="memory.html#chipscopy.api.memory.Memory">Memory (class in chipscopy.api.memory)</a>
+</li>
+      <li><a href="device.html#chipscopy.api.device.device.Device.memory">memory() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="device.html#chipscopy.api.device.device.Device.memory_read">memory_read() (chipscopy.api.device.device.Device method)</a>
 
@@ -1003,7 +1009,7 @@
         <li><a href="memory.html#chipscopy.api.memory.Memory.memory_read">(chipscopy.api.memory.Memory method)</a>
 </li>
       </ul></li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.memory_target_names">memory_target_names (chipscopy.api.device.device.Device property)</a>
+      <li><a href="device.html#chipscopy.api.device.device.Device.memory_target_names">memory_target_names() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="device.html#chipscopy.api.device.device.Device.memory_write">memory_write() (chipscopy.api.device.device.Device method)</a>
 
@@ -1023,7 +1029,7 @@
       <ul>
         <li><a href="containers.html#module-chipscopy.api.containers">chipscopy.api.containers</a>
 </li>
-        <li><a href="ddr.html#module-chipscopy.api.ddr">chipscopy.api.ddr</a>
+        <li><a href="ddr.html#module-chipscopy.api.ddr.ddr">chipscopy.api.ddr.ddr</a>
 </li>
         <li><a href="device.html#module-chipscopy.api.device.device">chipscopy.api.device.device</a>
 </li>
@@ -1072,7 +1078,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ibert/references/property.html#chipscopy.api._detail.property.PropertyUpdateEvent.names">names (chipscopy.api._detail.property.PropertyUpdateEvent attribute)</a>
 </li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.noc_core">noc_core (chipscopy.api.device.device.Device property)</a>
+      <li><a href="device.html#chipscopy.api.device.device.Device.noc_core">noc_core() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon">NocPerfmon (class in chipscopy.api.noc.noc)</a>
 </li>
@@ -1086,15 +1092,13 @@
 </li>
       <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.parent">parent (chipscopy.api.ibert.serial_object_base.SerialObjectBase attribute)</a>
 </li>
-      <li><a href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe">PCIe (class in chipscopy.api.pcie)</a>
-</li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.pcie_cores">pcie_cores (chipscopy.api.device.device.Device property)</a>
+      <li><a href="device.html#chipscopy.api.device.device.Device.pcie_cores">pcie_cores() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="ibert/references/gt.html#chipscopy.api.ibert.gt.GT.pll">pll (chipscopy.api.ibert.gt.GT attribute)</a>
+</li>
+      <li><a href="ibert/references/rx.html#chipscopy.api.ibert.rx.RX.pll">pll() (chipscopy.api.ibert.rx.RX property)</a>
 
       <ul>
-        <li><a href="ibert/references/rx.html#chipscopy.api.ibert.rx.RX.pll">(chipscopy.api.ibert.rx.RX property)</a>
-</li>
         <li><a href="ibert/references/tx.html#chipscopy.api.ibert.tx.TX.pll">(chipscopy.api.ibert.tx.TX property)</a>
 </li>
       </ul></li>
@@ -1110,34 +1114,30 @@
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStaticInfo.port_count">port_count (chipscopy.api.ila.ILAStaticInfo attribute)</a>
 </li>
-      <li><a href="vio.html#chipscopy.api.vio.VIO.port_in_count">port_in_count (chipscopy.api.vio.VIO property)</a>
+      <li><a href="vio.html#chipscopy.api.vio.VIO.port_in_count">port_in_count() (chipscopy.api.vio.VIO property)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIOProbe.port_index">port_index (chipscopy.api.vio.VIOProbe attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vio.html#chipscopy.api.vio.VIOProbe.port_name">port_name (chipscopy.api.vio.VIOProbe property)</a>
+      <li><a href="vio.html#chipscopy.api.vio.VIOProbe.port_name">port_name() (chipscopy.api.vio.VIOProbe property)</a>
 </li>
-      <li><a href="vio.html#chipscopy.api.vio.VIO.port_names">port_names (chipscopy.api.vio.VIO property)</a>
+      <li><a href="vio.html#chipscopy.api.vio.VIO.port_names">port_names() (chipscopy.api.vio.VIO property)</a>
 </li>
-      <li><a href="vio.html#chipscopy.api.vio.VIO.port_out_count">port_out_count (chipscopy.api.vio.VIO property)</a>
+      <li><a href="vio.html#chipscopy.api.vio.VIO.port_out_count">port_out_count() (chipscopy.api.vio.VIO property)</a>
 </li>
       <li><a href="memory.html#chipscopy.api.memory.Memory.post_init">post_init() (chipscopy.api.memory.Memory method)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.RawData.prescale">prescale (chipscopy.api.ibert.eye_scan.RawData attribute)</a>
 </li>
-      <li><a href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe.print_trace">print_trace() (chipscopy.api.pcie.PCIe method)</a>
-</li>
       <li><a href="vio.html#chipscopy.api.vio.VIOProbe.probe_name">probe_name (chipscopy.api.vio.VIOProbe attribute)</a>
 </li>
-      <li><a href="vio.html#chipscopy.api.vio.VIO.probe_names">probe_names (chipscopy.api.vio.VIO property)</a>
+      <li><a href="vio.html#chipscopy.api.vio.VIO.probe_names">probe_names() (chipscopy.api.vio.VIO property)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.probes">probes (chipscopy.api.ila.ILAWaveform attribute)</a>
-
-      <ul>
-        <li><a href="vio.html#chipscopy.api.vio.VIO.probes">(chipscopy.api.vio.VIO property)</a>
 </li>
-      </ul></li>
+      <li><a href="vio.html#chipscopy.api.vio.VIO.probes">probes() (chipscopy.api.vio.VIO property)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.ScanData.processed">processed (chipscopy.api.ibert.eye_scan.ScanData attribute)</a>
 </li>
       <li><a href="device.html#chipscopy.api.device.device.Device.program">program() (chipscopy.api.device.device.Device method)</a>
@@ -1172,8 +1172,6 @@
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.RawData">RawData (class in chipscopy.api.ibert.eye_scan)</a>
 </li>
-      <li><a href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe.read_data">read_data() (chipscopy.api.pcie.PCIe method)</a>
-</li>
       <li><a href="vio.html#chipscopy.api.vio.VIO.read_ports">read_ports() (chipscopy.api.vio.VIO method)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO.read_probe_activity">read_probe_activity() (chipscopy.api.vio.VIO method)</a>
@@ -1185,11 +1183,15 @@
       <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.refresh">refresh() (chipscopy.api.ibert.link.Link method)</a>
 
       <ul>
-        <li><a href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe.refresh">(chipscopy.api.pcie.PCIe method)</a>
-</li>
         <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.refresh">(in module chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands)</a>
 </li>
       </ul></li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.refresh_cal_margin">refresh_cal_margin() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.refresh_cal_status">refresh_cal_status() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.refresh_health_status">refresh_health_status() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
       <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.refresh_measurement_schedule">refresh_measurement_schedule() (chipscopy.api.sysmon.Sysmon method)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.refresh_status">refresh_status() (chipscopy.api.ila.ila.ILA method)</a>
@@ -1200,12 +1202,16 @@
         <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTWatchlist.remove">(in module chipscopy.api.ibert.serial_object_base.IBERTWatchlist)</a>
 </li>
       </ul></li>
-      <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.report">report() (in module chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands)</a>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.report">report() (chipscopy.api.ddr.ddr.DDR method)</a>
+
+      <ul>
+        <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.report">(in module chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands)</a>
 </li>
-      <li><a href="report.html#chipscopy.report_hierarchy">report_hierarchy() (in module chipscopy)</a>
-</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="report.html#chipscopy.report_hierarchy">report_hierarchy() (in module chipscopy)</a>
+</li>
       <li><a href="report.html#chipscopy.report_versions">report_versions() (in module chipscopy)</a>
 </li>
       <li><a href="ibert/references/gt.html#chipscopy.api.ibert.gt.GT.reset">reset() (chipscopy.api.ibert.gt.GT method)</a>
@@ -1220,13 +1226,13 @@
         <li><a href="ibert/references/tx.html#chipscopy.api.ibert.tx.TX.reset">(chipscopy.api.ibert.tx.TX method)</a>
 </li>
       </ul></li>
-      <li><a href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe.reset_core">reset_core() (chipscopy.api.pcie.PCIe method)</a>
-</li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.reset_probes">reset_probes() (chipscopy.api.ila.ila.ILA method)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO.reset_vio">reset_vio() (chipscopy.api.vio.VIO method)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.run_basic_trigger">run_basic_trigger() (chipscopy.api.ila.ila.ILA method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.run_eye_scan">run_eye_scan() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.run_trigger_immediately">run_trigger_immediately() (chipscopy.api.ila.ila.ILA method)</a>
 </li>
@@ -1262,6 +1268,8 @@
 </li>
       <li><a href="ibert/references/scan_plotter.html#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.save">save() (chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot method)</a>
 </li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.save_eye_scan_data">save_eye_scan_data() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.scan_data">scan_data (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.Plot2DData.scan_points">scan_points (chipscopy.api.ibert.eye_scan.Plot2DData attribute)</a>
@@ -1278,8 +1286,24 @@
 </li>
       <li><a href="containers.html#chipscopy.api.containers.QueryList.set_custom_match_function">set_custom_match_function() (chipscopy.api.containers.QueryList method)</a>
 </li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_complex_pattern">set_eye_scan_complex_pattern() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_rank">set_eye_scan_rank() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_read_mode">set_eye_scan_read_mode() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_simple_pattern">set_eye_scan_simple_pattern() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_max">set_eye_scan_vref_max() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_min">set_eye_scan_vref_min() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_steps">set_eye_scan_vref_steps() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_write_mode">set_eye_scan_write_mode() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
       <li><a href="session/references.html#chipscopy.api.session.Session.set_log_level">set_log_level() (chipscopy.api.session.Session static method)</a>
 </li>
       <li><a href="session/references.html#chipscopy.api.session.Session.set_param">set_param() (chipscopy.api.session.Session method)</a>
@@ -1297,11 +1321,9 @@
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.start_time">start_time (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.status">status (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
-
-      <ul>
-        <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.status">(chipscopy.api.ibert.link.Link property)</a>
 </li>
-      </ul></li>
+      <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.status">status() (chipscopy.api.ibert.link.Link property)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.stop">stop() (chipscopy.api.ibert.eye_scan.EyeScan method)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.stop_time">stop_time (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
@@ -1310,7 +1332,7 @@
 </li>
       <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon">Sysmon (class in chipscopy.api.sysmon)</a>
 </li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.sysmon_root">sysmon_root (chipscopy.api.device.device.Device property)</a>
+      <li><a href="device.html#chipscopy.api.device.device.Device.sysmon_root">sysmon_root() (chipscopy.api.device.device.Device property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1324,7 +1346,7 @@
 </li>
       <li><a href="ila.html#chipscopy.api.CoreInfo.tool_minor_ver">tool_minor_ver (chipscopy.api.CoreInfo attribute)</a>
 </li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.trace_cores">trace_cores (chipscopy.api.device.device.Device property)</a>
+      <li><a href="device.html#chipscopy.api.device.device.Device.trace_cores">trace_cores() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAControl.trig_in_mode">trig_in_mode (chipscopy.api.ila.ILAControl attribute)</a>
 </li>
@@ -1394,7 +1416,7 @@
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO">VIO (class in chipscopy.api.vio)</a>
 </li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.vio_cores">vio_cores (chipscopy.api.device.device.Device property)</a>
+      <li><a href="device.html#chipscopy.api.device.device.Device.vio_cores">vio_cores() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIOProbe">VIOProbe (class in chipscopy.api.vio)</a>
 </li>
@@ -1474,7 +1496,7 @@
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

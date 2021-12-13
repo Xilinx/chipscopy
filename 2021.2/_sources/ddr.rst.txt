@@ -61,5 +61,5 @@ to Xilinx technical support in the event of calibration failure for troubleshoot
 API Functions
 ^^^^^^^^^^^^^
 
-.. automodule:: chipscopy.api.ddr
+.. automodule:: chipscopy.api.ddr.ddr
     :members:

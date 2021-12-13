@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Device" href="device.html" />
@@ -347,7 +344,6 @@
 <li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
 </ul>
@@ -431,16 +427,16 @@
   <div class="section" id="module-chipscopy.api.containers">
 <span id="containers"></span><h1>Containers<a class="headerlink" href="#module-chipscopy.api.containers" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.containers.QueryList">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.containers.</span></span><span class="sig-name descname"><span class="pre">QueryList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.containers.QueryList">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.containers.</span></code><code class="sig-name descname"><span class="pre">QueryList</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList" title="Permalink to this definition">¶</a></dt>
 <dd><p>QueryList is a simple custom list with a few extra bells and whistles.</p>
 <p>QueryList elements can be any object. If the elements contain a dictionary member called “filter_by”,
 those key/value pairs in the dictionary are used for filtering.</p>
 <p>A custom matching function can be specified in this querylist using set_custom_match_function. Any
 custom match function takes priority when matching over the optional filter_by attribute.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.containers.QueryList.set_custom_match_function">
-<span class="sig-name descname"><span class="pre">set_custom_match_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.set_custom_match_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.set_custom_match_function" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.containers.QueryList.set_custom_match_function">
+<code class="sig-name descname"><span class="pre">set_custom_match_function</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.set_custom_match_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.set_custom_match_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets an optional custom match function for the QueryList. If a custom match function is set,
 each list item is compared using the match function. The match function is expected to return
 True if the list_item matches the passed in key/value pair.</p>
@@ -452,8 +448,8 @@ True if the list_item matches the passed in key/value pair.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.containers.QueryList.all">
-<span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.all" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.containers.QueryList.all">
+<code class="sig-name descname"><span class="pre">all</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns: every element in list</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -463,8 +459,8 @@ True if the list_item matches the passed in key/value pair.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.containers.QueryList.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.get" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.containers.QueryList.get">
+<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get one list item matching the filter. If exactly one list item does not match the filter, a ValueError
 is raised.</p>
 <dl class="field-list simple">
@@ -481,8 +477,8 @@ is raised.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.containers.QueryList.at">
-<span class="sig-name descname"><span class="pre">at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.at" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.containers.QueryList.at">
+<code class="sig-name descname"><span class="pre">at</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return value from index</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -498,8 +494,8 @@ is raised.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.containers.QueryList.filter_by">
-<span class="sig-name descname"><span class="pre">filter_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.filter_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.filter_by" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.containers.QueryList.filter_by">
+<code class="sig-name descname"><span class="pre">filter_by</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryList.filter_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryList.filter_by" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate through list and return only those elements that match specifications in filters.
 For an item to qualify as ‘filterable’, the item must be an object and have an attribute
 named <cite>filter_by</cite> of type Dict[str, Any].</p>
@@ -521,12 +517,12 @@ against the data in the <cite>filter_by</cite> attribute of the each element in 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.containers.QueryDict">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.containers.</span></span><span class="sig-name descname"><span class="pre">QueryDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryDict" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.containers.QueryDict">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.containers.</span></code><code class="sig-name descname"><span class="pre">QueryDict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with bells and whistles</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.containers.QueryDict.flatten">
-<span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort_by_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryDict.flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryDict.flatten" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.containers.QueryDict.flatten">
+<code class="sig-name descname"><span class="pre">flatten</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort_by_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/containers.html#QueryDict.flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.containers.QueryDict.flatten" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flatten a nested dictionary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -571,7 +567,7 @@ against the data in the <cite>filter_by</cite> attribute of the each element in 
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

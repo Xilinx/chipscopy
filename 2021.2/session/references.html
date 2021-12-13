@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="../_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="Session" href="../session.html" /> 
@@ -346,7 +343,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vio.html">VIO</a></li>
 </ul>
@@ -440,8 +436,8 @@
   <div class="section" id="factory-methods">
 <h1>Factory methods<a class="headerlink" href="#factory-methods" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="chipscopy.create_session">
-<span class="sig-prename descclassname"><span class="pre">chipscopy.</span></span><span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.create_session" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.create_session">
+<code class="sig-prename descclassname"><span class="pre">chipscopy.</span></code><code class="sig-name descname"><span class="pre">create_session</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.create_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new session. Connect to the specified hw_server, and optionally
 the cs_server.</p>
 <ul class="simple">
@@ -477,8 +473,8 @@ the cs_server.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="chipscopy.delete_session">
-<span class="sig-prename descclassname"><span class="pre">chipscopy.</span></span><span class="sig-name descname"><span class="pre">delete_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#delete_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.delete_session" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.delete_session">
+<code class="sig-prename descclassname"><span class="pre">chipscopy.</span></code><code class="sig-name descname"><span class="pre">delete_session</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#delete_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.delete_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a session. Shuts down any open server connections.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -491,21 +487,21 @@ the cs_server.</p>
 <div class="section" id="chipscopy-api-session">
 <h1>chipscopy.api.session<a class="headerlink" href="#chipscopy-api-session" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.session.Session">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.session.</span></span><span class="sig-name descname"><span class="pre">Session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xvc_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass_version_check</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.session.Session">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.session.</span></code><code class="sig-name descname"><span class="pre">Session</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xvc_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass_version_check</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Top level object that tracks a connection to a hardware server and optionally, chipscope
 server. To create and destroy a session, use the factory function
 create_session() and delete_session().</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.session.Session.set_param">
-<span class="sig-name descname"><span class="pre">set_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.set_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.set_param" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.session.Session.set_param">
+<code class="sig-name descname"><span class="pre">set_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.set_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.set_param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic parameter get and set for low level chipscope server params</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.session.Session.get_param">
-<span class="sig-name descname"><span class="pre">get_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.get_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.get_param" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.session.Session.get_param">
+<code class="sig-name descname"><span class="pre">get_param</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.get_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.get_param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic parameter get and set for low level chipscope server params</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -514,9 +510,9 @@ create_session() and delete_session().</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.session.Session.devices">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">devices</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api.device.device.Device]</span></em><a class="headerlink" href="#chipscopy.api.session.Session.devices" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.session.Session.devices">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">devices</span></code><a class="headerlink" href="#chipscopy.api.session.Session.devices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of devices connected to this hw_server. Devices may
 contain several chains so don’t always assume a single jtag chain
 in-order is returned</p>
@@ -528,8 +524,8 @@ in-order is returned</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.session.Session.set_log_level">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">set_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.set_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.set_log_level" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.session.Session.set_log_level">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">set_log_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.set_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.set_log_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the logging level for the ChipScoPy client. This applies to all sessions.
 Default is “NONE”</p>
 <dl class="field-list simple">
@@ -571,7 +567,7 @@ Default is “NONE”</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

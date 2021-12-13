@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="NocPerfmon" href="noc.html" />
@@ -347,7 +344,6 @@
 <li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
 </ul>
@@ -431,8 +427,8 @@
   <div class="section" id="memory">
 <h1>Memory<a class="headerlink" href="#memory" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.memory.Memory">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.memory.</span></span><span class="sig-name descname"><span class="pre">Memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.memory.Memory">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.memory.</span></code><code class="sig-name descname"><span class="pre">Memory</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides memory read and memory write service for a device.</p>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">some_values</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">memory_read</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="mh">0xF2010000</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;DPC&quot;</span><span class="p">)</span>
@@ -442,9 +438,9 @@
 <span class="n">dpc</span><span class="o">.</span><span class="n">memory_write</span><span class="p">(</span><span class="mh">0xF2010000</span><span class="p">,</span> <span class="p">[</span><span class="mh">0x12345678</span><span class="p">,</span> <span class="mh">0xDEADC0FE</span><span class="p">])</span>
 </pre></div>
 </div>
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.memory.Memory.filter_by">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">filter_by</span></span><a class="headerlink" href="#chipscopy.api.memory.Memory.filter_by" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.memory.Memory.filter_by">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">filter_by</span></code><a class="headerlink" href="#chipscopy.api.memory.Memory.filter_by" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specifies the dict used for filtering memory objects in the device and session.
 Filters memory in the QueryList returned by Session.memory and Device.memory.</p>
 <dl class="field-list simple">
@@ -455,14 +451,14 @@ Filters memory in the QueryList returned by Session.memory and Device.memory.</p
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.memory.Memory.post_init">
-<span class="sig-name descname"><span class="pre">post_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.post_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.post_init" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.memory.Memory.post_init">
+<code class="sig-name descname"><span class="pre">post_init</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.post_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.post_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called at the end of node upgrade</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.memory.Memory.check_and_upgrade">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">check_and_upgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.check_and_upgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.check_and_upgrade" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.memory.Memory.check_and_upgrade">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">check_and_upgrade</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_view</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.check_and_upgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.check_and_upgrade" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a client MemoryNode to Memory</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -472,8 +468,8 @@ Filters memory in the QueryList returned by Session.memory and Device.memory.</p
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.memory.Memory.is_compatible">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">is_compatible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.is_compatible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.is_compatible" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.memory.Memory.is_compatible">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">is_compatible</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.is_compatible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.is_compatible" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if Memory is a compatible node type</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -483,8 +479,8 @@ Filters memory in the QueryList returned by Session.memory and Device.memory.</p
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.memory.Memory.memory_write">
-<span class="sig-name descname"><span class="pre">memory_write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.memory_write" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.memory.Memory.memory_write">
+<code class="sig-name descname"><span class="pre">memory_write</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.memory_write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write values from list of &lt;values&gt; to memory address specified by
 &lt;address&gt;.</p>
 <p>size defaults to ‘w’ if not specified.</p>
@@ -509,8 +505,8 @@ Filters memory in the QueryList returned by Session.memory and Device.memory.</p
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.memory.Memory.memory_read">
-<span class="sig-name descname"><span class="pre">memory_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.memory_read" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.memory.Memory.memory_read">
+<code class="sig-name descname"><span class="pre">memory_read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/memory.html#Memory.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.memory.Memory.memory_read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read and return &lt;num&gt; data values from the target’s memory address
 specified by &lt;address&gt;.</p>
 <p>num defaults to 1 if not specified.
@@ -571,7 +567,7 @@ size defaults to ‘w’ if not specified.</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

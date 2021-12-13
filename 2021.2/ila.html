@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Memory" href="memory.html" />
@@ -393,7 +390,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
 </ul>
@@ -500,8 +496,8 @@ constraints that are applied to your design are also applied to the components o
 <div class="section" id="ila-attributes">
 <h2>ILA Attributes<a class="headerlink" href="#ila-attributes" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.ila.</span></span><span class="sig-name descname"><span class="pre">ILA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcf_ila</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.ila.</span></code><code class="sig-name descname"><span class="pre">ILA</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcf_ila</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data read-only attributes are accessible by dot-notation’, e.g.  <em>my_ila.static_info.status</em></p>
 <table class="docutils align-default">
 <colgroup>
@@ -525,7 +521,7 @@ constraints that are applied to your design are also applied to the components o
 <td><p>Debug core version information.</p></td>
 </tr>
 <tr class="row-even"><td><p>static_info</p></td>
-<td><p><a class="reference internal" href="#chipscopy.api.ila.ILAStaticInfo" title="chipscopy.api.ila.ila.ILAStaticInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAStaticInfo</span></code></a></p></td>
+<td><p><a class="reference internal" href="#chipscopy.api.ila.ILAStaticInfo" title="chipscopy.api.ila.ILAStaticInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAStaticInfo</span></code></a></p></td>
 <td><p>Feature set and dimensions of the ILA core.</p></td>
 </tr>
 <tr class="row-odd"><td><p>status</p></td>
@@ -566,8 +562,8 @@ the context of the HDL design.</p>
 <div class="section" id="ila-get-probe-capture-value">
 <h3>ILA.get_probe_capture_value<a class="headerlink" href="#ila-get-probe-capture-value" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.get_probe_capture_value">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">get_probe_capture_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.get_probe_capture_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.get_probe_capture_value" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.get_probe_capture_value">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">get_probe_capture_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.get_probe_capture_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.get_probe_capture_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get basic capture mode compare value for a probe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -586,8 +582,8 @@ the context of the HDL design.</p>
 <div class="section" id="ila-get-probe-enum">
 <h3>ILA.get_probe_enum<a class="headerlink" href="#ila-get-probe-enum" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.get_probe_enum">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">get_probe_enum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.get_probe_enum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.get_probe_enum" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.get_probe_enum">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">get_probe_enum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.get_probe_enum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.get_probe_enum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get enum class, which defines valid enum values for the probe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -606,8 +602,8 @@ the context of the HDL design.</p>
 <div class="section" id="ila-get-probe-trigger-value">
 <h3>ILA.get_probe_trigger_value<a class="headerlink" href="#ila-get-probe-trigger-value" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.get_probe_trigger_value">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">get_probe_trigger_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.get_probe_trigger_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.get_probe_trigger_value" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.get_probe_trigger_value">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">get_probe_trigger_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.get_probe_trigger_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.get_probe_trigger_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get basic trigger mode compare value(s) for a probe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -617,7 +613,7 @@ the context of the HDL design.</p>
 <dd class="field-even"><p>[]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of &lt;operator&gt;/&lt;value&gt; pairs.  See <a class="reference internal" href="#chipscopy.api.ila.ILAProbeValues" title="chipscopy.api.ila.ila_probe.ILAProbeValues"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAProbeValues</span></code></a></p>
+<dd class="field-odd"><p>List of &lt;operator&gt;/&lt;value&gt; pairs.  See <code class="xref py py-class docutils literal notranslate"><span class="pre">ILAProbeValues</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -626,8 +622,8 @@ the context of the HDL design.</p>
 <div class="section" id="ila-reset-probes">
 <h3>ILA.reset_probes<a class="headerlink" href="#ila-reset-probes" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.reset_probes">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">reset_probes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reset_trigger_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_capture_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.reset_probes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.reset_probes" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.reset_probes">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">reset_probes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reset_trigger_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_capture_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.reset_probes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.reset_probes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset probe compare values, to dont-cares.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -646,8 +642,8 @@ the context of the HDL design.</p>
 <div class="section" id="ila-set-probe-capture-value">
 <h3>ILA.set_probe_capture_value<a class="headerlink" href="#ila-set-probe-capture-value" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.set_probe_capture_value">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">set_probe_capture_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.set_probe_capture_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.set_probe_capture_value" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.set_probe_capture_value">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">set_probe_capture_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.set_probe_capture_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.set_probe_capture_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>For basic capture mode, set probe compare value to filter samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -666,8 +662,8 @@ the context of the HDL design.</p>
 <div class="section" id="ila-set-probe-enum">
 <h3>ILA.set_probe_enum<a class="headerlink" href="#ila-set-probe-enum" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.set_probe_enum">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">set_probe_enum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enum_def</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_as_enum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.set_probe_enum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.set_probe_enum" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.set_probe_enum">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">set_probe_enum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enum_def</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_as_enum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.set_probe_enum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.set_probe_enum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set enum values for a probe, by providing a enum class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -687,8 +683,8 @@ the context of the HDL design.</p>
 <div class="section" id="ila-set-probe-trigger-value">
 <h3>ILA.set_probe_trigger_value<a class="headerlink" href="#ila-set-probe-trigger-value" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.set_probe_trigger_value">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">set_probe_trigger_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.set_probe_trigger_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.set_probe_trigger_value" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.set_probe_trigger_value">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">set_probe_trigger_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.set_probe_trigger_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.set_probe_trigger_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>For basic trigger mode, set probe compare value(s).</p>
 <blockquote>
 <div><p>A compare value consists of a pair: &lt;operator&gt; and &lt;value&gt;
@@ -741,8 +737,8 @@ An empty list is a don’t-care value.</p>
 <div class="section" id="ila-refresh-status">
 <h3>ILA.refresh_status<a class="headerlink" href="#ila-refresh-status" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.refresh_status">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">refresh_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.refresh_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.refresh_status" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.refresh_status">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">refresh_status</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.refresh_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.refresh_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read dynamic status and store in attribute ‘ila.status’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -755,8 +751,8 @@ An empty list is a don’t-care value.</p>
 <div class="section" id="ila-monitor-status">
 <h3>ILA.monitor_status<a class="headerlink" href="#ila-monitor-status" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.monitor_status">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">monitor_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_wait_minutes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.monitor_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.monitor_status" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.monitor_status">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">monitor_status</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_wait_minutes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.monitor_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.monitor_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function monitors ILA capture status and waits until all data has been captured, or until timeout
 or the function is cancelled.
 Call this function after arming the ILA, before uploading the waveform.
@@ -828,7 +824,7 @@ ChipScoPy API function, which interacts with the cs_server or the device.</p></l
 <p>Returns (<a class="reference internal" href="#chipscopy.api.ila.ILAStatus" title="chipscopy.api.ila.ILAStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAStatus</span></code></a> or request.CsFutureRequestSync or None):</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#chipscopy.api.ila.ILAStatus" title="chipscopy.api.ila.ila_capture.ILAStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAStatus</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAStatus</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -837,8 +833,8 @@ ChipScoPy API function, which interacts with the cs_server or the device.</p></l
 <div class="section" id="ila-run-trigger-immediately">
 <h3>ILA.run_trigger_immediately<a class="headerlink" href="#ila-run-trigger-immediately" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.run_trigger_immediately">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">run_trigger_immediately</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trigger_position=0</span></em>, <em class="sig-param"><span class="pre">window_count=1</span></em>, <em class="sig-param"><span class="pre">window_size=-1</span></em>, <em class="sig-param"><span class="pre">trig_out=&lt;ILATrigOutMode.DISABLED:</span> <span class="pre">0&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.run_trigger_immediately"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.run_trigger_immediately" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.run_trigger_immediately">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">run_trigger_immediately</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trigger_position=0</span></em>, <em class="sig-param"><span class="pre">window_count=1</span></em>, <em class="sig-param"><span class="pre">window_size=-1</span></em>, <em class="sig-param"><span class="pre">trig_out=&lt;ILATrigOutMode.DISABLED:</span> <span class="pre">0&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.run_trigger_immediately"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.run_trigger_immediately" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger ILA immediately.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -862,8 +858,8 @@ Default value: <code class="xref py py-attr docutils literal notranslate"><span 
 <div class="section" id="ila-run-basic-trigger">
 <h3>ILA.run_basic_trigger<a class="headerlink" href="#ila-run-basic-trigger" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.run_basic_trigger">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">run_basic_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trigger_position=-1</span></em>, <em class="sig-param"><span class="pre">window_count=1</span></em>, <em class="sig-param"><span class="pre">window_size=-1</span></em>, <em class="sig-param"><span class="pre">trigger_condition=&lt;ILATriggerCondition.AND:</span> <span class="pre">1&gt;</span></em>, <em class="sig-param"><span class="pre">capture_condition=&lt;ILACaptureCondition.ALWAYS:</span> <span class="pre">4&gt;</span></em>, <em class="sig-param"><span class="pre">trig_in=&lt;ILATrigInMode.DISABLED:</span> <span class="pre">0&gt;</span></em>, <em class="sig-param"><span class="pre">trig_out=&lt;ILATrigOutMode.DISABLED:</span> <span class="pre">0&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.run_basic_trigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.run_basic_trigger" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.run_basic_trigger">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">run_basic_trigger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trigger_position=-1</span></em>, <em class="sig-param"><span class="pre">window_count=1</span></em>, <em class="sig-param"><span class="pre">window_size=-1</span></em>, <em class="sig-param"><span class="pre">trigger_condition=&lt;ILATriggerCondition.AND:</span> <span class="pre">1&gt;</span></em>, <em class="sig-param"><span class="pre">capture_condition=&lt;ILACaptureCondition.ALWAYS:</span> <span class="pre">4&gt;</span></em>, <em class="sig-param"><span class="pre">trig_in=&lt;ILATrigInMode.DISABLED:</span> <span class="pre">0&gt;</span></em>, <em class="sig-param"><span class="pre">trig_out=&lt;ILATrigOutMode.DISABLED:</span> <span class="pre">0&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.run_basic_trigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.run_basic_trigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger using probe compare values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -892,8 +888,8 @@ Default value: <code class="xref py py-attr docutils literal notranslate"><span 
 <div class="section" id="ila-wait-till-done">
 <h3>ILA.wait_till_done<a class="headerlink" href="#ila-wait-till-done" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.wait_till_done">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">wait_till_done</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_wait_minutes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.wait_till_done"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.wait_till_done" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.wait_till_done">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">wait_till_done</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_wait_minutes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.wait_till_done"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.wait_till_done" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until all data has been captured, or until timeout.
 Call this function after arming the ILA, before uploading the waveform.</p>
 <dl class="field-list simple">
@@ -904,7 +900,7 @@ Call this function after arming the ILA, before uploading the waveform.</p>
 <p>Returns (<a class="reference internal" href="#chipscopy.api.ila.ILAStatus" title="chipscopy.api.ila.ILAStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAStatus</span></code></a>): ILA capture status.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#chipscopy.api.ila.ILAStatus" title="chipscopy.api.ila.ila_capture.ILAStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAStatus</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAStatus</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -917,8 +913,8 @@ Call this function after arming the ILA, before uploading the waveform.</p>
 <div class="section" id="ila-upload">
 <h3>ILA.upload<a class="headerlink" href="#ila-upload" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ila.ILA.upload">
-<span class="sig-prename descclassname"><span class="pre">ILA.</span></span><span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.upload" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ila.ILA.upload">
+<code class="sig-prename descclassname"><span class="pre">ILA.</span></code><code class="sig-name descname"><span class="pre">upload</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILA.upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila.ILA.upload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload waveform. If the ILA has not triggered yet, it will return with value <em>False</em>.
 The uploaded waveform is at <em>self.waveform</em>.</p>
 <dl class="simple">
@@ -936,8 +932,8 @@ The uploaded waveform is at <em>self.waveform</em>.</p>
 <div class="section" id="export-waveform">
 <h3>export_waveform<a class="headerlink" href="#export-waveform" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.export_waveform">
-<span class="sig-prename descclassname"><span class="pre">ila.</span></span><span class="sig-name descname"><span class="pre">export_waveform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">export_format='CSV'</span></em>, <em class="sig-param"><span class="pre">fh_or_filepath=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></em>, <em class="sig-param"><span class="pre">probe_names=None</span></em>, <em class="sig-param"><span class="pre">start_window_idx=0</span></em>, <em class="sig-param"><span class="pre">window_count=None</span></em>, <em class="sig-param"><span class="pre">start_sample_idx=0</span></em>, <em class="sig-param"><span class="pre">sample_count=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.export_waveform" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.export_waveform">
+<code class="sig-prename descclassname"><span class="pre">ila.</span></code><code class="sig-name descname"><span class="pre">export_waveform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">export_format='CSV'</span></em>, <em class="sig-param"><span class="pre">fh_or_filepath=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></em>, <em class="sig-param"><span class="pre">probe_names=None</span></em>, <em class="sig-param"><span class="pre">start_window_idx=0</span></em>, <em class="sig-param"><span class="pre">window_count=None</span></em>, <em class="sig-param"><span class="pre">start_sample_idx=0</span></em>, <em class="sig-param"><span class="pre">sample_count=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.export_waveform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a waveform in VCD or CSV format, to a file.
 By default all samples for all probes are exported,
 but it is possible to select which probes and window/sample ranges.</p>
@@ -973,8 +969,8 @@ The file will be opened and closed by the function.</p>
 <div class="section" id="get-waveform-data">
 <h3>get_waveform_data<a class="headerlink" href="#get-waveform-data" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.get_waveform_data">
-<span class="sig-prename descclassname"><span class="pre">ila.</span></span><span class="sig-name descname"><span class="pre">get_waveform_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_window_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_sample_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_trigger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_sample_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.get_waveform_data" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.get_waveform_data">
+<code class="sig-prename descclassname"><span class="pre">ila.</span></code><code class="sig-name descname"><span class="pre">get_waveform_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_window_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_sample_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_trigger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_sample_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.get_waveform_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get probe waveform data as a list of int values for each probe.
 By default all samples for all probes are included in return data,
 but it is possible to select which probes and window/sample ranges.</p>
@@ -1023,8 +1019,8 @@ but it is possible to select which probes and window/sample ranges.</p>
 <div class="section" id="get-waveform-probe-data">
 <h3>get_waveform_probe_data<a class="headerlink" href="#get-waveform-probe-data" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ila.get_waveform_probe_data">
-<span class="sig-prename descclassname"><span class="pre">ila.</span></span><span class="sig-name descname"><span class="pre">get_waveform_probe_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_window_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_sample_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.get_waveform_probe_data" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.get_waveform_probe_data">
+<code class="sig-prename descclassname"><span class="pre">ila.</span></code><code class="sig-name descname"><span class="pre">get_waveform_probe_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_window_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_sample_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.get_waveform_probe_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get waveform data as a list of int values for one probe.
 By default all samples for the probe are returned,
 It is possible to select window range and sample range.</p>
@@ -1057,61 +1053,61 @@ It is possible to select window range and sample range.</p>
 <h2>ILA Data Defintions<a class="headerlink" href="#ila-data-defintions" title="Permalink to this headline">¶</a></h2>
 <p>Constant to indicate trigger position in the middle of the waveform window.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILA_TRIGGER_POSITION_HALF">
-<span class="sig-prename descclassname"><span class="pre">ila.</span></span><span class="sig-name descname"><span class="pre">ILA_TRIGGER_POSITION_HALF</span></span><em class="property"> <span class="pre">=</span> <span class="pre">-1</span></em><a class="headerlink" href="#chipscopy.api.ila.ILA_TRIGGER_POSITION_HALF" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILA_TRIGGER_POSITION_HALF">
+<code class="sig-prename descclassname"><span class="pre">ila.</span></code><code class="sig-name descname"><span class="pre">ILA_TRIGGER_POSITION_HALF</span></code><em class="property"> <span class="pre">=</span> <span class="pre">-1</span></em><a class="headerlink" href="#chipscopy.api.ila.ILA_TRIGGER_POSITION_HALF" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Constant to indicate maximum window size.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILA_WINDOW_SIZE_MAX">
-<span class="sig-prename descclassname"><span class="pre">ila.</span></span><span class="sig-name descname"><span class="pre">ILA_WINDOW_SIZE_MAX</span></span><em class="property"> <span class="pre">=</span> <span class="pre">-1</span></em><a class="headerlink" href="#chipscopy.api.ila.ILA_WINDOW_SIZE_MAX" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILA_WINDOW_SIZE_MAX">
+<code class="sig-prename descclassname"><span class="pre">ila.</span></code><code class="sig-name descname"><span class="pre">ILA_WINDOW_SIZE_MAX</span></code><em class="property"> <span class="pre">=</span> <span class="pre">-1</span></em><a class="headerlink" href="#chipscopy.api.ila.ILA_WINDOW_SIZE_MAX" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <div class="section" id="coreinfo">
 <h3>CoreInfo<a class="headerlink" href="#coreinfo" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.CoreInfo">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.</span></span><span class="sig-name descname"><span class="pre">CoreInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drv_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_major_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_minor_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool_major_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool_minor_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api.html#CoreInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.CoreInfo" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.CoreInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.</span></code><code class="sig-name descname"><span class="pre">CoreInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drv_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_major_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_minor_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool_major_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool_minor_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api.html#CoreInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.CoreInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Debug Fabric Core version information.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.CoreInfo.core_type">
-<span class="sig-name descname"><span class="pre">core_type</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.core_type" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.CoreInfo.core_type">
+<code class="sig-name descname"><span class="pre">core_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.core_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Core type number.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.CoreInfo.drv_ver">
-<span class="sig-name descname"><span class="pre">drv_ver</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.drv_ver" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.CoreInfo.drv_ver">
+<code class="sig-name descname"><span class="pre">drv_ver</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.drv_ver" title="Permalink to this definition">¶</a></dt>
 <dd><p>SW/IP interface version.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.CoreInfo.core_major_ver">
-<span class="sig-name descname"><span class="pre">core_major_ver</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.core_major_ver" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.CoreInfo.core_major_ver">
+<code class="sig-name descname"><span class="pre">core_major_ver</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.core_major_ver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Core IP major version.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.CoreInfo.core_minor_ver">
-<span class="sig-name descname"><span class="pre">core_minor_ver</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.core_minor_ver" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.CoreInfo.core_minor_ver">
+<code class="sig-name descname"><span class="pre">core_minor_ver</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.core_minor_ver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Core IP minor version.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.CoreInfo.tool_major_ver">
-<span class="sig-name descname"><span class="pre">tool_major_ver</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.tool_major_ver" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.CoreInfo.tool_major_ver">
+<code class="sig-name descname"><span class="pre">tool_major_ver</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.tool_major_ver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Major version of the design tool, which created the core.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.CoreInfo.tool_minor_ver">
-<span class="sig-name descname"><span class="pre">tool_minor_ver</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.tool_minor_ver" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.CoreInfo.tool_minor_ver">
+<code class="sig-name descname"><span class="pre">tool_minor_ver</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.tool_minor_ver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minor version of the design tool, which created the core.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.CoreInfo.uuid">
-<span class="sig-name descname"><span class="pre">uuid</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.uuid" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.CoreInfo.uuid">
+<code class="sig-name descname"><span class="pre">uuid</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.CoreInfo.uuid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Core UUID. UUID is unique among debug cores in the design.</p>
 </dd></dl>
 
@@ -1121,18 +1117,18 @@ It is possible to select window range and sample range.</p>
 <div class="section" id="ilabitrange">
 <h3>ILABitRange<a class="headerlink" href="#ilabitrange" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILABitRange">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILABitRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILABitRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILABitRange" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILABitRange">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILABitRange</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILABitRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILABitRange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of ILABitRange(index, length)</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILABitRange.index">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#chipscopy.api.ila.ILABitRange.index" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.ila.ILABitRange.index">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">index</span></code><a class="headerlink" href="#chipscopy.api.ila.ILABitRange.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bit index.</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILABitRange.length">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#chipscopy.api.ila.ILABitRange.length" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.ila.ILABitRange.length">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">length</span></code><a class="headerlink" href="#chipscopy.api.ila.ILABitRange.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bit length.</p>
 </dd></dl>
 
@@ -1142,8 +1138,8 @@ It is possible to select window range and sample range.</p>
 <div class="section" id="ilacapturecondition-enum">
 <h3>ILACaptureCondition (enum)<a class="headerlink" href="#ilacapturecondition-enum" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILACaptureCondition">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILACaptureCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILACaptureCondition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILACaptureCondition" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILACaptureCondition">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILACaptureCondition</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILACaptureCondition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILACaptureCondition" title="Permalink to this definition">¶</a></dt>
 <dd><p>For Basic Capture Control, the global boolean operator of participating probe comparators.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1179,54 +1175,54 @@ It is possible to select window range and sample range.</p>
 <div class="section" id="ilacontrol">
 <h3>ILAControl<a class="headerlink" href="#ilacontrol" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAControl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capture_condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trig_in_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trig_out_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_state_machine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILAControl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAControl" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAControl</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capture_condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trig_in_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trig_out_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_state_machine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILAControl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAControl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger setup</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl.capture_condition">
-<span class="sig-name descname"><span class="pre">capture_condition</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#chipscopy.api.ila.ILACaptureCondition" title="chipscopy.api.ila.ila_capture.ILACaptureCondition"><span class="pre">chipscopy.api.ila.ila_capture.ILACaptureCondition</span></a></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.capture_condition" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl.capture_condition">
+<code class="sig-name descname"><span class="pre">capture_condition</span></code><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_capture.ILACaptureCondition</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.capture_condition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic capture cntrol global boolean operator. See <a class="reference internal" href="#chipscopy.api.ila.ILACaptureCondition" title="chipscopy.api.ila.ILACaptureCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILACaptureCondition</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl.trig_in_mode">
-<span class="sig-name descname"><span class="pre">trig_in_mode</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#chipscopy.api.ila.ILATrigInMode" title="chipscopy.api.ila.ila_capture.ILATrigInMode"><span class="pre">chipscopy.api.ila.ila_capture.ILATrigInMode</span></a></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trig_in_mode" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl.trig_in_mode">
+<code class="sig-name descname"><span class="pre">trig_in_mode</span></code><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_capture.ILATrigInMode</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trig_in_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Usage of TRIG-IN port. See <a class="reference internal" href="#chipscopy.api.ila.ILATrigInMode" title="chipscopy.api.ila.ILATrigInMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILATrigInMode</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl.trig_out_mode">
-<span class="sig-name descname"><span class="pre">trig_out_mode</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#chipscopy.api.ila.ILATrigOutMode" title="chipscopy.api.ila.ila_capture.ILATrigOutMode"><span class="pre">chipscopy.api.ila.ila_capture.ILATrigOutMode</span></a></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trig_out_mode" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl.trig_out_mode">
+<code class="sig-name descname"><span class="pre">trig_out_mode</span></code><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_capture.ILATrigOutMode</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trig_out_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Usage of TRIG-OUT port. See <a class="reference internal" href="#chipscopy.api.ila.ILATrigOutMode" title="chipscopy.api.ila.ILATrigOutMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILATrigOutMode</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl.trigger_condition">
-<span class="sig-name descname"><span class="pre">trigger_condition</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#chipscopy.api.ila.ILATriggerCondition" title="chipscopy.api.ila.ila_capture.ILATriggerCondition"><span class="pre">chipscopy.api.ila.ila_capture.ILATriggerCondition</span></a></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trigger_condition" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl.trigger_condition">
+<code class="sig-name descname"><span class="pre">trigger_condition</span></code><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_capture.ILATriggerCondition</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trigger_condition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Global boolean operator, for trigger probes. See <a class="reference internal" href="#chipscopy.api.ila.ILATriggerCondition" title="chipscopy.api.ila.ILATriggerCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILATriggerCondition</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl.trigger_position">
-<span class="sig-name descname"><span class="pre">trigger_position</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trigger_position" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl.trigger_position">
+<code class="sig-name descname"><span class="pre">trigger_position</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trigger_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger position index, within data window.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl.trigger_state_machine">
-<span class="sig-name descname"><span class="pre">trigger_state_machine</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trigger_state_machine" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl.trigger_state_machine">
+<code class="sig-name descname"><span class="pre">trigger_state_machine</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.trigger_state_machine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger State Machine, as a string.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl.window_count">
-<span class="sig-name descname"><span class="pre">window_count</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.window_count" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl.window_count">
+<code class="sig-name descname"><span class="pre">window_count</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.window_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of data windows.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAControl.window_size">
-<span class="sig-name descname"><span class="pre">window_size</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.window_size" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAControl.window_size">
+<code class="sig-name descname"><span class="pre">window_size</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAControl.window_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sample count for a window.</p>
 </dd></dl>
 
@@ -1236,48 +1232,48 @@ It is possible to select window range and sample range.</p>
 <div class="section" id="ilaport">
 <h3>ILAPort<a class="headerlink" href="#ilaport" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAPort">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bit_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_bit_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_trigger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_unit_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_unit_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILAPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAPort" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAPort">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAPort</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bit_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_bit_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_trigger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_unit_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_unit_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILAPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAPort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Probe Port on the ILA Core</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAPort.bit_width">
-<span class="sig-name descname"><span class="pre">bit_width</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.bit_width" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAPort.bit_width">
+<code class="sig-name descname"><span class="pre">bit_width</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.bit_width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of port bits.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAPort.data_bit_index">
-<span class="sig-name descname"><span class="pre">data_bit_index</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.data_bit_index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAPort.data_bit_index">
+<code class="sig-name descname"><span class="pre">data_bit_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.data_bit_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start bit index in waveform data.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAPort.index">
-<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAPort.index">
+<code class="sig-name descname"><span class="pre">index</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Port index</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAPort.is_trigger">
-<span class="sig-name descname"><span class="pre">is_trigger</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.is_trigger" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAPort.is_trigger">
+<code class="sig-name descname"><span class="pre">is_trigger</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.is_trigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Port is used for triggering.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAPort.is_data">
-<span class="sig-name descname"><span class="pre">is_data</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.is_data" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAPort.is_data">
+<code class="sig-name descname"><span class="pre">is_data</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.is_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Port is used for capturing data.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAPort.match_unit_count">
-<span class="sig-name descname"><span class="pre">match_unit_count</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.match_unit_count" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAPort.match_unit_count">
+<code class="sig-name descname"><span class="pre">match_unit_count</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.match_unit_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of compare match units, available to the port.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAPort.match_unit_type">
-<span class="sig-name descname"><span class="pre">match_unit_type</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_probe.ILAMatchUnitType</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.match_unit_type" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAPort.match_unit_type">
+<code class="sig-name descname"><span class="pre">match_unit_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_probe.ILAMatchUnitType</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAPort.match_unit_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Type of match unit.</p>
 </dd></dl>
 
@@ -1287,60 +1283,60 @@ It is possible to select window range and sample range.</p>
 <div class="section" id="ilaprobe">
 <h3>ILAProbe<a class="headerlink" href="#ilaprobe" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAProbe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bit_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_trigger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_bus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bus_left_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bus_right_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILAProbe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAProbe" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAProbe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bit_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_trigger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_bus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bus_left_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bus_right_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILAProbe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAProbe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Logical probe. Probes may share the same probe port.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.name" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of probe.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.bit_width">
-<span class="sig-name descname"><span class="pre">bit_width</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.bit_width" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.bit_width">
+<code class="sig-name descname"><span class="pre">bit_width</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.bit_width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of probe bits.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.is_data">
-<span class="sig-name descname"><span class="pre">is_data</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.is_data" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.is_data">
+<code class="sig-name descname"><span class="pre">is_data</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.is_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Probe is used to capture waveform data.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.is_trigger">
-<span class="sig-name descname"><span class="pre">is_trigger</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.is_trigger" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.is_trigger">
+<code class="sig-name descname"><span class="pre">is_trigger</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.is_trigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Probe can be used in trigger settings.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.map">
-<span class="sig-name descname"><span class="pre">map</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.map" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.map">
+<code class="sig-name descname"><span class="pre">map</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.map" title="Permalink to this definition">¶</a></dt>
 <dd><p>How probe is mapped to ports.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.mu_count">
-<span class="sig-name descname"><span class="pre">mu_count</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.mu_count" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.mu_count">
+<code class="sig-name descname"><span class="pre">mu_count</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.mu_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Max number of compare match units, available to the probe.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.is_bus">
-<span class="sig-name descname"><span class="pre">is_bus</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.is_bus" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.is_bus">
+<code class="sig-name descname"><span class="pre">is_bus</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.is_bus" title="Permalink to this definition">¶</a></dt>
 <dd><p>True for bus probes</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.bus_left_index">
-<span class="sig-name descname"><span class="pre">bus_left_index</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.bus_left_index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.bus_left_index">
+<code class="sig-name descname"><span class="pre">bus_left_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.bus_left_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bus left index. E.g. 5 in probe <code class="docutils literal notranslate"><span class="pre">counter[5:0]</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbe.bus_right_index">
-<span class="sig-name descname"><span class="pre">bus_right_index</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.bus_right_index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbe.bus_right_index">
+<code class="sig-name descname"><span class="pre">bus_right_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbe.bus_right_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bus right index. E.g. 0 in probe <code class="docutils literal notranslate"><span class="pre">counter[5:0]</span></code></p>
 </dd></dl>
 
@@ -1350,8 +1346,8 @@ It is possible to select window range and sample range.</p>
 <div class="section" id="ilaprobevalues">
 <h3>ILAProbeValues<a class="headerlink" href="#ilaprobevalues" title="Permalink to this headline">¶</a></h3>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILA_MATCH_OPERATORS">
-<span class="sig-prename descclassname"><span class="pre">ila.</span></span><span class="sig-name descname"><span class="pre">ILA_MATCH_OPERATORS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['==',</span> <span class="pre">'!=',</span> <span class="pre">'&gt;',</span> <span class="pre">'&lt;',</span> <span class="pre">'&gt;=',</span> <span class="pre">'&lt;=',</span> <span class="pre">'||']</span></em><a class="headerlink" href="#chipscopy.api.ila.ILA_MATCH_OPERATORS" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILA_MATCH_OPERATORS">
+<code class="sig-prename descclassname"><span class="pre">ila.</span></code><code class="sig-name descname"><span class="pre">ILA_MATCH_OPERATORS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['==',</span> <span class="pre">'!=',</span> <span class="pre">'&gt;',</span> <span class="pre">'&lt;',</span> <span class="pre">'&gt;=',</span> <span class="pre">'&lt;=',</span> <span class="pre">'||']</span></em><a class="headerlink" href="#chipscopy.api.ila.ILA_MATCH_OPERATORS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Operators for probe compare values.</p>
@@ -1390,8 +1386,8 @@ It is possible to select window range and sample range.</p>
 </tbody>
 </table>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILA_MATCH_BIT_VALUES">
-<span class="sig-prename descclassname"><span class="pre">ila.</span></span><span class="sig-name descname"><span class="pre">ILA_MATCH_BIT_VALUES</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'01xXrRfFnNbBtTlLsS_'</span></em><a class="headerlink" href="#chipscopy.api.ila.ILA_MATCH_BIT_VALUES" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILA_MATCH_BIT_VALUES">
+<code class="sig-prename descclassname"><span class="pre">ila.</span></code><code class="sig-name descname"><span class="pre">ILA_MATCH_BIT_VALUES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'01xXrRfFnNbBtTlLsS_'</span></em><a class="headerlink" href="#chipscopy.api.ila.ILA_MATCH_BIT_VALUES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Binary bit values for probe compare values.</p>
@@ -1439,8 +1435,8 @@ It is possible to select window range and sample range.</p>
 </tbody>
 </table>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbeValues">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAProbeValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">bit_width</span></em>, <em class="sig-param"><span class="pre">trigger_value</span></em>, <em class="sig-param"><span class="pre">capture_value</span></em>, <em class="sig-param"><span class="pre">display_radix=&lt;ILAProbeRadix.HEX:</span> <span class="pre">2&gt;</span></em>, <em class="sig-param"><span class="pre">enum_def=None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILAProbeValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbeValues">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAProbeValues</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">bit_width</span></em>, <em class="sig-param"><span class="pre">trigger_value</span></em>, <em class="sig-param"><span class="pre">capture_value</span></em>, <em class="sig-param"><span class="pre">display_radix=&lt;ILAProbeRadix.HEX:</span> <span class="pre">2&gt;</span></em>, <em class="sig-param"><span class="pre">enum_def=None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILAProbeValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues" title="Permalink to this definition">¶</a></dt>
 <dd><p>A compare value consists of a pair: &lt;operator&gt; and &lt;value&gt;
 &lt;value&gt; may be of type int or binary/hex string of the correct bit_width.
 Hex values start with a ‘0x’ prefix.</p>
@@ -1462,32 +1458,32 @@ Hex values start with a ‘0x’ prefix.</p>
 </dl>
 </div></blockquote>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbeValues.bit_width">
-<span class="sig-name descname"><span class="pre">bit_width</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.bit_width" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbeValues.bit_width">
+<code class="sig-name descname"><span class="pre">bit_width</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.bit_width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of probe bits.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbeValues.trigger_value">
-<span class="sig-name descname"><span class="pre">trigger_value</span></span><em class="property"><span class="pre">:</span> <span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.trigger_value" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbeValues.trigger_value">
+<code class="sig-name descname"><span class="pre">trigger_value</span></code><em class="property"><span class="pre">:</span> <span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.trigger_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger compare values, in a list.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbeValues.capture_value">
-<span class="sig-name descname"><span class="pre">capture_value</span></span><em class="property"><span class="pre">:</span> <span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.capture_value" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbeValues.capture_value">
+<code class="sig-name descname"><span class="pre">capture_value</span></code><em class="property"><span class="pre">:</span> <span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.capture_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic capture compare value. A two item list with [&lt;operator&gt;, &lt;value&gt;]</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbeValues.display_radix">
-<span class="sig-name descname"><span class="pre">display_radix</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_probe.ILAProbeRadix</span></em><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.display_radix" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbeValues.display_radix">
+<code class="sig-name descname"><span class="pre">display_radix</span></code><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_probe.ILAProbeRadix</span></em><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.display_radix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display radix, when exporting waveform data. Default is ILAProbeRadix.HEX</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAProbeValues.enum_def">
-<span class="sig-name descname"><span class="pre">enum_def</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">enum.EnumMeta</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.enum_def" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAProbeValues.enum_def">
+<code class="sig-name descname"><span class="pre">enum_def</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">enum.EnumMeta</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAProbeValues.enum_def" title="Permalink to this definition">¶</a></dt>
 <dd><p>int} enum values, for this probe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1502,54 +1498,54 @@ Hex values start with a ‘0x’ prefix.</p>
 <div class="section" id="ilastaticinfo">
 <h3>ILAStaticInfo<a class="headerlink" href="#ilastaticinfo" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAStaticInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_advanced_trigger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_capture_control</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_trig_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_trig_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_unit_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILAStaticInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAStaticInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_advanced_trigger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_capture_control</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_trig_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_trig_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_unit_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila.html#ILAStaticInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Feature set and dimensions of the ILA core.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo.data_depth">
-<span class="sig-name descname"><span class="pre">data_depth</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.data_depth" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo.data_depth">
+<code class="sig-name descname"><span class="pre">data_depth</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.data_depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data depth in samples.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo.data_width">
-<span class="sig-name descname"><span class="pre">data_width</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.data_width" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo.data_width">
+<code class="sig-name descname"><span class="pre">data_width</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.data_width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waveform data sample width, in bits.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo.has_advanced_trigger">
-<span class="sig-name descname"><span class="pre">has_advanced_trigger</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.has_advanced_trigger" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo.has_advanced_trigger">
+<code class="sig-name descname"><span class="pre">has_advanced_trigger</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.has_advanced_trigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>ILA has advanced trigger mode.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo.has_capture_control">
-<span class="sig-name descname"><span class="pre">has_capture_control</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.has_capture_control" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo.has_capture_control">
+<code class="sig-name descname"><span class="pre">has_capture_control</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.has_capture_control" title="Permalink to this definition">¶</a></dt>
 <dd><p>ILA has basic capture control.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo.has_trig_in">
-<span class="sig-name descname"><span class="pre">has_trig_in</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.has_trig_in" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo.has_trig_in">
+<code class="sig-name descname"><span class="pre">has_trig_in</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.has_trig_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>ILA has TRIG-IN port.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo.has_trig_out">
-<span class="sig-name descname"><span class="pre">has_trig_out</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.has_trig_out" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo.has_trig_out">
+<code class="sig-name descname"><span class="pre">has_trig_out</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.has_trig_out" title="Permalink to this definition">¶</a></dt>
 <dd><p>ILA has TRIG-OUT port.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo.match_unit_count">
-<span class="sig-name descname"><span class="pre">match_unit_count</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.match_unit_count" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo.match_unit_count">
+<code class="sig-name descname"><span class="pre">match_unit_count</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.match_unit_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total number of probe compare match units.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStaticInfo.port_count">
-<span class="sig-name descname"><span class="pre">port_count</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.port_count" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStaticInfo.port_count">
+<code class="sig-name descname"><span class="pre">port_count</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStaticInfo.port_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of probe ports.</p>
 </dd></dl>
 
@@ -1559,60 +1555,60 @@ Hex values start with a ‘0x’ prefix.</p>
 <div class="section" id="ilastatus">
 <h3>ILAStatus<a class="headerlink" href="#ilastatus" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capture_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_armed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_full</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_trigger_at_startup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples_captured</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows_captured</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples_requested</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows_requested</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_position_requested</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILAStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAStatus" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAStatus</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capture_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_armed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_full</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_trigger_at_startup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples_captured</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows_captured</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples_requested</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows_requested</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_position_requested</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILAStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAStatus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamic status of ILA capture controller</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.capture_state">
-<span class="sig-name descname"><span class="pre">capture_state</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#chipscopy.api.ila.ILAState" title="chipscopy.api.ila.ila_capture.ILAState"><span class="pre">chipscopy.api.ila.ila_capture.ILAState</span></a></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.capture_state" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.capture_state">
+<code class="sig-name descname"><span class="pre">capture_state</span></code><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_capture.ILAState</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.capture_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Capture state. See <a class="reference internal" href="#chipscopy.api.ila.ILAState" title="chipscopy.api.ila.ILAState"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAState</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.is_armed">
-<span class="sig-name descname"><span class="pre">is_armed</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.is_armed" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.is_armed">
+<code class="sig-name descname"><span class="pre">is_armed</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.is_armed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger is armed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.is_full">
-<span class="sig-name descname"><span class="pre">is_full</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.is_full" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.is_full">
+<code class="sig-name descname"><span class="pre">is_full</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.is_full" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data buffer is full.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.is_trigger_at_startup">
-<span class="sig-name descname"><span class="pre">is_trigger_at_startup</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.is_trigger_at_startup" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.is_trigger_at_startup">
+<code class="sig-name descname"><span class="pre">is_trigger_at_startup</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.is_trigger_at_startup" title="Permalink to this definition">¶</a></dt>
 <dd><p>ILA is armed at startup.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.samples_captured">
-<span class="sig-name descname"><span class="pre">samples_captured</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.samples_captured" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.samples_captured">
+<code class="sig-name descname"><span class="pre">samples_captured</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.samples_captured" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of samples captured in current data window.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.windows_captured">
-<span class="sig-name descname"><span class="pre">windows_captured</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.windows_captured" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.windows_captured">
+<code class="sig-name descname"><span class="pre">windows_captured</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.windows_captured" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of fully captured data windows.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.samples_requested">
-<span class="sig-name descname"><span class="pre">samples_requested</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.samples_requested" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.samples_requested">
+<code class="sig-name descname"><span class="pre">samples_requested</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.samples_requested" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of samples per window, as requested when was ILA armed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.windows_requested">
-<span class="sig-name descname"><span class="pre">windows_requested</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.windows_requested" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.windows_requested">
+<code class="sig-name descname"><span class="pre">windows_requested</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.windows_requested" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of windows, as requested when ILA was armed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAStatus.trigger_position_requested">
-<span class="sig-name descname"><span class="pre">trigger_position_requested</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.trigger_position_requested" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAStatus.trigger_position_requested">
+<code class="sig-name descname"><span class="pre">trigger_position_requested</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAStatus.trigger_position_requested" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger position, as requested when ILA was armed.</p>
 </dd></dl>
 
@@ -1622,8 +1618,8 @@ Hex values start with a ‘0x’ prefix.</p>
 <div class="section" id="ilastate-enum">
 <h3>ILAState (enum)<a class="headerlink" href="#ilastate-enum" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAState">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILAState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAState" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAState">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAState</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILAState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAState" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>ILA State Transitions:</dt><dd><p>IDLE -&gt; PRE_TRIGGER -&gt; TRIGGER -&gt; POST_TRIGGER -&gt; IDLE</p>
 </dd>
@@ -1659,8 +1655,8 @@ Hex values start with a ‘0x’ prefix.</p>
 <div class="section" id="ilatriggercondition-enum">
 <h3>ILATriggerCondition (enum)<a class="headerlink" href="#ilatriggercondition-enum" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILATriggerCondition">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILATriggerCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILATriggerCondition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILATriggerCondition" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILATriggerCondition">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILATriggerCondition</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILATriggerCondition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILATriggerCondition" title="Permalink to this definition">¶</a></dt>
 <dd><p>For Trigger Condition, set trigger mode including basic trigger global boolean operator
 of participating probe comparators</p>
 <table class="docutils align-default">
@@ -1700,8 +1696,8 @@ of participating probe comparators</p>
 <div class="section" id="ilatriginmode-enum">
 <h3>ILATrigInMode (enum)<a class="headerlink" href="#ilatriginmode-enum" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILATrigInMode">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILATrigInMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILATrigInMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILATrigInMode" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILATrigInMode">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILATrigInMode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILATrigInMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILATrigInMode" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils align-default">
 <colgroup>
 <col style="width: 30%" />
@@ -1730,8 +1726,8 @@ of participating probe comparators</p>
 <div class="section" id="ilatrigoutmode-enum">
 <h3>ILATrigOutMode (enum)<a class="headerlink" href="#ilatrigoutmode-enum" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILATrigOutMode">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILATrigOutMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILATrigOutMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILATrigOutMode" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILATrigOutMode">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILATrigOutMode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_capture.html#ILATrigOutMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILATrigOutMode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Choices for Trig-Out port.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1764,42 +1760,42 @@ of participating probe comparators</p>
 <div class="section" id="ilawaveform">
 <h3>ILAWaveform<a class="headerlink" href="#ilawaveform" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveform">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAWaveform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_waveform.html#ILAWaveform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveform">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAWaveform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_waveform.html#ILAWaveform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waveform data, with data probe information.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveform.width">
-<span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.width" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveform.width">
+<code class="sig-name descname"><span class="pre">width</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sample bit width.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveform.sample_count">
-<span class="sig-name descname"><span class="pre">sample_count</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.sample_count" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveform.sample_count">
+<code class="sig-name descname"><span class="pre">sample_count</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.sample_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of data samples.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveform.trigger_position">
-<span class="sig-name descname"><span class="pre">trigger_position</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.trigger_position" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveform.trigger_position">
+<code class="sig-name descname"><span class="pre">trigger_position</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.trigger_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger position index, for each data window.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveform.window_size">
-<span class="sig-name descname"><span class="pre">window_size</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.window_size" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveform.window_size">
+<code class="sig-name descname"><span class="pre">window_size</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.window_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of samples in a window.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveform.probes">
-<span class="sig-name descname"><span class="pre">probes</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#chipscopy.api.ila.ILAWaveformProbe" title="chipscopy.api.ila.ila_waveform.ILAWaveformProbe"><span class="pre">chipscopy.api.ila.ila_waveform.ILAWaveformProbe</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.probes" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveform.probes">
+<code class="sig-name descname"><span class="pre">probes</span></code><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">chipscopy.api.ila.ila_waveform.ILAWaveformProbe</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.probes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dict of {probe name, waveform probe}   See <a class="reference internal" href="#chipscopy.api.ila.ILAWaveformProbe" title="chipscopy.api.ila.ILAWaveformProbe"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAWaveformProbe</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveform.data">
-<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="pre">:</span> <span class="pre">bytearray</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.data" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveform.data">
+<code class="sig-name descname"><span class="pre">data</span></code><em class="property"><span class="pre">:</span> <span class="pre">bytearray</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waveform data.</p>
 <p>Samples are aligned on byte boundary.</p>
 <p>This formula can be used to read a bit from the data:</p>
@@ -1820,54 +1816,54 @@ of participating probe comparators</p>
 <div class="section" id="ilawaveformprobe">
 <h3>ILAWaveformProbe<a class="headerlink" href="#ilawaveformprobe" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></span><span class="sig-name descname"><span class="pre">ILAWaveformProbe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">name</span></em>, <em class="sig-param"><span class="pre">map</span></em>, <em class="sig-param"><span class="pre">map_range</span></em>, <em class="sig-param"><span class="pre">is_bus</span></em>, <em class="sig-param"><span class="pre">bus_left_index=None</span></em>, <em class="sig-param"><span class="pre">bus_right_index=None</span></em>, <em class="sig-param"><span class="pre">display_radix=&lt;ILAProbeRadix.HEX:</span> <span class="pre">2&gt;</span></em>, <em class="sig-param"><span class="pre">enum_def=None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_waveform.html#ILAWaveformProbe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAWaveformProbe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">name</span></em>, <em class="sig-param"><span class="pre">map</span></em>, <em class="sig-param"><span class="pre">map_range</span></em>, <em class="sig-param"><span class="pre">is_bus</span></em>, <em class="sig-param"><span class="pre">bus_left_index=None</span></em>, <em class="sig-param"><span class="pre">bus_right_index=None</span></em>, <em class="sig-param"><span class="pre">display_radix=&lt;ILAProbeRadix.HEX:</span> <span class="pre">2&gt;</span></em>, <em class="sig-param"><span class="pre">enum_def=None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_waveform.html#ILAWaveformProbe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Probe location in a data sample.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.name" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of probe.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe.map">
-<span class="sig-name descname"><span class="pre">map</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.map" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe.map">
+<code class="sig-name descname"><span class="pre">map</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Location string</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe.map_range">
-<span class="sig-name descname"><span class="pre">map_range</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#chipscopy.api.ila.ILABitRange" title="chipscopy.api.ila.ila_probe.ILABitRange"><span class="pre">chipscopy.api.ila.ila_probe.ILABitRange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.map_range" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe.map_range">
+<code class="sig-name descname"><span class="pre">map_range</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">chipscopy.api.ila.ila_probe.ILABitRange</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.map_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of bit ranges. See <a class="reference internal" href="#chipscopy.api.ila.ILABitRange" title="chipscopy.api.ila.ILABitRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILABitRange</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe.is_bus">
-<span class="sig-name descname"><span class="pre">is_bus</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.is_bus" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe.is_bus">
+<code class="sig-name descname"><span class="pre">is_bus</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.is_bus" title="Permalink to this definition">¶</a></dt>
 <dd><p>True for bus probes</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe.bus_left_index">
-<span class="sig-name descname"><span class="pre">bus_left_index</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.bus_left_index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe.bus_left_index">
+<code class="sig-name descname"><span class="pre">bus_left_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.bus_left_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bus left index. E.g. 5 in probe <code class="docutils literal notranslate"><span class="pre">counter[5:0]</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe.bus_right_index">
-<span class="sig-name descname"><span class="pre">bus_right_index</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.bus_right_index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe.bus_right_index">
+<code class="sig-name descname"><span class="pre">bus_right_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.bus_right_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bus right index. E.g. 0 in probe <code class="docutils literal notranslate"><span class="pre">counter[5:0]</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe.display_radix">
-<span class="sig-name descname"><span class="pre">display_radix</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_probe.ILAProbeRadix</span></em><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.display_radix" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe.display_radix">
+<code class="sig-name descname"><span class="pre">display_radix</span></code><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.ila.ila_probe.ILAProbeRadix</span></em><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.display_radix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display radix, when exporting waveform data. Default is ILAProbeRadix.HEX</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ila.ILAWaveformProbe.enum_def">
-<span class="sig-name descname"><span class="pre">enum_def</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">enum.EnumMeta</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.enum_def" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ila.ILAWaveformProbe.enum_def">
+<code class="sig-name descname"><span class="pre">enum_def</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">enum.EnumMeta</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveformProbe.enum_def" title="Permalink to this definition">¶</a></dt>
 <dd><p>int} enum values, for this probe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1911,7 +1907,7 @@ of participating probe comparators</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

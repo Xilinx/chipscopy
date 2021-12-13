@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="../../_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="ILA" href="../../ila.html" />
@@ -376,7 +373,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../vio.html">VIO</a></li>
 </ul>
@@ -464,24 +460,24 @@
   <div class="section" id="chipscopy-api-ibert-eye-scan-plotter">
 <h1>chipscopy.api.ibert.eye_scan.plotter<a class="headerlink" href="#chipscopy-api-ibert-eye-scan-plotter" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.plotter.</span></span><span class="sig-name descname"><span class="pre">EyeScanPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eye_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.plotter.</span></code><code class="sig-name descname"><span class="pre">EyeScanPlot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eye_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Container for eye scan plot</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.eye_scan">
-<span class="sig-name descname"><span class="pre">eye_scan</span></span><em class="property"><span class="pre">:</span> <span class="pre">EyeScan</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.eye_scan" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.eye_scan">
+<code class="sig-name descname"><span class="pre">eye_scan</span></code><em class="property"><span class="pre">:</span> <span class="pre">EyeScan</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.eye_scan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Link to the <cite>EyeScan</cite> object</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.fig">
-<span class="sig-name descname"><span class="pre">fig</span></span><em class="property"><span class="pre">:</span> <span class="pre">go.Figure</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.fig" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.fig">
+<code class="sig-name descname"><span class="pre">fig</span></code><em class="property"><span class="pre">:</span> <span class="pre">go.Figure</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.fig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plotly <cite>Figure</cite> object</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.show">
-<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'automatic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.show" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.show">
+<code class="sig-name descname"><span class="pre">show</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'automatic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Displays the plot in the browser</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -494,8 +490,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'svg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.save" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.save">
+<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'svg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save plot to a file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -547,7 +543,7 @@
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

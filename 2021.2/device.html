@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Report" href="report.html" />
@@ -347,7 +344,6 @@
 <li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
 </ul>
@@ -435,28 +431,28 @@ for programming, memory access, and contains the detected collection of debug
 cores. The collection of detected devices is held in the session</p>
 <p>see <code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.Session.devices</span></code></p>
 <span class="target" id="module-chipscopy.api.device.device"></span><dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></span><span class="sig-name descname"><span class="pre">Device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_identification</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.device.device.Device">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">Device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_identification</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The Device class represents a single Xilinx Versal device.
 Device has methods for programming, memory access, and contains the detected
 collection of debug cores. The collection of detected devices is held in
 the session - see session.devices.</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.ibert_cores">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ibert_cores</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api.ibert.ibert.IBERT]</span></em><a class="headerlink" href="#chipscopy.api.device.device.Device.ibert_cores" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.ibert_cores">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ibert_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ibert_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected IBERT cores in the device</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="ibert/references/ibert.html#chipscopy.api.ibert.IBERT" title="chipscopy.api.ibert.ibert.IBERT"><code class="xref py py-class docutils literal notranslate"><span class="pre">IBERT</span></code></a>]</p>
+<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">IBERT</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.vio_cores">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">vio_cores</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api.vio.VIO]</span></em><a class="headerlink" href="#chipscopy.api.device.device.Device.vio_cores" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.vio_cores">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vio_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.vio_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected VIO cores in the device</p>
 <dl class="field-list simple">
@@ -466,9 +462,9 @@ list of detected VIO cores in the device</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.ila_cores">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ila_cores</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api.ila.ila.ILA]</span></em><a class="headerlink" href="#chipscopy.api.device.device.Device.ila_cores" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.ila_cores">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ila_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ila_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected ILA cores in the device</p>
 <dl class="field-list simple">
@@ -478,9 +474,9 @@ list of detected ILA cores in the device</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.trace_cores">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">trace_cores</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api._detail.trace.Trace]</span></em><a class="headerlink" href="#chipscopy.api.device.device.Device.trace_cores" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.trace_cores">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">trace_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.trace_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected Trace cores in the device</p>
 <dl class="field-list simple">
@@ -490,21 +486,21 @@ list of detected Trace cores in the device</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.pcie_cores">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">pcie_cores</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api.pcie.PCIe]</span></em><a class="headerlink" href="#chipscopy.api.device.device.Device.pcie_cores" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.pcie_cores">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pcie_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.pcie_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected PCIe cores in the device</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe" title="chipscopy.api.pcie.PCIe"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCIe</span></code></a>]</p>
+<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">PCIe</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.noc_core">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">noc_core</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api.noc.noc.NocPerfmon]</span></em><a class="headerlink" href="#chipscopy.api.device.device.Device.noc_core" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.noc_core">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">noc_core</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.noc_core" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 List with one NOC core for the device</p>
 <dl class="field-list simple">
@@ -514,16 +510,16 @@ List with one NOC core for the device</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.ddrs">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ddrs</span></span><a class="headerlink" href="#chipscopy.api.device.device.Device.ddrs" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.ddrs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ddrs</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ddrs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected DDRMC cores in the device</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.sysmon_root">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">sysmon_root</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api.sysmon.Sysmon]</span></em><a class="headerlink" href="#chipscopy.api.device.device.Device.sysmon_root" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.sysmon_root">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sysmon_root</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.sysmon_root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 List with one SysMon core for the device</p>
 <dl class="field-list simple">
@@ -533,16 +529,16 @@ List with one SysMon core for the device</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.memory_target_names">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">memory_target_names</span></span><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_target_names" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.memory_target_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory_target_names</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_target_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of supported memory targets</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.memory">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">memory</span></span><em class="property"><span class="pre">:</span> <span class="pre">chipscopy.api.containers.QueryList[chipscopy.api.memory.Memory]</span></em><a class="headerlink" href="#chipscopy.api.device.device.Device.memory" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.memory">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.memory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 the memory access for the device</p>
 <dl class="field-list simple">
@@ -553,8 +549,8 @@ the memory access for the device</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.program">
-<span class="sig-name descname"><span class="pre">program</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdi_file_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.program" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.device.device.Device.program">
+<code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdi_file_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.program" title="Permalink to this definition">¶</a></dt>
 <dd><p>Program the device with a given PDI file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -569,8 +565,8 @@ the memory access for the device</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.discover_and_setup_cores">
-<span class="sig-name descname"><span class="pre">discover_and_setup_cores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hub_address_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ila_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vio_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noc_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddr_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcie_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ibert_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sysmon_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.discover_and_setup_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.discover_and_setup_cores" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.device.device.Device.discover_and_setup_cores">
+<code class="sig-name descname"><span class="pre">discover_and_setup_cores</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hub_address_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ila_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vio_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noc_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddr_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcie_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ibert_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sysmon_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.discover_and_setup_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.discover_and_setup_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scan device for debug cores. This may take some time depending on
 what gets scanned.</p>
 <dl class="field-list simple">
@@ -591,8 +587,8 @@ what gets scanned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.memory_write">
-<span class="sig-name descname"><span class="pre">memory_write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_write" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.device.device.Device.memory_write">
+<code class="sig-name descname"><span class="pre">memory_write</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write list of values to given memory address. This method is slow because it locates the memory context
 in the target tree every time. If you want to execute a large number of memory operations, grab a memory
 context and do the operations in batch.</p>
@@ -603,8 +599,8 @@ context and do the operations in batch.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.device.device.Device.memory_read">
-<span class="sig-name descname"><span class="pre">memory_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_read" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.device.device.Device.memory_read">
+<code class="sig-name descname"><span class="pre">memory_read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read num values from given memory address.  This method is slow because it locates the memory context
 in the target tree every time. If you want to execute a large number of memory operations, grab a memory
 context and do all the operations in batch.</p>
@@ -652,7 +648,7 @@ context and do all the operations in batch.</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

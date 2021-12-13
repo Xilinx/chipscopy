@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="IBERT" href="ibert.html" />
@@ -347,7 +344,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#calibration">Calibration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#margins">Margins</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ddrmc-properties">DDRMC Properties</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-chipscopy.api.ddr">API Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-chipscopy.api.ddr.ddr">API Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -356,7 +353,6 @@
 <li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
 </ul>
@@ -472,8 +468,346 @@ configuration, and as well as registers dedicated for post-calibration features.
 <p>All of these register names and values should be provided by the software in format of DDRMC properties
 to Xilinx technical support in the event of calibration failure for troubleshooting.</p>
 </div>
-<div class="section" id="module-chipscopy.api.ddr">
-<span id="api-functions"></span><h3>API Functions<a class="headerlink" href="#module-chipscopy.api.ddr" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-chipscopy.api.ddr.ddr">
+<span id="api-functions"></span><h3>API Functions<a class="headerlink" href="#module-chipscopy.api.ddr.ddr" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="chipscopy.api.ddr.ddr.DDR">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ddr.ddr.</span></code><code class="sig-name descname"><span class="pre">DDR</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ddr_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains the top level API functions to interact with the
+integrated DDR memory controller debug core(s) on Versal devices.</p>
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.get_cal_status">
+<code class="sig-name descname"><span class="pre">get_cal_status</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.get_cal_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.get_cal_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the main calibration status of DDRMC</p>
+<p>Args:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>status in string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.refresh_cal_status">
+<code class="sig-name descname"><span class="pre">refresh_cal_status</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.refresh_cal_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.refresh_cal_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the main calibration status of DDRMC</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.get_cal_stages">
+<code class="sig-name descname"><span class="pre">get_cal_stages</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.get_cal_stages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.get_cal_stages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the decoded calibration stages results happened from a
+calibration run</p>
+<p>Args:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>A dictionary where</dt><dd><p>Key = calibration stage name
+Val = stage calibration result</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.refresh_cal_margin">
+<code class="sig-name descname"><span class="pre">refresh_cal_margin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.refresh_cal_margin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.refresh_cal_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the calibration windows margin analysis of DDRMC</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.refresh_health_status">
+<code class="sig-name descname"><span class="pre">refresh_health_status</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.refresh_health_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.refresh_health_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the overall health status analysis of DDRMC</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.get_cal_margin_mode">
+<code class="sig-name descname"><span class="pre">get_cal_margin_mode</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.get_cal_margin_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.get_cal_margin_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the availability of windows margin mode generated from a
+calibration run</p>
+<p>Args:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>A dictionary where</dt><dd><p>Key = name of margin mode
+Val = True or False value indicating the availability</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.is_user_enabled">
+<code class="sig-name descname"><span class="pre">is_user_enabled</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.is_user_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.is_user_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find out whether the DDRMC core is user enabled or not after
+Versal device configuration</p>
+<p>Args:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Status value in Bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.get_property">
+<code class="sig-name descname"><span class="pre">get_property</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">property_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.get_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.get_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the property value mapped to DDRMC core</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>property_names</strong> – single string or list of string of property names
+(if None specified, all properties available will be queried and returned)</p></li>
+<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A dictionary, where</dt><dd><p>Key = property name
+Val = property value</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.report">
+<code class="sig-name descname"><span class="pre">report</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a report on the current statuses and analytical data of the DDRMC</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>to_file</strong> – specify True to have the report saved to a file</p></li>
+<li><p><strong>file_name</strong> – the file name or full path for the report file to be saved</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_read_mode">
+<code class="sig-name descname"><span class="pre">set_eye_scan_read_mode</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_read_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_read_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set 2D eye scan to read mode</p>
+<p>Args:</p>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_write_mode">
+<code class="sig-name descname"><span class="pre">set_eye_scan_write_mode</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_write_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_write_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set 2D eye scan to write mode</p>
+<p>Args:</p>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_simple_pattern">
+<code class="sig-name descname"><span class="pre">set_eye_scan_simple_pattern</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_simple_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_simple_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set 2D eye scan traffic pattern to simple mode</p>
+<p>Args:</p>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_complex_pattern">
+<code class="sig-name descname"><span class="pre">set_eye_scan_complex_pattern</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_complex_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_complex_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set 2D eye scan traffic pattern to complex mode</p>
+<p>Args:</p>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_rank">
+<code class="sig-name descname"><span class="pre">set_eye_scan_rank</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rank_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_rank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the target rank number on the DDR for 2D eye scan to run on.
+There will be 4 total possible rank selections. For single slot designs, there will be quad ranks.
+For dual slot designs, there will be dual ranks per slot.
+2D Margin Scan can only be performed on one rank at a time, and not in parallel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rank_num</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Rank number valid between 0 and 3 on the DDR for 2D Margin to be run on.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.get_eye_scan_vref_percentage">
+<code class="sig-name descname"><span class="pre">get_eye_scan_vref_percentage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.get_eye_scan_vref_percentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.get_eye_scan_vref_percentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>A user helper function that takes in an encoding vref value intended for the margin scan,
+and converts it into a percentage value based on the current scan mode
+and memory configuration detected from the current hardware.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vref</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – For Read mode, valid integer range between 0 to 1023
+For Write mode, valid integer range between 0 to 50</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A translated percentage number in floating point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_min">
+<code class="sig-name descname"><span class="pre">set_eye_scan_vref_min</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_vref_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set 2D eye scan desired minimum vref value to scan</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vref</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – For Read mode, valid integer range between 0 to 1023
+For Write mode, valid integer range between 0 to 50</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A translated percentage number in floating point if
+the input VRef is set successfully</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_max">
+<code class="sig-name descname"><span class="pre">set_eye_scan_vref_max</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_vref_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set 2D eye scan desired maximum vref value to scan</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vref</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – For Read mode, valid integer range between 0 to 1023
+For Write mode, valid integer range between 0 to 50</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A translated percentage number in floating point if
+the input VRef is set successfully</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_steps">
+<code class="sig-name descname"><span class="pre">set_eye_scan_vref_steps</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_vref_steps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_steps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set 2D eye scan desired number of vref steps to scan vertically</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Valid integer range between 1 to 1024 for Read mode.
+Valid integer range between 1 to 51 for Write mode.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.save_eye_scan_data">
+<code class="sig-name descname"><span class="pre">save_eye_scan_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.save_eye_scan_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.save_eye_scan_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the eye scan 2D margin data from the most recent run to a file in CSV format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> – the file name or full path for the data file to be saved.
+A default file name will be given if none is supplied.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.load_eye_scan_data">
+<code class="sig-name descname"><span class="pre">load_eye_scan_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.load_eye_scan_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.load_eye_scan_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the eye scan 2D margin data from a data file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> – the file name or full path for the data file to be read and load</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.run_eye_scan">
+<code class="sig-name descname"><span class="pre">run_eye_scan</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.run_eye_scan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.run_eye_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kick off a run on 2D margin analysis and prepare scan data which is needed to draw an
+eye scan graph. The default scan settings will be used if users have not configured with
+new settings. See the following related commands for more info:</p>
+<blockquote>
+<div><p>save_eye_scan_data()
+load_eye_scan_data()
+display_eye_scan()</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional command callback that will be invoked when the scan is finished</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Boolean value indicating success of the 2D margin scan</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.display_eye_scan">
+<code class="sig-name descname"><span class="pre">display_eye_scan</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_as_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dynamic'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.display_eye_scan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.display_eye_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assemble and display 2D eye scan drawing in chart format. By default it tries to process and
+draw from the scan data found in the most recent 2D eye scan run. Users have the option to
+load scan data first prior to using this function in order to display specific set of scan
+data, see load_eye_scan_data().</p>
+<p>By default, if no unit_index is specified, unit zero from the scan data will be displayed.
+For read margins, both rising and falling edge clock scan data will be processed and displayed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unit_index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Specify the index from a set of scan data users intend to display, based on
+unit mode found in the scan settings (bit, nibble, byte)</p></li>
+<li><p><strong>return_as_list</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional argument, default to False. If set to True, the function will
+not display graphs by default. Instead, it returns a list of the grapghing objects
+back to the caller.</p></li>
+<li><p><strong>display_type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional argument, default to dynamic. If set to static, a static image
+will be returned. If set to dynamic, a dynamic, interactive javascript view will be
+returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of Figure object from Plotly, if return_as_list is specified as True,
+None is return otherwise by default.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 </div>
@@ -507,7 +841,7 @@ to Xilinx technical support in the event of calibration failure for troubleshoot
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -55,8 +54,6 @@
   <link rel="stylesheet" href="_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Containers" href="containers.html" />
@@ -347,7 +344,6 @@
 <li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">VIO</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#details">Details</a><ul>
@@ -486,8 +482,8 @@ you to identify nets in the context of the source HDL design.</p>
 <div class="section" id="vio-class">
 <h4>VIO Class<a class="headerlink" href="#vio-class" title="Permalink to this headline">¶</a></h4>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.vio.</span></span><span class="sig-name descname"><span class="pre">VIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vio_tcf_node</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.vio.</span></code><code class="sig-name descname"><span class="pre">VIO</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vio_tcf_node</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class contains the main API to use the VIO (Virtual Input/Output)
 debug core. VIO monitors elements of a running design in hardware with
 probe inputs and drives elements in the design with probe outputs.</p>
@@ -498,9 +494,9 @@ file is available.</p>
 methods are available to debug at the higher level HDL context. HDL nets and
 bus names from Vivado are automatically converted to the correct VIO probe
 port when reading or writing.</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.is_activity_supported">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">is_activity_supported</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.vio.VIO.is_activity_supported" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.vio.VIO.is_activity_supported">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_activity_supported</span></code><a class="headerlink" href="#chipscopy.api.vio.VIO.is_activity_supported" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if this vio core supports activity detection</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -509,9 +505,9 @@ port when reading or writing.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.port_in_count">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">port_in_count</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIO.port_in_count" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.vio.VIO.port_in_count">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">port_in_count</span></code><a class="headerlink" href="#chipscopy.api.vio.VIO.port_in_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of VIO input ports in the debug core. Input ports monitor
 activity in the design.</p>
 <dl class="field-list simple">
@@ -521,9 +517,9 @@ activity in the design.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.port_out_count">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">port_out_count</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIO.port_out_count" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.vio.VIO.port_out_count">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">port_out_count</span></code><a class="headerlink" href="#chipscopy.api.vio.VIO.port_out_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of VIO output ports in debug core. Output ports are virtual
 buttons.</p>
 <dl class="field-list simple">
@@ -533,9 +529,9 @@ buttons.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.port_names">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">port_names</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[str]</span></em><a class="headerlink" href="#chipscopy.api.vio.VIO.port_names" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.vio.VIO.port_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">port_names</span></code><a class="headerlink" href="#chipscopy.api.vio.VIO.port_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of all VIO port names (input and output) for this VIO core.</p>
 <p>VIO cores name ports as <code class="docutils literal notranslate"><span class="pre">probe_in#</span></code> for input ports, and
 <code class="docutils literal notranslate"><span class="pre">probe_out#</span></code> for output ports. ‘#’ represents the port index and
@@ -548,15 +544,15 @@ begins at 0.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.reset_vio">
-<span class="sig-name descname"><span class="pre">reset_vio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.reset_vio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.reset_vio" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO.reset_vio">
+<code class="sig-name descname"><span class="pre">reset_vio</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.reset_vio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.reset_vio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets the VIO core by resetting all probe outputs to their initial
 values.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.read_ports">
-<span class="sig-name descname"><span class="pre">read_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.read_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.read_ports" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO.read_ports">
+<code class="sig-name descname"><span class="pre">read_ports</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.read_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.read_ports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read VIO port values from hardware. Gets the current values from
 hardware for selected input_ports and output_ports.</p>
 <dl class="field-list simple">
@@ -590,8 +586,8 @@ Falling, None, Both.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.write_ports">
-<span class="sig-name descname"><span class="pre">write_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.write_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.write_ports" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO.write_ports">
+<code class="sig-name descname"><span class="pre">write_ports</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.write_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.write_ports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write values to VIO port outputs in hardware. Port names follow
 the VIO convention port in and port out naming.
 See <code class="docutils literal notranslate"><span class="pre">vio_port_names</span></code>.</p>
@@ -612,9 +608,9 @@ value.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.probes">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">probes</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[chipscopy.api.vio.VIOProbe]</span></em><a class="headerlink" href="#chipscopy.api.vio.VIO.probes" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.vio.VIO.probes">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">probes</span></code><a class="headerlink" href="#chipscopy.api.vio.VIO.probes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get probes attached to the VIO core and associated port information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -626,9 +622,9 @@ value.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.probe_names">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">probe_names</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[str]</span></em><a class="headerlink" href="#chipscopy.api.vio.VIO.probe_names" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.vio.VIO.probe_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">probe_names</span></code><a class="headerlink" href="#chipscopy.api.vio.VIO.probe_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 List of probe names from the LTX file</p>
 <dl class="field-list simple">
@@ -639,8 +635,8 @@ List of probe names from the LTX file</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.clear_activity">
-<span class="sig-name descname"><span class="pre">clear_activity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.clear_activity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.clear_activity" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO.clear_activity">
+<code class="sig-name descname"><span class="pre">clear_activity</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.clear_activity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.clear_activity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear any stale activity indicator data. This really just does a
 dummy read of all probes.</p>
 <dl class="field-list simple">
@@ -651,8 +647,8 @@ dummy read of all probes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.read_probe_activity">
-<span class="sig-name descname"><span class="pre">read_probe_activity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.read_probe_activity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.read_probe_activity" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO.read_probe_activity">
+<code class="sig-name descname"><span class="pre">read_probe_activity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.read_probe_activity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.read_probe_activity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read probe activity values from hardware.  Reading activity has the
 side effect of clearing activity registers in the VIO IP in hardware.</p>
 <p>Activity tracking is only available on input ports, and must be enabled
@@ -680,8 +676,8 @@ for each bit.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.read_probe_values">
-<span class="sig-name descname"><span class="pre">read_probe_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.read_probe_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.read_probe_values" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO.read_probe_values">
+<code class="sig-name descname"><span class="pre">read_probe_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.read_probe_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.read_probe_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read probe values from hardware. Reading probes has a side effect of
 clearing activity. If you need both values and activity, call read_probes().</p>
 <dl class="field-list simple">
@@ -699,8 +695,8 @@ clearing activity. If you need both values and activity, call read_probes().</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.read_probes">
-<span class="sig-name descname"><span class="pre">read_probes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.read_probes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.read_probes" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO.read_probes">
+<code class="sig-name descname"><span class="pre">read_probes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.read_probes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.read_probes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read probe values from hardware. Gets the current integer and activity values from
 hardware for selected probes. Output probes to not support activity and will return
 ‘X’ for all activity values.</p>
@@ -734,8 +730,8 @@ Falling, None, Both.
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIO.write_probes">
-<span class="sig-name descname"><span class="pre">write_probes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.write_probes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.write_probes" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIO.write_probes">
+<code class="sig-name descname"><span class="pre">write_probes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probe_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIO.write_probes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIO.write_probes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write values to VIO probe outputs in hardware. See
 <code class="docutils literal notranslate"><span class="pre">vio_probe_names</span></code>.</p>
 <dl class="field-list simple">
@@ -761,58 +757,58 @@ value.</p>
 <div class="section" id="vioprobe-class">
 <h4>VIOProbe Class<a class="headerlink" href="#vioprobe-class" title="Permalink to this headline">¶</a></h4>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.vio.</span></span><span class="sig-name descname"><span class="pre">VIOProbe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltx_probe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIOProbe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIOProbe" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIOProbe">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.vio.</span></code><code class="sig-name descname"><span class="pre">VIOProbe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ltx_probe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/vio.html#VIOProbe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.vio.VIOProbe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a Probe based on the ltx probe information</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe.probe_name">
-<span class="sig-name descname"><span class="pre">probe_name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.probe_name" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIOProbe.probe_name">
+<code class="sig-name descname"><span class="pre">probe_name</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.probe_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents the HDL net or bus name. It does not contain the brackets
 of the bus name [x:y].</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe.direction">
-<span class="sig-name descname"><span class="pre">direction</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.direction" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIOProbe.direction">
+<code class="sig-name descname"><span class="pre">direction</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.direction" title="Permalink to this definition">¶</a></dt>
 <dd><p>in or out. IN is a monitor connected to something in the design. Out is
 a virtual button the VIO drives.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe.is_bus">
-<span class="sig-name descname"><span class="pre">is_bus</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.is_bus" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIOProbe.is_bus">
+<code class="sig-name descname"><span class="pre">is_bus</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.is_bus" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if this probe is a vector, False if this probe is a scalar.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe.bus_left_index">
-<span class="sig-name descname"><span class="pre">bus_left_index</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.bus_left_index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIOProbe.bus_left_index">
+<code class="sig-name descname"><span class="pre">bus_left_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.bus_left_index" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">probe_name[bus_left_index::bus_right_index]</span></code> - When <strong>is_bus == True</strong>, this is the left index of the probe.
 When <strong>is_bus == False</strong>, this unused.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe.bus_right_index">
-<span class="sig-name descname"><span class="pre">bus_right_index</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.bus_right_index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIOProbe.bus_right_index">
+<code class="sig-name descname"><span class="pre">bus_right_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.bus_right_index" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">probe_name[bus_left_index::bus_right_index]</span></code> - When <strong>is_bus == True</strong>, this is the right index of the probe.
 When <strong>is_bus == False</strong>, this unused.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe.port_index">
-<span class="sig-name descname"><span class="pre">port_index</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.port_index" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIOProbe.port_index">
+<code class="sig-name descname"><span class="pre">port_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.port_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>VIO port number of the input or output port.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe.port_bit_offset">
-<span class="sig-name descname"><span class="pre">port_bit_offset</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.port_bit_offset" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.vio.VIOProbe.port_bit_offset">
+<code class="sig-name descname"><span class="pre">port_bit_offset</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.port_bit_offset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bit offset into the probe port that indicates where the probe data begins in the port.</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="chipscopy.api.vio.VIOProbe.port_name">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">port_name</span></span><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.port_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="chipscopy.api.vio.VIOProbe.port_name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">port_name</span></code><a class="headerlink" href="#chipscopy.api.vio.VIOProbe.port_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents the VIO port name in the IP (like probe_in0, probe_out1, etc)</p>
 </dd></dl>
 
@@ -852,7 +848,7 @@ When <strong>is_bus == False</strong>, this unused.</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>

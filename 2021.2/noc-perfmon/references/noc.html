@@ -40,7 +40,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -55,11 +54,9 @@
   <link rel="stylesheet" href="../../_static/css/common-ui-all.min.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/header-footer.min.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/pro.min.css" media="all" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="PCIe" href="../../pcie.html" />
+    <link rel="next" title="SysMon" href="../../sysmon.html" />
     <link rel="prev" title="References" href="../references.html" /> 
 	</head>
 	<body>
@@ -356,7 +353,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../pcie.html">PCIe</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../sysmon.html">SysMon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../vio.html">VIO</a></li>
 </ul>
@@ -444,14 +440,14 @@
   <div class="section" id="module-chipscopy.api.noc.noc">
 <span id="chipscopy-noc"></span><h1>chipscopy.NOC<a class="headerlink" href="#module-chipscopy.api.noc.noc" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.noc.noc.</span></span><span class="sig-name descname"><span class="pre">NocPerfmon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noc_tcf_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.noc.noc.NocPerfmon">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.noc.noc.</span></code><code class="sig-name descname"><span class="pre">NocPerfmon</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noc_tcf_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon" title="Permalink to this definition">¶</a></dt>
 <dd><p>NocPerfMon is the top level API for accessing NocPerfmon.
 It wraps the old client noc_perfmon_core_client.NoCPerfMonCoreClient(CoreClient) class
 and simplifies the use model by hiding tcf and node lower level details.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.initialize" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.noc.noc.NocPerfmon.initialize">
+<code class="sig-name descname"><span class="pre">initialize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.initialize" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method collects the clocking information for client use later in the configuration of this service. It
 also refreshes the client’s view of specific properties for the root node <em>ONLY</em>.</p>
 <p>This call must be invoked before clocking information is requested from the device</p>
@@ -466,8 +462,8 @@ also refreshes the client’s view of specific properties for the root node <em>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.discover_noc_elements">
-<span class="sig-name descname"><span class="pre">discover_noc_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.discover_noc_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.discover_noc_elements" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.noc.noc.NocPerfmon.discover_noc_elements">
+<code class="sig-name descname"><span class="pre">discover_noc_elements</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.discover_noc_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.discover_noc_elements" title="Permalink to this definition">¶</a></dt>
 <dd><p>WARNING - This function is deprecated and will be removed in the future</p>
 <p>This method dynamically scans the NoC to determine the active nodes in the programmed design. If no
 nodes are programmed or the NPI domain is inaccessible this will return an empty list.</p>
@@ -489,8 +485,8 @@ and cannot be monitored.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.configure_monitors">
-<span class="sig-name descname"><span class="pre">configure_monitors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">monitors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_intervals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traffic_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extended_monitor_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.configure_monitors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.configure_monitors" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.noc.noc.NocPerfmon.configure_monitors">
+<code class="sig-name descname"><span class="pre">configure_monitors</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">monitors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_intervals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traffic_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extended_monitor_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.configure_monitors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.configure_monitors" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method configures and enables the performance monitoring on the parameter set of elements. Upon completion
 of the configuration, data will start to be emitted asynchronously from ChipScope Server back to the requesting
 client. The client must implement an Event Listener to properly receive the data.</p>
@@ -540,8 +536,8 @@ extended configuraiton option. DDRMC does not, and will ignore the value, if sup
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.get_supported_sampling_periods">
-<span class="sig-name descname"><span class="pre">get_supported_sampling_periods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_clk_feq_mhz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33.3333</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_alt_ref_clk_freq_mhz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33.3333</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddrmc_freq_mhz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ddrmc_main_0':</span> <span class="pre">800.0}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.get_supported_sampling_periods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.get_supported_sampling_periods" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.noc.noc.NocPerfmon.get_supported_sampling_periods">
+<code class="sig-name descname"><span class="pre">get_supported_sampling_periods</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_clk_feq_mhz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33.3333</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_alt_ref_clk_freq_mhz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33.3333</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddrmc_freq_mhz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ddrmc_main_0':</span> <span class="pre">800.0}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.get_supported_sampling_periods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.get_supported_sampling_periods" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -562,8 +558,8 @@ periods measured in milliseconds (float).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.get_clk_info">
-<span class="sig-name descname"><span class="pre">get_clk_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.get_clk_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.get_clk_info" title="Permalink to this definition">¶</a></dt>
+<dt id="chipscopy.api.noc.noc.NocPerfmon.get_clk_info">
+<code class="sig-name descname"><span class="pre">get_clk_info</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.get_clk_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.get_clk_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>DEPRECATED will remove in 2022.1</p>
 <p>Reports NPI and NoC clock information from the running design. These are parameters set by the designer in
 Vivado.</p>
@@ -601,7 +597,7 @@ detail the <code class="docutils literal notranslate"><span class="pre">freq_mhz
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../pcie.html" class="btn btn-neutral float-right" title="PCIe" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../../sysmon.html" class="btn btn-neutral float-right" title="SysMon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../references.html" class="btn btn-neutral float-left" title="References" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -614,7 +610,7 @@ detail the <code class="docutils literal notranslate"><span class="pre">freq_mhz
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2021.
+        Last updated on December 13, 2021.
       </span>
 
     </p>
