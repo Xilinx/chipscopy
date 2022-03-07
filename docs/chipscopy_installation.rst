@@ -65,11 +65,11 @@ Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python
 
    /path_to_xilinx_tools/Vivado/<ver>/tps/lnx64/python-<ver>
    e.g.:
-   /opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3
+   /opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3
 
    To use this Python, set your path and loader path by (bash syntax):
-   export PATH=$PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/bin
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/lib
+   export PATH=$PATH:/opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3/bin
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3/lib
 
 
 **Windows**
@@ -78,10 +78,10 @@ Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python
 
    <drive_spec>:\path_to_xilinx_tools\Vivado\<ver>\tps\win64\python-<ver>
    e.g.:
-   C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3
+   C:\Xilinx\Vivado\2021.2\tps\win64\python-3.8.3
 
    To use this Python, amend this to your user or system-wide %PATH% environment variable
-   C:\Xilinx\Vivado\2021.1\tps\win64\python-3.8.3\bin
+   C:\Xilinx\Vivado\2021.2\tps\win64\python-3.8.3\bin
 
 
 Step 2: Set up Virtual Environment
@@ -113,18 +113,17 @@ Installation assumes you are using bash on linux, or the PowerShell on Windows. 
 
 Activate the virtual environment. The location of the activate script is different depending on operating system. You will need to re-activate the virtual environment whenever you reopen a fresh bash or PowerShell terminal.
 
-**Windows:**
-
-.. code-block:: shell
-
-    > venv/Scripts/activate
-
 **Linux:**
 
 .. code-block:: shell
 
     > source venv/bin/activate
 
+**Windows:**
+
+.. code-block:: shell
+
+    > venv/Scripts/activate
 
 .. note:: Make sure to always activate the Python virtual environment before you use ChipScoPy.
 
@@ -142,10 +141,20 @@ It's time to install the ChipScoPy package itself. With your Python environment 
 
 If you want to install a specific version, run:
 
+
+**Linux:**
+
 .. code-block:: shell
 
-    # installs latest version of 2021.1
-    (venv) > python -m pip install chipscopy==2021.1.*   
+    # installs 2021.2 version of chipscopy
+    (venv) > python -m pip install 'chipscopy==2021.2.*'
+
+**Windows:**
+
+.. code-block:: shell
+
+    # installs 2021.2 version of chipscopy
+    (venv) > python -m pip install chipscopy==2021.2.*
 
 
 Step 4: Install Dependencies
@@ -231,11 +240,19 @@ To get the latest software release:
     (venv) > python -m pip install --upgrade chipscopy
 
 
-To get the latest numbered software release (2021.1 in this example):
+To get the latest numbered software release (2021.2 in this example):
+
+**Linux**
 
 .. code-block:: shell
 
-    (venv) > python -m pip install --upgrade chipscopy==2021.1.*
+    (venv) > python -m pip install --upgrade 'chipscopy==2021.2.*'
+
+**Windows**
+
+.. code-block:: shell
+
+    (venv) > python -m pip install --upgrade chipscopy==2021.2.*
 
 
 Step 8: Update ChipScoPy Examples
