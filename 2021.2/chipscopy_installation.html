@@ -485,20 +485,20 @@
 <p><strong>Linux:</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/path_to_xilinx_tools/Vivado/&lt;ver&gt;/tps/lnx64/python-&lt;ver&gt;
 e.g.:
-/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3
+/opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3
 
 To use this Python, <span class="nb">set</span> your path and loader path by <span class="o">(</span>bash syntax<span class="o">)</span>:
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/bin
-<span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/opt/xilinx/Vivado/2021.1/tps/lnx64/python-3.8.3/lib
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3/bin
+<span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3/lib
 </pre></div>
 </div>
 <p><strong>Windows</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&lt;drive_spec&gt;:<span class="se">\p</span>ath_to_xilinx_tools<span class="se">\V</span>ivado<span class="se">\&lt;</span>ver&gt;<span class="se">\t</span>ps<span class="se">\w</span>in64<span class="se">\p</span>ython-&lt;ver&gt;
 e.g.:
-C:<span class="se">\X</span>ilinx<span class="se">\V</span>ivado<span class="se">\2</span><span class="m">021</span>.1<span class="se">\t</span>ps<span class="se">\w</span>in64<span class="se">\p</span>ython-3.8.3
+C:<span class="se">\X</span>ilinx<span class="se">\V</span>ivado<span class="se">\2</span><span class="m">021</span>.2<span class="se">\t</span>ps<span class="se">\w</span>in64<span class="se">\p</span>ython-3.8.3
 
 To use this Python, amend this to your user or system-wide %PATH% environment variable
-C:<span class="se">\X</span>ilinx<span class="se">\V</span>ivado<span class="se">\2</span><span class="m">021</span>.1<span class="se">\t</span>ps<span class="se">\w</span>in64<span class="se">\p</span>ython-3.8.3<span class="se">\b</span>in
+C:<span class="se">\X</span>ilinx<span class="se">\V</span>ivado<span class="se">\2</span><span class="m">021</span>.2<span class="se">\t</span>ps<span class="se">\w</span>in64<span class="se">\p</span>ython-3.8.3<span class="se">\b</span>in
 </pre></div>
 </div>
 </div>
@@ -523,12 +523,12 @@ C:<span class="se">\X</span>ilinx<span class="se">\V</span>ivado<span class="se"
 <div class="section" id="activate-virtual-environment">
 <h3>2.2: Activate Virtual Environment<a class="headerlink" href="#activate-virtual-environment" title="Permalink to this headline">¶</a></h3>
 <p>Activate the virtual environment. The location of the activate script is different depending on operating system. You will need to re-activate the virtual environment whenever you reopen a fresh bash or PowerShell terminal.</p>
-<p><strong>Windows:</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&gt; venv/Scripts/activate
-</pre></div>
-</div>
 <p><strong>Linux:</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&gt; <span class="nb">source</span> venv/bin/activate
+</pre></div>
+</div>
+<p><strong>Windows:</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&gt; venv/Scripts/activate
 </pre></div>
 </div>
 <div class="admonition note">
@@ -545,8 +545,14 @@ C:<span class="se">\X</span>ilinx<span class="se">\V</span>ivado<span class="se"
 </pre></div>
 </div>
 <p>If you want to install a specific version, run:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># installs latest version of 2021.1</span>
-<span class="o">(</span>venv<span class="o">)</span> &gt; python -m pip install <span class="nv">chipscopy</span><span class="o">==</span><span class="m">2021</span>.1.*
+<p><strong>Linux:</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># installs 2021.2 version of chipscopy</span>
+<span class="o">(</span>venv<span class="o">)</span> &gt; python -m pip install <span class="s1">&#39;chipscopy==2021.2.*&#39;</span>
+</pre></div>
+</div>
+<p><strong>Windows:</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># installs 2021.2 version of chipscopy</span>
+<span class="o">(</span>venv<span class="o">)</span> &gt; python -m pip install <span class="nv">chipscopy</span><span class="o">==</span><span class="m">2021</span>.2.*
 </pre></div>
 </div>
 </div>
@@ -606,8 +612,13 @@ Vivado Lab Edition. They can be downloaded from
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>venv<span class="o">)</span> &gt; python -m pip install --upgrade chipscopy
 </pre></div>
 </div>
-<p>To get the latest numbered software release (2021.1 in this example):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>venv<span class="o">)</span> &gt; python -m pip install --upgrade <span class="nv">chipscopy</span><span class="o">==</span><span class="m">2021</span>.1.*
+<p>To get the latest numbered software release (2021.2 in this example):</p>
+<p><strong>Linux</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>venv<span class="o">)</span> &gt; python -m pip install --upgrade <span class="s1">&#39;chipscopy==2021.2.*&#39;</span>
+</pre></div>
+</div>
+<p><strong>Windows</strong></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>venv<span class="o">)</span> &gt; python -m pip install --upgrade <span class="nv">chipscopy</span><span class="o">==</span><span class="m">2021</span>.2.*
 </pre></div>
 </div>
 </div>
@@ -649,7 +660,7 @@ Vivado Lab Edition. They can be downloaded from
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 13, 2021.
+        Last updated on March 07, 2022.
       </span>
 
     </p>
