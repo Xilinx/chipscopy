@@ -61,15 +61,19 @@ Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python
 
 **Linux:**
 
+.. note::
+
+    There is an issue with the Vivado Distributed Python in all versions that renders it unusable for Ubuntu/Debian Linux Distros. Please use an alternate source for Python if you are working on one of these systems.
+
 .. code-block:: shell
 
    /path_to_xilinx_tools/Vivado/<ver>/tps/lnx64/python-<ver>
    e.g.:
-   /opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3
+   /opt/xilinx/Vivado/2022.1/tps/lnx64/python-3.8.3
 
    To use this Python, set your path and loader path by (bash syntax):
-   export PATH=$PATH:/opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3/bin
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/2021.2/tps/lnx64/python-3.8.3/lib
+   export PATH=$PATH:/opt/xilinx/Vivado/2022.1/tps/lnx64/python-3.8.3/bin
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/2022.1/tps/lnx64/python-3.8.3/lib
 
 
 **Windows**
@@ -78,10 +82,10 @@ Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python
 
    <drive_spec>:\path_to_xilinx_tools\Vivado\<ver>\tps\win64\python-<ver>
    e.g.:
-   C:\Xilinx\Vivado\2021.2\tps\win64\python-3.8.3
+   C:\Xilinx\Vivado\2022.1\tps\win64\python-3.8.3
 
    To use this Python, amend this to your user or system-wide %PATH% environment variable
-   C:\Xilinx\Vivado\2021.2\tps\win64\python-3.8.3\bin
+   C:\Xilinx\Vivado\2022.1\tps\win64\python-3.8.3\bin
 
 
 Step 2: Set up Virtual Environment
@@ -146,15 +150,15 @@ If you want to install a specific version, run:
 
 .. code-block:: shell
 
-    # installs 2021.2 version of chipscopy
-    (venv) > python -m pip install 'chipscopy==2021.2.*'
+    # installs 2022.1 version of chipscopy
+    (venv) > python -m pip install 'chipscopy==2022.1.*'
 
 **Windows:**
 
 .. code-block:: shell
 
-    # installs 2021.2 version of chipscopy
-    (venv) > python -m pip install chipscopy==2021.2.*
+    # installs 2022.1 version of chipscopy
+    (venv) > python -m pip install chipscopy==2022.1.*
 
 
 Step 4: Install Dependencies
@@ -168,6 +172,16 @@ Run the following commands to install the additional support packages:
 
     (venv) > python -m pip install chipscopy[core-addons]
     (venv) > python -m pip install chipscopy[jupyter]
+
+.. note::
+
+    (t)csh users will need to escape the square brackets which are a special shell syntax.
+
+
+.. code-block:: shell
+
+    (venv) > python -m pip install "chipscopy[core-addons]"
+    (venv) > python -m pip install "chipscopy[jupyter]"
 
 
 Congrats--if you're still awake and you've followed the steps till here, you are the proud owner of a functional Python setup. Next steps are to start exploring the examples.
@@ -240,19 +254,19 @@ To get the latest software release:
     (venv) > python -m pip install --upgrade chipscopy
 
 
-To get the latest numbered software release (2021.2 in this example):
+To get the latest numbered software release (2022.1 in this example):
 
 **Linux**
 
 .. code-block:: shell
 
-    (venv) > python -m pip install --upgrade 'chipscopy==2021.2.*'
+    (venv) > python -m pip install --upgrade 'chipscopy==2022.1.*'
 
 **Windows**
 
 .. code-block:: shell
 
-    (venv) > python -m pip install --upgrade chipscopy==2021.2.*
+    (venv) > python -m pip install --upgrade chipscopy==2022.1.*
 
 
 Step 8: Update ChipScoPy Examples

@@ -25,6 +25,7 @@ from chipscopy.dm.harden.noc_perfmon.noc_types import (
     ddrmc_noc_typedef,
     noc_node_types,
     ddrmc_main_typedef,
+    hbmmc_typedef,
 )
 from chipscopy.utils.logger import log
 
@@ -45,6 +46,7 @@ def get_noc_typedef_from_name(name) -> str:
     ddrmc_noc_re = re.compile(".*DDRMC_NOC.*", flags=re.IGNORECASE)
     ddrmc_main_re = re.compile(".*DDRMC_MAIN.*", flags=re.IGNORECASE)
     ddrmc_re = re.compile(".*DDRMC_X.*", flags=re.IGNORECASE)
+    hbmmc_re = re.compile(".*HBM_MC_X.*", flags=re.IGNORECASE)
 
     if nmu_re.match(name):
         return noc_nmu_typedef
@@ -54,6 +56,8 @@ def get_noc_typedef_from_name(name) -> str:
         return ddrmc_noc_typedef
     elif ddrmc_main_re.match(name) or ddrmc_re.match(name):
         return ddrmc_main_typedef
+    elif hbmmc_re.match(name):
+        return hbmmc_typedef
     else:
         # log[DOMAIN].error(f'unknown type for name: {name}')
         return ""
@@ -98,6 +102,11 @@ class NoCElement(ABC):
     @abstractmethod
     def update_node(self, tcf_node, updated_keys):  # pragma: no cover
         pass
+
+    def get_axis_metrics(self, axis, view, pc):
+        # pc is only for HBM
+        for metric in self.axis_metrics[axis][view]:
+            yield metric
 
     def record_bw_lat(
         self,
@@ -180,7 +189,7 @@ class DDRMC(NoCElement):
             "left_axis": {
                 "bandwidth": ["write_bandwidth", "read_bandwidth"],
                 "latency": ["avg_write_latency", "avg_read_latency"],
-                "ddrmc": [
+                "mem": [
                     "agg_activates",
                     "agg_read_cas",
                     "agg_write_cas",
@@ -192,7 +201,7 @@ class DDRMC(NoCElement):
                     "agg_bus_turnarounds",
                 ],
             },
-            "right_axis": {"bandwidth": [], "latency": [], "ddrmc": []},
+            "right_axis": {"bandwidth": [], "latency": [], "mem": []},
         }
 
     def update_node(self, tcf_node, updated_keys):
@@ -300,7 +309,6 @@ class DDRMC(NoCElement):
             self.trim_and_log(raw_trace_data)
 
 
-# %%
 class NoCMasterSlave(NoCElement):
     def __init__(self, *args):
         super().__init__(*args)
@@ -323,9 +331,9 @@ class NoCMasterSlave(NoCElement):
                     "min_r_latency",
                     "max_r_latency",
                 ],
-                "ddrmc": [],
+                "mem": [],
             },
-            "right_axis": {"bandwidth": [], "latency": [], "ddrmc": []},
+            "right_axis": {"bandwidth": [], "latency": [], "mem": []},
         }
 
     def update_node(self, tcf_node, updated_keys):
@@ -456,6 +464,20 @@ class NoCPerfMonNodeListener(NodeListener):
                 )
                 self.noc_elements[elem.lower()] = node
                 self.noc_elements[alt_name.lower()] = node
+                self.unique_elements[elem.lower()] = node
+            elif node_type in [hbmmc_typedef]:
+                from chipscopy.api.noc.graphing.hbmmc import HBMMC
+
+                node = HBMMC(
+                    elem.lower(),
+                    elem.lower(),
+                    num_samples,
+                    sampling_period_ms[elem],
+                    record_to_file,
+                    tslide,
+                    npi_clk_freq / 1000000.0,
+                )
+                self.noc_elements[elem.lower()] = node
                 self.unique_elements[elem.lower()] = node
             else:  # pragma: no cover
                 raise Exception(f"Error, unsupported node: {elem}, type: {node_type}")

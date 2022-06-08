@@ -11,20 +11,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import json
 import sys
 from typing import Optional, Dict, Any, List, Union, Callable
 
+from chipscopy.client.jtagdevice import JtagDevice, JtagCable
 from chipscopy.dm import chipscope
 from chipscopy.utils.logger import log
 from chipscopy.utils.version import version_consistency_check
 from chipscopy.client import connect, disconnect
 from chipscopy.client.util import connect_hw
-from chipscopy.client.view_info import TargetFilter, ViewInfo
+from chipscopy.client.view_info import ViewInfo
 from chipscopy.client.server_info import ServerInfo
 from chipscopy.api.containers import QueryList
-from chipscopy.api.device.device import Device
-from chipscopy.api.device.device_scanner import DeviceScanner
+from chipscopy.api.device.device import Device, FeatureNotAvailableError
+from chipscopy.api.device.device_util import get_jtag_view_dict
 from chipscopy.api.memory import Memory
+from chipscopy.api.cable import Cable, discover_devices, wait_for_all_cables_ready, discover_cables
 
 DOMAIN_NAME = "client"
 
@@ -40,30 +44,47 @@ class Session:
     create_session() and delete_session().
     """
 
-    _hw_server_url: str = None
-    _cs_server_url: str = None
-    _xvc_server_url: str = None
-    _hw_server: Optional[ServerInfo] = None
-    _cs_server: Optional[ServerInfo] = None
-
     def __init__(
         self,
         *,
         hw_server_url: str,
         cs_server_url: Optional[str] = None,
-        xvc_server_url: Optional[str] = None,
+        xvc_mm_server_url: Optional[str] = None,
         disable_core_scan: bool,
         bypass_version_check: bool,
+        cable_timeout: int,
+        use_legacy_scanner: bool,
     ):
-        self._disable_core_scan = disable_core_scan
-        self._bypass_version_check = bypass_version_check
-        self._hw_server_url = hw_server_url
-        self._cs_server_url = cs_server_url
-        self._xvc_server_url = xvc_server_url
-        self.connect()
+        self._disable_core_scan: bool = disable_core_scan
+        self._bypass_version_check: bool = bypass_version_check
+        self._hw_server_url: str = hw_server_url
+        self._cs_server_url: str = cs_server_url
+        self._xvc_mm_server_url: str = xvc_mm_server_url
+        self._cable_timeout = cable_timeout
+        self._cables_are_initialized = False
+        self._use_legacy_scanner = use_legacy_scanner
+
+        self.hw_server: Optional[ServerInfo] = None
+        self.cs_server: Optional[ServerInfo] = None
 
     def __str__(self):
         return f"{self.handle}"
+
+    def __repr__(self):
+        return self.to_json()
+
+    def to_json(self):
+        ret_dict = {
+            "name": self.handle,
+            "hw_server_url": self._hw_server_url,
+            "cs_server_url": self._cs_server_url,
+            "xvc_mm_server_url": self._xvc_mm_server_url,
+            "bypass_version_check": self._bypass_version_check,
+            "disable_core_scan": self._disable_core_scan,
+            "cable_timeout": self._cable_timeout,
+        }
+        json_dict = json.dumps(ret_dict, indent=4)
+        return json_dict
 
     def __enter__(self):
         return self
@@ -96,16 +117,16 @@ class Session:
     def connect(self):
         if not self._hw_server_url:
             raise ValueError("hw_server_url must point to a valid hw_server")
-        self._hw_server = Session._connect_hw_server(self._hw_server_url)
+        self.hw_server = Session._connect_server("hw_server", self._hw_server_url, connect_hw)
         if self._cs_server_url:
-            self._cs_server = Session._connect_cs_server(self._cs_server_url)
-            self._cs_server.connect_remote(self._hw_server.url)
-            if self._xvc_server_url:
-                self._cs_server.connect_xvc(self._xvc_server_url, self._hw_server_url)
-        Session._add_connection(self._hw_server, self._cs_server, self)
+            self.cs_server = Session._connect_server("cs_server", self._cs_server_url, connect)
+            self.cs_server.connect_remote(self.hw_server.url)
+            if self._xvc_mm_server_url:
+                self.cs_server.connect_xvc(self._xvc_mm_server_url, self._hw_server_url)
+        Session._add_connection(self.hw_server, self.cs_server, self)
         try:
             # Quick sanity check - throws RuntimeError on version mismatch
-            self._version_check()
+            version_consistency_check(self.hw_server, self.cs_server, self._bypass_version_check)
         except RuntimeError:
             self.disconnect()
             t, v, tb = sys.exc_info()
@@ -113,12 +134,12 @@ class Session:
 
     def disconnect(self):
         Session._remove_connection(self)
-        if self._cs_server:
-            self._cs_server.disconnect_remote(f"TCP:{self._hw_server.url}")
-            disconnect(self._cs_server)
-            self._cs_server = None
-        disconnect(self._hw_server)
-        self._hw_server = None
+        if self.cs_server:
+            self.cs_server.disconnect_remote(f"TCP:{self.hw_server.url}")
+            disconnect(self.cs_server)
+            self.cs_server = None
+        disconnect(self.hw_server)
+        self.hw_server = None
 
     def set_param(self, params: Dict[str, Any]):
         """Generic parameter get and set for low level chipscope server params"""
@@ -126,30 +147,22 @@ class Session:
             message = "Please provide the params to set as a dictionary!"
             log[DOMAIN_NAME].error(message)
             raise TypeError(message)
-        cs_service = self._cs_server.get_sync_service("ChipScope")
+        cs_service = self.cs_server.get_sync_service("ChipScope")
         cs_service.set_css_param(params)
 
     def get_param(self, params: Union[str, List[str]]) -> Dict[str, str]:
         """Generic parameter get and set for low level chipscope server params"""
         if isinstance(params, str):
             params = [params]
-        cs_service = self._cs_server.get_sync_service("ChipScope")
+        cs_service = self.cs_server.get_sync_service("ChipScope")
         return cs_service.get_css_param(params).get()
 
     @property
-    def hw_server(self) -> ServerInfo:
-        return self._hw_server
-
-    @property
-    def cs_server(self) -> ServerInfo:
-        return self._cs_server
-
-    @property
     def handle(self) -> str:
-        if self._cs_server and self._hw_server:
-            handle_str = f"{self._cs_server.url}<->{self._hw_server.url}"
-        elif self._hw_server:
-            handle_str = f"{self._hw_server.url}"
+        if self.cs_server and self.hw_server:
+            handle_str = f"{self.cs_server.url}<->{self.hw_server.url}"
+        elif self.hw_server:
+            handle_str = f"{self.hw_server.url}"
         else:
             handle_str = "no_hw_server<->no_cs_server"
         return handle_str
@@ -157,28 +170,90 @@ class Session:
     @property
     def chipscope_view(self) -> ViewInfo:
         view = None
-        if self._cs_server:
-            view = self._cs_server.get_view(chipscope)
+        if self.cs_server:
+            view = self.cs_server.get_view(chipscope)
         return view
 
     @property
-    def devices(self) -> QueryList[Device]:
-        """Returns a list of devices connected to this hw_server. Devices may
-        contain several chains so don't always assume a single jtag chain
-        in-order is returned"""
-        devices: QueryList[Device] = QueryList()
-        device_scanner = DeviceScanner(self._hw_server, self._cs_server)
-        device_scanner.scan_devices()
-        for device_identification in device_scanner.get_scan_results():
-            device_node = device_identification.find_top_level_device_node(self._hw_server)
-            if device_node.device_wrapper is None:
-                device_node.device_wrapper = Device(
-                    hw_server=self._hw_server,
-                    cs_server=self._cs_server,
-                    device_identification=device_identification,
-                    disable_core_scan=self._disable_core_scan,
-                )
-            devices.append(device_node.device_wrapper)
+    def jtag_devices(self) -> QueryList[JtagDevice]:
+        def matcher(node, key, value):
+            if getattr(node, key, None) == value:
+                return True
+            elif node.props.get(key) == value:
+                return True
+            return False
+
+        devices: QueryList[JtagDevice] = QueryList()
+        devices.set_custom_match_function(matcher)
+        jtag_view_dict = get_jtag_view_dict(self.hw_server)
+        view = self.hw_server.get_view("jtag")
+        for cable_values in jtag_view_dict.values():
+            devices_dict = cable_values.get("devices", {})
+            jtag_index = 0
+            for device_ctx in devices_dict.keys():
+                jtag_device = view.get_node(ctx=device_ctx, cls=JtagDevice)
+                # TODO: Check the correct way to get the jtag_index. I couldn't find in the props so I just add 1 each
+                #       time we find a device on the cable...
+                jtag_device.cable_serial = cable_values["props"].get("Serial")
+                jtag_device.jtag_index = jtag_index
+                jtag_index += 1
+                devices.append(jtag_device)
+        return devices
+
+    @property
+    def jtag_cables(self) -> QueryList[JtagCable]:
+        # TODO: Transition jtag_cables -> target_cables.
+        #       target_cables will return a higher level wrapper that can represent a virtual cable with virtual
+        #       devices in the future. jtag_cables here only support the JtagCable node.
+        def matcher(node, key, value):
+            if getattr(node, key, None) == value:
+                return True
+            elif node.props.get(key) == value:
+                return True
+            return False
+
+        jtag_cables: QueryList[JtagCable] = QueryList()
+        jtag_cables.set_custom_match_function(matcher)
+        jtag_view_dict = get_jtag_view_dict(self.hw_server)
+        view = self.hw_server.get_view("jtag")
+        for (jtag_cable_ctx, cable_values) in jtag_view_dict.items():
+            jtag_cable = view.get_node(ctx=jtag_cable_ctx, cls=JtagCable)
+            jtag_cables.append(jtag_cable)
+        return jtag_cables
+
+    @property
+    def cables(self) -> QueryList[Cable]:
+        """Returns a list of all cables connected to the hw_server.
+        Similar to vivado get_hw_targets command. target_cables may be jtag or virtual.
+        """
+        return discover_cables(
+            self.hw_server,
+            self.cs_server,
+            self._disable_core_scan,
+            self._use_legacy_scanner,
+            self._cable_timeout,
+        )
+
+    @property
+    def devices(self, cable: Optional[Cable] = None) -> QueryList[Device]:
+        """Returns a list of devices connected to this hw_server and cable. Devices may
+        contain several chains across cables, so don't always assume a single jtag chain
+        is returned
+
+        Args:
+            cable: Get devices for specified cable. None=Scan all cables
+        """
+        if not self._cables_are_initialized:
+            wait_for_all_cables_ready(self.hw_server, self._cable_timeout)
+            self._cables_are_initialized = True
+        cable_ctx = cable.context if cable else None
+        devices = discover_devices(
+            hw_server=self.hw_server,
+            cs_server=self.cs_server,
+            disable_core_scan=self._disable_core_scan,
+            cable_ctx=cable_ctx,
+            use_legacy_scaner=self._use_legacy_scanner,
+        )
         return devices
 
     @property
@@ -187,9 +262,12 @@ class Session:
         # This is not fast - improve it later. We don't need to query each
         # device - but it's clear and simple now.
         for device in self.devices:
-            memory_nodes = device.memory
-            for node in memory_nodes:
-                memory_node_list.append(node)
+            try:
+                memory_nodes = device.memory
+                for node in memory_nodes:
+                    memory_node_list.append(node)
+            except FeatureNotAvailableError:
+                pass
         return memory_node_list
 
     @staticmethod
@@ -214,36 +292,21 @@ class Session:
         log.enable_domain(DOMAIN_NAME)
 
     @staticmethod
-    def _connect_hw_server(hw_server_url: str) -> ServerInfo:
-        return Session._connect_server("hw_server", hw_server_url, connect_hw)
-
-    @staticmethod
-    def _connect_cs_server(cs_server_url: str) -> ServerInfo:
-        return Session._connect_server("cs_server", cs_server_url, connect)
-
-    @staticmethod
     def _connect_server(server_name: str, server_url: str, connect_func: Callable) -> ServerInfo:
-        connection_refused_msg = None
         try:
-            server: ServerInfo = connect_func(server_url)
+            return connect_func(server_url)
         except ConnectionRefusedError:
             # Shorten stack dump, by creating new exception.
-            connection_refused_msg = (
+            raise ConnectionRefusedError(
                 f"Connection could not be opened to {server_name} @ {server_url}.\n"
-                f"  Please make sure that {server_name} is running at the URL provided, and firewall is not blocking."
+                f"  Please make sure that {server_name} is running at the URL provided, "
+                f"and firewall is not blocking."
             )
         except Exception as ex:
             # Chain exceptions.
             raise Exception(
                 f"Connection could not be opened to {server_name} @ {server_url}."
             ) from ex
-
-        if connection_refused_msg:
-            raise ConnectionRefusedError(connection_refused_msg)
-        return server
-
-    def _version_check(self):
-        version_consistency_check(self._hw_server, self._cs_server, self._bypass_version_check)
 
 
 ###############################################################################
@@ -275,27 +338,36 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
         hw_server_url: Hardware server URL. Format ``TCP:<hostname>:<port>``
         cs_server_url: ChipScope server URL. Format ``TCP:<hostname>:<port>``
 
+    Keyword Arguments:
+        disable_core_scan: Set True to completely disable core scanning during discover_and_setup_debug_cores
+        bypass_version_check: Set True to change hw_server and cs_server version mismatch to warning instead of error
+        xvc_mm_server_url: Url for the testing xvc memory map server - For special debug core testing use cases
+        cable_timeout: Seconds before timing out when detecting devices on a jtag cable
+        use_legacy_scanner: Use legacy device scan algorithm
+
     Returns:
         New session object.
 
     """
-    # Optional arguments in kwargs -
-    #    disable_core_scan - This determines how devices setup the debug cores.
-    #         It is possible to disable the setup_debug_cores detection
-    #         if it is likely to interfere with an existing hw_server
     disable_core_scan = kwargs.get("disable_core_scan", False)
-    bypass_version_check = kwargs.get("bypass_version_check", False)
-    xvc_server_url = kwargs.get("xvc_server_url", None)
+    bypass_version_check = kwargs.get("bypass_version_check", True)
+    xvc_mm_server_url = kwargs.get("xvc_mm_server_url", None)
+    cable_timeout = kwargs.get("cable_timeout", 4)
+    use_legacy_scanner = kwargs.get("use_legacy_scanner", False)
 
     # Create session even if there already exists a session with the same cs_server and hw_server
     # It *should* be safe.
-    return Session(
+    session = Session(
         cs_server_url=cs_server_url,
         hw_server_url=hw_server_url,
-        xvc_server_url=xvc_server_url,
+        xvc_mm_server_url=xvc_mm_server_url,
         disable_core_scan=disable_core_scan,
         bypass_version_check=bypass_version_check,
+        cable_timeout=cable_timeout,
+        use_legacy_scanner=use_legacy_scanner,
     )
+    session.connect()
+    return session
 
 
 def delete_session(session: Session):

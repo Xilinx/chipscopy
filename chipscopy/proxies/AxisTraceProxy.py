@@ -1,4 +1,4 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright 2022 Xilinx, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,3 +35,21 @@ class AxisTraceProxy(CorePropertyProxy, AxisTraceService):
 
     def terminate(self, node_id: str, done: DoneHWCommand) -> None:
         return self.send_xicom_command("terminate", (node_id,), done)
+
+    def acquire(
+        self,
+        node_id: str,
+        input_index: int,
+        input_name: str,
+        destination_address: int,
+        memory_depth: int,
+        done: DoneHWCommand,
+    ) -> None:
+        return self.send_xicom_command(
+            "acquire", (node_id, input_index, input_name, destination_address, memory_depth), done
+        )
+
+    def release(
+        self, node_id: str, input_index: int, input_name: str, force: bool, done: DoneHWCommand
+    ) -> None:
+        return self.send_xicom_command("release", (node_id, input_index, input_name, force), done)

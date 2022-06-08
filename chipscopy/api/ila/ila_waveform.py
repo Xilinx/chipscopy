@@ -93,9 +93,30 @@ class ILAWaveform:
             return (byte_value & mask) != 0
 
     """
+    gap_index: Optional[int] = None
+    """
+    None or 0, if the waveform has no gaps. 
+    If the value is >0, one sample bit is reserved to indicate which samples are gaps,
+    i.e. the samples with unknown values. 'gap_index' gives the bit location within the sample data.
+    """
+
+    def bytes_per_sample(self) -> int:
+        return len(self.data) // self.sample_count
 
     def get_window_count(self) -> int:
         return len(self.trigger_position)
+
+    def set_sample(self, sample_index: int, sample: bytearray) -> None:
+        """ Sample may have more bytes than waveform samples have. Erase any gap bit."""
+        sample_byte_count = self.bytes_per_sample()
+        copy_byte_count = min(sample_byte_count, len(sample))
+        start = sample_byte_count * sample_index
+        self.data[start : start + copy_byte_count] = sample[0:copy_byte_count]
+        if not self.gap_index:
+            return
+        gap_byte_index, gap_bit_index = divmod(self.width, 8)
+        mask = 0xFF ^ (1 << gap_bit_index)
+        self.data[start + gap_byte_index] &= mask
 
     def __str__(self) -> str:
         items = {key: val for key, val in self.__dict__.items() if key != "data"}
@@ -141,6 +162,10 @@ class WaveformWriter(object):
     def write(self, msg: str):
         self._file_handle.write(msg)
 
+    @staticmethod
+    def make_values_unknown(in_values: List[str], unknown_ch: str) -> List[str]:
+        return [unknown_ch * len(val) for val in in_values]
+
     @abstractmethod
     def make_probe_names(self) -> [str]:
         return [p.name for p in self._probes]
@@ -158,6 +183,7 @@ class WaveformWriter(object):
         is_trigger: bool,
         probe_binary_reversed_values: [str],
         is_last_sample: bool,
+        is_gap: bool,
     ) -> None:
         """
 
@@ -168,6 +194,7 @@ class WaveformWriter(object):
             is_trigger (bool):
             probe_binary_reversed_values ([str]): binary string values each start lsb at position zero.
             is_last_sample(bool): Last sample in waveform.
+            is_gap (bool): True ig no data available for the sample.
 
         Returns:
 
@@ -176,14 +203,17 @@ class WaveformWriter(object):
 
 
 class WaveformWriterCSV(WaveformWriter):
-    def __init__(self, file_handle: TextIOBase, probes: [ILAWaveformProbe]):
+    def __init__(self, file_handle: TextIOBase, probes: [ILAWaveformProbe], include_gap: bool):
         WaveformWriter.__init__(self, file_handle, probes)
+        self._include_gap = include_gap
 
     def init(self):
         self.write("Sample in Buffer,Sample in Window,TRIGGER,")
+        if self._include_gap:
+            self.write("GAP,")
         self.write(",".join(self._probe_names))
         self.write("\nRadix - UNSIGNED,UNSIGNED,UNSIGNED,")
-        # currently HEX is the only supported radix
+        # Currently, HEX is the only supported radix
         self.write(",".join(["HEX"] * self._probe_count))
         self.write("\n")
 
@@ -198,20 +228,34 @@ class WaveformWriterCSV(WaveformWriter):
         is_trigger: bool,
         probe_binary_reversed_values: [str],
         is_last_sample: bool,
+        is_gap: bool,
     ) -> None:
         hex_values = bin_reversed_to_hex_values(probe_binary_reversed_values)
+        if is_gap:
+            hex_values = WaveformWriter.make_values_unknown(hex_values, "X")
         hex_values_str = ",".join(hex_values)
         trig_mark = "1" if is_trigger else "0"
-        self.write(f"{sample_position},{sample_in_window_index},{trig_mark},{hex_values_str}\n")
+        if self._include_gap:
+            gap_value = "1" if is_gap else "0"
+            self.write(
+                f"{sample_position},{sample_in_window_index},{trig_mark},{gap_value},{hex_values_str}\n"
+            )
+        else:
+            self.write(f"{sample_position},{sample_in_window_index},{trig_mark},{hex_values_str}\n")
 
 
 class WaveformWriterToDict(WaveformWriter):
     def __init__(
-        self, probes: [ILAWaveformProbe], include_trigger: bool, include_sample_info: bool
+        self,
+        probes: [ILAWaveformProbe],
+        include_trigger: bool,
+        include_sample_info: bool,
+        include_gap: bool,
     ):
         WaveformWriter.__init__(self, None, probes)
         self._include_trigger = include_trigger
         self._include_sample_info = include_sample_info
+        self._include_gap = include_gap
         self._result = defaultdict(list)
 
     def init(self):
@@ -228,6 +272,7 @@ class WaveformWriterToDict(WaveformWriter):
         is_trigger: bool,
         probe_binary_reversed_values: [str],
         is_last_sample: bool,
+        is_gap: bool,
     ) -> None:
         if self._include_trigger:
             self._result["__TRIGGER"].append(1 if is_trigger else 0)
@@ -235,6 +280,8 @@ class WaveformWriterToDict(WaveformWriter):
             self._result["__SAMPLE_INDEX"].append(sample_position)
             self._result["__WINDOW_INDEX"].append(window_index)
             self._result["__WINDOW_SAMPLE_INDEX"].append(sample_in_window_index)
+        if self._include_gap:
+            self._result["__GAP"].append(1 if is_gap else 0)
 
         int_values = [int(r_val[::-1], 2) for r_val in probe_binary_reversed_values]
         for probe_name, val in zip(self._probe_names, int_values):
@@ -244,14 +291,17 @@ class WaveformWriterToDict(WaveformWriter):
 class WaveformWriterVCD(WaveformWriter):
     """Value Change Dump format. See Wikipedia and IEEE Std 1364-2001."""
 
-    def __init__(self, file_handle: TextIOBase, probes: [ILAWaveformProbe]):
+    def __init__(self, file_handle: TextIOBase, probes: [ILAWaveformProbe], include_gap: bool):
         WaveformWriter.__init__(self, file_handle, probes)
         self._values = None
-        self._vars = None
+        self._vars: List[str] = None
         self._trigger_var = None
         self._window_var = None
+        self._gap_var = None
+        self._include_gap = include_gap
         self._prev_sample_is_trigger = None
         self._prev_window_index = None
+        self._prev_sample_is_gap = None
 
     @staticmethod
     def _generate_vars() -> Generator[str, None, None]:
@@ -267,18 +317,21 @@ class WaveformWriterVCD(WaveformWriter):
                     yield chr(xxx) + chr(yyy) + chr(zzz)
 
     def _write_variable_definitions(self):
+        generate_vars = WaveformWriterVCD._generate_vars
         self._values = [None] * self._probe_count
-        self._trigger_var, self._window_var, *self._vars = islice(
-            WaveformWriterVCD._generate_vars(), self._probe_count + 2
+        self._trigger_var, self._window_var, self._gap_var, *self._vars = islice(
+            generate_vars(),
+            self._probe_count + 3,
         )
 
-        self._trigger_var = self._trigger_var
         for width, var, probe_name in zip(self._probe_widths, self._vars, self._probe_names):
             self.write(f"$var reg {width} {var} {probe_name} $end\n")
         self.write(
             f"$var reg 1 {self._trigger_var} _TRIGGER $end\n"
             f"$var reg 1 {self._window_var} _WINDOW $end\n"
         )
+        if self._include_gap:
+            self.write(f"$var reg 1 {self._gap_var} _GAP $end\n")
 
     def make_probe_names(self) -> [str]:
         return [p.name + " " + p.bus_range_str() for p in self._probes]
@@ -310,6 +363,7 @@ class WaveformWriterVCD(WaveformWriter):
         is_trigger,
         probe_binary_reversed_values: [str],
         is_last_sample,
+        is_gap: bool,
     ):
         time_written = False
 
@@ -324,10 +378,14 @@ class WaveformWriterVCD(WaveformWriter):
                 return
 
             # Remove leading zeroes
-            msb_idx = reversed_value.rfind("1")
-            if msb_idx < 0:
-                msb_idx = 0
-            value = reversed_value[msb_idx::-1]
+            if is_gap and reversed_value[0] == "x":
+                value = reversed_value
+            else:
+                # Remove leading zeroes
+                msb_idx = reversed_value.rfind("1")
+                if msb_idx < 0:
+                    msb_idx = 0
+                value = reversed_value[msb_idx::-1]
             self.write(f"b{value} {var}\n")
 
         # Write time, for last sample, even if no changes.
@@ -345,7 +403,16 @@ class WaveformWriterVCD(WaveformWriter):
             write_value(self._window_var, "1" if window_index % 2 else "0")
             self._prev_window_index = window_index
 
+        # gap value
+        if self._include_gap and is_gap != self._prev_sample_is_gap:
+            write_value(self._gap_var, "1" if is_gap else "0")
+            self._prev_sample_is_gap = is_gap
+
         # Regular values
+        if is_gap:
+            probe_binary_reversed_values = WaveformWriter.make_values_unknown(
+                probe_binary_reversed_values, "x"
+            )
         for idx, new_val in enumerate(probe_binary_reversed_values):
             if new_val == self._values[idx]:
                 continue
@@ -363,6 +430,7 @@ def export_waveform_to_stream(
     window_count: Optional[int],
     start_sample_idx: int,
     sample_count: Optional[int],
+    include_gap: bool,
 ) -> None:
     """Arguments documented in calling API function"""
     if probe_names:
@@ -374,9 +442,9 @@ def export_waveform_to_stream(
         probes = waveform.probes.values()
 
     if export_format.upper() == "CSV":
-        waveform_writer = WaveformWriterCSV(stream_handle, probes)
+        waveform_writer = WaveformWriterCSV(stream_handle, probes, include_gap)
     elif export_format.upper() == "VCD":
-        waveform_writer = WaveformWriterVCD(stream_handle, probes)
+        waveform_writer = WaveformWriterVCD(stream_handle, probes, include_gap)
     else:
         raise ValueError(f'export_waveform() called with non-supported format "{export_format}"')
 
@@ -401,6 +469,7 @@ def get_waveform_data_values(
     sample_count: Optional[int],
     include_trigger: bool,
     include_sample_info: bool,
+    include_gap: bool,
 ) -> Dict[str, List[int]]:
     """Arguments documented in calling API function"""
     if probe_names:
@@ -413,7 +482,9 @@ def get_waveform_data_values(
     else:
         probes = waveform.probes.values()
 
-    waveform_writer = WaveformWriterToDict(probes, include_trigger, include_sample_info)
+    waveform_writer = WaveformWriterToDict(
+        probes, include_trigger, include_sample_info, include_gap
+    )
     _export_waveform(
         waveform,
         waveform_writer,
@@ -449,6 +520,11 @@ def _export_waveform(
             values.append(p_val)
         return values
 
+    def is_gap(sample_high_byte: int, gap_index: Optional[int]) -> bool:
+        if gap_index and sample_high_byte & (1 << (gap_index % 8)):
+            return True
+        return False
+
     if not window_count:
         window_count = waveform.get_window_count()
     if not sample_count:
@@ -479,9 +555,9 @@ def _export_waveform(
             f'since start_window_idx="{start_window_idx}".'
         )
 
-    sample_byte_count = (waveform.width + 7) // 8
+    sample_byte_count = waveform.bytes_per_sample()
     raw_samples = memoryview(waveform.data)
-
+    sample_is_gap = False
     writer.init()
 
     for window_idx in range(start_window_idx, start_window_idx + window_count):
@@ -498,6 +574,8 @@ def _export_waveform(
             raw_sample_idx_end = raw_sample_idx + sample_byte_count
             sample_idx_in_window = sample_idx - window_start_sample_idx
             bin_values = get_sample_binary_values(raw_samples[raw_sample_idx:raw_sample_idx_end])
+            if waveform.gap_index:
+                sample_is_gap = is_gap(raw_samples[raw_sample_idx_end - 1], waveform.gap_index)
             writer.write_sample(
                 sample_idx,
                 window_idx,
@@ -505,4 +583,5 @@ def _export_waveform(
                 sample_idx_in_window == trigger_sample_idx,
                 bin_values,
                 sample_idx + 1 == waveform.sample_count,
+                sample_is_gap,
             )

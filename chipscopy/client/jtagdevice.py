@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import os
-from typing import Iterable, Any, Dict, NewType, Callable
+from typing import Iterable, Any, Dict, NewType, Callable, ByteString
 from chipscopy import dm
 from chipscopy.dm import request
 from chipscopy.tcf.services import xicom
@@ -173,7 +173,67 @@ class JtagRegDefManager(object):
         return ret_token
 
 
-class JtagDevice(dm.Node):
+class JtagNode(dm.Node):
+    @staticmethod
+    def is_compatible(node: dm.Node) -> bool:
+        return bool(node.isTap)
+
+    def lock(self, done: request.DoneCallback = None):
+        """
+        Lock JTAG scan chain containing current JTAG node
+
+        :param done: Request callback when complete
+
+        TODO: Add timeout option in lock to limit wait time. Hardware server already supports this.
+        """
+        proc = self.manager.channel.getRemoteService(JtagService)
+        assert proc
+
+        def done_get_option(token, error, results):
+            self.remove_pending(token)
+            if done:
+                done(token, error, results)
+
+        return self.add_pending(proc.lock(self.ctx, done_get_option))
+
+    def unlock(self, done: request.DoneCallback = None):
+        """
+        Unlock JTAG scan chain containing current JTAG node
+
+        :param done: Request callback when complete
+        """
+        proc = self.manager.channel.getRemoteService(JtagService)
+        assert proc
+
+        def done_get_option(token, error, results):
+            self.remove_pending(token)
+            if done:
+                done(token, error, results)
+
+        return self.add_pending(proc.unlock(self.ctx, done_get_option))
+
+    def sequence(
+        self, commands: list, data: ByteString, done: request.DoneCallback = None
+    ) -> bytearray:
+        """
+        Execute list of JTAG sequence commands
+
+        :param commands: List of commands with options
+        :param data: Data to shift
+        :param done: Request callback when complete
+        """
+        proc = self.manager.channel.getRemoteService(JtagService)
+        assert proc
+
+        def done_sequence(token, error, results):
+            self.remove_pending(token)
+            if done:
+                done(token, error, results)
+
+        return self.add_pending(proc.sequence(self.ctx, commands, data, done_sequence))
+
+
+class JtagDevice(JtagNode):
     @staticmethod
     def is_compatible(node: dm.Node) -> bool:
         return bool(node.isTap) and node.parent_ctx != ""
@@ -439,7 +499,7 @@ class JtagDevice(dm.Node):
         self.add_pending(jtag_device.get_properties(self.idCode, done_get_properties))
 
 
-class JtagCable(dm.Node):
+class JtagCable(JtagNode):
     @staticmethod
     def is_compatible(node: dm.Node) -> bool:
         return node.parent_ctx == "" and node.Name == "whole scan chain"

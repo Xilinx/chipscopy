@@ -47,7 +47,7 @@ Properties
 
 """
 
-from typing import Dict, List, Any, NewType
+from typing import Dict, List, Any, NewType, ByteString
 from chipscopy.tcf import channel
 from chipscopy.tcf.services import Service, DoneHWCommand, Token
 
@@ -221,6 +221,40 @@ class JtagProxy(Service):
         :return: Token of request
         """
         return self.send_xicom_command("getOption", (context_id, key), done)
+
+    def lock(self, context_id: str, done: DoneHWCommand) -> Token:
+        """
+        Locks a specific Jtag context
+
+        :param context_id: Context id of the context
+        :param done: Callback with the result and any error
+        :return: Token of request
+        """
+        return self.send_xicom_command("lock", (context_id,), done)
+
+    def unlock(self, context_id: str, done: DoneHWCommand) -> Token:
+        """
+        Unlocks a specific Jtag context
+
+        :param context_id: Context id of the context
+        :param done: Callback with the result and any error
+        :return: Token of request
+        """
+        return self.send_xicom_command("unlock", (context_id,), done)
+
+    def sequence(
+        self, context_id: str, commands: list, data: ByteString, done: DoneHWCommand
+    ) -> Token:
+        """
+        Run JTAG sequence operations contained in list of commands
+
+        :param context_id: Context id of the context
+        :param commands: List of JTAG sequence operations and their parameters
+        :param data: Byte string of data corresponding to specified list of commands
+        :param done: Callback with the result and any error
+        :return: Token of request
+        """
+        return self.send_xicom_command("sequence", (context_id, dict(), commands, data), done)
 
     def add_listener(self, listener: JtagListener):
         """Add Jtag service event listener.

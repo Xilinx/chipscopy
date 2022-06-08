@@ -39,7 +39,10 @@ class IBERTCoreClient(CoreClient):
         """
         for child_ctx in self.children:
             child_node = self.manager.get_node(child_ctx)
-            if name == child_node.props["display_name"]:
+            # Only nodes that are safe to read from will have the 'display_name' prop set.
+            # eg: If the access path check returns False for certain child_nodes of GTYP,
+            # their 'display_name' prop won't be set.
+            if "display_name" in child_node.props and name == child_node.props["display_name"]:
                 done(result=child_node)
                 return
 

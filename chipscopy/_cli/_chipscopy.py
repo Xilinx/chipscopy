@@ -14,12 +14,13 @@
 
 import re
 from collections import deque
+from operator import itemgetter
 
 import click
 from more_itertools import one
 
 import chipscopy
-from chipscopy.api.device.device_scanner import DeviceScanner
+from chipscopy.api.device.device_scanner import create_device_scanner
 from chipscopy import create_session, report_versions, report_devices
 
 
@@ -90,6 +91,10 @@ _cs_url: str
 def display_banner():
     print(f"\n******** Xilinx ChipScoPy v{chipscopy.__version__}")
     print("  ****** Copyright 2021 Xilinx, Inc. All Rights Reserved.\n")
+    print(
+        "WARNING: Commands and options are subject to change."
+    )
+    print()
 
 
 @click.group()
@@ -110,7 +115,13 @@ def display_banner():
     show_default=True,
     help="chipscope server url",
 )
-def _chipscopy(hw_url, cs_url):
+@click.option(
+    "--no-banner",
+    is_flag=True,
+    default=False,
+    help="Turn off banner",
+)
+def _chipscopy(hw_url, cs_url, no_banner):
     global _hw_url, _cs_url
     if len(hw_url) == 0 or hw_url.lower() == "none":
         _hw_url = None
@@ -120,6 +131,8 @@ def _chipscopy(hw_url, cs_url):
         _cs_url = None
     else:
         _cs_url = cs_url
+    if no_banner is False:
+        display_banner()
 
 
 @click.command()
@@ -132,7 +145,8 @@ def report(devices, servers):
     elif servers:
         report_versions(session)
     else:
-        print("report command needs an option like --devices or --servers")
+        report_versions(session)
+        report_devices(session)
 
 
 def _create_path(device_count, hier_name):
@@ -146,25 +160,22 @@ def info(file):
     device_list = session.devices
     device_count = 0
     for device in device_list:
-        for (
-            server_type,
-            view_name,
-            name,
-            context,
-            hier_name,
-        ) in device.device_identification.get_target_tuples():
+        d = device.to_dict()
+        for node_dict in d.get("node_identification", []):
+            server_type, view_name, name, context, hier_name = itemgetter(
+                "server_type", "view_name", "name", "context", "hier_name"
+            )(node_dict)
             path = _create_path(device_count, hier_name)
             if path == file or context == file:
                 print("target      :", path)
                 print("server_type :", server_type)
                 print("view        :", view_name)
-                print("name        :", name)
-                print("context     :", context)
-                print("family      :", device.device_identification["family"])
-                print("dna         :", hex(device.device_identification["dna"]))
-                print("cable       :", device.device_identification["cable_name"])
-                print("jtag_index  :", device.device_identification["jtag_index"])
-        device_count += 1
+                print("part        :", d.get("part"))
+                print("context     :", d.get("context"))
+                print("dna         :", hex(d.get("dna")) if d.get("dna") else None)
+                print("cable       :", d.get("cable_context"))
+                print("jtag_index  :", d.get("jtag_index"))
+            device_count += 1
 
 
 @click.command()
@@ -175,13 +186,11 @@ def ls(long):
     device_list = session.devices
     device_count = 0
     for device in device_list:
-        for (
-            server_type,
-            view_name,
-            name,
-            context,
-            hier_name,
-        ) in device.device_identification.get_target_tuples():
+        d = device.to_dict()
+        for node_dict in d.get("node_identification", []):
+            server_type, view_name, name, context, hier_name = itemgetter(
+                "server_type", "view_name", "name", "context", "hier_name"
+            )(node_dict)
             path = _create_path(device_count, hier_name)
             if long:
                 print(f"{path:60s} {context}")
@@ -192,43 +201,124 @@ def ls(long):
 
 @click.command()
 @click.option("--dna", default=None, required=False, help="find device to program with dna")
-@click.option("--cable", default=None, required=False, help="jtag cable name")
+@click.option("--cable_context", default=None, required=False, help="jtag cable context")
+@click.option("--context", default=None, required=False, help="device context")
+@click.option("--part", default=None, required=False, help="part name")
+@click.option("--family", default=None, required=False, help="family name")
 @click.option(
-    "--position", default=None, required=False, help="jtag position in chain (starting index is 0)"
+    "--jtag_index", default=None, required=False, help="jtag index in chain (starting index is 0)"
 )
-@click.argument("file")
-def program(file, dna, cable, position):
-    session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
-    args = {}
-    if dna:
-        args["dna"] = dna
-    if cable:
-        args["cable"] = cable
-    if position:
-        args["jtag_index"] = position
-    if len(args) > 0:
-        device = session.devices.get(**args)
-    else:
-        device = one(session.devices)
+@click.option(
+    "--device_index",
+    "--device-index",
+    default=None,
+    required=False,
+    help="device index device list (starting index is 0)",
+)
+@click.option(
+    "--skip-reset",
+    default=False,
+    required=False,
+    is_flag=True,
+    help="Skip the reset before programming device",
+)
+@click.option("--list", "list_", is_flag=True, help="list devices")
+@click.option("--program-log", is_flag=True, help="download programming log")
+@click.argument("file", required=False)
+def program(
+    file,
+    dna,
+    cable_context,
+    context,
+    part,
+    family,
+    jtag_index,
+    device_index,
+    skip_reset,
+    list_,
+    program_log,
+):
+    def print_device(device_):
+        d = device_.to_dict()
+        keys = ["jtag_index", "part", "dna", "context", "cable_context"]
+        for key in keys:
+            if key == "dna" and d.get(key):
+                val = hex(d.get(key))
+            else:
+                val = d.get(key)
+            print(f"  {key}:{val}", end="")
+        print()
 
-    device_tracker = device.device_identification
-    print(f"\n{'Cable':40s} {'Jtag_Index':>10s}   {'Family':15s} {'DNA':30s}")
-    print(
-        f"{device_tracker['cable_name']:40s} "
-        f"{device_tracker['jtag_index']:10d}   "
-        f"{device_tracker['family']:15s} "
-        f"{device_tracker['dna']:<30d}"
-    )
-    device.program(file)
-    print()
+    session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
+    all_devices = session.devices
+
+    args = {}
+
+    if dna:
+        args["dna"] = int(dna, 0)
+    if context:
+        args["context"] = context
+    if cable_context:
+        args["cable_context"] = cable_context
+    if context:
+        args["context"] = context
+    if part:
+        args["part"] = part
+    if family:
+        args["family"] = family
+    if jtag_index:
+        args["jtag_index"] = int(jtag_index)
+
+    if list_:
+        if len(args) > 0:
+            raise ValueError("--list is not allowed with other options")
+        for idx, device in enumerate(all_devices):
+            print(f"DEVICE #{idx}:", end="")
+            print_device(device)
+        return
+
+    if len(all_devices) == 0:
+        raise IndexError("No devices in device list")
+
+    if not file and not program_log:
+        raise RuntimeError("No progamming file specified.")
+
+    if device_index:
+        device_index = int(device_index)
+        if len(args) > 0:
+            raise ValueError("Device index is not allowed with other options")
+        if len(all_devices) <= device_index:
+            raise ValueError("Device index out of range")
+        device = all_devices[device_index]
+    else:
+        if len(args) > 0:
+            device = all_devices.get(**args)
+        elif len(all_devices) == 2 and all_devices[0].to_dict().get("part") == "arm_dap":
+            # Ok to ignore arm_dap on same versal
+            device = all_devices[1]
+        else:
+            if len(all_devices) > 1:
+                raise ValueError("Multiple devices match selection")
+            device = one(all_devices)
+
+    if file:
+        print("Programming:", end="")
+        print_device(device)
+        device.program(file, skip_reset=skip_reset)
+        print()
+
+    if program_log:
+        print()
+        print(device.get_program_log())
+        print()
 
 
 @click.command(name="json_devices")
 def json_devices():
     # click command string above is required because of underscore in name
     session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
-    scanner = DeviceScanner(session.hw_server, session.cs_server)
-    print(scanner)
+    scanner = create_device_scanner(session.hw_server, session.cs_server)
+    print(scanner.to_json())
 
 
 class TreePrinter(NodeVisitorBase):
@@ -328,16 +418,22 @@ class TreePrinter(NodeVisitorBase):
 
 @click.command()
 @click.option(
-    "--view", default="jtag", required=False, help="Use the specified view for walking nodes"
+    "--view", default=None, required=False, help="Use the specified view for walking nodes"
 )
 @click.option(
     "--show-context", is_flag=True, default=False, required=False, help="Print node context"
 )
 @click.option("--glyph-type", default="std", required=False, help="Tree glyph type")
 def tree(view, show_context, glyph_type):
+    if view:
+        views = [view]
+    else:
+        views = ["jtag", "memory", "debugcore", "chipscope"]
     session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
-    tree_printer = TreePrinter(session, view)
-    tree_printer.print(show_context=show_context, glyph_type=glyph_type)
+    for view in views:
+        tree_printer = TreePrinter(session, view)
+        tree_printer.print(show_context=show_context, glyph_type=glyph_type)
+        print()
 
 
 def _add_commands():

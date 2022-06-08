@@ -1,5 +1,21 @@
 # ChipScoPy Release Notes
 
+## 2022.1 - June 9, 2022
+
+###  Major release
+
+- New VIO example
+- Renamed chipscopy cli to "csutil"
+- Updated 3rd party library dependency versions
+- Enhanced Device class with new properties and error reporting 
+- Better identification and handling multiple devices in jtag chain
+- Allow delay for slower cables to identify jtag chains
+- Fix error handling when deploying examples due to read-only file system
+- More consistent to_json(), to_dict() methods for API classes
+- Versal HBM2E core support
+  - stack, memory controller cores
+  - performance monitoring
+
 ## 2021.2 - December 11, 2021
 
 ### Minor release

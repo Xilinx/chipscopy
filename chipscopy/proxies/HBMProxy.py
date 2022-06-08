@@ -99,3 +99,6 @@ class HBMProxy(CorePropertyProxy, HBMService):
 
     def get_init_status(self, node_id: str, done: DoneHWCommand) -> None:
         return self.send_command("getInitStatus", (node_id,), done)
+
+    def refresh_temp_status(self, node_id: str, done: DoneHWCommand) -> None:
+        return self.send_command("refreshTempStatus", (node_id,), done)

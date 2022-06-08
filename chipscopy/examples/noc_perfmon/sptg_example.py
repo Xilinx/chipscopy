@@ -29,10 +29,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2021.2 installed and running
-# - Xilinx cs_server 2021.2 installed and running
+# - Xilinx hw_server 2022.1 installed and running
+# - Xilinx cs_server 2022.1 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2021.2 installed
+# - ChipScoPy 2022.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
@@ -134,7 +134,9 @@ enable_list = noc.enumerate_noc_elements(scan_nodes)
 print("complete!")
 
 # %%
-supported_periods = noc.get_supported_sampling_periods(100 / 3, 100 / 3, {"DDRMC_X0Y0": 800.0})
+supported_periods = noc.get_supported_sampling_periods(
+    100/3, 100/3, {'DDRMC_X0Y0': 800.0}
+)
 print("Supported sampling periods:")
 for domain, periods in supported_periods.items():
     print(f"  {domain}:")

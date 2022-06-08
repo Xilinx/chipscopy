@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Set
+from typing import List, Set, Dict
 from dataclasses import dataclass
 
 from chipscopy.api import CoreType
@@ -163,18 +163,20 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
         pl_alt_ref_clk_freq_mhz=33.3333,
         ddrmc_freq_mhz={"ddrmc_main_0": 800.0},
         done: DoneHWCommand = None,
-    ) -> dict:
+    ) -> Dict[str, List[float]]:
         """
+        Get the supported sampling periods (ms) for various clock domains based on input clocks and design parameters.
+        This function queries the PLLs of the device to determine actual clock speeds of locked PLLs.
+
         Args:
-            done:
-                Optional command callback that will be invoked when the response is received.
-            ddrmc_freq_mhz:
-            ref_clk_feq_mhz:
-            pl_alt_ref_clk_freq_mhz:
+            done: Optional command callback that will be invoked when the response is received.
+            ddrmc_freq_mhz (dict[str,float]): dictionary of DDRMC instance names as the keys and the value is the MC clock in MHz float.
+            ref_clk_feq_mhz (float): ref_clk input frequency in MHz, value can be attained from .csa or .hwh files. Default is 33.333MHz
+            pl_alt_ref_clk_freq_mhz (float): pl_alt_ref_clk input frequency in MHz, value can be attained from .csa or .hwh files. Default is 33.333MHz
 
         Returns:
-            Dictionary with two top level keys ``NoC`` and ``NPI`` whose values are lists of supported sampling
-            periods measured in milliseconds (float).
+            Dictionary with two top level keys ``NoC``, ``NPI``, and memory subsystem components whose values are lists
+            of supported sampling periods measured in milliseconds (float).
 
         """
         sampling_dict = self.core_tcf_node.get_supported_sampling_periods(

@@ -1,8 +1,6 @@
 # 🐍 ChipScoPy README
 
-
 [![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
 
 ![](https://raw.githubusercontent.com/Xilinx/chipscopy/master/docs/images/chipscopy_logo_head_right_transparent_background.png)
 
@@ -16,15 +14,15 @@ Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
 -------------------------------------------------------------------------------
 
-[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2021.2/overview.html)
+[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2022.1/overview.html)
 
 -------------------------------------------------------------------------------
 
-[System Requirements](https://xilinx.github.io/chipscopy/2021.2/system_requirements.html)
+[System Requirements](https://xilinx.github.io/chipscopy/2022.1/system_requirements.html)
 
 -------------------------------------------------------------------------------
 
-[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2021.2/chipscopy_installation.html)
+[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2022.1/chipscopy_installation.html)
 
 -------------------------------------------------------------------------------
 

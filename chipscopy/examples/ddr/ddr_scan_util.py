@@ -22,9 +22,8 @@
 # encoded values, intended to be used as input arguments for 2D Margin Analysis features.
 #
 
-
 import math
-from chipscopy.api.ddr.ddr import DDR
+from chipscopy.api.ddr import DDR
 
 
 def round_half_up(n, decimals=0):

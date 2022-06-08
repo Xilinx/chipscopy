@@ -18,6 +18,7 @@ import argparse
 import sys
 from distutils.dir_util import mkpath, copy_tree
 from distutils.file_util import copy_file
+from pathlib import Path
 from shutil import move
 import chipscopy
 
@@ -186,6 +187,26 @@ def main():  # pragma: no cover
             if choice in no:
                 return
             choice = input("Please respond with 'yes' or 'no' (or 'y' or " "'n') ")
+
+    # Check for read-only directory before trying to deploy example files.
+    # This enables us to give an error message and exit early.
+    # Tried using python tempfile but that hung on windows.
+
+    try:
+        canonical_path = os.path.abspath(delivery_path)
+        base = Path(os.path.dirname(canonical_path))
+        filename = "8f06bb29-b01b-42fe-9f8d-7aa48825a5b2"
+        test_file = base / filename
+        f = open(test_file, "w")
+        f.close()
+        test_file.unlink()
+    except (OSError, IOError):
+        print(
+            f"\nDirectory '{base}' is read-only. Can not extract examples. "
+            "Please change do a different directory with write access permissions."
+        )
+        sys.exit(3)
+
     if os.path.exists(delivery_path):
         if args.force:
             import datetime

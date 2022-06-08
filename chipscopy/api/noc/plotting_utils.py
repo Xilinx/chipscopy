@@ -20,7 +20,8 @@ import matplotlib
 from matplotlib.ticker import FixedLocator, FixedFormatter
 from matplotlib.widgets import Button, RadioButtons
 
-from chipscopy.dm.harden.noc_perfmon.noc_types import ddrmc_main_typedef
+from chipscopy.api.noc.graphing.hbmmc import pc_map
+from chipscopy.dm.harden.noc_perfmon.noc_types import ddrmc_main_typedef, hbmmc_typedef
 from chipscopy.api.noc.noc_perfmon_utils import (
     PerfTGController,
     NoCElement,
@@ -140,12 +141,17 @@ class MeasurementPlot:
         self.tg_setup_btn = None
         self.legend_line_map = {}
         self.units_radio = None
+        self.pc_radio = None
+        self.pc = "PC0"
 
-        # special handling for DDRMC
+        # special handling for MEM
         self.views = ["bandwidth", "latency"]
         for node in self.enable_nodes:
-            if get_noc_typedef_from_name(node) == ddrmc_main_typedef:
-                self.views.append("ddrmc")
+            if (
+                get_noc_typedef_from_name(node) == ddrmc_main_typedef
+                or get_noc_typedef_from_name(node) == hbmmc_typedef
+            ):
+                self.views.append("mem")
                 break
 
     def get_incremental_data(self):
@@ -164,19 +170,22 @@ class MeasurementPlot:
     def build_graphs(self):
         if self.view == "bandwidth":
             unit = "B/s"
-            bottom = 0.11
+            bottom = 0.175
         elif self.view == "latency":
             self.units = "ns"
             bottom = 0.175
-        elif self.view == "ddrmc":
+        elif self.view == "mem":
             unit = "counts"
             bottom = 0.175
 
-        # special handling for DDRMC
-        if self.view == "ddrmc":
+        # special handling for MEM
+        if self.view == "mem":
             self.display_nodes = []
             for node in self.enable_nodes:
-                if get_noc_typedef_from_name(node) == ddrmc_main_typedef:
+                if (
+                    get_noc_typedef_from_name(node) == ddrmc_main_typedef
+                    or get_noc_typedef_from_name(node) == hbmmc_typedef
+                ):
                     self.display_nodes.append(node)
         else:
             self.display_nodes = self.enable_nodes
@@ -195,7 +204,7 @@ class MeasurementPlot:
         # turn on interactive
         plt.ion()
 
-        plt.get_current_fig_manager().set_window_title(f"DDR & NoC PerfMon {self.view} Plot")
+        plt.get_current_fig_manager().set_window_title(f"Versal PerfMon {self.view} Plot")
 
         # TODO fixup
         all_found = False
@@ -220,18 +229,37 @@ class MeasurementPlot:
 
             self.units_radio.on_clicked(latency_units)
 
+        # special processing for hbm (generally mem-subsys?)
+        # 'mem' view in this plotter is a canary for there being hbm/ddrmc nodes (so always add the pc radio button)
+        if self.view == "mem" or self.view == "bandwidth" and "mem" in self.views:
+            radio_ax = plt.axes([0.01, 0.01, 0.15, 0.15])
+            self.pc_radio = RadioButtons(radio_ax, tuple(pc_map.keys()))
+            self.pc_radio.set_active(pc_map[self.pc])
+
+            def pc_select(label):
+                self.pc = label
+                self.switch_view(self.view)  # call to rebuild with newly selected pc
+
+            self.pc_radio.on_clicked(pc_select)
+
         plot_index = 0
         # for elem, storage in noc_element_data.items():
         for elem in self.display_nodes:
             storage = noc_element_data[elem]
             data = storage.samples
+            if (
+                len(storage.axis_metrics["left_axis"][self.view]) == 0
+                and len(storage.axis_metrics["right_axis"][self.view]) == 0
+            ):
+                continue
             plot_index += 1
             if plot_index == 1:
                 self.num_elements = len(next(iter(data.values())))
             sp = plt.subplot(row_count, col_count, plot_index)
             self.plots[elem] = {"left_axis": {}, "right_axis": {}}
             x = list(range(50))
-            for metric in storage.axis_metrics["left_axis"][self.view]:
+            # for metric in storage.axis_metrics["left_axis"][self.view]:
+            for metric in storage.get_axis_metrics("left_axis", self.view, self.pc):
                 if self.view == "latency":
                     if self.units != "clocks":
                         # need to convert
@@ -251,7 +279,8 @@ class MeasurementPlot:
             lambda_plot.axes.set_xticklabels([])
 
             # right axis metrics
-            for metric in storage.axis_metrics["right_axis"][self.view]:
+            # for metric in storage.axis_metrics["right_axis"][self.view]:
+            for metric in storage.get_axis_metrics("right_axis", self.view, self.pc):
                 right_lambda_axes = lambda_plot.axes.twinx()
                 r_lambda_plot = right_lambda_axes.plot(x, data[metric])[0]
                 self.plots[elem]["right_axis"][metric] = r_lambda_plot
@@ -266,7 +295,9 @@ class MeasurementPlot:
                 if len(self.plots[elem][axis].keys()) == 0:
                     continue
                 lambda_plot = next(iter(self.plots[elem][axis].values()))
-                data_max = max([max(data[x]) for x in storage.axis_metrics[axis][self.view]])
+                data_max = max(
+                    [max(data[x]) for x in storage.get_axis_metrics(axis, self.view, self.pc)]
+                )
                 new_y_max = max(data_max, MIN_Y)
                 new_y_min = -0.1 * new_y_max
                 new_y_max = 1.1 * new_y_max
@@ -279,7 +310,7 @@ class MeasurementPlot:
             # legend
             legend_keys = []
             for axis in ["left_axis", "right_axis"]:
-                for key in storage.axis_metrics[axis][self.view]:
+                for key in storage.get_axis_metrics(axis, self.view, self.pc):
                     legend_keys.append(key)
             leg = plt.legend(legend_keys)
 

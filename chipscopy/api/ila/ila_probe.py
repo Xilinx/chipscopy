@@ -22,6 +22,7 @@ from chipscopy.client.axis_ila_core_client import (
     AxisIlaCoreClient as TCF_AxisIlaCoreClient,
     ILAPortType as TCF_ILAPortType,
 )
+from chipscopy.shared.ila_util import is_hex_str
 
 
 class ILAMatchUnitType(enum.Enum):
@@ -163,7 +164,10 @@ class ILAProbeValues:
     """
     A compare value consists of a pair: <operator> and <value>
     <value> may be of type int or binary/hex string of the correct bit_width.
+
     Hex values start with a '0x' prefix.
+    Note! String values for 3-bit probes are always interpreted as binary values,
+    e.g. "0x0", "0x1", "0xx", "011".
 
     An empty list is a don't-care value.
 
@@ -333,7 +337,7 @@ def verify_probe_value(value_list: [], is_trigger: bool, probe: ILAProbe, enum_d
             verify_int_bit_length(number)
         elif enum_def and isinstance(number, enum.Enum):
             verify_enum_value(number)
-        elif isinstance(number, str) and (number.startswith("0x") or number.startswith("0X")):
+        elif is_hex_str(number, probe.bit_width):
             verify_one_hex_value(op, number)
         elif enum_def and is_valid_enum_str(number):
             # is_valid_enum_str() will did the checking if it is an enum string for this probe.

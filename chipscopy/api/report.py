@@ -104,10 +104,10 @@ def report_versions(session: Optional["Session"] = None):
 
 def _create_device_report(device: "Device", title="ChipScoPy Device"):
     report = Table(title=title, box=BOX_SQUARE)
-    json_data = json.loads(repr(device.device_identification))
+    json_data = device.to_dict()
     report.add_column("Property", justify="left")
     report.add_column("Value", justify="left")
-    for key in ["family", "dna", "cable_name", "jtag_index"]:
+    for key in ["part", "dna", "cable_name", "cable_context", "jtag_index"]:
         report.add_row(key, str(json_data[key]))
     for target_dict in json_data["node_identification"]:
         report.add_row(target_dict["hier_name"], target_dict["context"])
@@ -124,6 +124,8 @@ def report_devices(arg: Optional[Union[List["Device"], "Device", "Session"]] = N
     elif isinstance(arg, Device):
         # convert to a list
         devices = [arg]
+    elif isinstance(arg, list):
+        devices = arg
     for device in devices:
         sub_report = _create_device_report(device, "Device report")
         printer("\n")

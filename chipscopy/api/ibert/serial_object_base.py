@@ -152,7 +152,7 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
         Set new values for properties in cs_server
 
         Args:
-            **property_dict:
+            \*\*property_dict:
              Unpacked dict with key as property and value as new property value
 
         """

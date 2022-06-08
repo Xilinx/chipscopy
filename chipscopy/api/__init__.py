@@ -26,6 +26,7 @@ class CoreType(Enum):
     IBERT = "IBERT"
     NOC_ROOT = "NOC CORE"
     DDR = "DDRMC"
+    HBM = "HBM"
     AXIS_ILA = "AXIS ILA"
     AXIS_VIO = "AXIS VIO"
     AXIS_PCIE = "AXIS PCIE"

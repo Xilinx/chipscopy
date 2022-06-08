@@ -18,7 +18,7 @@ Device
 
 The Device class is a container representing a Xilinx device. Device has methods
 for programming, memory access, and contains the detected collection of debug
-cores. The collection of detected devices is held in the session
+cores. The collection of detected devices is held in the session.
 
 see :class:`chipscopy.Session.devices`
 

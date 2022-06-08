@@ -82,13 +82,18 @@ class HBMClient(CorePropertyClient):
         token = service.get_init_status(self.ctx, done_cb)
         return self.add_pending(token)
 
+    def refresh_temp_status(self, done: DoneHWCommand = None):
+        service, done_cb = self.make_done(done)
+        token = service.refresh_temp_status(self.ctx, done_cb)
+        return self.add_pending(token)
+
 
 def get_hbm(server: ServerInfo, hbm_index=0) -> HBMClient:
 
     cs_view = get_cs_view(server)
     dpc = None
     for node in cs_view.get_children():
-        if "xcvc1902" in node.props.get("Name"):
+        if "DPC" in node.props.get("Name"):
             dpc = cs_view.get_node(node.ctx, CoreParent)
             break
 

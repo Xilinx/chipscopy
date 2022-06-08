@@ -125,10 +125,11 @@ def bin_reversed_to_hex_values(bin_values: [str]) -> [str]:
 
 
 def to_bin_str(val: Union[int, str], bit_width: int, enum_def: enum.EnumMeta = None) -> str:
+    is_hex = is_hex_str(val, bit_width)
 
     if isinstance(val, enum.Enum):
         val = val.value
-    elif enum_def and type(val) == str and not (val.startswith("0x") or val.startswith("0X")):
+    elif enum_def and type(val) == str and not is_hex:
         try:
             val = enum_def[val].value
         except ValueError:
@@ -137,7 +138,7 @@ def to_bin_str(val: Union[int, str], bit_width: int, enum_def: enum.EnumMeta = N
     if isinstance(val, int):
         # Both positive and negative integers, with '0'/'1' fill.
         return f"{val:0{bit_width}b}" if val >= 0 else bin((1 << bit_width) + val)[2:]
-    if val.startswith("0x") or val.startswith("0X"):
+    if is_hex:
         bin_val = "".join([__probe_value_hex_to_bin__[ch] for ch in val[2:].lower()])
         start_index = len(bin_val) - bit_width
         return bin_val[start_index:]
@@ -189,3 +190,13 @@ def round_up_to_power_of_two(num: int) -> int:
 
 def round_down_to_power_of_two(num: int) -> int:
     return 1 if num == 0 else 1 << (num.bit_length() - 1)
+
+
+def is_hex_str(number, bit_width: int) -> bool:
+    # 2 bit value "0x" is binary.
+    # 3 bit value "0x?" is interpreted as binary, not hex.
+    return (
+        isinstance(number, str)
+        and number.startswith(("0x", "0X"))
+        and bit_width != len(number) - number.count("_")
+    )

@@ -14,55 +14,57 @@
 
 import json
 import re
-from collections import namedtuple, defaultdict, deque
-from typing import List
+from collections import defaultdict, deque
+from typing import List, Dict
 
+from chipscopy.api.device.device_util import (
+    _DeviceIdentificationTuple,
+    _DeviceNodeIdentificationTuple,
+)
 from chipscopy.api.memory import Memory
 from chipscopy.client.core import CoreParent
 from chipscopy.client.debug_core_client import DebugCoreClientNode
 from chipscopy.client.jtagdevice import JtagDevice
 from chipscopy.client.mem import MemoryNode
 from chipscopy.client.view_info import ViewInfo
-
-# Tuple with the raw data for tracking scanned device information for a device
-# Used during DeviceScanner scan
-# TODO: Add an incrementing device number for easy path reporting (not jtag_index)
-# Tuple with the raw data for tracking scanned device information for nodes associated with the device
-# Used during DeviceScanner scan
-
-_DeviceIdentificationTuple = namedtuple(
-    "DeviceTracker",
-    ["family", "node_identification", "dna", "cable_context", "cable_name", "jtag_index"],
-)
-_DeviceNodeIdentificationTuple = namedtuple(
-    "NodeTracker", ["server_type", "view_name", "name", "context", "hier_name"]
-)
+from chipscopy.dm import Node
+from chipscopy.client import ServerInfo
 
 
-class DeviceIdentification:
-    """DeviceIdentification is a wrapper around the _DeviceIdentificationTuple object providing some additional
+class DeviceSpec:
+    """DeviceSpec is a wrapper around the _DeviceIdentificationTuple object providing some additional
     services given the raw device identification data.
-
-    All devices are expected to carry some form of identification. DNA is the most reliable, but we take what we can
-    get for a likely match. Jtag cable and jtag position will work if DNA is unavailable for non-Versal devices.
-    This identification helps us match up nodes targets across different views, especially ones that don't make
-    hierarchical sense like DPC and Versal top level targets on the same device.
-
-    TODO: Get rid of the _DeviceIdentificationTuple - just use this class for everything. That should be simpler.
     """
 
     def __init__(self, device_tracker: _DeviceIdentificationTuple):
-        self.device_tracker = device_tracker
+        self.__device_tracker = device_tracker
 
     def __getitem__(self, key):
-        return getattr(self.device_tracker, key)
+        return getattr(self.__device_tracker, key)
 
     def __repr__(self):
+        return self.to_json()
+
+    def __str__(self):
+        d = self.to_dict()
+        part = d.get("part", "unknown_part")
+        dna = ""
+        context = ""
+        if d.get("dna"):
+            dna = f'{hex(d.get("dna"))}'
+        if d.get("jtag_context"):
+            context = f'{d.get("jtag_context")}'
+        elif d.get("context"):
+            context = f'{d.get("context")}'
+        return f"{part}:{dna}:{context}"
+
+    def to_dict(self) -> Dict:
         # Make a nice nested dictionary representation of the nested named tuples.
         # This necessary because namedtuple._asdict() doesn't work well with nesting tuples.
         # I want the inner node_identification to be a list of dicts, not a list of tuples
+        # d = self.__device_tracker._asdict()
         outer_dict = defaultdict(list)
-        for field, value in zip(self.device_tracker._fields, self.device_tracker):
+        for field, value in zip(self.__device_tracker._fields, self.__device_tracker):
             if isinstance(value, list):
                 for device_node_id_tuple in value:
                     # Nested list of tuples
@@ -72,17 +74,13 @@ class DeviceIdentification:
                     outer_dict[field].append(inner_dict)
             else:
                 outer_dict[field] = value
-        raw_json = json.dumps(outer_dict, indent=4)
+        return outer_dict
+
+    def to_json(self) -> str:
+        raw_json = json.dumps(self.to_dict(), indent=4)
         return raw_json
 
-    def __str__(self):
-        json_obj = self.__repr__()
-        d = json.loads(json_obj)
-        family = d.get("family", "unknown_family")
-        dna = hex(d.get("dna", "0x0"))
-        return f"{family}:{dna}"
-
-    def find_top_level_device_node(self, hw_server):
+    def find_top_level_device_node(self, hw_server: ServerInfo) -> Node:
         """
         Returns the device node we will use as a top level to identify
         this device. This node is where we also hang additional device services
@@ -113,64 +111,72 @@ class DeviceIdentification:
         """
         Returns: Tuple with all the accessible targets for this device including a hierarchical style path.
         """
-        return self.device_tracker.node_identification
+        return self.__device_tracker.node_identification
 
-    def _find_node(self, view_name, server, node_class_type):
+    def _find_node(self, view_name: str, server: ServerInfo, node_class_type):
         """Finds the top level node for a view given the name and server.
         device_node_ctx_finder() return defaults to DPC. This is only
         for the chipscope and debugcore views. Use the find_jtag_node
         for jtag because the required process is slightly different.
         """
         assert view_name == "chipscope" or view_name == "debugcore"
+        assert server is not None
         view = server.get_view(view_name)
-        discovery_node_ctx = self.device_node_ctx_finder(view_name)
-        discovery_node = view.get_node(discovery_node_ctx, node_class_type)
-        return discovery_node
+        try:
+            discovery_node_ctx = self.device_node_ctx_finder(view_name)
+            discovery_node = view.get_node(discovery_node_ctx, node_class_type)
+            return discovery_node
+        except ValueError:
+            return None
 
-    def find_debugcore_node(self, server) -> DebugCoreClientNode:
+    def find_debugcore_node(self, server: ServerInfo) -> DebugCoreClientNode:
         return self._find_node("debugcore", server, DebugCoreClientNode)
 
-    def find_chipscope_node(self, server) -> CoreParent:
+    def find_chipscope_node(self, server: ServerInfo) -> CoreParent:
         return self._find_node("chipscope", server, CoreParent)
 
-    def find_jtag_node(self, hw_server) -> JtagDevice:
+    def find_jtag_node(self, hw_server: ServerInfo) -> JtagDevice:
         """Finds the node we use for programming the device.
         Returns: jtag programming node for the device
         """
-        # Go through list of possible jtag configurable devices - when we find our matching context,
-        # program it. This is versal specific. It will need work when we add ultrascale.
-        # One problem at a time...
+        assert hw_server is not None
         jtag_view = hw_server.get_view("jtag")
         jtag_node = None
-        # Grab the jtag node context stored for this device jtag view.
-        discovery_node_ctx = self.device_node_ctx_finder("jtag", ".*")
-        for node in jtag_view.get_all():
-            if JtagDevice.is_compatible(node):
-                jtag_node = jtag_view.get_node(node.ctx, JtagDevice)
-                if jtag_node.ctx == discovery_node_ctx:
-                    break
+        try:
+            # Grab the jtag node context stored for this device jtag view.
+            discovery_node_ctx = self.device_node_ctx_finder("jtag", ".*")
+            for node in jtag_view.get_all():
+                if JtagDevice.is_compatible(node):
+                    jtag_node = jtag_view.get_node(node.ctx, JtagDevice)
+                    if jtag_node.ctx == discovery_node_ctx:
+                        break
+        except ValueError:
+            jtag_node = None
         return jtag_node
 
-    def find_dpc_memory_node(self, hw_server):
+    def find_dpc_memory_node(self, hw_server: ServerInfo) -> Node:
+        assert hw_server is not None
         memory_view: ViewInfo = hw_server.get_view("memory")
         top_memory_node_ctx = self.device_node_ctx_finder("memory", "^DPC")
         node = memory_view.get_node(top_memory_node_ctx, MemoryNode)
         upgraded_node = Memory.check_and_upgrade(memory_view, node)
         return upgraded_node
 
-    def find_versal_node(self, hw_server):
+    def find_versal_node(self, hw_server: ServerInfo) -> Node:
+        assert hw_server is not None
         memory_view: ViewInfo = hw_server.get_view("memory")
         top_memory_node_ctx = self.device_node_ctx_finder("memory", "^Versal")
         node = memory_view.get_node(top_memory_node_ctx, MemoryNode)
         return node
 
-    def get_memory_target_nodes(self, hw_server):
+    def get_memory_target_nodes(self, hw_server: ServerInfo) -> List[Node]:
         # Return the memory target nodes for this device
+        assert hw_server is not None
         view_name = "memory"
         node_ctx_list = list()
         access_priority_list = [r"^DPC", r"^Versal", r"^XVC"]
         for access_type in access_priority_list:
-            for node_tracker in self.device_tracker.node_identification:
+            for node_tracker in self.__device_tracker.node_identification:
                 if (
                     re.search(access_type, node_tracker.name)
                     and node_tracker.view_name == view_name
@@ -202,7 +208,8 @@ class DeviceIdentification:
         ]
         return upgraded_memory_node_list
 
-    def find_memory_target(self, hw_server, target: str):
+    def find_memory_target(self, hw_server: ServerInfo, target: str) -> Node:
+        assert hw_server is not None
         if target is None:
             dpc_or_versal_target = None
             target = "DPC"
@@ -237,7 +244,7 @@ class DeviceIdentification:
         target_node = Memory.check_and_upgrade(memory_view, target_node)
         return target_node
 
-    def device_node_ctx_finder(self, view_name: str, target_name_regex: str = None):
+    def device_node_ctx_finder(self, view_name: str, target_name_regex: str = None) -> str:
         """This is a function that returns the correct top level CoreParent context used for debug core scanning.
         It should return the correct context for a device given the view and target name.
         The returned node will be used when calling setup_debug_cores and device programming.
@@ -253,7 +260,7 @@ class DeviceIdentification:
         else:
             access_priority_list = [r"^DPC", r"^Versal", r"^XVC", r"^Ultra"]
         for access_type in access_priority_list:
-            for node_tracker in self.device_tracker.node_identification:
+            for node_tracker in self.__device_tracker.node_identification:
                 if (
                     re.search(access_type, node_tracker.name)
                     and node_tracker.view_name == view_name

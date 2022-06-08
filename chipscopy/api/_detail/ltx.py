@@ -1,4 +1,4 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright 2022 Xilinx, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -76,6 +76,7 @@ class Ltx:
         "axis_ila": CoreType.AXIS_ILA,
         "axis_vio": CoreType.AXIS_VIO,
         "trace": CoreType.AXIS_TRACE,
+        "hw_trace": CoreType.AXIS_TRACE,
     }
 
     __NULL_UUID = "0" * 32

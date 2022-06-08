@@ -263,10 +263,7 @@ class EyeScanImporter:  # pragma: no cover
     @staticmethod
     def load_from_vivado_csv(file_path: Path = None):
         if file_path is None:
-            file_path = Path(
-                "C:/Users/araju/Documents/Pycharm Projects/chipscopy/chipscopy/api/"
-                "ibert/scan/plots/vivado_eye_scan.csv"
-            )
+            file_path = Path()
 
         def normalize_codes_to_ui(data, min_range, max_range):
             min_element, max_element = min(data), max(data)

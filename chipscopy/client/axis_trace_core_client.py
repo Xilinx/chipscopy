@@ -1,4 +1,4 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright 2022 Xilinx, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,3 +38,25 @@ class AxisTraceClient(CorePropertyClient):
     def terminate(self, done: DoneHWCommand = None):
         service, done_cb = self.make_done(done)
         return self.add_pending(service.terminate(self.ctx, done_cb))
+
+    #
+    # Trace Core specific methods
+    #
+    def acquire(
+        self,
+        input_index: int,
+        input_name: str,
+        destination_address: int,
+        memory_depth: int,
+        done: DoneHWCommand = None,
+    ):
+        service, done_cb = self.make_done(done)
+        return self.add_pending(
+            service.acquire(
+                self.ctx, input_index, input_name, destination_address, memory_depth, done_cb
+            )
+        )
+
+    def release(self, input_index: int, input_name: str, force: bool, done: DoneHWCommand = None):
+        service, done_cb = self.make_done(done)
+        return self.add_pending(service.release(self.ctx, input_index, input_name, force, done_cb))

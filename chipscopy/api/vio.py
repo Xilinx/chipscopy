@@ -87,11 +87,17 @@ class VIOProbe:
         self.port_index = ltx_probe.port_index
         self.port_bit_offset = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.probe_name
 
-    def __repr__(self):
-        return json.dumps(dataclasses.asdict(self), indent=4)
+    def __repr__(self) -> str:
+        return self.to_json()
+
+    def to_dict(self) -> Dict:
+        return dataclasses.asdict(self)
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict(), indent=4)
 
     @property
     def port_name(self):
@@ -131,7 +137,13 @@ class VIO(DebugCore["AxisVIOCoreClient"]):
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "uuid": self.uuid, "instance_name": self.instance_name}
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        return self.to_json()
+
+    def __str__(self) -> str:
+        return self.name
+
+    def to_dict(self) -> Dict:
         input_ports = {}
         for idx, val in enumerate(self.port_in_widths):
             input_ports[f"probe_in{idx}"] = val
@@ -139,20 +151,22 @@ class VIO(DebugCore["AxisVIOCoreClient"]):
         for idx, val in enumerate(self.port_out_widths):
             output_ports[f"probe_out{idx}"] = val
         probes = [asdict(probe) for probe in self.probes]
-        ret_dict = {
-            "name": self.name,
-            "type": str(self.core_type),
-            "uuid": self.uuid,
-            "instance": self.instance_name,
-            "input_ports": input_ports,
-            "output_ports": output_ports,
-            "probes": probes,
-        }
-        json_dict = json.dumps(ret_dict, indent=4)
-        return json_dict
+        # super().to_dict() holds the standard core_info
+        d = super().to_dict()
+        d.update(
+            {
+                "name": self.name,
+                "type": str(self.core_type),
+                "instance": self.instance_name,
+                "input_ports": input_ports,
+                "output_ports": output_ports,
+                "probes": probes,
+            }
+        )
+        return d
 
-    def __str__(self):
-        return self.name
+    def to_json(self) -> str:
+        return json.dumps(dict(sorted(self.to_dict().items())), indent=4, default=lambda o: str(o))
 
     ###########################################################################
     # VIO CORE AND PORT CONTROL
@@ -442,11 +456,11 @@ class VIO(DebugCore["AxisVIOCoreClient"]):
 
     def _read_port_info_from_hardware(self):
         ports_info_dict = self.core_tcf_node.get_ports_info()
-        port_in_widths: [int] = []
+        port_in_widths: List[int] = []
         port_in_count = ports_info_dict["port_in_count"]
         if port_in_count > 0:
             port_in_widths = ports_info_dict["port_in_widths"]
-        port_out_widths: [int] = []
+        port_out_widths: List[int] = []
         port_out_count = ports_info_dict["port_out_count"]
         if port_out_count > 0:
             port_out_widths = ports_info_dict["port_out_widths"]
@@ -454,7 +468,7 @@ class VIO(DebugCore["AxisVIOCoreClient"]):
         return port_in_widths, port_out_widths, has_activity
 
     @staticmethod
-    def _get_probe_to_port_map(ltx_probes: [LtxProbe]) -> Dict[str, List[LtxProbe]]:
+    def _get_probe_to_port_map(ltx_probes: List[LtxProbe]) -> Dict[str, List[LtxProbe]]:
         # Build the probe to port mapping. Associates the logical
         # LTX port data to the physical VIO hardware port configuration.
         # Group probes by port index and order probes from smallest to largest

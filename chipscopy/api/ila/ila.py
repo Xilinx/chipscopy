@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import enum
 import json
 import sys
@@ -18,6 +19,7 @@ from io import TextIOBase
 from dataclasses import dataclass, asdict
 from pprint import pformat
 from typing import Dict, List, Union, Optional
+
 from chipscopy.dm import request
 from chipscopy.shared.ila_util import to_bin_str
 from chipscopy.api._detail.ltx import Ltx, LtxStreamRef
@@ -138,17 +140,27 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         return self.name
 
     def __repr__(self) -> str:
-        ret_dict = {
-            "name": self.name,
-            "core_info": asdict(self.core_info),
-            "static_info": asdict(self.static_info),
-            "status": asdict(self.status),
-            "control": asdict(self.control),
-            "ports": [asdict(port) for port in self.ports],
-            "probes": {key: asdict(val) for key, val in self.probes.items()},
-            "probe_values": {key: asdict(val) for key, val in self.probe_values.items()},
-        }
-        json_dict = json.dumps(ret_dict, cls=Enum2StrEncoder, indent=4)
+        return self.to_json()
+
+    def to_dict(self) -> Dict:
+        d = {}
+        # super().to_dict() holds the standard core_info
+        d.update(super().to_dict())
+        d.update(
+            {
+                "name": self.name,
+                "static_info": asdict(self.static_info),
+                "status": asdict(self.status),
+                "control": asdict(self.control),
+                "ports": [asdict(port) for port in self.ports],
+                "probes": {key: asdict(val) for key, val in self.probes.items()},
+                "probe_values": {key: asdict(val) for key, val in self.probe_values.items()},
+            }
+        )
+        return dict(sorted(d.items()))
+
+    def to_json(self) -> str:
+        json_dict = json.dumps(self.to_dict(), cls=Enum2StrEncoder, indent=4)
         return json_dict
 
     def refresh_status(self) -> None:
@@ -165,13 +177,14 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         """Trigger ILA immediately.
 
         Args:
-            trigger_position (int): Default : 0
-              Range [0..window_size-1].
+            trigger_position (int): sample marker inside the window at which the trigger shall appear.
+                Range [0..window_size-1], default value: 0.
             window_count (int): Number of windows to capture. Default value: 1.
             window_size (int): Number of samples per window. Must be a power-of-two value.
-               Default value: :attr:`.ILA_WINDOW_SIZE_MAX`
+                Default value: :attr:`.ILA_WINDOW_SIZE_MAX`
             trig_out (ILATrigOutMode): Specify what drives TRIG-OUT port.
-               Default value: :attr:`.ILATrigOutMode.DISABLED`
+                Default value: :attr:`.ILATrigOutMode.DISABLED`
+
         """
         self.run_basic_trigger(
             trigger_position,
@@ -182,6 +195,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             ILATrigInMode.DISABLED,
             trig_out,
         )
+        """"""
 
     def run_basic_trigger(
         self,
@@ -196,19 +210,15 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         """Trigger using probe compare values.
 
         Args:
-            trigger_position (int): Default :attr:`~.ILA_TRIGGER_POSITION_HALF`
-                 denotes the middle of the window. Range [0..window_size-1].
+            trigger_position (int): denotes the middle of the window. Range [-1..window_size-1].
+                Default value: :attr:`~.ILA_TRIGGER_POSITION_HALF`
             window_count (int): Number of windows to capture. Default value: 1.
             window_size (int): Number of samples per window. Must be a power-of-two value.
-                 Default value: :attr:`.ILA_WINDOW_SIZE_MAX`
-
+                Default value: :attr:`.ILA_WINDOW_SIZE_MAX`
             trigger_condition (ILATriggerCondition): Trigger condition global boolean operator.
-            capture_condition (ILACaptureCondition): Capture condition global boolean operator,
-                 to filter samples.
-            trig_in (ILATrigInMode): Usage of TRIG-IN Port.
-                 Default value: :attr:`.ILATrigInMode.DISABLED`
-            trig_out (ILATrigOutMode): Specify what drives TRIG-OUT port.
-               Default value: :attr:`ILATrigOutMode.DISABLED`
+            capture_condition (ILACaptureCondition): Capture condition global boolean operator, to filter samples.
+            trig_in (ILATrigInMode): Usage of TRIG-IN Port. Default value: :attr:`.ILATrigInMode.DISABLED`
+            trig_out (ILATrigOutMode): Specify what drives TRIG-OUT port. Default value: :attr:`ILATrigOutMode.DISABLED`
 
         """
 
@@ -413,6 +423,11 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             <value> may be of type int or binary string of the correct bit_width.
             An empty list is a don't-care value.
 
+            Hex values start with a '0x' prefix.
+            Note! String values for 3-bit probes are always interpreted as binary values,
+            e.g. "0x0", "0x1", "0xx", "011".
+
+
                 Example: Test for LSB is '0' on a 4-bit probe.
                    ['==',   'XXX0']
 
@@ -601,11 +616,11 @@ def export_waveform(
     window_count: Optional[int] = None,
     start_sample_idx: int = 0,
     sample_count: Optional[int] = None,
+    include_gap: bool = False,
 ) -> None:
     """
-    Export a waveform in VCD or CSV format, to a file.
-    By default all samples for all probes are exported,
-    but it is possible to select which probes and window/sample ranges.
+    Export a waveform in VCD or CSV format, to a file. By default, all samples for all probes are exported, but it is
+    possible to select which probes and window/sample ranges.
 
     Args:
         waveform (ILAWaveform): waveform data.
@@ -614,16 +629,16 @@ def export_waveform(
             - 'CSV' - Comma Separated Value Format. Default.
             - 'VCD' - Value Change Dump.
 
-        fh_or_filepath (TextIOBase, str): File object handle or filepath string. Default is sys.stdout.
-            If a file object, the file object is opened and closed by the caller, if needed.
+        fh_or_filepath (TextIOBase, str): File object handle or filepath string. Default is `sys.stdout`. If the
+            argument is a file object, closing and opening the file is the responsibility of the caller.
+            If argument is a string, the file will be opened and closed by the function.
 
-            Alternatively, a file path may be specified as a string.
-            The file will be opened and closed by the function.
         probe_names (Optional[List[str]]): List of probe names. Default 'None' means export all probes.
         start_window_idx (int): Starting window index. Default is first window.
         window_count (Optional[int]): Number of windows to export. Default is all windows.
         start_sample_idx (int): Starting sample within window. Default is first sample.
         sample_count (Optional[int]): Number of samples per window. Default is all samples.
+        include_gap (bool):  Default is False. Include the pseudo "gap" 1-bit probe in the result.
 
     """
     if not waveform:
@@ -640,6 +655,7 @@ def export_waveform(
                 window_count,
                 start_sample_idx,
                 sample_count,
+                include_gap,
             )
         return
     else:
@@ -652,6 +668,7 @@ def export_waveform(
             window_count,
             start_sample_idx,
             sample_count,
+            include_gap,
         )
 
 
@@ -664,6 +681,7 @@ def get_waveform_data(
     sample_count: Optional[int] = None,
     include_trigger: bool = False,
     include_sample_info: bool = False,
+    include_gap: bool = False,
 ) -> Dict[str, List[int]]:
     """
     Get probe waveform data as a list of int values for each probe.
@@ -684,12 +702,17 @@ def get_waveform_data(
           - '__WINDOW_INDEX' - Window index.
           - '__WINDOW_SAMPLE_INDEX' - Sample index within window.
 
+        include_gap (bool):  Default is False. If True, include the pseudo probe '__GAP' in result. \
+                             Value 1 for a gap sample. Value 0 for a regular sample.
+
+
     Returns (Dict[str, List[int]]):
         Ordered dict, in order:
           - '__TRIGGER', if argument **include_trigger** is True
           - '__SAMPLE_INDEX', if argument **include_sample_info** is True
           - '__WINDOW_INDEX', if argument **include_sample_info** is True
           - '__WINDOW_SAMPLE_INDEX', if argument **include_sample_info** is True
+          - '__GAP', if argument **include_gap** is True
           - probe values in order of argument **probe_names**.
 
         Dict key: probe name. Dict value is list of int values, for a probe.
@@ -709,6 +732,7 @@ def get_waveform_data(
         sample_count,
         include_trigger,
         include_sample_info,
+        include_gap,
     )
 
 
@@ -751,5 +775,6 @@ def get_waveform_probe_data(
         sample_count,
         include_trigger=False,
         include_sample_info=False,
+        include_gap=False,
     )
     return res_dict[probe_name]

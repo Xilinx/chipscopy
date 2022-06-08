@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import builtins
+import json
 from typing import TypeVar, Generic, TYPE_CHECKING, Dict, Any, Optional
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 
 from chipscopy.api import CoreInfo, get_core_info
 from chipscopy.api._detail.property import PropertyCommands
@@ -44,6 +46,34 @@ class DebugCore(Generic[T]):
     def __post_init__(self):
         self.property = PropertyCommands(self)
         self.core_info = get_core_info(self.core_tcf_node)
+
+    @builtins.property
+    def context(self) -> str:
+        ctx = ""
+        if self.core_tcf_node:
+            ctx = self.core_tcf_node.ctx
+        return ctx
+
+    def get_tcf_props(self) -> Dict:
+        d = {}
+        if self.core_tcf_node:
+            d.update(self.core_tcf_node.props)
+            d.update(self.core_tcf_node.get_property_group([]))
+        return d
+
+    def to_dict(self) -> Dict:
+        d = {}
+        if self.core_tcf_node:
+            core_info = get_core_info(self.core_tcf_node)
+            if core_info:
+                d.update({"core_info": asdict(core_info)})
+        return d
+
+    def to_json(self) -> str:
+        d = self.to_dict()
+        d.update({"tcf": self.get_tcf_props()})
+        json_dict = json.dumps(dict(sorted(d.items())), indent=4, default=lambda o: str(o))
+        return json_dict
 
     # NOTE - If you want to use the @property to define a property for this class, make sure to
     #  use @builtins.property and not just @property.

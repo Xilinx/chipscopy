@@ -35,6 +35,8 @@ Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
 Project source code link: `ChipScoPy <https://www.github.com/Xilinx/chipscopy>`_
 
+Example Design source link: `ChipScoPy CED <https://github.com/Xilinx/XilinxCEDStore/tree/master/ced/Xilinx/IPI/chipscopy>`_
+
 Indices and Tables
 ==================
 
@@ -65,6 +67,7 @@ Indices and Tables
    ila.rst
    memory.rst
    noc.rst
+   pcie.rst
    sysmon.rst
    vio.rst
 

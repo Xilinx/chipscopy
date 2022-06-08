@@ -38,6 +38,10 @@ class QueryList(UserList, Sequence[T]):
         self.custom_match_function = None
         super().__init__(initlist=initlist)
 
+    def __str__(self):
+        s = ",\n    ".join([f"'{str(item)}'" for item in self])
+        return f"[\n    {s}\n]"
+
     def set_custom_match_function(self, match_function):
         """Sets an optional custom match function for the QueryList. If a custom match function is set,
         each list item is compared using the match function. The match function is expected to return
@@ -59,7 +63,7 @@ class QueryList(UserList, Sequence[T]):
         is raised.
 
         Args:
-            **filters ():
+            \*\*filters:
 
         Returns:
             The one element matching the filter
@@ -87,12 +91,6 @@ class QueryList(UserList, Sequence[T]):
         """
         return self[index]
 
-    # TODO: Consider using filter() instead of filter_by() for the function name. Discuss with dev group.
-    # def filter(self, **filters: Any) -> "QueryList[T]":
-    #     """Same as filter_by. Not sure which function name to use yet. See documentation for filter_by.
-    #     """
-    #     return self.filter_by(**filters)
-
     def filter_by(self, **filters: Any) -> "QueryList[T]":
         """
         Iterate through list and return only those elements that match specifications in filters.
@@ -103,7 +101,8 @@ class QueryList(UserList, Sequence[T]):
         against the data in the `filter_by` attribute of the each element in the list.
 
         Args:
-            **filters:
+            \*\*filters: attribute=`value` syntax, will try to access this attribute of the object and if there is a
+            match objects with matching values for said attribute shall be returned. Example: family="versal"
 
         Returns:
             List of elements that match the specifications provided

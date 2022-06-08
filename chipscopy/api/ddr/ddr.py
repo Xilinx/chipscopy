@@ -43,7 +43,7 @@ from chipscopy.dm import request
 from chipscopy.tcf.services import DoneHWCommand
 from chipscopy.api import CoreType
 from chipscopy.api._detail.debug_core import DebugCore
-from chipscopy.utils.printer import PercentProgressBar
+from chipscopy.utils.printer import PercentProgressBar, printer
 
 if TYPE_CHECKING:
     from chipscopy.client.ddrmc_client import DDRMCClient
@@ -60,11 +60,13 @@ class DDR(DebugCore["DDRMCClient"]):
     def __init__(self, ddr_node):
         super(DDR, self).__init__(CoreType.DDR, ddr_node)
         self.node_name = ddr_node.props["Name"]
-        self.mc_index = self.node_name[-1]
+        self.mc_index = ddr_node.props["mc_index"]
+        self.mc_loc = ddr_node.props["mc_loc"]
         self.name = "ddr_" + self.mc_index
         self.ddr_node = self.core_tcf_node
         self.is_enabled = self.is_user_enabled()
         self.eye_scan_data = []
+        self.filter_by = {"name": self.name, "mc_index": self.mc_index, "mc_loc": self.mc_loc}
 
     def get_cal_status(self):
         """
@@ -234,6 +236,8 @@ class DDR(DebugCore["DDRMCClient"]):
         else:
             configs["Device Type"] = "Unknown"
 
+        configs["MC Location"] = self.mc_loc
+
         results = self.ddr_node.get_property("slots")
         slots = results["slots"]
         results = self.ddr_node.get_property("phy_ranks")
@@ -312,7 +316,7 @@ class DDR(DebugCore["DDRMCClient"]):
                 left_marg = left_marg_vals[byte * 2][1]
                 center = center_vals[byte * 2][1]
                 right_marg = right_marg_vals[byte * 2][1]
-                print(
+                printer(
                     "Byte ",
                     str(byte),
                     " Nibble 0  -",
@@ -334,7 +338,7 @@ class DDR(DebugCore["DDRMCClient"]):
                 left_marg = left_marg_vals[byte * 2 + 1][1]
                 center = center_vals[byte * 2 + 1][1]
                 right_marg = right_marg_vals[byte * 2 + 1][1]
-                print(
+                printer(
                     "Byte ",
                     str(byte),
                     " Nibble 1  -",
@@ -357,7 +361,7 @@ class DDR(DebugCore["DDRMCClient"]):
                 left_marg = left_marg_vals[nibble][1]
                 center = center_vals[nibble][1]
                 right_marg = right_marg_vals[nibble][1]
-                print(
+                printer(
                     "Nibble ",
                     str(nibble),
                     "  -" "  Left Margin:  ",
@@ -386,7 +390,7 @@ class DDR(DebugCore["DDRMCClient"]):
             left_marg = left_marg_vals[byte][1]
             center = center_vals[byte][1]
             right_marg = right_marg_vals[byte][1]
-            print(
+            printer(
                 "Byte ",
                 str(byte),
                 "  -" "  Left Margin:  ",
@@ -421,57 +425,57 @@ class DDR(DebugCore["DDRMCClient"]):
 
         if to_file:
             if not file_name:
-                print("\nNOTE: Need to specify a file name for the report output.")
+                printer("\nNOTE: Need to specify a file name for the report output.")
             else:
                 out_file = open(file_name, "w")
-                print("\nNOTE: The report is being generated and saved as:", file_name)
+                printer("\nNOTE: The report is being generated and saved as:", file_name)
                 orig_out = sys.stdout
                 sys.stdout = out_file
 
         # DDRMC Status & Message
-        print("-------------------\n")
-        print(" DDRMC Status \n")
-        print("-------------------\n")
+        printer("-------------------\n")
+        printer(" DDRMC Status \n")
+        printer("-------------------\n")
         self.refresh_cal_status()
         self.refresh_health_status()
-        print("Calibration Status:  ", self.get_cal_status(), "\n")
+        printer("Calibration Status:  ", self.get_cal_status(), "\n")
         results = self.ddr_node.get_property("health_status")
-        print("Overall Health:  ", results["health_status"], "\n")
+        printer("Overall Health:  ", results["health_status"], "\n")
         results = self.ddr_node.get_property("cal_message")
-        print("Message:  ", results["cal_message"], "\n")
+        printer("Message:  ", results["cal_message"], "\n")
 
         # Check if there is error condition to report
         results = self.ddr_node.get_property("cal_error_msg")
         if results["cal_error_msg"] != "None":
-            print("Error:  ", results["cal_error_msg"], "\n")
+            printer("Error:  ", results["cal_error_msg"], "\n")
 
         # DDRMC ISR Registers
-        print("\n-------------------\n")
-        print(" Status Registers\n")
-        print("-------------------\n")
+        printer("\n-------------------\n")
+        printer(" Status Registers\n")
+        printer("-------------------\n")
 
-        print("DDRMC ISR Table\n")
+        printer("DDRMC ISR Table\n")
         results = self.ddr_node.get_property_group(["ddrmc_isr_e", "ddrmc_isr_w"])
         for key, val in sorted(results.items()):
-            print("  ", key, ":  ", str(val))
+            printer("  ", key, ":  ", str(val))
 
-        print("\nUB ISR Table\n")
+        printer("\nUB ISR Table\n")
         results = self.ddr_node.get_property_group(["ub_isr_e", "ub_isr_w"])
         for key, val in sorted(results.items()):
-            print("  ", key, ":  ", str(val))
+            printer("  ", key, ":  ", str(val))
 
         # Memory configuration info
-        print("\n----------------------------------\n")
-        print(" Memory Configuration \n")
-        print("----------------------------------\n")
+        printer("\n----------------------------------\n")
+        printer(" Memory Configuration \n")
+        printer("----------------------------------\n")
         configs = self.__get_configuration()
         for key, val in configs.items():
-            print(key, ":  ", val)
+            printer(key, ":  ", val)
 
         # Memory calibration stages info
-        print("\n-----------------------------------\n")
-        print(" Calibration Stages Information \n")
-        print("-----------------------------------\n")
+        printer("\n-----------------------------------\n")
+        printer(" Calibration Stages Information \n")
+        printer("-----------------------------------\n")
         # Do not do calibration stages if a system error is detected
         sys_error = False
         if self.get_cal_status() == "SYSTEM ERROR":
@@ -479,18 +483,18 @@ class DDR(DebugCore["DDRMCClient"]):
         if not sys_error:
             results = self.get_cal_stages()
             for key, val in sorted(results.items()):
-                print(key, ":  ", val)
+                printer(key, ":  ", val)
         else:
-            print(
+            printer(
                 "\nNote: DDRMC system error is detected. Calibration stages decoding will not be provided for ",
                 self.name,
                 "\n",
             )
 
         # Cal Margin Analysis
-        print("\n---------------------------------------\n")
-        print(" Calibration Window Margin Analysis \n")
-        print("---------------------------------------\n")
+        printer("\n---------------------------------------\n")
+        printer(" Calibration Window Margin Analysis \n")
+        printer("---------------------------------------\n")
 
         if not sys_error:
             cal_margin_modes = {}
@@ -515,7 +519,7 @@ class DDR(DebugCore["DDRMCClient"]):
                     self.__get_cal_margins(
                         key + "_rise", left_margins, right_margins, center_points
                     )
-                    print(
+                    printer(
                         "\n",
                         base,
                         " - Read Margin - Simple Pattern - Rising Edge Clock in pS and (delay taps):\n",
@@ -527,7 +531,7 @@ class DDR(DebugCore["DDRMCClient"]):
                     self.__get_cal_margins(
                         key + "_fall", left_margins, right_margins, center_points
                     )
-                    print(
+                    printer(
                         "\n",
                         base,
                         " - Read Margin - Simple Pattern - Falling Edge Clock in pS and (delay taps):\n",
@@ -542,7 +546,7 @@ class DDR(DebugCore["DDRMCClient"]):
                     self.__get_cal_margins(
                         key + "_rise", left_margins, right_margins, center_points
                     )
-                    print(
+                    printer(
                         "\n",
                         base,
                         " - Read Margin - Complex Pattern - Rising Edge Clock in pS and (delay taps):\n",
@@ -554,7 +558,7 @@ class DDR(DebugCore["DDRMCClient"]):
                     self.__get_cal_margins(
                         key + "_fall", left_margins, right_margins, center_points
                     )
-                    print(
+                    printer(
                         "\n",
                         base,
                         " - Read Margin - Complex Pattern - Falling Edge Clock in pS and (delay taps):\n",
@@ -566,7 +570,7 @@ class DDR(DebugCore["DDRMCClient"]):
                 key = "f" + str(freq) + "_wr_simp"
                 if cal_margin_modes[key]:
                     self.__get_cal_margins(key, left_margins, right_margins, center_points)
-                    print(
+                    printer(
                         "\n",
                         base,
                         " - Write Margin - Simple Pattern - Calibration Window in pS and (delay taps):\n",
@@ -578,7 +582,7 @@ class DDR(DebugCore["DDRMCClient"]):
                 key = "f" + str(freq) + "_wr_comp"
                 if cal_margin_modes[key]:
                     self.__get_cal_margins(key, left_margins, right_margins, center_points)
-                    print(
+                    printer(
                         "\n",
                         base,
                         " - Write Margin - Complex Pattern - Calibration Window in pS and (delay taps):\n",
@@ -587,7 +591,7 @@ class DDR(DebugCore["DDRMCClient"]):
                         num_byte, left_margins, right_margins, center_points
                     )
         else:
-            print(
+            printer(
                 "\nNote: DDRMC system error is detected. Margin Analysis will not be provided for ",
                 self.name,
                 "\n",
@@ -671,10 +675,10 @@ class DDR(DebugCore["DDRMCClient"]):
 
         """
         if isinstance(rank_num, str):
-            print("ERROR: Please enter an integer value from 0 to 3 for Slot/Rank selection.")
+            printer("ERROR: Please enter an integer value from 0 to 3 for Slot/Rank selection.")
             return
         elif rank_num > 3:
-            print("ERROR: Cannot enter a rank_num value larger than 3.")
+            printer("ERROR: Cannot enter a rank_num value larger than 3.")
             return
 
         self.ddr_node.set_property({"mgchk_rank": rank_num})
@@ -700,10 +704,10 @@ class DDR(DebugCore["DDRMCClient"]):
 
         """
         if isinstance(vref, str):
-            print("ERROR: Please re-enter an integer value for Vref.")
+            printer("ERROR: Please re-enter an integer value for Vref.")
             return
         elif vref > 1023:
-            print("ERROR: Cannot enter VRef values larger than 1023")
+            printer("ERROR: Cannot enter VRef values larger than 1023")
             return
 
         base_value = 0
@@ -728,7 +732,7 @@ class DDR(DebugCore["DDRMCClient"]):
 
         if rw_mode:
             if vref > 50:
-                print("ERROR: Cannot enter Vref values larger than 50 for Write Margin mode")
+                printer("ERROR: Cannot enter Vref values larger than 50 for Write Margin mode")
                 return
             if mem_type == 1:
                 if write_vref_range == 0:
@@ -818,13 +822,13 @@ class DDR(DebugCore["DDRMCClient"]):
         rw_mode = results["mgchk_rw_mode"]
 
         if isinstance(steps, str):
-            print("ERROR: Please re-enter an integer value for Vref steps.")
+            printer("ERROR: Please re-enter an integer value for Vref steps.")
             return
         elif rw_mode and (steps > 51):
-            print("ERROR: Cannot enter Vref step sizes larger than 51 for Write Margin mode")
+            printer("ERROR: Cannot enter Vref step sizes larger than 51 for Write Margin mode")
             return
         elif steps > 1024:
-            print("ERROR: Cannot enter Vref step sizes larger than 1024 for Read Margin mode")
+            printer("ERROR: Cannot enter Vref step sizes larger than 1024 for Read Margin mode")
             return
 
         steps = int(steps)
@@ -1026,7 +1030,7 @@ class DDR(DebugCore["DDRMCClient"]):
         self.__update_eye_scan_data()
 
         if not self.eye_scan_data:
-            print("ERROR: No scan data is found. Please re-run 2D eye scan.")
+            printer("ERROR: No scan data is found. Please re-run 2D eye scan.")
             return
 
         data_list = self.eye_scan_data
@@ -1038,7 +1042,7 @@ class DDR(DebugCore["DDRMCClient"]):
             data_writer = csv.DictWriter(out_file, keys)
             data_writer.writeheader()
             data_writer.writerows(data_list)
-            print("\nInfo: Data are being formatted and saved to:", out_file.name)
+            printer("\nInfo: Data are being formatted and saved to:", out_file.name)
 
     def load_eye_scan_data(self, file_name):
         """
@@ -1063,7 +1067,7 @@ class DDR(DebugCore["DDRMCClient"]):
 
         self.eye_scan_data = data_list
         self.ddr_node.set_property({"es_data_need_update": 0})
-        print("\nInfo: Scan data are being loaded successfully from:", file_name)
+        printer("\nInfo: Scan data are being loaded successfully from:", file_name)
 
     def run_eye_scan(self, done: request.DoneFutureCallback = None) -> bool or request.CsFuture:
         """
@@ -1098,31 +1102,31 @@ class DDR(DebugCore["DDRMCClient"]):
 
         if rw_mode:
             if (vref_min > 50) or (vref_max > 50):
-                print("ERROR: Cannot set Vref values larger than 50 under Write margin mode.")
+                printer("ERROR: Cannot set Vref values larger than 50 under Write margin mode.")
                 return False
             if vref_steps > 51:
-                print("ERROR: Cannot set Vref step sizes larger than 51 for Write Margin mode")
+                printer("ERROR: Cannot set Vref step sizes larger than 51 for Write Margin mode")
                 return False
 
         if vref_min > vref_max:
-            print("ERROR: Cannot set minimum Vref value larger than maximum Vref value.")
+            printer("ERROR: Cannot set minimum Vref value larger than maximum Vref value.")
             return False
 
         percent_min = self.get_eye_scan_vref_percentage(vref_min)
         percent_max = self.get_eye_scan_vref_percentage(vref_max)
-        print("Min VRef is set at: ", percent_min, "%, value ", vref_min)
-        print("Max VRef is set at: ", percent_max, "%, value ", vref_max)
-        print("Number of VRef steps is set at: ", vref_steps)
+        printer("Min VRef is set at: ", percent_min, "%, value ", vref_min)
+        printer("Max VRef is set at: ", percent_max, "%, value ", vref_max)
+        printer("Number of VRef steps is set at: ", vref_steps)
 
         vref_incr_size = int((vref_max - vref_min) / (vref_steps - 1))
         max_step_size = vref_max - vref_min + 1
 
         if vref_incr_size < 1:
-            print(
+            printer(
                 "ERROR: For the selected VRef Min and VRef Max, the maximum step size is: ",
                 str(max_step_size),
             )
-            print(
+            printer(
                 "Please either reduce the VRef steps or increase the VRef range by adjusting Min/Max."
             )
             return False
@@ -1162,12 +1166,12 @@ class DDR(DebugCore["DDRMCClient"]):
             else:
                 status = "ERROR"
 
-            print("2D margin scan run status is: ", status)
+            printer("2D margin scan run status is: ", status)
 
         self.ddr_node.future(
             progress=progress_update, done=done_scan, final=finalize
         ).run_eye_scan_async(data_checked=True)
-        print("Info: Margin Scans in progress...")
+        printer("Info: Margin Scans in progress...")
 
         return scan_future if done else scan_future.result
 
@@ -1214,14 +1218,14 @@ class DDR(DebugCore["DDRMCClient"]):
             self.__update_eye_scan_data()
 
         if not self.eye_scan_data:
-            print(
+            printer(
                 "ERROR: No scan data is found. Please re-run 2D eye scan, "
                 "or load scan data first from a data file."
             )
             return
 
         if isinstance(unit_index, str):
-            print("ERROR: Please re-enter an integer value for unit_index.")
+            printer("ERROR: Please re-enter an integer value for unit_index.")
             return
 
         figure_list = []
@@ -1248,7 +1252,7 @@ class DDR(DebugCore["DDRMCClient"]):
                     + str(max_unit)
                 )
                 err_msg += ", based on current memory configuration."
-                print(err_msg)
+                printer(err_msg)
                 return
         elif unit_mode == "byte":
             if (unit_index < 0) or (unit_index >= int(byte_count)):
@@ -1260,7 +1264,7 @@ class DDR(DebugCore["DDRMCClient"]):
                     + str(max_unit)
                 )
                 err_msg += ", based on current memory configuration."
-                print(err_msg)
+                printer(err_msg)
                 return
 
         if "Read" in scan_mode:

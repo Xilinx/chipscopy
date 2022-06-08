@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.10.1
+#       jupytext_version: 1.13.8
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -44,10 +44,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2021.2 installed and running
-# - Xilinx cs_server 2021.2 installed and running
+# - Xilinx hw_server 2022.1 installed and running
+# - Xilinx cs_server 2022.1 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2021.2 installed
+# - ChipScoPy 2022.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -203,7 +203,6 @@ else:
     print(
         f" ERROR: DATA_PATTERN is set to {DATA_PATTERN} which is an illegal value, only SIMPLE or COMPLEX is allowed"
     )
-
 
 # %% [markdown]
 # ## 9 - Setting the Vref sample min/max range
