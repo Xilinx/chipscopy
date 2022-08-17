@@ -38,10 +38,17 @@ Using pip, you can specify install a specific version. `pip install chipscopy==2
 (venv) >python
 Python 3.8.8 (tags/v3.8.8:024d805, Feb 19 2021, 13:18:16) [MSC v.1928 64 bit (AMD64)] on win32
 Type "help", "copyright", "credits" or "license" for more information.
->>> import chipscopy
+    >>> import chipscopy
 >>> print(chipscopy.__version__)
 2021.1.1614310630
 ```
+
+**Q: Is there a policy regarding backward-compatibility in ChipScoPy?**
+
+**A:** Minor releases, for example within the same year (2022.1 and 2022.2) are expected to be backwards compatible. We highly recommend that the user
+employs the same version of ChipScoPy, cs_server, hw_server and the chipscopy examples! 
+
+Major releases 2022.2 -> 2023.1 may have some incompatibilities. 
 
 **Q: What does *"TCF channel terminated ConnectionRefusedError: [Errno 111] Connection refused"* mean ?**
 

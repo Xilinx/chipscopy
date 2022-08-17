@@ -350,7 +350,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
 
     """
     disable_core_scan = kwargs.get("disable_core_scan", False)
-    bypass_version_check = kwargs.get("bypass_version_check", True)
+    bypass_version_check = kwargs.get("bypass_version_check", False)
     xvc_mm_server_url = kwargs.get("xvc_mm_server_url", None)
     cable_timeout = kwargs.get("cable_timeout", 4)
     use_legacy_scanner = kwargs.get("use_legacy_scanner", False)

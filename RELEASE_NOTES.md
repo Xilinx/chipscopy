@@ -8,7 +8,14 @@
 - Renamed chipscopy cli to "csutil"
 - Updated 3rd party library dependency versions
 - Enhanced Device class with new properties and error reporting 
-- Better identification and handling multiple devices in jtag chain
+- Better identification and handling of multiple devices in jtag chain
+  - Both ARM DAP and Versal top-level target are now returned consistent with xsdb
+  - Updated examples to match
+  - To select a specific target use:
+```
+    # Typical case - one device on one board 
+    device = session.devices.filter_by(family="versal").get()
+```
 - Allow delay for slower cables to identify jtag chains
 - Fix error handling when deploying examples due to read-only file system
 - More consistent to_json(), to_dict() methods for API classes
