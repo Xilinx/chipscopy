@@ -14,15 +14,15 @@ Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
 -------------------------------------------------------------------------------
 
-[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2022.1/overview.html)
+[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2022.2/overview.html)
 
 -------------------------------------------------------------------------------
 
-[System Requirements](https://xilinx.github.io/chipscopy/2022.1/system_requirements.html)
+[System Requirements](https://xilinx.github.io/chipscopy/2022.2/system_requirements.html)
 
 -------------------------------------------------------------------------------
 
-[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2022.1/chipscopy_installation.html)
+[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2022.2/chipscopy_installation.html)
 
 -------------------------------------------------------------------------------
 

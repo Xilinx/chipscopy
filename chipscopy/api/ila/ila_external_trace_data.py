@@ -13,7 +13,12 @@
 # limitations under the License.
 from dataclasses import dataclass, field
 from typing import Optional, List
+
 from chipscopy.shared.ila_data import TraceInfo
+
+
+EXTERNAL_TRACE_DATA_ALIGNMENT_BIT_COUNT = 512
+"""Raw data samples are aligned on 64 byte boundaries."""
 
 
 @dataclass
@@ -46,8 +51,9 @@ def decode_external_data(
     # MSB, in record, is record type. 1 for gap record. 0 got regular sample record.
     # Returns: (data formatted for ILAWaveform.data, "data has gap flag")
 
-    # todo: if no gaps, skip gap column.
-    in_sample_byte_size = ((trace_info.data_width + 1 + 511) // 512) * 64
+    abc = EXTERNAL_TRACE_DATA_ALIGNMENT_BIT_COUNT
+    align_byte_count = abc // 8
+    in_sample_byte_size = ((trace_info.data_width + 1 + abc - 1) // abc) * align_byte_count
     out_sample_byte_size = (trace_info.data_width + 1 + 7) // 8
     gap_block_size = 1024 if trace_info.window_size >= 1024 else trace_info.window_size
     gap_sample = None
@@ -61,13 +67,7 @@ def decode_external_data(
             signed=False,
         )
 
-        if trace_info.window_size <= 1024:
-            # All samples lost
-            count = trace_info.window_size
-        else:
-            # blocks of 1024 lost.
-            count = read_count * 1024
-        return count
+        return read_count * 1024
 
     def unroll_window(dw: DataWindow) -> None:
         # The resulting unroll-ed window has the last record at the end of the window buffer.

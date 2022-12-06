@@ -144,6 +144,7 @@ Scans
    :maxdepth: 1
 
    /ibert/eye_scan.rst
+   /ibert/yk_scan.rst
 
 
 Appendix & Reference

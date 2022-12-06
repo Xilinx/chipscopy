@@ -97,7 +97,7 @@ def process_raw_data(
 def align_samples_to_1_byte(
     data: bytearray, sample_bit_count: int, sample_count: int, raw_data_sample_align_bit_count: int
 ) -> bytearray:
-    """ Get rid of extra sample align bytes. Get rid of bytes beyond last sample."""
+    """Get rid of extra sample align bytes. Get rid of bytes beyond last sample."""
     in_sample_byte_count = calculate_data_sample_byte_count(
         raw_data_sample_align_bit_count, sample_bit_count
     )

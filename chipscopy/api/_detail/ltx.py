@@ -95,7 +95,7 @@ class Ltx:
         return self._debug_hub_addresses
 
     def get_core(self, core_type: CoreType, uuid: str = "") -> Optional[LtxCore]:
-        """ Return first matching core, or None."""
+        """Return first matching core, or None."""
         cores = [core for core in self._cores[core_type] if core.uuid.upper() == uuid.upper()]
         return cores[0] if cores else None
 

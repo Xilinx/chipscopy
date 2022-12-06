@@ -42,7 +42,7 @@ from chipscopy.client.core import CoreParent
 from chipscopy.client.ddrmc_client import DDRMCClient
 from chipscopy.client.hbm_client import HBMClient
 from chipscopy.client.ibert_core_client import IBERTCoreClient
-from chipscopy.client.jtagdevice import JtagDevice, JtagCable, JtagRegister
+from chipscopy.client.jtagdevice import JtagDevice, JtagCable
 from chipscopy.client.noc_perfmon_core_client import NoCPerfMonCoreClient
 from chipscopy.client.sysmon_core_client import SysMonCoreClient
 from chipscopy.dm import chipscope, request, Node
@@ -332,6 +332,7 @@ class Device(ABC):
         *,
         skip_reset: bool = False,
         show_progress_bar: bool = True,
+        progress: request.ProgressFutureCallback = None,
         done: request.DoneFutureCallback = None,
     ):
         """Program the device with a given programming file (bit or pdi).
@@ -340,6 +341,7 @@ class Device(ABC):
             programming_file: PDI file path
             skip_reset: False = Do not reset device prior to program
             show_progress_bar: False if the progress bar doesn't need to be shown
+            progress: Optional progress callback
             done: Optional async future callback
         """
         raise NotImplementedError
@@ -454,6 +456,7 @@ class GenericDevice(Device):
         *,
         skip_reset: bool = False,
         show_progress_bar: bool = True,
+        progress: request.ProgressFutureCallback = None,
         done: request.DoneFutureCallback = None,
     ):
         raise FeatureNotAvailableError
@@ -613,9 +616,10 @@ class FpgaDevice(Device, ABC):
         *,
         skip_reset: bool = False,
         show_progress_bar: bool = True,
+        progress: request.ProgressFutureCallback = None,
         done: request.DoneFutureCallback = None,
     ):
-        program_future = request.CsFutureSync(done)
+        program_future = request.CsFutureSync(done=done, progress=progress)
 
         if isinstance(programming_file, str):
             programming_file = Path(programming_file)
@@ -627,23 +631,29 @@ class FpgaDevice(Device, ABC):
 
         printer(f"Programming device with: {str(programming_file.resolve())}\n", level="info")
 
-        progress = PercentProgressBar()
-        progress.add_task(
-            description="Device program progress",
-            status=PercentProgressBar.Status.STARTING,
-            visible=show_progress_bar,
-        )
-
-        def progress_update(future):
-            progress.update(
-                completed=future.progress * 100, status=PercentProgressBar.Status.IN_PROGRESS
+        if show_progress_bar:
+            progress_ = PercentProgressBar()
+            progress_.add_task(
+                description="Device program progress",
+                status=PercentProgressBar.Status.STARTING,
+                visible=show_progress_bar,
             )
 
+        def progress_update(future):
+            if program_future:
+                program_future.set_progress(future.progress)
+
+            if show_progress_bar:
+                progress_.update(
+                    completed=future.progress * 100, status=PercentProgressBar.Status.IN_PROGRESS
+                )
+
         def done_programming(future):
-            if future.error is not None:
-                progress.update(status=PercentProgressBar.Status.ABORTED)
-            else:
-                progress.update(completed=100, status=PercentProgressBar.Status.DONE)
+            if show_progress_bar:
+                if future.error is not None:
+                    progress_.update(status=PercentProgressBar.Status.ABORTED)
+                else:
+                    progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
 
             self.programming_error = future.error
             self.programming_done = True

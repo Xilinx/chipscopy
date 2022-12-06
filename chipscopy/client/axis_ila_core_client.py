@@ -612,6 +612,7 @@ class ILATriggerCondition(enum.Enum):
         NOR
         NAND
         IMMEDIATELY
+        TRIGGER_STATE_MACHINE
     """
 
     OR = 0
@@ -619,6 +620,7 @@ class ILATriggerCondition(enum.Enum):
     NOR = 2
     NAND = 3
     IMMEDIATELY = 4
+    TRIGGER_STATE_MACHINE = 5
 
 
 class ILATriggerMode(enum.Enum):

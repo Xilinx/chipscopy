@@ -25,11 +25,13 @@ MEMORY_MODEL_MILA_DDR = "memory_model_mila_ddr"
 DDRMC_MAIN = "ddrmc_main"
 DDRMC_NOC = "ddrmc_noc"
 DDRMC_UB = "ddrmc_ub"
+DDRMC_CRYPTO = "ddrmc_crypto"
 
 DDRMC_MAIN_INDEX = 0
 DDRMC_NOC_INDEX = 1
 DDRMC_UB_INDEX = 2
-DDRMC_DOMAIN_COUNT = 3
+DDRMC_CRYPTO_INDEX = 3
+DDRMC_DOMAIN_COUNT = 4
 
 # Service name.
 NAME = "DDRMC"

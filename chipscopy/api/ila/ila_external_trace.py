@@ -14,10 +14,14 @@
 from dataclasses import dataclass
 from pprint import pformat
 from types import MethodType
+from typing import ClassVar
 
 from chipscopy.api import dataclass_fields, filter_props
 from chipscopy.api.ila import ILA, ILAWaveform
-from chipscopy.api.ila.ila_external_trace_data import decode_external_data
+from chipscopy.api.ila.ila_external_trace_data import (
+    decode_external_data,
+    EXTERNAL_TRACE_DATA_ALIGNMENT_BIT_COUNT,
+)
 from chipscopy.shared.ila_util import round_up_to_power_of_two, round_down_to_power_of_two
 from chipscopy.shared.ila_data import (
     TraceInfo,
@@ -62,6 +66,8 @@ class ILAExternalTrace:
     """Trace Block selected source index."""
     current_stream_input_name: str = ""
     """Trace Block selected source ILA cell name. Empty string means "Not reserved"."""
+    _TRANSFER_OFFSET: ClassVar[int] = 64
+    """Transfer unit adjust."""
 
     def __str__(self) -> str:
         p_dict = {
@@ -95,18 +101,16 @@ class ILAExternalTrace:
                 f"to 0x{needed_byte_count:X} bytes."
             )
 
-        one_sample_size = calculate_external_trace_byte_count(ila, 1, 1)
         ila.tcf_trace_block.acquire(
             ila.external_trace_stream_index,
             ila.name,
             self.address,
-            needed_byte_count - one_sample_size,
+            needed_byte_count - ILAExternalTrace._TRANSFER_OFFSET,
         )
         refresh_external_trace_status(ila)
 
 
 def _arm2(self):
-    # Todo: move functionality to ILA class, when external trace is no longer hidden.
     self.external_trace._arm(self)
 
 
@@ -210,7 +214,7 @@ def upload_external_waveform(ila: ILA, show_progress_bar: bool = True) -> bool:
     gap_at_end_sample_count = tb_last_sample["last_gap_count"]
     if trigger_info["last_gap_count_valid"]:
         gap_at_end_sample_count += trigger_info["last_gap_count"]
-    # Only one window supported for now. todo: Future add support for multiple windows.
+    # Only one window supported for now.
     beyond_last_record_adress = tb_last_sample["last_record_address"] - ila.external_trace.address
     trace, has_gaps = decode_external_data(
         data, trace_info, [beyond_last_record_adress], [gap_at_end_sample_count]
@@ -296,5 +300,3 @@ def calculate_external_trace_one_window_sample_count(
 
 
 ILA_EXTERNAL_TRACE_MEMBERS = dataclass_fields(ILAExternalTrace)
-
-EXTERNAL_TRACE_DATA_ALIGNMENT_BIT_COUNT = 512

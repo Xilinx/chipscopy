@@ -367,6 +367,13 @@ class EyeScan:
                 # If scan is done create the plot
                 if self.status == EYE_SCAN_DONE:
                     self.plot = EyeScanPlot(self)
+                else:
+                    assert self.status == EYE_SCAN_ABORTED
+                    printer(
+                        f"Reason for aborting {self.name} - "
+                        f"{scan_report.get('Error', 'Not available')}",
+                        level="info",
+                    )
 
                 # If user has registered done callback function call it.
                 if callable(self.done_callback):

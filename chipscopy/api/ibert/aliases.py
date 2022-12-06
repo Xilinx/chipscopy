@@ -56,6 +56,9 @@ PLL_LOCK_STATUS: Final[str] = "PLL Lock Status"
 # Applicable to TX only
 # ----------------------------------------------------------------
 TX_RESET: Final[str] = "Reset"
+TX_PRE_CURSOR: Final[str] = "Pre Cursor"
+TX_POST_CURSOR: Final[str] = "Post Cursor"
+TX_DIFFERENTIAL_SWING: Final[str] = "Differential Control"
 
 # ----------------------------------------------------------------
 # Applicable to RX only
@@ -70,6 +73,8 @@ RX_LINE_RATE: Final[str] = "Line Rate"
 RX_SUPPORTED_SCANS: Final[str] = "Supported scans"
 RX_RECEIVED_BIT_COUNT: Final[str] = "Received Bit Count"
 RX_PATTERN_CHECKER_ERROR_COUNT: Final[str] = "Pattern Checker Error Count"
+RX_TERMINATION_VOLTAGE: Final[str] = "Termination Voltage"
+RX_COMMON_MODE: Final[str] = "Common Mode"
 
 # ----------------------
 # Microblaze

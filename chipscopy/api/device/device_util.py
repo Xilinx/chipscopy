@@ -1,11 +1,11 @@
 # Copyright 2022 Xilinx, Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -96,9 +96,12 @@ def copy_node_props(node: Node, props: dict) -> dict:
         if type(v) == int or type(v) == str or type(v) == bool:
             transformed_props[str(k)] = v
         elif type(v) == JtagRegister:
-            node.update_regs(reg_names=(f"{k}",), force=True, done=None)
-            int_val = int.from_bytes(v.data, byteorder="little", signed=False)
-            transformed_props[str(k)] = int_val
+            try:
+                node.update_regs(reg_names=(f"{k}",), force=True, done=None)
+                int_val = int.from_bytes(v.data, byteorder="little", signed=False)
+                transformed_props[str(k)] = int_val
+            except Exception:  # noqa
+                pass
         elif type(v) == dict:
             transformed_props[str(k)] = copy_node_props(node, v)
         elif type(v) == bytearray:
@@ -226,10 +229,13 @@ def get_node_dna(node: Node) -> Optional[int]:
             if node.props["regs"].get("dna", None):
                 # Below refreshes the dna data and makes it available
                 # node.status('dna')
-                node.update_regs(reg_names=("dna",), force=True, done=None)
-                jtag_register = node.props["regs"]["dna"]
-                bytearray_data = jtag_register.data
-                dna_128 = int.from_bytes(bytearray_data, byteorder="little", signed=False)
+                try:
+                    node.update_regs(reg_names=("dna",), force=True, done=None)
+                    jtag_register = node.props["regs"]["dna"]
+                    bytearray_data = jtag_register.data
+                    dna_128 = int.from_bytes(bytearray_data, byteorder="little", signed=False)
+                except Exception:  # noqa
+                    dna_128 = None
     else:
         # Other contexts store dna as a 4-tuple of 32-bit ints
         dna_4_tuple = node.props.get("DeviceDNA", None)

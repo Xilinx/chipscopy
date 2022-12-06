@@ -5,7 +5,7 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright 2021 Xilinx, Inc.<br><br>
+# Copyright 2022 Xilinx, Inc.<br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
@@ -50,7 +50,6 @@ import sys
 import os
 from chipscopy import get_design_files
 from chipscopy import create_session, report_versions
-from chipscopy.api.ila import get_waveform_data, export_waveform
 
 # %%
 # Make sure to start the hw_server and cs_server prior to running.
@@ -201,8 +200,7 @@ print("ILA is running - looking for trigger")
 ila.wait_till_done(max_wait_minutes=0.1)
 upload_successful = ila.upload()
 if upload_successful:
-    samples = get_waveform_data(
-        ila.waveform,
+    samples = ila.waveform.get_data(
         ["chipscopy_i/counters/slow_counter_0_Q_1"],
         include_trigger=True,
         include_sample_info=True,
@@ -258,8 +256,7 @@ print("VIO changed up/down counter to count down")
 ila.wait_till_done(max_wait_minutes=0.1)
 upload_successful = ila.upload()
 if upload_successful:
-    samples = get_waveform_data(
-        ila.waveform,
+    samples = ila.waveform.get_data(
         ["chipscopy_i/counters/slow_counter_0_Q_1"],
         include_trigger=True,
         include_sample_info=True,
@@ -284,4 +281,4 @@ else:
 
 # %%
 if upload_successful:
-    export_waveform(ila.waveform, "VCD", sys.stdout)
+    ila.waveform.export_waveform("VCD", sys.stdout)

@@ -15,7 +15,7 @@
 import enum
 from dataclasses import dataclass
 from pprint import pformat
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 
 from chipscopy.client.axis_ila_core_client import (
     ILATriggerCondition as TCF_ILATriggerCondition,
@@ -159,8 +159,6 @@ class ILAControl:
     """Global boolean operator, for trigger probes. See :class:`ILATriggerCondition`"""
     trigger_position: int
     """Trigger position index, within data window."""
-    trigger_state_machine: str
-    """Trigger State Machine, as a string."""
     window_count: int
     """Number of data windows."""
     window_size: int
@@ -195,6 +193,14 @@ class ILAStatus:
     """Number of windows, as requested when ILA was armed."""
     trigger_position_requested: int
     """Trigger position, as requested when ILA was armed."""
+    tsm_counters: List[int]
+    """Trigger State Machine counter values."""
+    tsm_flags: List[bool]
+    """Trigger State Machine flag values."""
+    tsm_state: int
+    """Trigger State Machine current state index."""
+    tsm_state_name: str = ""
+    """Trigger State Machine current state name."""
 
     def __str__(self) -> str:
         return pformat(self.__dict__, 2)
@@ -204,24 +210,30 @@ ILA_STATUS_MEMBERS = dataclass_fields(ILAStatus)
 
 
 # ILAStatus functions
-def post_process_status(props: {}) -> None:
+def post_process_status(props: {}, state_names: Optional[Dict[int, str]] = None) -> None:
     props["capture_state"] = ILAState[props["capture_state"]]
     props["is_trigger_at_startup"] = props.get("is_tas", False)
     props["samples_requested"] = props.get("window_depth_readback")
     props["windows_requested"] = props.get("window_count_readback")
     props["trigger_position_requested"] = props.get("trigger_pos_readback")
+    props["tsm_counters"] = [
+        props.get(name, 0)
+        for name in ["tsm_counter0", "tsm_counter1", "tsm_counter2", "tsm_counter3"]
+    ]
+    if state_names:
+        props["tsm_state_name"] = state_names.get(props["tsm_state"], "")
 
 
-def tcf_props_to_status(props: {}) -> ILAStatus:
-    """ Make immutable ILAStatus instance from status dict."""
-    post_process_status(props)
+def tcf_props_to_status(props: {}, state_names: Optional[Dict[int, str]] = None) -> ILAStatus:
+    """Make immutable ILAStatus instance from status dict."""
+    post_process_status(props, state_names)
     return ILAStatus(**filter_props(props, ILA_STATUS_MEMBERS))
 
 
-def tcf_refresh_status(tcf_node) -> ILAStatus:
+def tcf_refresh_status(tcf_node, state_names: Optional[Dict[int, str]] = None) -> ILAStatus:
     """Read dynamic status."""
     props = tcf_node.refresh_property_group(["status"])
-    return tcf_props_to_status(props)
+    return tcf_props_to_status(props, state_names)
 
 
 # ILAControl functions
@@ -264,19 +276,13 @@ def control_from_tcf(props: {}) -> ILAControl:
     if props["capture_mode"] == TCF_ILACaptureMode.ALWAYS:
         cc["capture_condition"] = ILACaptureCondition.ALWAYS
 
-    # trigger_state_machine not yet supported.
-    cc["trigger_state_machine"] = ""
-
     prop_to_enum(cc, __enum_control)
     return ILAControl(**filter_props(cc, ILA_CONTROL_MEMBERS))
 
 
 def control_to_tcf(cc: ILAControl) -> Dict[str, Any]:
     # trigger condition
-    if cc.trigger_condition == ILATriggerCondition.TRIGGER_STATE_MACHINE:
-        tcf_t_condition = TCF_ILATriggerCondition.AND.name
-    else:
-        tcf_t_condition = cc.trigger_condition.name
+    tcf_t_condition = cc.trigger_condition.name
 
     # trigger mode
     if cc.trig_in_mode == ILATrigInMode.TRIG_IN_ONLY:
@@ -285,7 +291,7 @@ def control_to_tcf(cc: ILAControl) -> Dict[str, Any]:
         if cc.trig_in_mode == ILATrigInMode.TRIGGER_OR_TRIG_IN:
             tcf_t_mode = TCF_ILATriggerMode.ADVANCED_OR_TRIG_IN.name
         else:
-            tcf_t_mode = TCF_ILATriggerMode.ADVANCED.name
+            tcf_t_mode = TCF_ILATriggerMode.ADVANCED_ONLY.name
     elif cc.trig_in_mode == ILATrigInMode.TRIGGER_OR_TRIG_IN:
         tcf_t_mode = TCF_ILATriggerMode.BASIC_OR_TRIG_IN.name
     else:

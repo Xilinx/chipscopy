@@ -124,6 +124,12 @@ def bin_reversed_to_hex_values(bin_values: [str]) -> [str]:
     return [bin_reversed_to_hex(val) for val in bin_values]
 
 
+def hex_to_bin_str(hex_value: str, bit_length: int) -> str:
+    bin_val = "".join([__probe_value_hex_to_bin__[ch] for ch in hex_value.lower()])
+    start_index = len(bin_val) - bit_length
+    return bin_val[start_index:]
+
+
 def to_bin_str(val: Union[int, str], bit_width: int, enum_def: enum.EnumMeta = None) -> str:
     is_hex = is_hex_str(val, bit_width)
 
@@ -139,9 +145,7 @@ def to_bin_str(val: Union[int, str], bit_width: int, enum_def: enum.EnumMeta = N
         # Both positive and negative integers, with '0'/'1' fill.
         return f"{val:0{bit_width}b}" if val >= 0 else bin((1 << bit_width) + val)[2:]
     if is_hex:
-        bin_val = "".join([__probe_value_hex_to_bin__[ch] for ch in val[2:].lower()])
-        start_index = len(bin_val) - bit_width
-        return bin_val[start_index:]
+        return hex_to_bin_str(val[2:], bit_width)
     else:
         # Already a binary string.
         return val

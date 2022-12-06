@@ -133,8 +133,8 @@ vio_by_instance_name = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_
 the_vio_uuid = vio_by_instance_name.uuid
 
 # Grab the same VIO by UUID and ensure it is the same core
-vio_by_uuid = device.vio_cores.get(uuid = the_vio_uuid)
-assert(vio_by_instance_name == vio_by_uuid)
+vio_by_uuid = device.vio_cores.get(uuid=the_vio_uuid)
+assert vio_by_instance_name == vio_by_uuid
 
 print("vio_by_instance_name and vio_by_uuid match!")
 
@@ -158,15 +158,11 @@ for probe in vio.probes:
 vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 
 # Writing values to a logical named probes:
-vio.write_probes({
-    "chipscopy_i/counters/slow_counter_0_L": 0x12345678
-})
+vio.write_probes({"chipscopy_i/counters/slow_counter_0_L": 0x12345678})
 print("Wrote 0x12345678 to chipscopy_i/counters/slow_counter_0_L")
 
 # Writing the value to the same VIO port:
-vio.write_ports({
-    "probe_out4": 0x11223344
-})
+vio.write_ports({"probe_out4": 0x11223344})
 print("Wrote 0x11223344 to probe_out4")
 
 # %%
@@ -217,7 +213,7 @@ print(f"VIO core {vio} reset to initial values.")
 
 import pprint
 
-pp = pprint.PrettyPrinter(indent = 4)
+pp = pprint.PrettyPrinter(indent=4)
 
 vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 

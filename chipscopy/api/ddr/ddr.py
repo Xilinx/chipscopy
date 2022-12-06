@@ -1267,6 +1267,9 @@ class DDR(DebugCore["DDRMCClient"]):
                 printer(err_msg)
                 return
 
+        mc_name = "MC" + str(self.mc_index)
+        mc_name += "(" + self.mc_loc + ")"
+
         if "Read" in scan_mode:
             clocks = ["rise_", "fall_"]
             clock_defs = {
@@ -1283,12 +1286,14 @@ class DDR(DebugCore["DDRMCClient"]):
                     + str(unit_index)
                     + "<br>"
                 )
+                margin_mode += mc_name + " - "
                 margin_mode += mem_type + " - Rank" + str(rank_num)
                 fig = self.__draw_eye_scan_graph(data_list, name_base, margin_mode, df_vref)
                 figure_list.append(fig)
         else:
             name_base = "write_" + unit_val
             margin_mode = scan_mode + " - " + unit_mode.capitalize() + str(unit_index) + "<br>"
+            margin_mode += mc_name + " - "
             margin_mode += mem_type + " - Rank" + str(rank_num)
             fig = self.__draw_eye_scan_graph(data_list, name_base, margin_mode, df_vref)
             figure_list.append(fig)

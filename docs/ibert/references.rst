@@ -31,3 +31,4 @@ References
    references/scan.rst
    references/scan_params.rst
    references/scan_plotter.rst
+   references/yk_scan.rst

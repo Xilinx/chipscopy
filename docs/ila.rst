@@ -103,6 +103,10 @@ ILA.run_basic_trigger
 """""""""""""""""""""
 .. automethod:: chipscopy.api.ila.ila.ILA.run_basic_trigger
 
+ILA.run_advanced_trigger
+""""""""""""""""""""""""
+.. automethod:: chipscopy.api.ila.ila.ILA.run_advanced_trigger
+
 ILA.wait_till_done
 """"""""""""""""""
 .. automethod:: chipscopy.api.ila.ila.ILA.wait_till_done
@@ -115,20 +119,24 @@ ILA.upload
 """"""""""""""""""""""""""""
 .. automethod:: chipscopy.api.ila.ila.ILA.upload
 
-export_waveform
-"""""""""""""""
-.. automethod:: chipscopy.api.ila.export_waveform
+ILAWaveform.export_waveform
+"""""""""""""""""""""""""""
+.. automethod:: chipscopy.api.ila.ILAWaveform.export_waveform
 
-get_waveform_data
-"""""""""""""""""
-.. automethod:: chipscopy.api.ila.get_waveform_data
+ILAWaveform.get_data
+""""""""""""""""""""
+.. automethod:: chipscopy.api.ila.ILAWaveform.get_data
 
-get_waveform_probe_data
-"""""""""""""""""""""""
-.. automethod:: chipscopy.api.ila.get_waveform_probe_data
+ILAWaveform.get_probe_data
+""""""""""""""""""""""""""
+.. automethod:: chipscopy.api.ila.ILAWaveform.get_probe_data
 
-ILA Data Defintions
-+++++++++++++++++++
+ILAWaveform.import_waveform
+"""""""""""""""""""""""""""
+.. autofunction:: chipscopy.api.ila.ILAWaveform.import_waveform
+
+ILA Data Definitions
+++++++++++++++++++++
 
 Constant to indicate trigger position in the middle of the waveform window.
 
@@ -243,10 +251,8 @@ ILATrigOutMode (enum)
 ILAWaveform
 """""""""""
 .. autoclass:: chipscopy.api.ila.ILAWaveform
-    :members:
 
 ILAWaveformProbe
 """"""""""""""""
 .. autoclass:: chipscopy.api.ila.ILAWaveformProbe
     :members:
-

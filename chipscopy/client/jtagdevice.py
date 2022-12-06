@@ -512,7 +512,7 @@ class JtagCable(JtagNode):
         self.get_option("timing_class")
 
     def set_freq(self, freq: int, done: request.DoneCallback = None):
-        """ Sets the frequency of the cable """
+        """Sets the frequency of the cable"""
         proc = self.manager.channel.getRemoteService(JtagService)
         assert proc
         ret_token = None

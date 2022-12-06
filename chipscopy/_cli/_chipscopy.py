@@ -15,8 +15,10 @@
 import re
 from collections import deque
 from operator import itemgetter
+import argparse
+import sys
+import os
 
-import click
 from more_itertools import one
 
 import chipscopy
@@ -84,60 +86,17 @@ class NodeVisitorBase:
 
 
 # GLOBALS FOR COMMAND LINE MODULE
-_hw_url: str
-_cs_url: str
+_hw_url: str = os.getenv("HW_SERVER_URL", "localhost:3121")
+_cs_url: str = os.getenv("CS_SERVER_URL", "localhost:3042")
 
 
 def display_banner():
     print(f"\n******** Xilinx ChipScoPy v{chipscopy.__version__}")
-    print("  ****** Copyright 2021 Xilinx, Inc. All Rights Reserved.\n")
-    print(
-        "WARNING: Commands and options are subject to change."
-    )
+    print("  ****** Copyright 2021-2022 Xilinx, Inc. All Rights Reserved.\n")
+    print("WARNING: Commands and options are subject to change.")
     print()
 
 
-@click.group()
-@click.version_option(version=chipscopy.__version__, message="%(version)s")
-@click.option(
-    "--hw_url",
-    envvar="HW_SERVER_URL",
-    default="localhost:3121",
-    metavar="<url>",
-    show_default=True,
-    help="hardware server url",
-)
-@click.option(
-    "--cs_url",
-    envvar="CS_SERVER_URL",
-    default="None",
-    metavar="<url>",
-    show_default=True,
-    help="chipscope server url",
-)
-@click.option(
-    "--no-banner",
-    is_flag=True,
-    default=False,
-    help="Turn off banner",
-)
-def _chipscopy(hw_url, cs_url, no_banner):
-    global _hw_url, _cs_url
-    if len(hw_url) == 0 or hw_url.lower() == "none":
-        _hw_url = None
-    else:
-        _hw_url = hw_url
-    if len(cs_url) == 0 or cs_url.lower() == "none":
-        _cs_url = None
-    else:
-        _cs_url = cs_url
-    if no_banner is False:
-        display_banner()
-
-
-@click.command()
-@click.option("--devices", is_flag=True, help="Report all devices")
-@click.option("--servers", is_flag=True, help="Report all server version information")
 def report(devices, servers):
     session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
     if devices:
@@ -153,9 +112,7 @@ def _create_path(device_count, hier_name):
     return f"/device/{device_count}/{hier_name}"
 
 
-@click.command()
-@click.argument("file")
-def info(file):
+def info(match_string):
     session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
     device_list = session.devices
     device_count = 0
@@ -166,7 +123,7 @@ def info(file):
                 "server_type", "view_name", "name", "context", "hier_name"
             )(node_dict)
             path = _create_path(device_count, hier_name)
-            if path == file or context == file:
+            if path == match_string or context == match_string:
                 print("target      :", path)
                 print("server_type :", server_type)
                 print("view        :", view_name)
@@ -178,10 +135,7 @@ def info(file):
             device_count += 1
 
 
-@click.command()
-@click.option("-l", "--long", is_flag=True, help="long listing including device contexts")
-# @click.option("--force-detection", is_flag=True, help="Force debug core detection prior to list")
-def ls(long):
+def ls(is_long):
     session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
     device_list = session.devices
     device_count = 0
@@ -192,39 +146,13 @@ def ls(long):
                 "server_type", "view_name", "name", "context", "hier_name"
             )(node_dict)
             path = _create_path(device_count, hier_name)
-            if long:
+            if is_long:
                 print(f"{path:60s} {context}")
             else:
                 print(f"{path}")
         device_count += 1
 
 
-@click.command()
-@click.option("--dna", default=None, required=False, help="find device to program with dna")
-@click.option("--cable_context", default=None, required=False, help="jtag cable context")
-@click.option("--context", default=None, required=False, help="device context")
-@click.option("--part", default=None, required=False, help="part name")
-@click.option("--family", default=None, required=False, help="family name")
-@click.option(
-    "--jtag_index", default=None, required=False, help="jtag index in chain (starting index is 0)"
-)
-@click.option(
-    "--device_index",
-    "--device-index",
-    default=None,
-    required=False,
-    help="device index device list (starting index is 0)",
-)
-@click.option(
-    "--skip-reset",
-    default=False,
-    required=False,
-    is_flag=True,
-    help="Skip the reset before programming device",
-)
-@click.option("--list", "list_", is_flag=True, help="list devices")
-@click.option("--program-log", is_flag=True, help="download programming log")
-@click.argument("file", required=False)
 def program(
     file,
     dna,
@@ -313,7 +241,6 @@ def program(
         print()
 
 
-@click.command(name="json_devices")
 def json_devices():
     # click command string above is required because of underscore in name
     session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
@@ -416,14 +343,6 @@ class TreePrinter(NodeVisitorBase):
         self._indent_prefix.pop()
 
 
-@click.command()
-@click.option(
-    "--view", default=None, required=False, help="Use the specified view for walking nodes"
-)
-@click.option(
-    "--show-context", is_flag=True, default=False, required=False, help="Print node context"
-)
-@click.option("--glyph-type", default="std", required=False, help="Tree glyph type")
 def tree(view, show_context, glyph_type):
     if view:
         views = [view]
@@ -436,18 +355,129 @@ def tree(view, show_context, glyph_type):
         print()
 
 
-def _add_commands():
-    _chipscopy.add_command(tree)
-    _chipscopy.add_command(program)
-    _chipscopy.add_command(ls)
-    _chipscopy.add_command(info)
-    _chipscopy.add_command(json_devices)
-    _chipscopy.add_command(report)
+def parse_args(cmdline_args):
+    global _hw_url, _cs_url
+
+    parser = argparse.ArgumentParser(description="ChipScoPy CLI")
+    parser.add_argument("-v", "--version", action="store_true", help="Display version")
+    parser.add_argument("--no-banner", action="store_true", help="Turn off banner text")
+    parser.add_argument("--hw_url", type=str, help="Hardware Server URL")
+    parser.add_argument("--cs_url", type=str, help="ChipScope Server URL")
+
+    base_parser = argparse.ArgumentParser(add_help=False)
+
+    subparsers = parser.add_subparsers(help="sub-command", dest="subcommand")
+
+    report_parser = subparsers.add_parser("report", help="report help", parents=[base_parser])
+    report_parser.add_argument("--devices", action="store_true", help="Report devices")
+    report_parser.add_argument("--servers", action="store_true", help="Report server versions")
+
+    info_parser = subparsers.add_parser("info", help="info help", parents=[base_parser])
+    info_parser.add_argument("context", type=str)
+
+    ls_parser = subparsers.add_parser("ls", help="ls help", parents=[base_parser])
+    ls_parser.add_argument(
+        "--long",
+        "-l",
+        required=False,
+        action="store_true",
+        help="long listing including device contexts",
+    )
+
+    program_parser = subparsers.add_parser("program", help="program help", parents=[base_parser])
+    program_parser.add_argument("file", type=str, nargs="?")
+    program_parser.add_argument("--dna", type=str, help="find device to program with dna")
+    program_parser.add_argument("--cable-context", type=str, help="jtag cable context")
+    program_parser.add_argument("--context", type=str, help="device context")
+    program_parser.add_argument("--part", type=str, help="part name")
+    program_parser.add_argument("--family", type=str, help="family name")
+    program_parser.add_argument(
+        "--jtag-index", type=int, help="jtag index in chain (starting index is 0)"
+    )
+    program_parser.add_argument(
+        "--device-index", type=int, help="device index device list (starting index is 0)"
+    )
+    program_parser.add_argument(
+        "--skip-reset", action="store_true", help="Skip the reset before programming device"
+    )
+    program_parser.add_argument("--list", action="store_true", help="list devices", dest="list_")
+    program_parser.add_argument(
+        "--program-log", action="store_true", help="download programming log"
+    )
+
+    json_parser = subparsers.add_parser(
+        "json-devices", help="json-devices help", parents=[base_parser]
+    )
+
+    tree_parser = subparsers.add_parser("tree", help="tree help", parents=[base_parser])
+    tree_parser.add_argument(
+        "--view",
+        type=str,
+        default=None,
+        required=False,
+        choices=["jtag", "memory", "debugcore", "chipscope"],
+        help="Use the specified view for walking nodes",
+    )
+    tree_parser.add_argument(
+        "--show-context", required=False, action="store_true", help="Print additional node context"
+    )
+    tree_parser.add_argument(
+        "--glyph-type",
+        type=str,
+        default="std",
+        required=False,
+        choices=["std", "alt", "space", "none"],
+        help="Tree glyph style",
+    )
+
+    args = parser.parse_args(cmdline_args)
+
+    if args.version:
+        print(chipscopy.__version__)
+        sys.exit(0)
+
+    if not args.no_banner:
+        display_banner()
+
+    if args.hw_url:
+        _hw_url = args.hw_url
+
+    if args.cs_url:
+        _cs_url = args.cs_url
+
+    if args.subcommand == "report":
+        report(devices=args.devices, servers=args.servers)
+
+    elif args.subcommand == "info":
+        info(args.context)
+
+    elif args.subcommand == "ls":
+        ls(args.long)
+
+    elif args.subcommand == "program":
+        program(
+            args.file,
+            args.dna,
+            args.cable_context,
+            args.context,
+            args.part,
+            args.family,
+            args.jtag_index,
+            args.device_index,
+            args.skip_reset,
+            args.list_,
+            args.program_log,
+        )
+
+    elif args.subcommand == "json-devices":
+        json_devices()
+
+    elif args.subcommand == "tree":
+        tree(view=args.view, show_context=args.show_context, glyph_type=args.glyph_type)
 
 
 def main():  # pragma: no cover
-    _add_commands()
-    _chipscopy()
+    parse_args(sys.argv[1:])
 
 
 if __name__ == "__main__":  # pragma: no cover

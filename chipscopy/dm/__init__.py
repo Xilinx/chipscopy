@@ -273,10 +273,10 @@ class Node(object):
 
 
 class NodeAutoUpgrader(object):
-    """ Used by a Manager of a view to auto upgrade a node to specific classes """
+    """Used by a Manager of a view to auto upgrade a node to specific classes"""
 
     def __call__(self, node: Node, **kwargs):
-        """ Called by view manager """
+        """Called by view manager"""
         return node
 
 

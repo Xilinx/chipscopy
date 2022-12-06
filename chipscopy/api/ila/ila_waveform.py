@@ -13,14 +13,18 @@
 # limitations under the License.
 import enum
 import json
+import sys
+import zipfile
 from abc import abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, asdict
 from datetime import datetime
-from io import TextIOBase
+from io import TextIOBase, BytesIO, StringIO
 from itertools import islice
 from pprint import pformat
 from typing import Generator, Dict, List, Union, Optional
+from zipfile import ZipFile
+
 from chipscopy.api.ila import ILABitRange, ILAProbeRadix
 import chipscopy
 from chipscopy.shared.ila_util import bin_reversed_to_hex_values
@@ -107,7 +111,7 @@ class ILAWaveform:
         return len(self.trigger_position)
 
     def set_sample(self, sample_index: int, sample: bytearray) -> None:
-        """ Sample may have more bytes than waveform samples have. Erase any gap bit."""
+        """Sample may have more bytes than waveform samples have. Erase any gap bit."""
         sample_byte_count = self.bytes_per_sample()
         copy_byte_count = min(sample_byte_count, len(sample))
         start = sample_byte_count * sample_index
@@ -117,6 +121,224 @@ class ILAWaveform:
         gap_byte_index, gap_bit_index = divmod(self.width, 8)
         mask = 0xFF ^ (1 << gap_bit_index)
         self.data[start + gap_byte_index] &= mask
+
+    def export_waveform(
+        self,
+        export_format: str = "CSV",
+        fh_or_filepath: Union[TextIOBase, BytesIO, str] = sys.stdout,
+        probe_names: Optional[List[str]] = None,
+        start_window_idx: int = 0,
+        window_count: Optional[int] = None,
+        start_sample_idx: int = 0,
+        sample_count: Optional[int] = None,
+        include_gap: bool = False,
+        compression: int = zipfile.ZIP_DEFLATED,
+        compresslevel=None,
+    ) -> None:
+        """
+        Export a waveform in CSV, VCD or CITF format, to a file or in-memory buffer.
+        By default, all samples for all probes are exported, but it is
+        possible to select which probes and window/sample ranges for CSV/VCD formats.
+
+        ================================ ======================== ==============================
+        Argument/Parameter               Type                     Supported by Export Format
+        ================================ ======================== ==============================
+        export_format                    str                      CSV, VCD, CITF
+        fh_or_filepath                   TextIOBase               CSV, VCD
+        fh_or_filepath                   BytesIO                            CITF
+        fh_or_filepath                   str                      CSV, VCD, CITF
+        probe_names                      List[str]                CSV, VCD
+        start_window                     int                      CSV, VCD
+        start_sample_idx                 int                      CSV, VCD
+        sample_count                     int                      CSV, VCD
+        include_gap                      bool                     CSV, VCD
+        include_gap                      bool                     CSV, VCD
+        compression                      int                                CITF
+        compresslevel                    int                                CITF
+        ================================ ======================== ==============================
+
+
+        Args:
+            export_format (str):  Alternatives for output format.
+
+                - 'CSV' - Comma Separated Value Format. Default.
+                - 'VCD' - Value Change Dump.
+                - 'CITF' - ChipScoPy ILA Trace Format. Export of a whole ILA waveform to a compressed archive.
+
+
+            fh_or_filepath (TextIOBase, BytesIO, str): File object handle or filepath string. Default is `sys.stdout`.
+                If the argument is a file object, closing and opening the file is the responsibility of the caller.
+                If argument is a string, the file will be opened and closed by the function.
+
+            probe_names (Optional[List[str]]): List of probe names. Default 'None' means export all probes.
+            start_window_idx (int): Starting window index. Default is first window.
+            window_count (Optional[int]): Number of windows to export. Default is all windows.
+            start_sample_idx (int): Starting sample within window. Default is first sample.
+            sample_count (Optional[int]): Number of samples per window. Default is all samples.
+            include_gap (bool):  Default is False. Include the pseudo "gap" 1-bit probe in the result.
+            compression: Default is zipfile.ZIP_DEFLATED. See zipfile.ZipFile at https://docs.python.org/.
+            compresslevel: See zipfile.ZipFile at https://docs.python.org/.
+
+        """
+
+        if export_format.upper() == "CITF":
+            export_compressed_waveform(self, fh_or_filepath, compression, compresslevel)
+            return
+
+        if export_format.upper() != "VCD" and export_format.upper() != "CSV":
+            raise ValueError(
+                f'ILAWaveform.export() called with unknown export_format:"{export_format}"'
+                "Supported export formats are VCD, CSV and CITF."
+            )
+
+        if isinstance(fh_or_filepath, str):
+            with open(fh_or_filepath, "w", buffering=16384) as fh:
+                export_waveform_to_stream(
+                    self,
+                    export_format,
+                    fh,
+                    probe_names,
+                    start_window_idx,
+                    window_count,
+                    start_sample_idx,
+                    sample_count,
+                    include_gap,
+                )
+            return
+        else:
+            export_waveform_to_stream(
+                self,
+                export_format,
+                fh_or_filepath,
+                probe_names,
+                start_window_idx,
+                window_count,
+                start_sample_idx,
+                sample_count,
+                include_gap,
+            )
+
+    @staticmethod
+    def import_waveform(
+        import_format: str,
+        filepath_or_buffer: Union[str, BytesIO],
+    ):
+        """
+        Create an ILAWaveform object from a ChipScoPy ILA Trace Format (CITF) compressed archive.
+        The archive must contain these two files:
+
+            - waveform.cfg, waveform and probe meta information.
+            - waveform.data, binary waveform samples.
+
+        Args:
+            import_format (str): Format "CITF" is supported.
+            filepath_or_buffer (str, BytesIO): Filepath string or in-memory buffer.
+
+        Returns (ILAWaveform):
+            Waveform object.
+
+        """
+        if import_format.upper() != "CITF":
+            raise (
+                f'import_waveform command called with import_format "{import_format}".'
+                f' Only "CITF" format is supported.'
+            )
+
+        return import_compressed_waveform(filepath_or_buffer)
+
+    def get_data(
+        self,
+        probe_names: Optional[List[str]] = None,
+        start_window_idx: int = 0,
+        window_count: Optional[int] = None,
+        start_sample_idx: int = 0,
+        sample_count: Optional[int] = None,
+        include_trigger: bool = False,
+        include_sample_info: bool = False,
+        include_gap: bool = False,
+    ) -> Dict[str, List[int]]:
+        """
+        Get probe waveform data as a list of int values for each probe.
+        By default, all samples for all probes are included in return data,
+        but it is possible to select which probes and window/sample ranges.
+
+        Args:
+            probe_names (Optional[List[str]]): List of probe names. Default 'None' means export all probes.
+            start_window_idx (int): Starting window index. Default is first window.
+            window_count (Optional[int]): Number of windows to export. Default is all windows.
+            start_sample_idx (int): Starting sample within window. Default is first sample.
+            sample_count (Optional[int]): Number of samples per window. Default is all samples.
+            include_trigger (bool): Include pseudo probe with name '__TRIGGER' in result. Default is False.
+            include_sample_info (bool):  Default is False. Include the following pseudo probes in result:
+
+              - '__SAMPLE_INDEX' - Sample index
+              - '__WINDOW_INDEX' - Window index.
+              - '__WINDOW_SAMPLE_INDEX' - Sample index within window.
+
+            include_gap (bool):  Default is False. If True, include the pseudo probe '__GAP' in result. \
+                                 Value 1 for a gap sample. Value 0 for a regular sample.
+
+
+        Returns (Dict[str, List[int]]):
+            Ordered dict, in order:
+              - '__TRIGGER', if argument **include_trigger** is True
+              - '__SAMPLE_INDEX', if argument **include_sample_info** is True
+              - '__WINDOW_INDEX', if argument **include_sample_info** is True
+              - '__WINDOW_SAMPLE_INDEX', if argument **include_sample_info** is True
+              - '__GAP', if argument **include_gap** is True
+              - probe values in order of argument **probe_names**.
+
+            Dict key: probe name. Dict value is list of int values, for a probe.
+
+        """
+        return get_waveform_data_values(
+            self,
+            probe_names,
+            start_window_idx,
+            window_count,
+            start_sample_idx,
+            sample_count,
+            include_trigger,
+            include_sample_info,
+            include_gap,
+        )
+
+    def get_probe_data(
+        self,
+        probe_name: str,
+        start_window_idx: int = 0,
+        window_count: Optional[int] = None,
+        start_sample_idx: int = 0,
+        sample_count: Optional[int] = None,
+    ) -> List[int]:
+        """
+        Get waveform data as a list of int values for one probe.
+        By default, all samples for the probe are returned,
+        It is possible to select window range and sample range.
+
+        Args:
+            probe_name (str): probe name.
+            start_window_idx (int): Starting window index. Default is first window.
+            window_count (Optional[int]): Number of windows to export. Default is all windows.
+            start_sample_idx (int): Starting sample within window. Default is first sample.
+            sample_count (Optional[int]): Number of samples per window. Default is all samples.
+
+        Returns (List[int]):
+            List probe values.
+
+        """
+        res_dict = get_waveform_data_values(
+            self,
+            [probe_name],
+            start_window_idx,
+            window_count,
+            start_sample_idx,
+            sample_count,
+            include_trigger=False,
+            include_sample_info=False,
+            include_gap=False,
+        )
+        return res_dict[probe_name]
 
     def __str__(self) -> str:
         items = {key: val for key, val in self.__dict__.items() if key != "data"}
@@ -446,7 +668,9 @@ def export_waveform_to_stream(
     elif export_format.upper() == "VCD":
         waveform_writer = WaveformWriterVCD(stream_handle, probes, include_gap)
     else:
-        raise ValueError(f'export_waveform() called with non-supported format "{export_format}"')
+        raise ValueError(
+            f'ILAWaveform.export_waveform() called with non-supported format "{export_format}"'
+        )
 
     _export_waveform(
         waveform,
@@ -477,7 +701,7 @@ def get_waveform_data_values(
         if not all(probes):
             bad_names = set(probe_names) - set(waveform.probes.keys())
             raise KeyError(
-                f"get_waveform_probe_data() called with non-existent probe name(s):\n  {bad_names}"
+                f"ILAWaveform.get_data() called with non-existent probe name(s):\n  {bad_names}"
             )
     else:
         probes = waveform.probes.values()
@@ -493,7 +717,7 @@ def get_waveform_data_values(
         window_count,
         start_sample_idx,
         sample_count,
-        "get_waveform_data()",
+        "ILAWaveform.get_data()",
     )
 
     return waveform_writer.get_result()
@@ -585,3 +809,120 @@ def _export_waveform(
                 sample_idx + 1 == waveform.sample_count,
                 sample_is_gap,
             )
+
+
+WAVEFORM_ARCHIVE_VERSION = 1
+
+
+class Waveform2StrEncoder(json.JSONEncoder):
+    @staticmethod
+    def encode_map_range(obj):
+        # Convert ILABitRange tuple to a dict, e.g. [{"index": 0, "length": 2}]
+        if isinstance(obj, list):
+            return [elem._asdict() if isinstance(elem, ILABitRange) else elem for elem in obj]
+        return obj
+
+    def default(self, obj):
+        if isinstance(obj, ILAWaveformProbe):
+            return {
+                key: Waveform2StrEncoder.encode_map_range(val) for key, val in asdict(obj).items()
+            }
+        if isinstance(obj, ILABitRange):
+            return obj._asdict()
+        if isinstance(obj, ILAProbeRadix):
+            return str(obj.name)
+        if isinstance(obj, enum.EnumMeta):
+            # Encode as 2-item list: [<name>, <dict of enum value items>]
+            items = {item.name: item.value for item in list(obj)}
+            return [obj.__name__, items]
+        return json.JSONEncoder.default(self, obj)
+
+
+def export_compressed_waveform(
+    waveform: ILAWaveform,
+    filepath_or_buffer: Union[str, BytesIO],
+    compression: int,
+    compresslevel: int,
+) -> None:
+
+    waveform_dict = {
+        "version": 1,
+        "gap_index": waveform.gap_index,
+        "probes": waveform.probes,
+        "sample_count": waveform.sample_count,
+        "trigger_position": waveform.trigger_position,
+        "window_size": waveform.window_size,
+        "width": waveform.width,
+    }
+
+    json_str = json.dumps(waveform_dict, cls=Waveform2StrEncoder, indent=4)
+
+    with ZipFile(
+        filepath_or_buffer,
+        mode="w",
+        allowZip64=True,
+        compression=compression,
+        compresslevel=compresslevel,
+    ) as zf:
+        zf.writestr("waveform.cfg", json_str)
+        zf.writestr("waveform.data", waveform.data)
+
+
+def decode_waveform_from_json(json_str: str, in_data: bytearray) -> ILAWaveform:
+    def decode_map_range(in_range: List[Dict[str, int]]) -> List[ILABitRange]:
+        res = [ILABitRange(**dd) for dd in in_range]
+        return res
+
+    def decode_probe(probe_name: str, in_dict: Dict) -> ILAWaveformProbe:
+        pd = {}
+        for key, value in in_dict.items():
+            try:
+                if key == "map_range":
+                    pd[key] = decode_map_range(value)
+                elif key == "display_radix":
+                    pd[key] = ILAProbeRadix[value]
+                elif key == "enum_def":
+                    if isinstance(value, list) and len(value) == 2:
+                        pd[key] = enum.Enum(value[0], value[1])
+                    else:
+                        pd[key] = None
+                else:
+                    pd[key] = value
+            except Exception as ex:
+                raise ValueError(f'Error reading ILA waveform probe "{probe_name}"') from ex
+
+        res = ILAWaveformProbe(**pd)
+        return res
+
+    def decode_probes(in_probes: Dict) -> Dict[str, ILAWaveformProbe]:
+        res = {name: decode_probe(name, probe_dict) for name, probe_dict in in_probes.items()}
+        return res
+
+    # Decode waveform json string.
+    json_dict = json.load(StringIO(json_str))
+    wd = dict()
+    wd["data"] = in_data
+    wd["probes"] = decode_probes(json_dict.get("probes", dict()))
+    for key, value in json_dict.items():
+        if key in ["data", "probes"]:
+            # data and probes, handled above.
+            pass
+        elif key == "version":
+            if value > WAVEFORM_ARCHIVE_VERSION:
+                raise ValueError(
+                    f'waveform archive version "{value}" is not supported.'
+                    f'Only versions "<={WAVEFORM_ARCHIVE_VERSION}" are supported.'
+                )
+        else:
+            wd[key] = value
+
+    return ILAWaveform(**wd)
+
+
+def import_compressed_waveform(filepath_or_buffer: Union[str, BytesIO]) -> ILAWaveform:
+    with ZipFile(filepath_or_buffer, mode="r") as zf:
+        json_str = zf.read("waveform.cfg").decode()
+        data = bytearray(zf.read("waveform.data"))
+
+    waveform = decode_waveform_from_json(json_str, data)
+    return waveform

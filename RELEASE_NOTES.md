@@ -58,7 +58,7 @@ ChipScoPy is a Xilinx Python API to communicate with Xilinx devices and debug co
 - ChipScoPy is not an interactive replacement for XSDB or Vivado Lab. It is a Python library.
 - The ChipScoPy API version should match the hw_server and cs_server major/minor version.
 - Only Xilinx Versal debug feature support is available in 2021.1. 
-- PDI/LTX examples are included for the VCK190 and VMK180 production boards - others can be built from CED sources.
+- PDI/LTX examples are included for the VCK190, VMK180, and VPK120 production boards - others can be built from CED sources.
 - No Advanced ILA FSM trigger support in the ILA API.
 - The code base is quickly evolving as we add features and address issues.
 - Only Xilinx FPGA Devices are returned in the device list.

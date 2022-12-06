@@ -1,4 +1,4 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright 2022 Xilinx, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,9 @@ import sys
 from io import TextIOBase
 from dataclasses import dataclass, asdict
 from pprint import pformat
-from typing import Dict, List, Union, Optional
+from typing import Dict, List, Union, Optional, Tuple
 
+from chipscopy.api.ila.tsm.ila_tsm_reader import ILATsmReader
 from chipscopy.dm import request
 from chipscopy.shared.ila_util import to_bin_str
 from chipscopy.api._detail.ltx import Ltx, LtxStreamRef
@@ -54,14 +55,11 @@ from chipscopy.api.ila.ila_probe import (
     verify_probe_enum_def,
 )
 from chipscopy.api.ila.ila_waveform import (
-    export_waveform_to_stream,
-    get_waveform_data_values,
     tcf_get_waveform_data,
 )
 from chipscopy.api._detail.debug_core import DebugCore
 from chipscopy import CoreType
-from chipscopy.shared.ila_data import RAW_DATA_SAMPLE_ALIGN_BIT_COUNT_32
-from chipscopy.utils import Enum2StrEncoder
+from chipscopy.utils import Enum2StrEncoder, deprecated_api
 
 
 @dataclass(frozen=True)
@@ -84,6 +82,8 @@ class ILAStaticInfo:
     """Total number of probe compare match units."""
     port_count: int
     """Number of probe ports."""
+    tsm_counter_widths: List[int]
+    """Bit widths of Advanced Trigger Counters."""
 
     def __str__(self) -> str:
         return pformat(self.__dict__, 2)
@@ -130,7 +130,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         self._probe_to_port_seqs: {str, [ILABitRange]} = init_vals["probe_to_port_seqs"]
         self._device = device
         self._downstreams_refs: [LtxStreamRef] = ltx.get_downstream_refs(self.name) if ltx else []
-        self.raw_sample_align_bit_count = RAW_DATA_SAMPLE_ALIGN_BIT_COUNT_32
+        self._tsm_state_names: Dict[int, str] = {}
 
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "uuid": self.core_info.uuid}
@@ -165,7 +165,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
 
     def refresh_status(self) -> None:
         """Read dynamic status and store in attribute 'ila.status'."""
-        self.status = tcf_refresh_status(self.core_tcf_node)
+        self.status = tcf_refresh_status(self.core_tcf_node, self._tsm_state_names)
 
     def run_trigger_immediately(
         self,
@@ -186,7 +186,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
                 Default value: :attr:`.ILATrigOutMode.DISABLED`
 
         """
-        self.run_basic_trigger(
+        self._run_trigger(
             trigger_position,
             window_count,
             window_size,
@@ -206,6 +206,110 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         capture_condition: ILACaptureCondition = ILACaptureCondition.ALWAYS,
         trig_in: ILATrigInMode = ILATrigInMode.DISABLED,
         trig_out: ILATrigOutMode = ILATrigOutMode.DISABLED,
+    ) -> None:
+        """Trigger using probe compare values.
+
+        Args:
+            trigger_position (int): denotes the middle of the window. Range [0..window_size-1].
+                Default value: :attr:`~.ILA_TRIGGER_POSITION_HALF`
+            window_count (int): Number of windows to capture. Default value: 1.
+            window_size (int): Number of samples per window. Must be a power-of-two value.
+                Default value: :attr:`.ILA_WINDOW_SIZE_MAX`
+            trigger_condition (ILATriggerCondition): Trigger condition global boolean operator.
+            capture_condition (ILACaptureCondition): Capture condition global boolean operator, to filter samples.
+            trig_in (ILATrigInMode): Usage of TRIG-IN Port. Default value: :attr:`.ILATrigInMode.DISABLED`
+            trig_out (ILATrigOutMode): Specify what drives TRIG-OUT port. Default value: :attr:`ILATrigOutMode.DISABLED`
+
+        """
+        self._run_trigger(
+            trigger_position,
+            window_count,
+            window_size,
+            trigger_condition,
+            capture_condition,
+            trig_in,
+            trig_out,
+        )
+
+    def run_advanced_trigger(
+        self,
+        trigger_state_machine: Union[TextIOBase, str],
+        trigger_position: int = ILA_TRIGGER_POSITION_HALF,
+        window_count: int = 1,
+        window_size: int = ILA_WINDOW_SIZE_MAX,
+        capture_condition: ILACaptureCondition = ILACaptureCondition.ALWAYS,
+        trig_in: ILATrigInMode = ILATrigInMode.DISABLED,
+        trig_out: ILATrigOutMode = ILATrigOutMode.DISABLED,
+        compile_only: bool = False,
+    ) -> Tuple[int, str]:
+        """Trigger based on Trigger State Machine (TSM) description.
+
+        Args:
+            trigger_state_machine (Union[TextIOBase, str]): File object handle or filepath string, for TSM text.
+            trigger_position (int): denotes the middle of the window. Range [0..window_size-1].
+                Default value: :attr:`~.ILA_TRIGGER_POSITION_HALF`
+            window_count (int): Number of windows to capture. Default value: 1.
+            window_size (int): Number of samples per window. Must be a power-of-two value.
+                Default value: :attr:`.ILA_WINDOW_SIZE_MAX`
+            capture_condition (ILACaptureCondition): Capture condition global boolean operator, to filter samples.
+            trig_in (ILATrigInMode): Usage of TRIG-IN Port. Default value: :attr:`.ILATrigInMode.DISABLED`
+            trig_out (ILATrigOutMode): Specify what drives TRIG-OUT port. Default value: :attr:`ILATrigOutMode.DISABLED`
+            compile_only (bool): Default is False. If True, it will only parse the TSM file for correctness.
+
+        Returns (Tuple[int, str):
+            If compile_only is True, error-count and an error message string will be returned.
+            If compile_only is False, any error in the TSM file will result in an exception with error messages.
+
+        """
+        if not self.static_info.has_advanced_trigger:
+            raise ValueError(f'ILA {self.name} does not support "Advanced Trigger Mode".')
+
+        self._tsm_state_names = {}
+        probe_enums = {
+            name: pval.enum_def for name, pval in self.probe_values.items() if pval.enum_def
+        }
+        reader = ILATsmReader(
+            trigger_state_machine,
+            self.ports,
+            self.probes,
+            probe_enums,
+            self.static_info.tsm_counter_widths,
+            self.static_info.has_capture_control,
+        )
+        error_count, error_msg, tsm_regs = reader.parse()
+        if compile_only:
+            return error_count, error_msg
+
+        if error_count:
+            error_count_str = "1 error" if error_count == 1 else f"{error_count} errors"
+            raise ValueError(
+                f"Advanced trigger state machine description has {error_count_str}\n\n" + error_msg
+            )
+
+        self._tsm_state_names = reader.get_state_names()
+
+        self._run_trigger(
+            trigger_position,
+            window_count,
+            window_size,
+            ILATriggerCondition.TRIGGER_STATE_MACHINE,
+            capture_condition,
+            trig_in,
+            trig_out,
+            tsm_registers=tsm_regs,
+        )
+        return 0, ""
+
+    def _run_trigger(
+        self,
+        trigger_position: int = ILA_TRIGGER_POSITION_HALF,
+        window_count: int = 1,
+        window_size: int = ILA_WINDOW_SIZE_MAX,
+        trigger_condition: ILATriggerCondition = ILATriggerCondition.AND,
+        capture_condition: ILACaptureCondition = ILACaptureCondition.ALWAYS,
+        trig_in: ILATrigInMode = ILATrigInMode.DISABLED,
+        trig_out: ILATrigOutMode = ILATrigOutMode.DISABLED,
+        tsm_registers: Dict = None,
     ) -> None:
         """Trigger using probe compare values.
 
@@ -231,7 +335,10 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             res = {}
             for name, p_values in probe_values.items():
                 vals = {}
-                if p_values.trigger_value:
+                if (
+                    p_values.trigger_value
+                    and trigger_condition != ILATriggerCondition.TRIGGER_STATE_MACHINE
+                ):
                     vals["trigger_value"] = to_tcf_trigger_value(
                         p_values.trigger_value, p_values.bit_width, p_values.enum_def
                     )
@@ -251,7 +358,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         )
         t_pos = w_size // 2 if trigger_position == ILA_TRIGGER_POSITION_HALF else trigger_position
         control: ILAControl = ILAControl(
-            capture_condition, trig_in, trig_out, trigger_condition, t_pos, "", window_count, w_size
+            capture_condition, trig_in, trig_out, trigger_condition, t_pos, window_count, w_size
         )
 
         self.control = control
@@ -263,24 +370,18 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
 
         control_props = control_to_tcf(self.control)
         self.core_tcf_node.set_property(control_props)
+        if tsm_registers:
+            self.core_tcf_node.set_property({"__mu_tc_mapping": tsm_registers})
+        self._arm()
+        self.waveform = None
+
+    def _arm(self):
         self._arm2()
         self.core_tcf_node.arm()
-        self.waveform = None
 
     def _arm2(self):
         # NYI feature
         pass
-
-    def run_advanced_trigger(
-        self,
-        trigger_state_machine: str,
-        trigger_position: int = ILA_TRIGGER_POSITION_HALF,
-        window_count: int = 1,
-        window_size: int = ILA_WINDOW_SIZE_MAX,
-        capture_condition: ILACaptureCondition = ILACaptureCondition.ALWAYS,
-        trig_out: ILATrigOutMode = ILATrigOutMode.DISABLED,
-    ) -> None:
-        """ NYI"""
 
     def upload(self) -> bool:
         """
@@ -391,13 +492,16 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             if future._result:
                 self.status = future._result
 
+        def status_process(props: {}) -> ILAStatus:
+            return tcf_props_to_status(props, self._tsm_state_names)
+
         if progress and not done:
             raise ValueError(
                 "Function ila.monitor_status(): Cannot specify *progress* argument when argument *done* is None."
             )
 
         future = self.core_tcf_node.future(done=done, final=final, progress=progress)
-        return future.monitor_status(tcf_props_to_status, max_wait_minutes=max_wait_minutes)
+        return future.monitor_status(status_process, max_wait_minutes=max_wait_minutes)
 
     def reset_probes(
         self, reset_trigger_values: bool = True, reset_capture_values: bool = True
@@ -518,8 +622,9 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         ila_name = f"hw_ila_{ILA.__next_ila_number}"
         ILA.__next_ila_number += 1
         props = tcf_ila.get_property_group(["static_info", "status", "control"])
-        post_process_status(props)
+        post_process_status(props, None)
 
+        props["tsm_counter_widths"] = [props["tsm_counter_width" + str(idx)] for idx in range(4)]
         static_info = ILAStaticInfo(**filter_props(props, ILA_STATIC_INFO_MEMBERS))
         status = ILAStatus(**filter_props(props, ILA_STATUS_MEMBERS))
         control = control_from_tcf(props)
@@ -539,7 +644,6 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
                 enum_defs.get(probe.name, None),
             )
             for probe in probes.values()
-            if probe.is_trigger
         }
         if cell_name:
             ila_name = cell_name
@@ -607,6 +711,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         }
 
 
+@deprecated_api(release="2023.2", replacement="<waveform object>.export_waveform()")
 def export_waveform(
     waveform: ILAWaveform,
     export_format: str = "CSV",
@@ -618,60 +723,22 @@ def export_waveform(
     sample_count: Optional[int] = None,
     include_gap: bool = False,
 ) -> None:
-    """
-    Export a waveform in VCD or CSV format, to a file. By default, all samples for all probes are exported, but it is
-    possible to select which probes and window/sample ranges.
-
-    Args:
-        waveform (ILAWaveform): waveform data.
-        export_format (str):  Alternatives for output format.
-
-            - 'CSV' - Comma Separated Value Format. Default.
-            - 'VCD' - Value Change Dump.
-
-        fh_or_filepath (TextIOBase, str): File object handle or filepath string. Default is `sys.stdout`. If the
-            argument is a file object, closing and opening the file is the responsibility of the caller.
-            If argument is a string, the file will be opened and closed by the function.
-
-        probe_names (Optional[List[str]]): List of probe names. Default 'None' means export all probes.
-        start_window_idx (int): Starting window index. Default is first window.
-        window_count (Optional[int]): Number of windows to export. Default is all windows.
-        start_sample_idx (int): Starting sample within window. Default is first sample.
-        sample_count (Optional[int]): Number of samples per window. Default is all samples.
-        include_gap (bool):  Default is False. Include the pseudo "gap" 1-bit probe in the result.
-
-    """
+    """Deprecated function. Use <waveform object>.export_waveform()"""
     if not waveform:
         raise TypeError('Function export_waveform() called with argument "waveform" set to "None".')
-
-    if isinstance(fh_or_filepath, str):
-        with open(fh_or_filepath, "w", buffering=16384) as fh:
-            export_waveform_to_stream(
-                waveform,
-                export_format,
-                fh,
-                probe_names,
-                start_window_idx,
-                window_count,
-                start_sample_idx,
-                sample_count,
-                include_gap,
-            )
-        return
-    else:
-        export_waveform_to_stream(
-            waveform,
-            export_format,
-            fh_or_filepath,
-            probe_names,
-            start_window_idx,
-            window_count,
-            start_sample_idx,
-            sample_count,
-            include_gap,
-        )
+    waveform.export_waveform(
+        export_format,
+        fh_or_filepath,
+        probe_names,
+        start_window_idx,
+        window_count,
+        start_sample_idx,
+        sample_count,
+        include_gap,
+    )
 
 
+@deprecated_api(release="2023.2", replacement="<waveform object>.get_data()")
 def get_waveform_data(
     waveform: ILAWaveform,
     probe_names: Optional[List[str]] = None,
@@ -684,47 +751,14 @@ def get_waveform_data(
     include_gap: bool = False,
 ) -> Dict[str, List[int]]:
     """
-    Get probe waveform data as a list of int values for each probe.
-    By default all samples for all probes are included in return data,
-    but it is possible to select which probes and window/sample ranges.
-
-    Args:
-        waveform (ILAWaveform): waveform data.
-        probe_names (Optional[List[str]]): List of probe names. Default 'None' means export all probes.
-        start_window_idx (int): Starting window index. Default is first window.
-        window_count (Optional[int]): Number of windows to export. Default is all windows.
-        start_sample_idx (int): Starting sample within window. Default is first sample.
-        sample_count (Optional[int]): Number of samples per window. Default is all samples.
-        include_trigger (bool): Include pseudo probe with name '__TRIGGER' in result. Default is False.
-        include_sample_info (bool):  Default is False. Include the following pseudo probes in result:
-
-          - '__SAMPLE_INDEX' - Sample index
-          - '__WINDOW_INDEX' - Window index.
-          - '__WINDOW_SAMPLE_INDEX' - Sample index within window.
-
-        include_gap (bool):  Default is False. If True, include the pseudo probe '__GAP' in result. \
-                             Value 1 for a gap sample. Value 0 for a regular sample.
-
-
-    Returns (Dict[str, List[int]]):
-        Ordered dict, in order:
-          - '__TRIGGER', if argument **include_trigger** is True
-          - '__SAMPLE_INDEX', if argument **include_sample_info** is True
-          - '__WINDOW_INDEX', if argument **include_sample_info** is True
-          - '__WINDOW_SAMPLE_INDEX', if argument **include_sample_info** is True
-          - '__GAP', if argument **include_gap** is True
-          - probe values in order of argument **probe_names**.
-
-        Dict key: probe name. Dict value is list of int values, for a probe.
-
+    Deprecated function. Use <waveform object>.get_data()
     """
     if not waveform:
         raise TypeError(
             'Function get_waveform_data() called with argument "waveform" set to "None".'
         )
 
-    return get_waveform_data_values(
-        waveform,
+    return waveform.get_data(
         probe_names,
         start_window_idx,
         window_count,
@@ -736,6 +770,7 @@ def get_waveform_data(
     )
 
 
+@deprecated_api(release="2023.2", replacement="<waveform object>.get_probe_data()")
 def get_waveform_probe_data(
     waveform: ILAWaveform,
     probe_name: str,
@@ -745,36 +780,17 @@ def get_waveform_probe_data(
     sample_count: Optional[int] = None,
 ) -> List[int]:
     """
-    Get waveform data as a list of int values for one probe.
-    By default all samples for the probe are returned,
-    It is possible to select window range and sample range.
-
-    Args:
-        waveform (ILAWaveform): waveform data.
-        probe_name (str): probe name.
-        start_window_idx (int): Starting window index. Default is first window.
-        window_count (Optional[int]): Number of windows to export. Default is all windows.
-        start_sample_idx (int): Starting sample within window. Default is first sample.
-        sample_count (Optional[int]): Number of samples per window. Default is all samples.
-
-    Returns (List[int]):
-        List probe values.
-
+    Deprecated function. Use <waveform object>.get_probe_data()
     """
     if not waveform:
         raise TypeError(
             'Function get_waveform_probe_data() called with argument "waveform" set to "None".'
         )
 
-    res_dict = get_waveform_data_values(
-        waveform,
-        [probe_name],
+    return waveform.get_probe_data(
+        probe_name,
         start_window_idx,
         window_count,
         start_sample_idx,
         sample_count,
-        include_trigger=False,
-        include_sample_info=False,
-        include_gap=False,
     )
-    return res_dict[probe_name]

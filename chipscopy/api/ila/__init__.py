@@ -1,4 +1,4 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright 2022 Xilinx, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,6 +40,10 @@ from chipscopy.api.ila.ila_waveform import ILAWaveform, ILAWaveformProbe
 from chipscopy.api.ila.ila import (
     ILA,
     ILAStaticInfo,
+)
+
+from chipscopy.api.ila.ila import (
+    # Deprecated. Obsolete in 2023.2 release. Use ILAWaveform member functions.
     export_waveform,
     get_waveform_data,
     get_waveform_probe_data,

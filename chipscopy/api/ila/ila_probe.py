@@ -14,7 +14,7 @@
 
 import enum
 from dataclasses import dataclass
-from typing import NamedTuple, Any, Optional
+from typing import NamedTuple, Any, Optional, List
 
 from chipscopy.api import CoreType, dataclass_fields, filter_props
 from chipscopy.api._detail.ltx import Ltx, LtxCore, LtxProbe
@@ -82,10 +82,10 @@ class ILAPort:
     """Port is used for triggering."""
     is_data: bool
     """Port is used for capturing data."""
-    match_unit_count: int
-    """Number of compare match units, available to the port."""
     match_unit_type: ILAMatchUnitType
     """Type of match unit."""
+    match_units: List[int]
+    """List of match unit indices."""
 
 
 ILA_PORT_MEMBERS = dataclass_fields(ILAPort)
@@ -236,7 +236,7 @@ def ports_from_tcf_props(props) -> [ILAPort]:
     for p_index, p in enumerate(props["ports"]):
         port_info = filter_props(p, ILA_PORT_MEMBERS)
         port_info["index"] = p_index
-        port_info["match_unit_count"] = len(p["mus"])
+        port_info["match_units"] = p["mus"]
         port_type = p["port_type"]
         port_info["is_data"] = port_type & TCF_ILAPortType.IS_DATA != 0
         port_info["is_trigger"] = port_type & TCF_ILAPortType.IS_TRIGGER != 0
@@ -259,8 +259,6 @@ def verify_probe_value(value_list: [], is_trigger: bool, probe: ILAProbe, enum_d
     int values, enums, binary string and hex strings are supported for now.
     More verification is done by the cs_server.
 
-    Args:
-        enum_def ():
     """
 
     def is_valid_enum_str(number) -> bool:
@@ -340,7 +338,7 @@ def verify_probe_value(value_list: [], is_trigger: bool, probe: ILAProbe, enum_d
         elif is_hex_str(number, probe.bit_width):
             verify_one_hex_value(op, number)
         elif enum_def and is_valid_enum_str(number):
-            # is_valid_enum_str() will did the checking if it is an enum string for this probe.
+            # is_valid_enum_str() will do the checking if it is an enum string for this probe.
             pass
         elif isinstance(number, str):
             # binary value
@@ -383,7 +381,7 @@ def verify_probe_value(value_list: [], is_trigger: bool, probe: ILAProbe, enum_d
 def create_probes_from_ports_and_ltx(
     tcf_ila: TCF_AxisIlaCoreClient, ports: [ILAPort], ltx: Ltx, uuid: str
 ) -> ({}, {}, str, {}):
-    """ Returns:  probes, map_to_port_seqs, cell_name, probe enum defs"""
+    """Returns:  probes, map_to_port_seqs, cell_name, probe enum defs"""
 
     def process_one_tcf_probe(attrs: {str, Any}) -> {}:
         res = {
@@ -415,7 +413,6 @@ def create_probes_from_ports_and_ltx(
                 "map": f"port{probe.port_index}[{probe.port_msb_index}:{probe.port_lsb_index}]",
             }
             for probe in ltx.probes
-            if probe.probe_type != "DATA"
         ]
 
     def add_probe_bus_info(p_dicts: {}, ltx_probes: [LtxProbe]) -> None:

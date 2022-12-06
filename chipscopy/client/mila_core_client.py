@@ -230,7 +230,7 @@ def wave_one_probe_to_int(tdata: bytearray, sample_width: int, slice: [int]) -> 
 
 
 def wave_to_int(probe_defs: MILAProbeDefs, wave_dict: Dict) -> Dict:
-    """ Break up waveform by probe. Convert to list of int values per probe. """
+    """Break up waveform by probe. Convert to list of int values per probe."""
     tdata = wave_dict[PROP_TRACE_DATA]
     sample_width = wave_dict[PROP_TRACE_WIDTH]
     wave_ints = {
@@ -429,7 +429,7 @@ def display_waveform_in_jupyter(
     center_sample: int = 0,
     sample_count: int = 32,
 ) -> None:
-    """ Show wave json waveform in Jupytor notebock cell"""
+    """Show wave json waveform in Jupytor notebock cell"""
     import os
     import IPython
 

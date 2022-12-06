@@ -44,12 +44,18 @@ Supported Versal-Based Boards
 
 The example designs distributed with ChipScoPy are supported for these hardware boards:
 
+.. note::
+    Not all examples will be supported on all hardware platforms--due to differences in the silicon.
+
 - VCK190 (Versal AI Core Series Evaluation Board):
    - Versal VC1902 Device
    - `VCK190 product page <https://www.xilinx.com/products/boards-and-kits/vck190.html>`_
 - VMK180 (Versal Prime Series Evaluation Board):
    - Versal VM1802 Device
    - `VMK180 product page <https://www.xilinx.com/products/boards-and-kits/vmk180.html>`_
+- VPK120 (Versal Premium Series Evaluation Board):
+    - Versal VP1202 Device
+    - `VPK120 product page <https://www.xilinx.com/products/boards-and-kits/vpk120.html>`_
 
 
 User Designs
