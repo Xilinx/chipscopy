@@ -132,6 +132,16 @@ Activate the virtual environment. The location of the activate script is differe
 .. note:: Make sure to always activate the Python virtual environment before you use ChipScoPy.
 
 
+2.3: Update pip (if prompted)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some older installations of Python may warn that your pip version is out of date. In this case, update pip before instaling ChipScoPy.
+
+.. code-block:: shell
+
+    (venv) > python -m pip install --upgrade pip
+
+
 Step 3: Install ChipScoPy
 -------------------------
 

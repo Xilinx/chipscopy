@@ -8,6 +8,8 @@ ChipScoPy is an open-source project from Xilinx® that enables high-level contro
 Using a simple Python API, developers can control and communicate with ChipScope® debug IP such as the Integrated Logic
 Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
+ChipScoPy communicates with Versal devices. It does not work with older devices such as Ultrascale+ and 7-Series devices.
+
 -------------------------------------------------------------------------------
 
 ![](https://raw.githubusercontent.com/Xilinx/chipscopy/master/docs/images/chipscopy_overview.png)
@@ -27,6 +29,10 @@ Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 -------------------------------------------------------------------------------
 
 [ChipScoPy Examples](https://github.com/Xilinx/chipscopy/tree/master/chipscopy/examples)
+
+-------------------------------------------------------------------------------
+
+[FAQ](https://github.com/Xilinx/chipscopy/blob/master/FAQ.md)
 
 -------------------------------------------------------------------------------
 

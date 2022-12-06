@@ -35,10 +35,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2022.1 installed and running
-# - Xilinx cs_server 2022.1 installed and running
+# - Xilinx hw_server 2022.2 installed and running
+# - Xilinx cs_server 2022.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2022.1 installed
+# - ChipScoPy 2022.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -444,3 +444,5 @@ for trigger, sample_index, window_index, window_sample_index, value in zip(*samp
     print(
         f"Window:{window_index}  Window Sample:{window_sample_index}  {value:10}  0x{value:08X} {trigger}"
     )
+
+# %%

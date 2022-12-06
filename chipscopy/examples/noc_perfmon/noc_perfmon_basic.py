@@ -5,7 +5,7 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright 2021-2022 Xilinx, Inc.<br><br>
+# Copyright 2022 Xilinx, Inc.<br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
@@ -18,7 +18,7 @@
 #
 
 # %% [markdown]
-# # ChipScoPy SPTG Perfmon Example
+# # ChipScoPy NoC Perfmon Example
 #
 #
 # <img src="../img/api_overview.png" width="500" align="left">
@@ -51,7 +51,6 @@ from chipscopy.api.noc import (
     TC_BEW,
     TC_BER,
     NoCPerfMonNodeListener,
-    PerfTGController,
 )
 from chipscopy.api.noc.plotting_utils import MeasurementPlot
 from chipscopy import create_session, report_versions
@@ -108,7 +107,7 @@ versal_device.program(PROGRAMMING_FILE)
 # - The cs_server is initialized and ready for use
 
 # %%
-versal_device.discover_and_setup_cores(noc_scan=True, ltx_file=PROBES_FILE)
+versal_device.discover_and_setup_cores(noc_scan=True)
 print(f"Debug cores setup and ready for use.")
 
 # %% [markdown]
@@ -203,34 +202,6 @@ noc.configure_monitors(
 
 
 # %% [markdown]
-# ## 6 - Traffic Generator Configuration
-#
-# Release the traffic generator from reset.
-
-# %%
-vio_cores = versal_device.vio_cores
-for index, vio_core in enumerate(vio_cores):
-    print(f"\nVIO Core Index {index}")
-    print("NAME       :", vio_core.name)
-    print("UUID       :", vio_core.uuid)
-    print("PORT_NAMES :", vio_core.port_names)
-    print("PROBE_NAMES:", vio_core.probe_names)
-
-# tg_vio_bc = "sptg_axi_i"
-tg_vio_bc = "chipscopy_i/noc_tg_bc"
-tg_vio_name = f"{tg_vio_bc}/axis_vio_0"
-print(tg_vio_name)
-tg_vio = versal_device.vio_cores.get(name=tg_vio_name)
-
-tg_vio.reset_vio()
-tg_vio.write_probes(
-    {f"{tg_vio_bc}/noc_sim_trig_rst_n": 0x1, f"{tg_vio_bc}/noc_tg_tg_rst_n": 0x1}
-)  # clear nrst on trigger and tg
-
-first_tg_ba = 0x201_8000_0000
-tg = PerfTGController(first_tg_ba, versal_device, vio=tg_vio)
-
-# %% [markdown]
 # ## 7 - Create plotter and listener
 #
 # Attach both to running view
@@ -244,14 +215,8 @@ node_listener = NoCPerfMonNodeListener(
     record_to_file,
     extended_monitor_config=extended_monitor_config,
 )
+node_listener.change_logging_level('INFO')
 session.chipscope_view.add_node_listener(node_listener)
-
-plotter = MeasurementPlot(enable_list, mock=False, figsize=(10, 7.5), tg=tg)
-node_listener.link_plotter(plotter)
-
-# Build Plotting Graphs
-matplotlib.use("Qt5Agg")
-plotter.build_graphs()
 
 # %% [markdown]
 # ## 8 - Main Event Loop
@@ -265,16 +230,6 @@ loop_count = 0
 while True:
     session.chipscope_view.run_events()
     sleep(0.1)
-    plotter.fig.canvas.draw()
-    plotter.fig.canvas.flush_events()
-    if not plotter.alive:
-        break
     # Below will return on burst completion - uncomment if you want to try.
     # if all([x <= 0 for x in node_listener.num_samples.values()]):
     #     break
-
-# %%
-# Reset Traffic Generator
-# This allows for a hard block-level reset of the traffic generator.
-
-tg.block_reset()

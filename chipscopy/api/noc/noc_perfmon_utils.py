@@ -423,6 +423,7 @@ class NoCPerfMonNodeListener(NodeListener):
         super().__init__()
         # setup logging
         log.enable_domain([DOMAIN])
+        self.level = "WARNING"
         log.change_log_level("WARNING")
         # self.start_time = datetime.now()
         self.noc_elements = {}  # storage for the active monitors
@@ -498,6 +499,10 @@ class NoCPerfMonNodeListener(NodeListener):
     def link_plotter(self, plotter):
         self.plotter = plotter
         self.plotter.listener = self
+
+    def change_log_level(self, new_level):
+        self.level = new_level
+        log.change_log_level(self.level)
 
 
 class PerfTGController:

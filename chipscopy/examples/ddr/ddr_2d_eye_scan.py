@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.13.8
+#       jupytext_version: 1.10.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -19,7 +19,7 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright 2021 Xilinx, Inc.<br><br>
+# Copyright 2021-2022 Xilinx, Inc.<br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
@@ -44,11 +44,11 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2022.1 installed and running
-# - Xilinx cs_server 2022.1 installed and running
+# - Xilinx hw_server 2022.2 installed and running
+# - Xilinx cs_server 2022.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2022.1 installed
-# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
+# - ChipScoPy 2022.2 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
@@ -66,7 +66,7 @@ from chipscopy import create_session, delete_session, report_versions
 from chipscopy import get_design_files
 from ddr_scan_util import convert_vref_pct_to_code
 
-# %% pycharm={"is_executing": true}
+# %%
 # Make sure to start the hw_server and cs_server prior to running.
 # Specify locations of the running hw_server and cs_server below.
 # The default is localhost - but can be other locations on the network.
@@ -85,7 +85,7 @@ print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
 
-# %% pycharm={"is_executing": true}
+# %%
 # Which DDRMC target (0..3) for given ACAP
 DDR_INDEX = 0
 # Which Rank of the memory interface

@@ -100,6 +100,7 @@ report_versions(session)
 # %%
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
+#print(device)
 device.program(PDI_FILE)
 
 # %% [markdown]
@@ -143,7 +144,7 @@ if len(ibert_gtm.gt_groups) == 0:
 
 print(f"--> Enabled GT Groups - {ibert_gtm.gt_groups}")
 
-gt_group = ibert_gtm.gt_groups.filter_by(name="Quad_202")[0]
+gt_group = ibert_gtm.gt_groups.filter_by(name="Quad_204")[0]
 
 
 # %% [markdown]
@@ -161,7 +162,7 @@ def yk_scan_updates(obj):
             line.set_xdata(range(len(obj.scan_data[-1].slicer)))
             line.set_ydata(list(obj.scan_data[-1].slicer))
     else:
-        ax.plot(range(len(obj.scan_data[-1].slicer)), list(obj.scan_data[-1].slicer))
+        ax.scatter(range(len(obj.scan_data[-1].slicer)), list(obj.scan_data[-1].slicer), color='blue')
     
     if ax2.lines:
         for line2 in ax2.lines:
@@ -169,7 +170,7 @@ def yk_scan_updates(obj):
             line2.set_xdata(list(line2.get_xdata()) + list(range(len(line2.get_xdata()), len(line2.get_xdata()) + len(obj.scan_data[-1].slicer))))
             line2.set_ydata(list(line2.get_ydata()) + list(obj.scan_data[-1].slicer))
     else:
-        ax2.plot(range(len(obj.scan_data[-1].slicer)), list(obj.scan_data[-1].slicer))
+        ax2.scatter(range(len(obj.scan_data[-1].slicer)), list(obj.scan_data[-1].slicer), color='blue')
         
     if ax3.lines:
         for line3 in ax3.lines:
@@ -197,6 +198,9 @@ yk.updates_callback = yk_scan_updates
 # ## 8 - Run YK Scan
 #
 # Initialize the plots and start the YK Scan to begin updating the plots. 
+# YK Scan plot should contain three subplots, these plots should look something like:
+# ![yk_scan_example.png](./yk_scan_example.png)
+# Note: Depending on the hardware setup and external loopback connection, the plot might look different.
 
 # %%
 # %matplotlib notebook
@@ -208,12 +212,14 @@ ax.set_xlabel("ES Sample")
 ax.set_ylabel("Amplitude (%)")
 ax.set_xlim(0,2000)
 ax.set_ylim(0,100)
+ax.set_yticks(range(0, 100, 20))
 ax.set_title("Slicer eye")
 
 ax2.set_xlabel("Count")
 ax2.set_ylabel("Amplitude (%)")
 ax2.set_xlim(0,2000)
 ax2.set_ylim(0,100)
+ax2.set_yticks(range(0, 100, 20))
 ax2.set_title("Histogram")
 
 ax3.set_xlabel("SNR Sample")

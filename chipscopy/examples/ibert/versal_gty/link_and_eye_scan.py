@@ -20,7 +20,7 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright 2021 Xilinx, Inc.<br><br>
+# Copyright 2021-2022 Xilinx, Inc.<br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
@@ -50,10 +50,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2022.1 installed and running
-# - Xilinx cs_server 2022.1 installed and running
+# - Xilinx hw_server 2022.2 installed and running
+# - Xilinx cs_server 2022.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2022.1 installed
+# - ChipScoPy 2022.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 # - Optional - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/) (For the sweep example only).
@@ -65,7 +65,7 @@
 # - Required functions and classes are imported
 # - Paths to server(s) and files are set correctly
 
-# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
+# %% jupyter={"outputs_hidden": false}
 import os
 from more_itertools import one
 from itertools import product
@@ -111,7 +111,7 @@ print(f"PROGRAMMING_FILE: {PDI_FILE}")
 # - Session is initialized and connected to server(s)
 # - Versions are detected and reported to stdout
 
-# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
+# %% jupyter={"outputs_hidden": false}
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
 report_versions(session)
 
@@ -121,7 +121,7 @@ report_versions(session)
 # After this step,
 # - Device is programmed with the example programming file
 
-# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
+# %% jupyter={"outputs_hidden": false}
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
 device.program(PDI_FILE)
@@ -136,7 +136,7 @@ device.program(PDI_FILE)
 # - The cs_server is initialized and ready for use
 # - The first ibert found is used
 
-# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
+# %% jupyter={"outputs_hidden": false}
 device.discover_and_setup_cores(ibert_scan=True)
 print("--> Debug core discovery done")
 
@@ -158,7 +158,7 @@ print(f"GT Groups available - {[gt_group_obj.name for gt_group_obj in ibert.gt_g
 #
 # We also ensure that all the quads instantiated by the ChipScoPy CED design are found by the APIs
 
-# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
+# %% jupyter={"outputs_hidden": false}
 report_hierarchy(ibert)
 
 assert len(ibert.gt_groups) == 4
@@ -175,7 +175,7 @@ q105 = one(ibert.gt_groups.filter_by(name="Quad_105"))
 # - Quad 201 CH2 TX to Quad 201 CH2 RX
 # - Quad 105 CH3 TX to Quad 105 CH3 RX
 
-# %% pycharm={"name": "#%%\n"}
+# %%
 links = create_links(
     txs=[q205.gts[0].tx, q204.gts[1].tx, q201.gts[2].tx, q105.gts[3].tx],
     rxs=[q205.gts[0].rx, q204.gts[1].rx, q201.gts[2].rx, q105.gts[3].rx],
@@ -190,7 +190,7 @@ print("--> Done creating links")
 #
 # We are assuming that no external cable loopback is present and hence making use of internal loopback.
 
-# %% pycharm={"name": "#%%\n"} raw_mimetype="text/x-python"
+# %% raw_mimetype="text/x-python"
 for link in links:
     print(f"\n----- {link.name} -----")
     _, tx_pattern_report = link.tx.property.report(link.tx.property_for_alias[PATTERN]).popitem()
@@ -225,7 +225,7 @@ for link in links:
 #
 # The eye scans will be run in parallel
 
-# %% pycharm={"name": "#%%\n"}
+# %%
 eye_scans = create_eye_scans(target_objs=[link for link in links])
 for eye_scan in eye_scans:
     eye_scan.params[EYE_SCAN_HORZ_STEP].value = 2
@@ -241,7 +241,7 @@ for eye_scan in eye_scans:
 # %% [markdown]
 # ## 9 - Wait for all the eye scans to get done
 
-# %% pycharm={"name": "#%%\n"}
+# %%
 eye_scans[0].wait_till_done()
 eye_scans[1].wait_till_done()
 eye_scans[2].wait_till_done()
@@ -255,7 +255,7 @@ eye_scans[3].wait_till_done()
 # NOTE - The plot may not display if this notebook is run in Jupyter Lab. For details, see [link](https://plotly.com/python/getting-started/#jupyterlab-support-python-35)
 
 
-# %% pycharm={"name": "#%%\n"}
+# %%
 eye_scans[0].plot.show()
 eye_scans[1].plot.show()
 eye_scans[2].plot.show()

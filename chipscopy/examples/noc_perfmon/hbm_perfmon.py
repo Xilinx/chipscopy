@@ -1,9 +1,9 @@
 # %% [markdown]
 # <link rel="preconnect" href="https://fonts.gstatic.com">
 # <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
-#
+# 
 # ### License
-#
+# 
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright 2021 Xilinx, Inc.<br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
@@ -15,30 +15,30 @@
 # See the License for the specific language governing permissions and<br>
 # limitations under the License.<br>
 # </p>
-#
+# 
 
 # %% [markdown]
 # # ChipScoPy NoC Perfmon Example
-#
-#
+# 
+# 
 # <img src="../img/api_overview.png" width="500" align="left">
 
 # %% [markdown]
 # ## Description
 # This example demonstrates how to configure a Versal for taking NoC performance measurements.
-#
+# 
 # ## Requirements
-# - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2022.1 installed and running
-# - Xilinx cs_server 2022.1 installed and running
+# - Local or remote Xilinx Versal HBM2E board/part, for example VHK158
+# - Xilinx hw_server 2022.2 installed and running
+# - Xilinx cs_server 2022.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2022.1 installed
+# - ChipScoPy 2022.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
-#
+# 
 # After this step,
 # - Required functions and classes are imported
 # - Paths to server(s) and files are set correctly
@@ -64,10 +64,6 @@ from chipscopy import get_design_files
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
 
-# The get_design_files() function tries to find the PDI and LTX files. In non-standard
-# configurations, you can put the path for PROGRAMMING_FILE and PROBES_FILE below.
-design_files = get_design_files("vck190/production/chipscopy_ced")
-
 print("INFO: HBM design not included in chipscopy, user must provide design!!")
 
 print(f"HW_URL: {HW_URL}")
@@ -75,7 +71,7 @@ print(f"CS_URL: {CS_URL}")
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
-#
+# 
 # The session is a container that keeps track of devices and debug cores.
 # After this step,
 # - Session is initialized and connected to server(s)
@@ -88,7 +84,7 @@ report_versions(session)
 
 # %% [markdown]
 # ## 3 - Select the device and program
-#
+# 
 # After this step,
 # - Device is programmed with the example programming file (for this example the user must supply the design)
 
@@ -100,11 +96,11 @@ versal_device = session.devices.filter_by(family="versal").get()
 
 # %% [markdown]
 # ## 4 - Discover Debug Cores
-#
+# 
 # Debug core discovery initializes the chipscope server debug cores. This brings debug cores in the chipscope server online.
-#
+# 
 # After this step,
-#
+# 
 # - The cs_server is initialized and ready for use
 
 # %%
@@ -116,9 +112,9 @@ print(f"Debug cores setup and ready for use.")
 
 # %% [markdown]
 # ## 5 - Setup NoC core
-#
+# 
 # Ensure scan nodes are enabled in the design.
-#
+# 
 # We begin by enumerating the debug cores (hard and soft) present in the design.
 # Then we ask the design for the supported timebases. And, finally:
 # The NoC is scanned to determine the activated elements.
@@ -156,9 +152,9 @@ for domain, periods in supported_periods.items():
 
 # %% [markdown]
 # Select Timebase and Nodes to Monitor
-#
+# 
 # For the various clock domains we must select a sampling period from the hardware supported values. The debug cable used will dictate how much bandwidth is available, so high frequency sampling may not actually produce data at the specified rate. Recommendation is ~500ms for jtag.
-#
+# 
 # Then the user must decide what to monitor--again the bandwidth is a definite consideration here. Plot performance may become the bottleneck (Optimizations will come later in the renderer or agg backend). The guidance here is to pick up to 4 nodes to monitor.
 
 # %%
@@ -187,16 +183,16 @@ for domain, freq in sampling_intervals.items():
 
 # %% [markdown]
 # ##  6 - Configure Monitors
-#
+# 
 # As a precaution, it's a good idea to validate the desired nodes are enabled for the design.
 # Using the set of nodes and the desired sampling periods it's time to ask the service to start pushing metric data. Two additional arguments are required to this API.
-#
+# 
 # Traffic class
-#
+# 
 # This is a bit-or field of the requested traffic classes. Note, One monitor is dedicated to read traffic classes and the other to write--so all read TCs will apply to one channel and all write TCs to the other. `Best effort` is a good place to start.
-#
+# 
 # Number of Samples
-#
+# 
 # The number of samples allows for a burst of measurements to be taken and then the underlying service will tear down the monitors and stop pumping data back to the client. `-1` denotes that sampling shall continue indefinitely.
 
 # %%
@@ -221,7 +217,7 @@ base_noc.configure_monitors(
 
 # %% [markdown]
 # ## 7 - Create plotter and listener
-#
+# 
 # Attach both to running view
 
 # %%
@@ -245,9 +241,9 @@ plotter.build_graphs()
 
 # %% [markdown]
 # ## 8 - Main Event Loop
-#
+# 
 # This loop runs until you close the plotter.
-#
+# 
 # If you are using a finite amount of measurement samples, you can uncomment the if --> break statement to automatically return from execution of this cell upon completion of the burst.
 
 # %%
@@ -262,3 +258,4 @@ while True:
     # Below will return on burst completion - uncomment if you want to try.
     # if all([x <= 0 for x in node_listener.num_samples.values()]):
     #     break
+
