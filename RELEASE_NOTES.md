@@ -1,5 +1,13 @@
 # ChipScoPy Release Notes
 
+## 2022.2 - December 5, 2022
+
+- ILA: Reorganized waveform functions export_waveform(), get_data(), get_probe_data()
+- ILA: Advanced trigger state machine support
+- Fixed device program progress callback
+- IBERT: Handler for EYE_SCAN_ABORTED
+- Switch csutil to argparse instead of click
+
 ## 2022.1 - June 9, 2022
 
 ###  Major release
