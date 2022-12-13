@@ -54,6 +54,7 @@ class Session:
         bypass_version_check: bool,
         cable_timeout: int,
         use_legacy_scanner: bool,
+        use_dbg_core_tiered_init: bool,
     ):
         self._disable_core_scan: bool = disable_core_scan
         self._bypass_version_check: bool = bypass_version_check
@@ -63,6 +64,7 @@ class Session:
         self._cable_timeout = cable_timeout
         self._cables_are_initialized = False
         self._use_legacy_scanner = use_legacy_scanner
+        self._use_dbg_core_tiered_init = use_dbg_core_tiered_init
 
         self.hw_server: Optional[ServerInfo] = None
         self.cs_server: Optional[ServerInfo] = None
@@ -253,6 +255,7 @@ class Session:
             disable_core_scan=self._disable_core_scan,
             cable_ctx=cable_ctx,
             use_legacy_scaner=self._use_legacy_scanner,
+            use_dbg_core_tiered_init=self._use_dbg_core_tiered_init,
         )
         return devices
 
@@ -354,6 +357,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
     xvc_mm_server_url = kwargs.get("xvc_mm_server_url", None)
     cable_timeout = kwargs.get("cable_timeout", 4)
     use_legacy_scanner = kwargs.get("use_legacy_scanner", False)
+    use_dbg_core_tiered_init = kwargs.get("use_dbg_core_tiered_init", False)
 
     # Create session even if there already exists a session with the same cs_server and hw_server
     # It *should* be safe.
@@ -365,6 +369,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
         bypass_version_check=bypass_version_check,
         cable_timeout=cable_timeout,
         use_legacy_scanner=use_legacy_scanner,
+        use_dbg_core_tiered_init=use_dbg_core_tiered_init,
     )
     session.connect()
     return session

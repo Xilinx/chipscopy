@@ -593,9 +593,9 @@ class MILAClockSelect(enum.Enum):
     INOC = 1
 
 
-class MILADataSelect(enum.Enum):
+class MILA4DataSelect(enum.Enum):
     """
-    Selection for Ila_capture_data_sel MUX.
+    Selection for MILA4 Ila_capture_data_sel MUX.
 
     When passing as values to/from API functions, use string values.
     """
@@ -616,6 +616,34 @@ class MILADataSelect(enum.Enum):
     THIRTEEN = 13
     FOURTEEN = 14
     FIFTEEN = 15
+
+
+class MILA5DataSelect(enum.Enum):
+    """
+    Selection for MILA5 Ila_capture_data_sel MUX.
+
+    When passing as values to/from API functions, use string values.
+    """
+
+    DDRMC = 0
+    XPI_WRITE = 1
+    XPI_READ = 2
+    XPI_AC = 3
+    CAL = 4
+    RPI = 5
+    CRYPTO = 6
+    SEVEN = 7
+    EIGHT = 8
+    NINE = 9
+    TEN = 10
+    ELEVEN = 11
+    TWELVE = 12
+    THIRTEEN = 13
+    FOURTEEN = 14
+    FIFTEEN = 15
+
+
+MILADataSelect = Union[MILA4DataSelect, MILA5DataSelect]
 
 
 # Service name.

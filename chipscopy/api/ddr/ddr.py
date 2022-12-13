@@ -65,6 +65,11 @@ class DDR(DebugCore["DDRMCClient"]):
         self.name = "ddr_" + self.mc_index
         self.ddr_node = self.core_tcf_node
         self.is_enabled = self.is_user_enabled()
+        self.is_gen5 = False
+        arch_type = ddr_node.props.get("arch")
+        if arch_type:
+            if arch_type == "gen5":
+                self.is_gen5 = True
         self.eye_scan_data = []
         self.filter_by = {"name": self.name, "mc_index": self.mc_index, "mc_loc": self.mc_loc}
 
@@ -219,6 +224,10 @@ class DDR(DebugCore["DDRMCClient"]):
             configs["Memory Interface"] = "DDR4"
         elif val == 2:
             configs["Memory Interface"] = "LPDDR4"
+        elif val == 4:
+            configs["Memory Interface"] = "DDR5"
+        elif val == 5:
+            configs["Memory Interface"] = "LPDDR5"
         else:
             configs["Memory Interface"] = "Unknown"
 
@@ -266,20 +275,20 @@ class DDR(DebugCore["DDRMCClient"]):
 
         freq_zero = "Unknown"
         freq_one = "Unknown"
+        results = self.ddr_node.get_property("dual_freq_en")
+        dual_freq = results["dual_freq_en"]
         results = self.ddr_node.get_property("f0_period")
         period = results["f0_period"]
         if (period != "0") and (period != ""):
             freq0 = int(1000000 / float(period) + 0.5)
             freq_zero = str(freq0) + " MHz"
-        results = self.ddr_node.get_property("f1_period")
-        period = results["f1_period"]
-        if (period != "0") and (period != ""):
-            freq1 = int(1000000 / float(period) + 0.5)
-            freq_one = str(freq1) + " MHz"
-        results = self.ddr_node.get_property("dual_freq_en")
-        dual_freq = results["dual_freq_en"]
         configs["Memory Frequency 0"] = freq_zero
         if int(dual_freq) > 0:
+            results = self.ddr_node.get_property("f1_period")
+            period = results["f1_period"]
+            if (period != "0") and (period != ""):
+                freq1 = int(1000000 / float(period) + 0.5)
+                freq_one = str(freq1) + " MHz"
             configs["Memory Frequency 1"] = freq_one
 
         return configs
@@ -501,95 +510,116 @@ class DDR(DebugCore["DDRMCClient"]):
             left_margins = {}
             right_margins = {}
             center_points = {}
-            is_by_8 = True
-            num_byte = int(configs["Bytes"])
-            num_nibble = int(configs["Nibbles"])
-            self.refresh_cal_margin()
-            cal_margin_modes = self.get_cal_margin_mode()
-            if int(configs["Bits per Byte"]) == 4:
-                is_by_8 = False
+            if not self.is_gen5:
+                is_by_8 = True
+                num_byte = int(configs["Bytes"])
+                num_nibble = int(configs["Nibbles"])
+                self.refresh_cal_margin()
+                cal_margin_modes = self.get_cal_margin_mode()
+                if int(configs["Bits per Byte"]) == 4:
+                    is_by_8 = False
 
-            # Main loop to go through dual frequencies
-            for freq in range(2):
-                base = "Frequency " + str(freq)
-                # Read Simple
-                key = "f" + str(freq) + "_rd_simp"
-                if cal_margin_modes[key]:
-                    # Rising Edge
-                    self.__get_cal_margins(
-                        key + "_rise", left_margins, right_margins, center_points
-                    )
-                    printer(
-                        "\n",
-                        base,
-                        " - Read Margin - Simple Pattern - Rising Edge Clock in pS and (delay taps):\n",
-                    )
-                    self.__output_read_margins(
-                        is_by_8, num_byte, num_nibble, left_margins, right_margins, center_points
-                    )
-                    # Falling Edge
-                    self.__get_cal_margins(
-                        key + "_fall", left_margins, right_margins, center_points
-                    )
-                    printer(
-                        "\n",
-                        base,
-                        " - Read Margin - Simple Pattern - Falling Edge Clock in pS and (delay taps):\n",
-                    )
-                    self.__output_read_margins(
-                        is_by_8, num_byte, num_nibble, left_margins, right_margins, center_points
-                    )
-                # Read Complex
-                key = "f" + str(freq) + "_rd_comp"
-                if cal_margin_modes[key]:
-                    # Rising Edge
-                    self.__get_cal_margins(
-                        key + "_rise", left_margins, right_margins, center_points
-                    )
-                    printer(
-                        "\n",
-                        base,
-                        " - Read Margin - Complex Pattern - Rising Edge Clock in pS and (delay taps):\n",
-                    )
-                    self.__output_read_margins(
-                        is_by_8, num_byte, num_nibble, left_margins, right_margins, center_points
-                    )
-                    # Falling Edge
-                    self.__get_cal_margins(
-                        key + "_fall", left_margins, right_margins, center_points
-                    )
-                    printer(
-                        "\n",
-                        base,
-                        " - Read Margin - Complex Pattern - Falling Edge Clock in pS and (delay taps):\n",
-                    )
-                    self.__output_read_margins(
-                        is_by_8, num_byte, num_nibble, left_margins, right_margins, center_points
-                    )
-                # Write Simple
-                key = "f" + str(freq) + "_wr_simp"
-                if cal_margin_modes[key]:
-                    self.__get_cal_margins(key, left_margins, right_margins, center_points)
-                    printer(
-                        "\n",
-                        base,
-                        " - Write Margin - Simple Pattern - Calibration Window in pS and (delay taps):\n",
-                    )
-                    self.__output_write_margins(
-                        num_byte, left_margins, right_margins, center_points
-                    )
-                # Write Complex
-                key = "f" + str(freq) + "_wr_comp"
-                if cal_margin_modes[key]:
-                    self.__get_cal_margins(key, left_margins, right_margins, center_points)
-                    printer(
-                        "\n",
-                        base,
-                        " - Write Margin - Complex Pattern - Calibration Window in pS and (delay taps):\n",
-                    )
-                    self.__output_write_margins(
-                        num_byte, left_margins, right_margins, center_points
-                    )
+                # Main loop to go through dual frequencies
+                for freq in range(2):
+                    base = "Frequency " + str(freq)
+                    # Read Simple
+                    key = "f" + str(freq) + "_rd_simp"
+                    if cal_margin_modes[key]:
+                        # Rising Edge
+                        self.__get_cal_margins(
+                            key + "_rise", left_margins, right_margins, center_points
+                        )
+                        printer(
+                            "\n",
+                            base,
+                            " - Read Margin - Simple Pattern - Rising Edge Clock in pS and (delay taps):\n",
+                        )
+                        self.__output_read_margins(
+                            is_by_8,
+                            num_byte,
+                            num_nibble,
+                            left_margins,
+                            right_margins,
+                            center_points,
+                        )
+                        # Falling Edge
+                        self.__get_cal_margins(
+                            key + "_fall", left_margins, right_margins, center_points
+                        )
+                        printer(
+                            "\n",
+                            base,
+                            " - Read Margin - Simple Pattern - Falling Edge Clock in pS and (delay taps):\n",
+                        )
+                        self.__output_read_margins(
+                            is_by_8,
+                            num_byte,
+                            num_nibble,
+                            left_margins,
+                            right_margins,
+                            center_points,
+                        )
+                    # Read Complex
+                    key = "f" + str(freq) + "_rd_comp"
+                    if cal_margin_modes[key]:
+                        # Rising Edge
+                        self.__get_cal_margins(
+                            key + "_rise", left_margins, right_margins, center_points
+                        )
+                        printer(
+                            "\n",
+                            base,
+                            " - Read Margin - Complex Pattern - Rising Edge Clock in pS and (delay taps):\n",
+                        )
+                        self.__output_read_margins(
+                            is_by_8,
+                            num_byte,
+                            num_nibble,
+                            left_margins,
+                            right_margins,
+                            center_points,
+                        )
+                        # Falling Edge
+                        self.__get_cal_margins(
+                            key + "_fall", left_margins, right_margins, center_points
+                        )
+                        printer(
+                            "\n",
+                            base,
+                            " - Read Margin - Complex Pattern - Falling Edge Clock in pS and (delay taps):\n",
+                        )
+                        self.__output_read_margins(
+                            is_by_8,
+                            num_byte,
+                            num_nibble,
+                            left_margins,
+                            right_margins,
+                            center_points,
+                        )
+                    # Write Simple
+                    key = "f" + str(freq) + "_wr_simp"
+                    if cal_margin_modes[key]:
+                        self.__get_cal_margins(key, left_margins, right_margins, center_points)
+                        printer(
+                            "\n",
+                            base,
+                            " - Write Margin - Simple Pattern - Calibration Window in pS and (delay taps):\n",
+                        )
+                        self.__output_write_margins(
+                            num_byte, left_margins, right_margins, center_points
+                        )
+                    # Write Complex
+                    key = "f" + str(freq) + "_wr_comp"
+                    if cal_margin_modes[key]:
+                        self.__get_cal_margins(key, left_margins, right_margins, center_points)
+                        printer(
+                            "\n",
+                            base,
+                            " - Write Margin - Complex Pattern - Calibration Window in pS and (delay taps):\n",
+                        )
+                        self.__output_write_margins(
+                            num_byte, left_margins, right_margins, center_points
+                        )
         else:
             printer(
                 "\nNote: DDRMC system error is detected. Margin Analysis will not be provided for ",

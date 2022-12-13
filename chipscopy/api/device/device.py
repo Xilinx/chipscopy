@@ -16,7 +16,7 @@ import json
 import re
 import time
 from abc import ABC, abstractmethod
-from collections import defaultdict
+from collections import defaultdict, deque
 from pathlib import Path
 from typing import Optional, Union, Dict, List
 from struct import pack, unpack
@@ -228,7 +228,7 @@ class Device(ABC):
     @abstractmethod
     def discover_and_setup_cores(
         self, *, hub_address_list: Optional[List[int]] = None, ltx_file: str = None, **kwargs
-    ):
+    ) -> List[Node]:
         """Scan device for debug cores. This may take some time depending on
         what gets scanned.
 
@@ -433,7 +433,7 @@ class GenericDevice(Device):
 
     def discover_and_setup_cores(
         self, *, hub_address_list: Optional[List[int]] = None, ltx_file: str = None, **kwargs
-    ):
+    ) -> List[Node]:
         raise FeatureNotAvailableError
 
     @property
@@ -485,12 +485,14 @@ class FpgaDevice(Device, ABC):
         device_spec: DeviceSpec,
         disable_core_scan: bool,
         device_node: Node,
+        use_dbg_core_tiered_init: bool = False,
     ):
         self.disable_core_scan = disable_core_scan
         self.cores_to_scan = {}  # set during discover_and_setup_cores
         self.ltx = None
         self.programming_error: Optional[str] = None
         self.programming_done: bool = False
+        self._use_dbg_core_tiered_init: bool = use_dbg_core_tiered_init
         super().__init__(
             hw_server=hw_server,
             cs_server=cs_server,
@@ -759,7 +761,8 @@ class FpgaDevice(Device, ABC):
         elif node.type == "npi_nir":
             debug_core_wrapper = NocPerfmon(node)
         elif node.type == "ibert":
-            debug_core_wrapper = IBERT(node)
+            # Pass on the value of tiered init. Allows the IBERT core wrapper to make adjustments to its setup flow.
+            debug_core_wrapper = IBERT(node, use_tiered_init=self._use_dbg_core_tiered_init)
         elif node.type == "sysmon":
             debug_core_wrapper = Sysmon(node)
         elif node.type == "ddrmc_main":
@@ -786,25 +789,25 @@ class FpgaDevice(Device, ABC):
         # faster, around 1 ms.
         #
         # Best to avoid calling this function in an inner loop.
-        #
+
         cs_view = self.cs_server.get_view(chipscope)
         found_cores = defaultdict(list)
+
+        def check_and_upgrade_node(node):
+            if self.cores_to_scan.get(cs_node.type, True):
+                core_class_type = FpgaDevice.CORE_TYPE_TO_CLASS_MAP.get(node.type, None)
+                if core_class_type and core_class_type.is_compatible(node):
+                    upgraded_node = cs_view.get_node(node.ctx, core_class_type)
+                    found_cores[core_class_type].append(upgraded_node)
+
         # Using the self.chipscope_node restricts nodes to this device only
         for cs_node in cs_view.get_children(self.chipscope_node):
             if cs_node.type == "debug_hub":
                 debug_hub_children = cs_view.get_children(cs_node)
                 for child in debug_hub_children:
-                    if self.cores_to_scan.get(child.type, True):
-                        core_class_type = FpgaDevice.CORE_TYPE_TO_CLASS_MAP.get(child.type, None)
-                        if core_class_type and core_class_type.is_compatible(child):
-                            upgraded_node = cs_view.get_node(child.ctx, core_class_type)
-                            found_cores[core_class_type].append(upgraded_node)
+                    check_and_upgrade_node(child)
             else:
-                if self.cores_to_scan.get(cs_node.type, True):
-                    core_class_type = FpgaDevice.CORE_TYPE_TO_CLASS_MAP.get(cs_node.type, None)
-                    if core_class_type and core_class_type.is_compatible(cs_node):
-                        upgraded_node = cs_view.get_node(cs_node.ctx, core_class_type)
-                        found_cores[core_class_type].append(upgraded_node)
+                check_and_upgrade_node(cs_node)
         return found_cores
 
     def _get_debug_core_wrappers(self, core_type) -> QueryList:
@@ -858,6 +861,7 @@ class VersalDevice(FpgaDevice):
         device_spec: DeviceSpec,
         disable_core_scan: bool,
         device_node: Node,
+        use_dbg_core_tiered_init: bool = False,
     ):
         super().__init__(
             hw_server=hw_server,
@@ -865,6 +869,7 @@ class VersalDevice(FpgaDevice):
             device_spec=device_spec,
             disable_core_scan=disable_core_scan,
             device_node=device_node,
+            use_dbg_core_tiered_init=use_dbg_core_tiered_init,
         )
 
     @property
@@ -1110,6 +1115,7 @@ def discover_devices(
     disable_core_scan: bool,
     cable_ctx: Optional[str] = None,
     use_legacy_scaner: bool = True,
+    use_dbg_core_tiered_init: bool = False,
 ) -> QueryList[Device]:
     devices: QueryList[Device] = QueryList()
     device_scanner = create_device_scanner(hw_server, cs_server, use_legacy_scaner)
@@ -1127,6 +1133,7 @@ def discover_devices(
                     device_spec=device_spec,
                     disable_core_scan=disable_core_scan,
                     device_node=device_node,
+                    use_dbg_core_tiered_init=use_dbg_core_tiered_init,
                 )
             elif family is not None:
                 device_node.device_wrapper = UltrascaleDevice(

@@ -31,7 +31,7 @@ class IBERTCoreClient(CoreClient):
         return return_val
 
     def post_init(self):
-        super(IBERTCoreClient, self).post_init()
+        pass
 
     def get_child_with_name(self, name: str, done: DoneCallback):
         """
@@ -50,6 +50,12 @@ class IBERTCoreClient(CoreClient):
 
     def get_service_proxy(self):
         return self.manager.channel.getRemoteService("IBERT")
+
+    def tier1_initialize(self, done: DoneCallback = None):
+        service, done_cb = self.make_done(done)
+        log[DOMAIN_NAME].info(f"Initializing IBERT core skeleton")
+        token = service.tier1_initialize(self.ctx, done_cb)
+        return self.add_pending(token)
 
     def initialize(self, done: DoneCallback = None):
         service, done_cb = self.make_done(done)

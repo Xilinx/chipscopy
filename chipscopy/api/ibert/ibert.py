@@ -36,30 +36,68 @@ class IBERT(DebugCore["IBERTCoreClient"]):
     Main API class to use IBERT (Integrated Bit Error Ratio Tester) debug core.
     """
 
-    def __init__(self, ibert_tcf_node):
+    def __init__(self, ibert_tcf_node, *, use_tiered_init: bool):
         super(IBERT, self).__init__(CoreType.IBERT, ibert_tcf_node)
 
-        self.layout = self.core_tcf_node.get_layout()
-
-        # At the top most level only one key = IBERT name is expected
-        name = list(self.layout.keys())[0]
-        configuration = self.layout[name]
-
-        # ---------------------------------------------------------------
-        # Essential members from SerialObjectBase defined here
-        # ---------------------------------------------------------------
-        self.name: Final[str] = name
-        """Name of the IBERT core"""
+        self.layout = None
 
         self.type: Final[str] = IBERT_KEY
         """Serial object type"""
 
-        self.handle: Final[str] = configuration[HANDLE_NAME]
-        """Handle from cs_server"""
-
         self.children: QueryList[GTGroup] = QueryList()
         """Children of IBERT"""
-        # ---------------------------------------------------------------
+
+        if use_tiered_init:
+            # START = time.perf_counter()
+            tier1_init_data = self.core_tcf_node.tier1_initialize()
+            # print(f"Skeleton cmd runtime - {time.perf_counter() - START}")
+            self.name: str = tier1_init_data["DISPLAY_NAME"]
+            """Name of the IBERT core"""
+
+            self.handle = "NA"
+            """Handle from cs_server"""
+
+            # This is used by the filter_by method in QueryList
+            self.filter_by = {"name": self.name, "type": self.type}
+        else:
+            self.setup()
+
+    def __repr__(self) -> str:
+        return self.name
+
+    def __rich_tree__(self):
+        root = Tree(self.name)
+
+        for child in self.children:
+            root.add(child.__rich_tree__())
+
+        return root
+
+    @property
+    def gt_groups(self) -> QueryList[GTGroup]:
+        """GT Group children of the IBERT core"""
+        return self.children.filter_by(type=GT_GROUP_KEY)
+
+    def reset(self):
+        """
+        Reset all RXs, TXs and PLLs in the GT Groups
+        """
+        for gt_group in self.gt_groups:
+            gt_group.reset()
+
+    def setup(self):
+        # layout is None in case tiered init was used, else it's a dict with data
+        if self.layout is not None:
+            return
+
+        self.core_tcf_node.initialize()
+        layout = self.core_tcf_node.get_layout()
+
+        # At the top most level only one key = IBERT name is expected
+        self.name = list(layout.keys())[0]
+        configuration = layout[self.name]
+
+        self.handle = configuration[HANDLE_NAME]
 
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
@@ -79,27 +117,6 @@ class IBERT(DebugCore["IBERTCoreClient"]):
                     configuration=child_configuration,
                 )
                 self.children.append(new_child)
-
-        self.gt_groups: QueryList[GTGroup] = self.children.filter_by(type=GT_GROUP_KEY)
-        """GT Group children of the IBERT core"""
-
-    def __repr__(self) -> str:
-        return self.name
-
-    def __rich_tree__(self):
-        root = Tree(self.name)
-
-        for child in self.children:
-            root.add(child.__rich_tree__())
-
-        return root
-
-    def reset(self):
-        """
-        Reset all RXs, TXs and PLLs in the GT Groups
-        """
-        for gt_group in self.gt_groups:
-            gt_group.reset()
 
     @deprecated_api(release="2021.1", replacement="report_hierarchy(<Any serial object>)")
     def print_hierarchy(self):

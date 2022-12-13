@@ -39,9 +39,12 @@ class IBERTProxy(IBERTService):
         super(IBERTProxy, self).__init__(channel)
         self.listeners = {}
 
-    def initialize(self, node_id: str, done) -> None:
+    def initialize(self, node_id: str, done):
         log[DOMAIN_NAME].debug("Sending initializeCmd")
         return self.send_xicom_command("initialize", (node_id,), done)
+
+    def tier1_initialize(self, node_id: str, done):
+        return self.send_xicom_command("tier1_initialize", (node_id,), done)
 
     def setup(self, options: Dict[str, Any], done):
         return self.send_xicom_command("setup", (options["node_id"], options), done)
