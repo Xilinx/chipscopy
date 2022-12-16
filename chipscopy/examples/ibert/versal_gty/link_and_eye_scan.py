@@ -228,8 +228,8 @@ for link in links:
 # %%
 eye_scans = create_eye_scans(target_objs=[link for link in links])
 for eye_scan in eye_scans:
-    eye_scan.params[EYE_SCAN_HORZ_STEP].value = 2
-    eye_scan.params[EYE_SCAN_VERT_STEP].value = 2
+    eye_scan.params[EYE_SCAN_HORZ_STEP].value = 10
+    eye_scan.params[EYE_SCAN_VERT_STEP].value = 10
     eye_scan.params[EYE_SCAN_HORZ_RANGE].value = "-0.500 UI to 0.500 UI"
     eye_scan.params[EYE_SCAN_VERT_RANGE].value = "100%"
     eye_scan.params[EYE_SCAN_TARGET_BER].value = 1e-5
@@ -350,8 +350,8 @@ for (precurs, poscurs, difswing, tervolt) in combinations:
     link.rx.property.commit(list(props.keys()))
     
     eye_scan = create_eye_scans(target_objs=link)[0]
-    eye_scan.params[EYE_SCAN_HORZ_STEP].value = 2
-    eye_scan.params[EYE_SCAN_VERT_STEP].value = 2
+    eye_scan.params[EYE_SCAN_HORZ_STEP].value = 10
+    eye_scan.params[EYE_SCAN_VERT_STEP].value = 10
     eye_scan.params[EYE_SCAN_HORZ_RANGE].value = "-0.500 UI to 0.500 UI"
     eye_scan.params[EYE_SCAN_VERT_RANGE].value = "100%"
     eye_scan.params[EYE_SCAN_TARGET_BER].value = 1e-5

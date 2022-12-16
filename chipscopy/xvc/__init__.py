@@ -537,3 +537,9 @@ class XVCVersalMemHandler(XVCMemHandler):
         super().__init__(*args, **kwargs)
         self.set_mem(0, 0xF1260114, bytes_from_words((0x02000000,)))  # npi ref clk enabled
         self.set_mem(0, 0xF1110884, bytes_from_words((0x1,)))  # done bit set
+
+
+class XVCKSBMemHandler(XVCVersalMemHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.default_capabilities = [b"memory", b"stop", b"idcode=0x04D80093", b"idcode2=1"]

@@ -144,7 +144,7 @@ if len(ibert_gtm.gt_groups) == 0:
 
 print(f"--> Enabled GT Groups - {ibert_gtm.gt_groups}")
 
-gt_group = ibert_gtm.gt_groups.filter_by(name="Quad_204")[0]
+gt_group = ibert_gtm.gt_groups.filter_by(name="Quad_202")[0]
 
 
 # %% [markdown]

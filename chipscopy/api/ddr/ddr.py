@@ -448,8 +448,9 @@ class DDR(DebugCore["DDRMCClient"]):
         self.refresh_cal_status()
         self.refresh_health_status()
         printer("Calibration Status:  ", self.get_cal_status(), "\n")
-        results = self.ddr_node.get_property("health_status")
-        printer("Overall Health:  ", results["health_status"], "\n")
+        if not self.is_gen5:
+            results = self.ddr_node.get_property("health_status")
+            printer("Overall Health:  ", results["health_status"], "\n")
         results = self.ddr_node.get_property("cal_message")
         printer("Message:  ", results["cal_message"], "\n")
 
@@ -459,19 +460,20 @@ class DDR(DebugCore["DDRMCClient"]):
             printer("Error:  ", results["cal_error_msg"], "\n")
 
         # DDRMC ISR Registers
-        printer("\n-------------------\n")
-        printer(" Status Registers\n")
-        printer("-------------------\n")
+        if not self.is_gen5:
+            printer("\n-------------------\n")
+            printer(" Status Registers\n")
+            printer("-------------------\n")
 
-        printer("DDRMC ISR Table\n")
-        results = self.ddr_node.get_property_group(["ddrmc_isr_e", "ddrmc_isr_w"])
-        for key, val in sorted(results.items()):
-            printer("  ", key, ":  ", str(val))
+            printer("DDRMC ISR Table\n")
+            results = self.ddr_node.get_property_group(["ddrmc_isr_e", "ddrmc_isr_w"])
+            for key, val in sorted(results.items()):
+                printer("  ", key, ":  ", str(val))
 
-        printer("\nUB ISR Table\n")
-        results = self.ddr_node.get_property_group(["ub_isr_e", "ub_isr_w"])
-        for key, val in sorted(results.items()):
-            printer("  ", key, ":  ", str(val))
+            printer("\nUB ISR Table\n")
+            results = self.ddr_node.get_property_group(["ub_isr_e", "ub_isr_w"])
+            for key, val in sorted(results.items()):
+                printer("  ", key, ":  ", str(val))
 
         # Memory configuration info
         printer("\n----------------------------------\n")
@@ -501,9 +503,10 @@ class DDR(DebugCore["DDRMCClient"]):
             )
 
         # Cal Margin Analysis
-        printer("\n---------------------------------------\n")
-        printer(" Calibration Window Margin Analysis \n")
-        printer("---------------------------------------\n")
+        if not self.is_gen5:
+            printer("\n---------------------------------------\n")
+            printer(" Calibration Window Margin Analysis \n")
+            printer("---------------------------------------\n")
 
         if not sys_error:
             cal_margin_modes = {}
