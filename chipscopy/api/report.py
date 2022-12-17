@@ -28,6 +28,7 @@ The idea is to have the ChipScoPy API generate data that can pipe into other fun
 
 import datetime
 import json
+import re
 from typing import Optional, Union, List, TYPE_CHECKING
 
 from rich.table import Table
@@ -73,11 +74,12 @@ def report_versions(session: Optional["Session"] = None):
     chipscopy_report.add_column("Attribute", justify="right")
     chipscopy_report.add_column("Value", justify="left")
     chipscopy_report.add_row("Build", chipscopy.__version__)
+    # Need to handle case like "dev1668723891"
+    version_number_with_chars = chipscopy.__version__.split(".")[-1]
+    version_number = int("".join(filter(str.isdigit, version_number_with_chars)))
     chipscopy_report.add_row(
         "Timestamp",
-        datetime.datetime.fromtimestamp(int(chipscopy.__version__.split(".")[-1])).strftime(
-            "%b %d %Y-%H:%M:%S"
-        ),
+        datetime.datetime.fromtimestamp(version_number).strftime("%b %d %Y-%H:%M:%S"),
     )
 
     report.add_row("ChipScoPy", chipscopy_report)
