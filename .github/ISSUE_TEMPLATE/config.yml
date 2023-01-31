@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Please post ChipScoPy issues on the Vivado Debug Tools board
+    url: https://support.xilinx.com/s/topic/0TO2E000000YKYCWA4/vivado-debug-tools
+    about: Github issues are not actively monitored. For issues regarding the ChipScoPy API, please post them on the Xilinx Support Community in the Vivado Debug Tools board. Your question can then be seen by various members of the community and Xilinx employees who can then assist.
