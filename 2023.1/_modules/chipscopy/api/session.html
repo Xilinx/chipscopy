@@ -224,7 +224,7 @@ function OptanonWrapper() { }
             
             
               <div class="version">
-                2023.1
+                2023.2
               </div>
             
           
@@ -340,7 +340,8 @@ function OptanonWrapper() { }
            <div itemprop="articleBody">
             
   <h1>Source code for chipscopy.api.session</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2021 Xilinx, Inc.</span>
+<span></span><span class="c1"># Copyright 2021-2022 Xilinx, Inc.</span>
+<span class="c1"># Copyright 2023 Advanced Micro Devices, Inc.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -397,7 +398,6 @@ function OptanonWrapper() { }
         <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">bypass_version_check</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">cable_timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">use_legacy_scanner</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">initial_device_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
@@ -408,7 +408,6 @@ function OptanonWrapper() { }
         <span class="bp">self</span><span class="o">.</span><span class="n">_xvc_mm_server_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">xvc_mm_server_url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cable_timeout</span> <span class="o">=</span> <span class="n">cable_timeout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cables_are_initialized</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_use_legacy_scanner</span> <span class="o">=</span> <span class="n">use_legacy_scanner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span> <span class="o">=</span> <span class="n">disable_cache</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initial_device_scan</span> <span class="o">=</span> <span class="n">initial_device_scan</span>
 
@@ -416,7 +415,6 @@ function OptanonWrapper() { }
         <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span> <span class="o">=</span> <span class="n">DMNodeListener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_callback</span><span class="p">)</span>
 
@@ -447,7 +445,6 @@ function OptanonWrapper() { }
             <span class="s2">&quot;disable_core_scan&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_disable_core_scan</span><span class="p">,</span>
             <span class="s2">&quot;cable_timeout&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cable_timeout</span><span class="p">,</span>
             <span class="s2">&quot;handle&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span>
-            <span class="s2">&quot;devices_are_valid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">ret_dict</span>
 
@@ -455,24 +452,26 @@ function OptanonWrapper() { }
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exc_type</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span>
         <span class="n">delete_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">node_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="n">node</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">:</span>
-                <span class="c1"># Always pass events down to devices, so they can decide what to do with the event</span>
-                <span class="n">device</span><span class="o">.</span><span class="n">node_callback</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span><span class="p">:</span>
-                    <span class="c1"># Need to invalidate the session cache if any known device node was added or removed. This forces a</span>
-                    <span class="c1"># rescan from hardware next time the device list is accessed.</span>
-                    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_REMOVED</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">ctx</span> <span class="ow">in</span> <span class="p">[</span><span class="n">device</span><span class="o">.</span><span class="n">jtag_node</span><span class="p">,</span> <span class="n">device</span><span class="o">.</span><span class="n">device_node</span><span class="p">]:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_ADDED</span><span class="p">:</span>
-                        <span class="c1"># Harder to know if an added node will impact the device list. To be safe, invalidate</span>
-                        <span class="c1"># cache any time nodes are added to be safe.</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">pass</span>
+        <span class="c1"># if node:</span>
+        <span class="c1">#     for device in self._devices:</span>
+        <span class="c1">#         # Always pass events down to devices, so they can decide what to do with the event</span>
+        <span class="c1">#         device.node_callback(action, node, props)</span>
+        <span class="c1">#         if self._devices_are_valid:</span>
+        <span class="c1">#             # Need to invalidate the session cache if any known device node was added or removed. This forces a</span>
+        <span class="c1">#             # rescan from hardware next time the device list is accessed.</span>
+        <span class="c1">#             if action == DMNodeListener.NodeAction.NODE_REMOVED:</span>
+        <span class="c1">#                 if node.ctx in [device.jtag_node, device.device_node]:</span>
+        <span class="c1">#                     self._devices_are_valid = False</span>
+        <span class="c1">#             elif action == DMNodeListener.NodeAction.NODE_ADDED:</span>
+        <span class="c1">#                 # Harder to know if an added node will impact the device list. To be safe, invalidate</span>
+        <span class="c1">#                 # cache any time nodes are added to be safe.</span>
+        <span class="c1">#                 self._devices_are_valid = False</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_add_connection</span><span class="p">(</span>
@@ -516,9 +515,11 @@ function OptanonWrapper() { }
                 <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;chipscope&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_device_scan</span><span class="p">:</span>
                 <span class="c1"># Ensures we have a set of pre-scanned devices ready to go for first use.</span>
-                <span class="c1"># Downside is this does take a small amount of time, so it is optional.</span>
+                <span class="c1"># Downside is this does take up-front time, so it is optional.</span>
                 <span class="c1"># If not done at session creation, it will be done when devices are first accessed with session.devices</span>
-                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span>
+                <span class="c1"># TODO: implement</span>
+                <span class="c1"># _ = self.devices</span>
+                <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
             <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
@@ -628,13 +629,11 @@ function OptanonWrapper() { }
             <span class="n">hw_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">,</span>
             <span class="n">cs_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">,</span>
             <span class="n">disable_core_scan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_disable_core_scan</span><span class="p">,</span>
-            <span class="n">use_legacy_scanner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_use_legacy_scanner</span><span class="p">,</span>
             <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cable_timeout</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">retval</span>
 
     <span class="k">def</span> <span class="nf">scan_devices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cables_are_initialized</span><span class="p">:</span>
             <span class="n">wait_for_all_cables_ready</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cable_timeout</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cables_are_initialized</span> <span class="o">=</span> <span class="kc">True</span>
@@ -643,10 +642,8 @@ function OptanonWrapper() { }
             <span class="n">cs_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">,</span>
             <span class="n">disable_core_scan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_disable_core_scan</span><span class="p">,</span>
             <span class="n">cable_ctx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">use_legacy_scaner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_use_legacy_scanner</span><span class="p">,</span>
             <span class="n">disable_cache</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span>
 
     <span class="nd">@property</span>
@@ -656,11 +653,8 @@ function OptanonWrapper() { }
 <span class="sd">        Devices are cached after scanning until an event changes state and</span>
 <span class="sd">        requires a re-scan if caching is enabled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices_are_valid</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scan_devices</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_devices</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">devices</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">memory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Memory</span><span class="p">]:</span>
@@ -749,7 +743,6 @@ function OptanonWrapper() { }
 <span class="sd">        bypass_version_check: Set True to change hw_server and cs_server version mismatch to warning instead of error</span>
 <span class="sd">        xvc_mm_server_url: Url for the testing xvc memory map server - For special debug core testing use cases</span>
 <span class="sd">        cable_timeout: Seconds before timing out when detecting devices on a jtag cable</span>
-<span class="sd">        use_legacy_scanner: Use legacy device scan algorithm</span>
 <span class="sd">        initial_device_scan: Do an initial device scan when opening session (lazy initialization otherwise)</span>
 <span class="sd">        disable_cache: Control client caching (experimental)</span>
 
@@ -758,12 +751,11 @@ function OptanonWrapper() { }
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">disable_core_scan</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;disable_core_scan&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="n">bypass_version_check</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bypass_version_check&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">bypass_version_check</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bypass_version_check&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">xvc_mm_server_url</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xvc_mm_server_url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">cable_timeout</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cable_timeout&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-    <span class="n">use_legacy_scanner</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;use_legacy_scanner&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">initial_device_scan</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;initial_device_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">disable_cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;disable_cache&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">disable_cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;disable_cache&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Create session even if there already exists a session with the same cs_server and hw_server</span>
     <span class="c1"># It *should* be safe.</span>
@@ -774,7 +766,6 @@ function OptanonWrapper() { }
         <span class="n">disable_core_scan</span><span class="o">=</span><span class="n">disable_core_scan</span><span class="p">,</span>
         <span class="n">bypass_version_check</span><span class="o">=</span><span class="n">bypass_version_check</span><span class="p">,</span>
         <span class="n">cable_timeout</span><span class="o">=</span><span class="n">cable_timeout</span><span class="p">,</span>
-        <span class="n">use_legacy_scanner</span><span class="o">=</span><span class="n">use_legacy_scanner</span><span class="p">,</span>
         <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
         <span class="n">initial_device_scan</span><span class="o">=</span><span class="n">initial_device_scan</span><span class="p">,</span>
     <span class="p">)</span>
@@ -811,7 +802,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 05, 2023.
+        Last updated on February 20, 2023.
       </span>
 
     </p>

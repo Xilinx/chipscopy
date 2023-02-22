@@ -226,7 +226,7 @@ function OptanonWrapper() { }
             
             
               <div class="version">
-                2023.1
+                2023.2
               </div>
             
           
@@ -354,13 +354,23 @@ cores. The collection of detected devices is held in the session.</p>
 <p>see <code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.Session.devices</span></code></p>
 <span class="target" id="module-chipscopy.api.device.device"></span><dl class="py class">
 <dt id="chipscopy.api.device.device.Device">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">Device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">Device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The Device class represents a single device. It is the base class for other
-Xilinx or Generic devices.
-Depending on the device type, some features may be available or unavailable.</p>
+Xilinx or Generic devices. Depending on the device type, some features may be available or unavailable.</p>
 <p>Device has the kitchen sink of properties functions to make documentation and type hints easy.
 Child classes raise FeatureNotAvailable for functions they do not support.</p>
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.chipscope_node">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">chipscope_node</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.chipscope_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low level TCF node access - For advanced use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">CoreParent</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.context">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">context</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.context" title="Permalink to this definition">¶</a></dt>
@@ -376,7 +386,7 @@ level device context will be a non-jtag node.</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.ddrs">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ddrs</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ddrs" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ddrs</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ddrs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected DDRMC cores in the device</p>
 <dl class="field-list simple">
@@ -387,15 +397,26 @@ list of detected DDRMC cores in the device</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="chipscopy.api.device.device.Device.debugcore_node">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">debugcore_node</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.debugcore_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low level TCF node access - For advanced use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">CoreParent</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="chipscopy.api.device.device.Device.discover_and_setup_cores">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">discover_and_setup_cores</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hub_address_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.discover_and_setup_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.discover_and_setup_cores" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">discover_and_setup_cores</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hub_address_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.discover_and_setup_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.discover_and_setup_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scan device for debug cores. This may take some time depending on
 what gets scanned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>hub_address_list</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – List of debug hub addresses to scan</p></li>
-<li><p><strong>ltx_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – LTX file (which contains debug hub addresses)</p></li>
+<li><p><strong>ltx_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – LTX file (which contains debug hub addresses)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
@@ -410,15 +431,12 @@ what gets scanned.</p>
 <li><p><strong>sysmon_scan</strong> – True=Scan Device for System Monitor</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code>]</p>
-</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.get_program_log">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_program_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.get_program_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.get_program_log" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_program_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'APU'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.get_program_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.get_program_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns: Programming log read from hardware (None=Use default transport)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -432,7 +450,7 @@ what gets scanned.</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.hbms">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">hbms</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.hbms" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">hbms</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.hbms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected HBM cores in the device</p>
 <dl class="field-list simple">
@@ -444,7 +462,7 @@ list of detected HBM cores in the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.ibert_cores">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ibert_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ibert_cores" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ibert_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ibert_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected IBERT cores in the device</p>
 <dl class="field-list simple">
@@ -456,12 +474,23 @@ list of detected IBERT cores in the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.ila_cores">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ila_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ila_cores" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ila_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.ila_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected ILA cores in the device</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="ila.html#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILA</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.is_programmable">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_programmable</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.is_programmable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if this Device is programmable, False otherwise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -500,8 +529,19 @@ list of detected ILA cores in the device</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="chipscopy.api.device.device.Device.jtag_node">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">jtag_node</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.jtag_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low level TCF node access - For advanced use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">JtagDevice</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="chipscopy.api.device.device.Device.memory">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.memory" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.memory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 the memory access for the device</p>
 <dl class="field-list simple">
@@ -513,7 +553,7 @@ the memory access for the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.memory_read">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">memory_read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_read" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">memory_read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read num values from given memory address.  This method is slow because it locates the memory context
 in the target tree every time. If you want to execute a large number of memory operations, grab a memory
 context and do all the operations in batch.
@@ -528,14 +568,19 @@ target every time. Inner loops should just call the find_memory_target once.</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.memory_target_names">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory_target_names</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_target_names" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory_target_names</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_target_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of supported memory targets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.memory_write">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">memory_write</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_write" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">memory_write</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.memory_write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write list of values to given memory address. This method is slow because it locates the memory context
 in the target tree every time. If you want to execute a large number of memory operations, grab a memory
 context and do the operations in batch.
@@ -545,7 +590,7 @@ target every time. Inner loops should just call the find_memory_target once.</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.noc_core">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">noc_core</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.noc_core" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">noc_core</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.noc_core" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 List with NOC roots for the device</p>
 <dl class="field-list simple">
@@ -557,7 +602,7 @@ List with NOC roots for the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.pcie_cores">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pcie_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.pcie_cores" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pcie_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.pcie_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected PCIe cores in the device</p>
 <dl class="field-list simple">
@@ -569,13 +614,14 @@ list of detected PCIe cores in the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.program">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">programming_file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.program" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">programming_file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_after_program</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.program" title="Permalink to this definition">¶</a></dt>
 <dd><p>Program the device with a given programming file (bit or pdi).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>programming_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – PDI file path</p></li>
 <li><p><strong>skip_reset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False = Do not reset device prior to program</p></li>
+<li><p><strong>delay_after_program</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Seconds to delay at end of programming (default=0)</p></li>
 <li><p><strong>show_progress_bar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False if the progress bar doesn’t need to be shown</p></li>
 <li><p><strong>progress</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">ProgressFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional progress callback</p></li>
 <li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional async future callback</p></li>
@@ -586,13 +632,13 @@ list of detected PCIe cores in the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.reset">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">reset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.reset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">reset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the device to a non-programmed state.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.sysmon_root">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sysmon_root</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.sysmon_root" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sysmon_root</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.sysmon_root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 List with one SysMon core for the device</p>
 <dl class="field-list simple">
@@ -626,7 +672,7 @@ List with one SysMon core for the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.trace_cores">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">trace_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.trace_cores" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">trace_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.trace_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected Trace cores in the device</p>
 <dl class="field-list simple">
@@ -638,7 +684,7 @@ list of detected Trace cores in the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.vio_cores">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vio_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.vio_cores" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vio_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.vio_cores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
 list of detected VIO cores in the device</p>
 <dl class="field-list simple">
@@ -648,660 +694,19 @@ list of detected VIO cores in the device</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt id="chipscopy.api.device.device.DeviceFamily">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">DeviceFamily</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#DeviceFamily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.DeviceFamily" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt id="chipscopy.api.device.device.FeatureNotAvailableError">
 <em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">FeatureNotAvailableError</span></code><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FeatureNotAvailableError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FeatureNotAvailableError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
-
-<dl class="py class">
-<dt id="chipscopy.api.device.device.FpgaDevice">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">FpgaDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.api.device.device.Device</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.ddrs">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ddrs</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.ddrs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected DDRMC cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="ddr.html#chipscopy.api.ddr.ddr.DDR" title="chipscopy.api.ddr.ddr.DDR"><code class="xref py py-class docutils literal notranslate"><span class="pre">DDR</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.discover_and_setup_cores">
-<code class="sig-name descname"><span class="pre">discover_and_setup_cores</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hub_address_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.discover_and_setup_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.discover_and_setup_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scan device for debug cores. This may take some time depending on
-what gets scanned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>hub_address_list</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – List of debug hub addresses to scan</p></li>
-<li><p><strong>ltx_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – LTX file (which contains debug hub addresses)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>ila_scan</strong> – True=Scan Device for ILAs</p></li>
-<li><p><strong>vio_scan</strong> – True=Scan Device for VIOs</p></li>
-<li><p><strong>ibert_scan</strong> – True=Scan Device for IBERTs</p></li>
-<li><p><strong>pcie_scan</strong> – True=Scan Device for PCIEs</p></li>
-<li><p><strong>noc_scan</strong> – True=Scan Device for NOC</p></li>
-<li><p><strong>ddr_scan</strong> – True=Scan Device for DDRs</p></li>
-<li><p><strong>hbm_scan</strong> – True=Scan Device for HBMs</p></li>
-<li><p><strong>sysmon_scan</strong> – True=Scan Device for System Monitor</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.get_program_log">
-<code class="sig-name descname"><span class="pre">get_program_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.get_program_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.get_program_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns: Programming log read from hardware (None=Use default transport)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>memory_target</strong> – Optional name of memory target such as APU, RPU, DPC</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.hbms">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">hbms</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.hbms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected HBM cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">HBM</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.ibert_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ibert_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.ibert_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected IBERT cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">IBERT</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.ila_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ila_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.ila_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected ILA cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="ila.html#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILA</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.is_programmed">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_programmed</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.is_programmed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns True if this Device is programmed, False otherwise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.memory">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.memory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-the memory access for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="memory.html#chipscopy.api.memory.Memory" title="chipscopy.api.memory.Memory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Memory</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.memory_read">
-<code class="sig-name descname"><span class="pre">memory_read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.memory_read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read num values from given memory address.  This method is slow because it locates the memory context
-in the target tree every time. If you want to execute a large number of memory operations, grab a memory
-context and do all the operations in batch.
-Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
-target every time. Inner loops should just call the find_memory_target once.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.memory_target_names">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory_target_names</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.memory_target_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of supported memory targets</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.memory_write">
-<code class="sig-name descname"><span class="pre">memory_write</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.memory_write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write list of values to given memory address. This method is slow because it locates the memory context
-in the target tree every time. If you want to execute a large number of memory operations, grab a memory
-context and do the operations in batch.
-Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
-target every time. Inner loops should just call the find_memory_target once.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.noc_core">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">noc_core</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.noc_core" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-List with NOC roots for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon" title="chipscopy.api.noc.noc.NocPerfmon"><code class="xref py py-class docutils literal notranslate"><span class="pre">NocPerfmon</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.pcie_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pcie_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.pcie_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected PCIe cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe" title="chipscopy.api.pcie.PCIe"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCIe</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.program">
-<code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">programming_file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_after_program</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.program" title="Permalink to this definition">¶</a></dt>
-<dd><p>Program the device with a given programming file (bit or pdi).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>programming_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – PDI file path</p></li>
-<li><p><strong>skip_reset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False = Do not reset device prior to program</p></li>
-<li><p><strong>show_progress_bar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False if the progress bar doesn’t need to be shown</p></li>
-<li><p><strong>progress</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">ProgressFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional progress callback</p></li>
-<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional async future callback</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.reset">
-<code class="sig-name descname"><span class="pre">reset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.reset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset the device to a non-programmed state.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.sysmon_root">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sysmon_root</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.sysmon_root" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-List with one SysMon core for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon" title="chipscopy.api.sysmon.Sysmon"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sysmon</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.to_dict">
-<code class="sig-name descname"><span class="pre">to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.to_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a dictionary representation of the device data</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.trace_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">trace_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.trace_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected Trace cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Trace</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.FpgaDevice.vio_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vio_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.vio_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected VIO cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="vio.html#chipscopy.api.vio.VIO" title="chipscopy.api.vio.VIO"><code class="xref py py-class docutils literal notranslate"><span class="pre">VIO</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="chipscopy.api.device.device.GenericDevice">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">GenericDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.api.device.device.Device</span></code></a></p>
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.ddrs">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ddrs</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.ddrs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected DDRMC cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="ddr.html#chipscopy.api.ddr.ddr.DDR" title="chipscopy.api.ddr.ddr.DDR"><code class="xref py py-class docutils literal notranslate"><span class="pre">DDR</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.discover_and_setup_cores">
-<code class="sig-name descname"><span class="pre">discover_and_setup_cores</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hub_address_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ltx_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice.discover_and_setup_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.discover_and_setup_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scan device for debug cores. This may take some time depending on
-what gets scanned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>hub_address_list</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – List of debug hub addresses to scan</p></li>
-<li><p><strong>ltx_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – LTX file (which contains debug hub addresses)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>ila_scan</strong> – True=Scan Device for ILAs</p></li>
-<li><p><strong>vio_scan</strong> – True=Scan Device for VIOs</p></li>
-<li><p><strong>ibert_scan</strong> – True=Scan Device for IBERTs</p></li>
-<li><p><strong>pcie_scan</strong> – True=Scan Device for PCIEs</p></li>
-<li><p><strong>noc_scan</strong> – True=Scan Device for NOC</p></li>
-<li><p><strong>ddr_scan</strong> – True=Scan Device for DDRs</p></li>
-<li><p><strong>hbm_scan</strong> – True=Scan Device for HBMs</p></li>
-<li><p><strong>sysmon_scan</strong> – True=Scan Device for System Monitor</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.get_program_log">
-<code class="sig-name descname"><span class="pre">get_program_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice.get_program_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.get_program_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns: Programming log read from hardware (None=Use default transport)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>memory_target</strong> – Optional name of memory target such as APU, RPU, DPC</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.hbms">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">hbms</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.hbms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected HBM cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">HBM</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.ibert_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ibert_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.ibert_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected IBERT cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">IBERT</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.ila_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ila_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.ila_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected ILA cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="ila.html#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILA</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.is_programmed">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_programmed</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.is_programmed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns True if this Device is programmed, False otherwise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.memory">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.memory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-the memory access for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="memory.html#chipscopy.api.memory.Memory" title="chipscopy.api.memory.Memory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Memory</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.memory_read">
-<code class="sig-name descname"><span class="pre">memory_read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.memory_read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read num values from given memory address.  This method is slow because it locates the memory context
-in the target tree every time. If you want to execute a large number of memory operations, grab a memory
-context and do all the operations in batch.
-Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
-target every time. Inner loops should just call the find_memory_target once.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.memory_target_names">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory_target_names</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.memory_target_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of supported memory targets</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.memory_write">
-<code class="sig-name descname"><span class="pre">memory_write</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.memory_write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write list of values to given memory address. This method is slow because it locates the memory context
-in the target tree every time. If you want to execute a large number of memory operations, grab a memory
-context and do the operations in batch.
-Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
-target every time. Inner loops should just call the find_memory_target once.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.noc_core">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">noc_core</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.noc_core" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-List with NOC roots for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon" title="chipscopy.api.noc.noc.NocPerfmon"><code class="xref py py-class docutils literal notranslate"><span class="pre">NocPerfmon</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.pcie_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pcie_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.pcie_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected PCIe cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe" title="chipscopy.api.pcie.PCIe"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCIe</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.program">
-<code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">programming_file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.program" title="Permalink to this definition">¶</a></dt>
-<dd><p>Program the device with a given programming file (bit or pdi).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>programming_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – PDI file path</p></li>
-<li><p><strong>skip_reset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False = Do not reset device prior to program</p></li>
-<li><p><strong>show_progress_bar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False if the progress bar doesn’t need to be shown</p></li>
-<li><p><strong>progress</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">ProgressFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional progress callback</p></li>
-<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional async future callback</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.reset">
-<code class="sig-name descname"><span class="pre">reset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.reset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset the device to a non-programmed state.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.sysmon_root">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sysmon_root</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.sysmon_root" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-List with one SysMon core for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon" title="chipscopy.api.sysmon.Sysmon"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sysmon</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.trace_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">trace_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.trace_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected Trace cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Trace</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.GenericDevice.vio_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vio_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice.vio_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected VIO cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="vio.html#chipscopy.api.vio.VIO" title="chipscopy.api.vio.VIO"><code class="xref py py-class docutils literal notranslate"><span class="pre">VIO</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="chipscopy.api.device.device.UltrascaleDevice">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">UltrascaleDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#UltrascaleDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.UltrascaleDevice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#chipscopy.api.device.device.FpgaDevice" title="chipscopy.api.device.device.FpgaDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.api.device.device.FpgaDevice</span></code></a></p>
-</dd></dl>
-
-<dl class="py class">
-<dt id="chipscopy.api.device.device.VersalDevice">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">VersalDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#VersalDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#chipscopy.api.device.device.FpgaDevice" title="chipscopy.api.device.device.FpgaDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.api.device.device.FpgaDevice</span></code></a></p>
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.ddrs">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ddrs</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.ddrs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected DDRMC cores in the device</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.get_program_log">
-<code class="sig-name descname"><span class="pre">get_program_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'APU'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#VersalDevice.get_program_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.get_program_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns: Programming log read from hardware (None=Use default transport)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>memory_target</strong> – Optional name of memory target such as APU, RPU, DPC</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.hbms">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">hbms</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.hbms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected HBM cores in the device</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.ibert_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ibert_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.ibert_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected IBERT cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">IBERT</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.ila_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ila_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.ila_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected ILA cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="ila.html#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILA</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.memory">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.memory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-the memory access for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="memory.html#chipscopy.api.memory.Memory" title="chipscopy.api.memory.Memory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Memory</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.memory_read">
-<code class="sig-name descname"><span class="pre">memory_read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#VersalDevice.memory_read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.memory_read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read num values from given memory address.  This method is slow because it locates the memory context
-in the target tree every time. If you want to execute a large number of memory operations, grab a memory
-context and do all the operations in batch.
-Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
-target every time. Inner loops should just call the find_memory_target once.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.memory_target_names">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">memory_target_names</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.memory_target_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of supported memory targets</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.memory_write">
-<code class="sig-name descname"><span class="pre">memory_write</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#VersalDevice.memory_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.memory_write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write list of values to given memory address. This method is slow because it locates the memory context
-in the target tree every time. If you want to execute a large number of memory operations, grab a memory
-context and do the operations in batch.
-Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
-target every time. Inner loops should just call the find_memory_target once.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.noc_core">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">noc_core</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.noc_core" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-List with NOC roots for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon" title="chipscopy.api.noc.noc.NocPerfmon"><code class="xref py py-class docutils literal notranslate"><span class="pre">NocPerfmon</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.pcie_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pcie_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.pcie_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected PCIe cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe" title="chipscopy.api.pcie.PCIe"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCIe</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.sysmon_root">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sysmon_root</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.sysmon_root" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-List with one SysMon core for the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon" title="chipscopy.api.sysmon.Sysmon"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sysmon</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.trace_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">trace_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.trace_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected Trace cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Trace</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.VersalDevice.vio_cores">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vio_cores</span></code><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice.vio_cores" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:
-list of detected VIO cores in the device</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="vio.html#chipscopy.api.vio.VIO" title="chipscopy.api.vio.VIO"><code class="xref py py-class docutils literal notranslate"><span class="pre">VIO</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -1335,7 +740,7 @@ list of detected VIO cores in the device</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 05, 2023.
+        Last updated on February 20, 2023.
       </span>
 
     </p>

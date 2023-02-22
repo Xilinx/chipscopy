@@ -226,7 +226,7 @@ function OptanonWrapper() { }
             
             
               <div class="version">
-                2023.1
+                2023.2
               </div>
             
           
@@ -307,15 +307,6 @@ function OptanonWrapper() { }
 <li class="toctree-l3"><a class="reference internal" href="#ilatrigoutmode-enum">ILATrigOutMode (enum)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ilawaveform">ILAWaveform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ilawaveformprobe">ILAWaveformProbe</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#ila-external-trace">ILA External Trace</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ilaexternaltrace">ILAExternalTrace</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calculate-external-trace-byte-count">calculate_external_trace_byte_count</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calculate-external-trace-one-window-sample-count">calculate_external_trace_one_window_sample_count</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#refresh-external-trace-status">refresh_external_trace_status</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#set-external-trace">set_external_trace</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#upload-external-waveform">upload_external_waveform</a></li>
 </ul>
 </li>
 </ul>
@@ -1980,201 +1971,6 @@ i.e. the samples with unknown values. ‘gap_index’ gives the bit location wit
 
 </div>
 </div>
-<div class="section" id="ila-external-trace">
-<h2>ILA External Trace<a class="headerlink" href="#ila-external-trace" title="Permalink to this headline">¶</a></h2>
-<p>Store captured waveform data in off-chip memory.</p>
-<p>When an ILA core supports external trace, the <a class="reference internal" href="#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILA</span></code></a> object has an extra attribute named “external_trace”
-of type <a class="reference internal" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace" title="chipscopy.api.ila.ila_external_trace.ILAExternalTrace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAExternalTrace</span></code></a>. (In current implementation, the “external_trace” attribute does not exist,
-until after calling function set_external_trace.)</p>
-<p>External Trace mode can be turned on/off with the function set_external_trace.
-The set_external_trace function must be called before calling any of the regular ILA functions to arm the ILA core.
-The external trace data, is uploaded with function upload external_waveform.</p>
-<p>When arming an ILA in external trace mode, the ILA reserves the associated Trace Block core.
-The upload_external_waveform function releasses the Trace Block core.</p>
-<p>An ILA core which support external trace, supports up to 1024 data samples in internal non-trace mode.</p>
-<div class="section" id="ilaexternaltrace">
-<h3>ILAExternalTrace<a class="headerlink" href="#ilaexternaltrace" title="Permalink to this headline">¶</a></h3>
-<dl class="py class">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.ila_external_trace.</span></code><code class="sig-name descname"><span class="pre">ILAExternalTrace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byte_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_armed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_full</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_error_reserved</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_stream_input_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_stream_input_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_external_trace.html#ILAExternalTrace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace Block related information, which get updated by calling one of these functions:</p>
-<ul class="simple">
-<li><p>set_external_trace</p></li>
-<li><p>upload_external_waveform</p></li>
-<li><p>refresh_external_trace_status</p></li>
-<li><p>run_basic_trigger</p></li>
-<li><p>run_trigger_immediately</p></li>
-</ul>
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.address">
-<code class="sig-name descname"><span class="pre">address</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.address" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start address for waveform data in External Memory.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.byte_size">
-<code class="sig-name descname"><span class="pre">byte_size</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.byte_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reserved waveform data byte size.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.current_address">
-<code class="sig-name descname"><span class="pre">current_address</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.current_address" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace Block current write address.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.current_stream_input_index">
-<code class="sig-name descname"><span class="pre">current_stream_input_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.current_stream_input_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace Block selected source index.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.current_stream_input_name">
-<code class="sig-name descname"><span class="pre">current_stream_input_name</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.current_stream_input_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace Block selected source ILA cell name. Empty string means “Not reserved”.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.enabled">
-<code class="sig-name descname"><span class="pre">enabled</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.enabled" title="Permalink to this definition">¶</a></dt>
-<dd><ul class="simple">
-<li><p>True - external trace is selected.</p></li>
-<li><p>False - ILA core internal data buffer, is selected. Maximum data depth is 1024 samples.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.is_armed">
-<code class="sig-name descname"><span class="pre">is_armed</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.is_armed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace Block armed status.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.is_full">
-<code class="sig-name descname"><span class="pre">is_full</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.is_full" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace Block is_full status.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ila.ila_external_trace.ILAExternalTrace.status_error_reserved">
-<code class="sig-name descname"><span class="pre">status_error_reserved</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.ILAExternalTrace.status_error_reserved" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undocumented.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="calculate-external-trace-byte-count">
-<h3>calculate_external_trace_byte_count<a class="headerlink" href="#calculate-external-trace-byte-count" title="Permalink to this headline">¶</a></h3>
-<dl class="py method">
-<dt id="chipscopy.api.ila.ila_external_trace.calculate_external_trace_byte_count">
-<code class="sig-prename descclassname"><span class="pre">ila_external_trace.</span></code><code class="sig-name descname"><span class="pre">calculate_external_trace_byte_count</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.calculate_external_trace_byte_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate byte count needed to store a certain number of samples.
-Argument “sample_count” is rounded up to nearest power-of-two value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ila</strong> (<a class="reference internal" href="#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><em>ILA</em></a>) – ILA object.</p></li>
-<li><p><strong>sample_count</strong> (<em>int</em>) – Samples per window. Must be 1024 or larger.</p></li>
-<li><p><strong>window_count</strong> (<em>int</em>) – Number of windows.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Returns: Number of bytes required to store samples for all windows.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="calculate-external-trace-one-window-sample-count">
-<h3>calculate_external_trace_one_window_sample_count<a class="headerlink" href="#calculate-external-trace-one-window-sample-count" title="Permalink to this headline">¶</a></h3>
-<dl class="py method">
-<dt id="chipscopy.api.ila.ila_external_trace.calculate_external_trace_one_window_sample_count">
-<code class="sig-prename descclassname"><span class="pre">ila_external_trace.</span></code><code class="sig-name descname"><span class="pre">calculate_external_trace_one_window_sample_count</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">byte_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.calculate_external_trace_one_window_sample_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate how many samples fit into one window.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ila</strong> (<a class="reference internal" href="#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><em>ILA</em></a>) – Ila object.</p></li>
-<li><p><strong>byte_count</strong> (<em>int</em>) – Total byte count for all windows.</p></li>
-<li><p><strong>window_count</strong> (<em>int</em>) – Number of windows.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Returns: Max sample count, which fits into one single window. The result will be a power-of-two value.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="refresh-external-trace-status">
-<h3>refresh_external_trace_status<a class="headerlink" href="#refresh-external-trace-status" title="Permalink to this headline">¶</a></h3>
-<dl class="py method">
-<dt id="chipscopy.api.ila.ila_external_trace.refresh_external_trace_status">
-<code class="sig-prename descclassname"><span class="pre">ila_external_trace.</span></code><code class="sig-name descname"><span class="pre">refresh_external_trace_status</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.refresh_external_trace_status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read Trace Block status. Update ILA.external_trace</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="set-external-trace">
-<h3>set_external_trace<a class="headerlink" href="#set-external-trace" title="Permalink to this headline">¶</a></h3>
-<dl class="py method">
-<dt id="chipscopy.api.ila.ila_external_trace.set_external_trace">
-<code class="sig-prename descclassname"><span class="pre">ila_external_trace.</span></code><code class="sig-name descname"><span class="pre">set_external_trace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byte_count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.set_external_trace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace Block setup. Applied during run trigger command.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ila</strong> (<a class="reference internal" href="#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><em>ILA</em></a>) – ILA object.</p></li>
-<li><p><strong>enable</strong> (<em>bool</em>) – True for external trace. False for ILA internal storage. ILA internal storage has room for 1024</p></li>
-<li><p><strong>samples.</strong> – </p></li>
-<li><p><strong>start_address</strong> (<em>int</em>) – Starting external memory address. start_address must be on a 0x1000 byte boundary.</p></li>
-<li><p><strong>byte_count</strong> (<em>int</em>) – Reserved trace data memory size.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="upload-external-waveform">
-<h3>upload_external_waveform<a class="headerlink" href="#upload-external-waveform" title="Permalink to this headline">¶</a></h3>
-<dl class="py method">
-<dt id="chipscopy.api.ila.ila_external_trace.upload_external_waveform">
-<code class="sig-prename descclassname"><span class="pre">ila_external_trace.</span></code><code class="sig-name descname"><span class="pre">upload_external_waveform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ila.ila_external_trace.upload_external_waveform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Upload external waveform from DDR memory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ila</strong> (<a class="reference internal" href="#chipscopy.api.ila.ila.ILA" title="chipscopy.api.ila.ila.ILA"><em>ILA</em></a>) – ILA object.</p></li>
-<li><p><strong>show_progress_bar</strong> (<em>bool</em>) – Show progress bar while reading external trace memory.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Returns: True, if waveform is captured and successfully uploaded.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-</div>
 </div>
 
 
@@ -2206,7 +2002,7 @@ Argument “sample_count” is rounded up to nearest power-of-two value.</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 05, 2023.
+        Last updated on February 20, 2023.
       </span>
 
     </p>
