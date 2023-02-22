@@ -251,51 +251,10 @@ ILATrigOutMode (enum)
 ILAWaveform
 """""""""""
 .. autoclass:: chipscopy.api.ila.ILAWaveform
+    :members:
+    :exclude-members: export_waveform, get_data, get_probe_data, import_waveform
 
 ILAWaveformProbe
 """"""""""""""""
 .. autoclass:: chipscopy.api.ila.ILAWaveformProbe
     :members:
-
-ILA External Trace
-++++++++++++++++++
-
-Store captured waveform data in off-chip memory.
-
-When an ILA core supports external trace, the :class:`.ILA` object has an extra attribute named "external_trace"
-of type :class:`.ILAExternalTrace`. (In current implementation, the "external_trace" attribute does not exist,
-until after calling function set_external_trace.)
-
-External Trace mode can be turned on/off with the function set_external_trace.
-The set_external_trace function must be called before calling any of the regular ILA functions to arm the ILA core.
-The external trace data, is uploaded with function upload external_waveform.
-
-When arming an ILA in external trace mode, the ILA reserves the associated Trace Block core.
-The upload_external_waveform function releasses the Trace Block core.
-
-An ILA core which support external trace, supports up to 1024 data samples in internal non-trace mode.
-
-ILAExternalTrace
-""""""""""""""""
-.. autoclass:: chipscopy.api.ila.ila_external_trace.ILAExternalTrace
-    :members:
-
-calculate_external_trace_byte_count
-"""""""""""""""""""""""""""""""""""
-.. automethod:: chipscopy.api.ila.ila_external_trace.calculate_external_trace_byte_count
-
-calculate_external_trace_one_window_sample_count
-""""""""""""""""""""""""""""""""""""""""""""""""
-.. automethod:: chipscopy.api.ila.ila_external_trace.calculate_external_trace_one_window_sample_count
-
-refresh_external_trace_status
-"""""""""""""""""""""""""""""
-.. automethod:: chipscopy.api.ila.ila_external_trace.refresh_external_trace_status
-
-set_external_trace
-""""""""""""""""""
-.. automethod:: chipscopy.api.ila.ila_external_trace.set_external_trace
-
-upload_external_waveform
-""""""""""""""""""""""""
-.. automethod:: chipscopy.api.ila.ila_external_trace.upload_external_waveform

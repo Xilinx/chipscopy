@@ -15,17 +15,37 @@
 from __future__ import annotations
 
 import builtins
-from typing import TYPE_CHECKING, Any, Dict, Generic, List, Set, Tuple, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Set,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from rich.tree import Tree
 
 from chipscopy.api._detail.property import PropertyCommands, Watchlist, WatchlistEventHandler
 from chipscopy.api.containers import QueryList
+from chipscopy.api.ibert.aliases import (
+    DISPLAY_NAME,
+    TYPE,
+    HANDLE_NAME,
+    PROPERTY_ENDPOINT,
+    ALIAS_DICT,
+    MODIFIABLE_ALIASES,
+)
 from chipscopy.client.ibert_core_client import IBERTCoreClient
 from typing_extensions import Final
 
 if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert import IBERT
+    from chipscopy.api.ibert.gt_group import GTGroup
 
 
 class IBERTWatchlist(Watchlist["IBERTPropertyCommands"]):
@@ -96,7 +116,7 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
     core_tcf_node - Points to the IBERTCoreClient class and is needed to call server commands
     _endpoint_tcf_node - Points to the Node class which is a child of core_tcf_node. 
      Needed to access props attached to a node
-     
+
     Example with IBERT hierarchy 
         IBERT Versal GTY  <-- core_tcf_node
         ├── Quad_206 <-- if self.endpoint_name == "Quad_206", endpoint_tcf_node points to this
@@ -211,41 +231,29 @@ class SerialObjectBase(Generic[parent_type, child_type]):
     """
 
     def __init__(
-        self,
-        *,
-        name: str,
-        type: str,
-        parent: parent_type,
-        handle: str,
-        core_tcf_node: IBERTCoreClient,
-        property_for_alias: Dict[str, str],
-        is_property_endpoint: bool,
-        modifiable_aliases: Set[str],
+        self, obj_info: Dict[str, Any], parent: parent_type, core_tcf_node: IBERTCoreClient
     ):
-        self.name: Final[str] = name
+        self.name: Final[str] = obj_info[DISPLAY_NAME]
         """Object name"""
 
-        self.type: Final[str] = type
+        self.type: Final[str] = obj_info[TYPE]
         """Object type"""
 
-        self.handle: Final[str] = handle
+        self.handle: Final[str] = obj_info[HANDLE_NAME]
         """Object handle from cs_server"""
 
         self.parent: Final[parent_type] = parent
         """Parent of this object"""
 
-        self.children: QueryList[child_type] = QueryList()
-        """Direct children of this object"""
+        self._children: QueryList[child_type] = QueryList()
 
         self.core_tcf_node: Final[IBERTCoreClient] = core_tcf_node
 
-        self.property_for_alias: Dict[str, str] = property_for_alias
-        """Alias to property name mapping"""
-
-        self.modifiable_aliases: Set[str] = modifiable_aliases
+        self._property_for_alias: Dict[str, str] = dict()
+        self._modifiable_aliases: Set[str] = set()
 
         self._property_endpoint: Type[SerialObjectBase]
-        if is_property_endpoint:
+        if obj_info[PROPERTY_ENDPOINT]:
             self._property_endpoint = self
         else:
             if self.parent._property_endpoint is None:
@@ -256,15 +264,17 @@ class SerialObjectBase(Generic[parent_type, child_type]):
 
             self._property_endpoint = self.parent._property_endpoint
 
-        self.property: IBERTPropertyCommands = IBERTPropertyCommands(
+        self._property: IBERTPropertyCommands = IBERTPropertyCommands(
             parent=self,
             property_endpoint=self._property_endpoint,
         )
 
         self.filter_by = {}
 
+        self.setup_done: bool = False
+
     def __repr__(self):
-        return f"{self.type} - {self.name} - {self.handle}"
+        return f"{self.handle}({self.type})"
 
     def __rich_tree__(self):
         root = Tree(self.name)
@@ -279,12 +289,45 @@ class SerialObjectBase(Generic[parent_type, child_type]):
     # Explicitly use property from builtins here, since this class has instance var with same name
     @builtins.property
     def aliases(self) -> Set[str]:
-        """
-
-        Returns:
-
-        """
+        """All available aliases"""
         return set(self.property_for_alias.keys())
+
+    @builtins.property
+    def children(self) -> QueryList[child_type]:
+        """Direct children of this object"""
+        self.setup()
+        return self._children
+
+    @builtins.property
+    def modifiable_aliases(self) -> Set[str]:
+        """Aliases that support value modification"""
+        self.setup()
+        return self._modifiable_aliases
+
+    @builtins.property
+    def property(self) -> IBERTPropertyCommands:
+        self.setup()
+        return self._property
+
+    @builtins.property
+    def property_for_alias(self) -> Dict[str, str]:
+        """Alias to property name mapping"""
+        self.setup()
+        return self._property_for_alias
 
     def reset(self):
         raise NotImplementedError(f"Reset is not supported for {self.handle}!")
+
+    def _build_aliases(self, obj_info: Dict[str, Any]):
+        if obj_info.get(ALIAS_DICT):
+            self._property_for_alias = obj_info[ALIAS_DICT]
+            if obj_info.get(MODIFIABLE_ALIASES):
+                self._modifiable_aliases = obj_info[MODIFIABLE_ALIASES]
+
+    def setup(self):
+        if self.setup_done:
+            return
+
+        obj_info = self.core_tcf_node.get_obj_info(self.handle)
+        self._build_aliases(obj_info)
+        self.setup_done = True

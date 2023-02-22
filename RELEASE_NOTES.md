@@ -1,5 +1,13 @@
 # ChipScoPy Release Notes
 
+## 2023.1.pre #2 - Feb 21, 2023
+- Fixed issues detecting DPC change when reprogramming
+- Removed arm-dap from fpga device list (correctly reported in jtag device list)
+- Python 3.8 requirement
+
+## 2023.1.pre #1 - Dec 17, 2022
+- hw_server and cs_server compatibility
+
 ## 2022.2 - December 5, 2022
 
 - ILA: Reorganized waveform functions export_waveform(), get_data(), get_probe_data()

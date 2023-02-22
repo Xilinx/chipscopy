@@ -15,10 +15,11 @@
 from dataclasses import dataclass
 from enum import Enum, unique
 from pprint import pformat
-from typing import Optional
+from typing import Optional, Callable, List, Set
 
 from chipscopy import dm
 from chipscopy.api._detail import dataclass_fields, filter_props
+from chipscopy.dm import NodeListener
 
 
 @unique
@@ -67,3 +68,55 @@ def get_core_info(tcf_node: dm.Node) -> Optional[CoreInfo]:
         return CoreInfo(**filter_props(tcf_node.props, CORE_INFO_MEMBERS))
 
     return None
+
+
+class DMNodeListener(NodeListener):
+    """
+    The Session hooks into the hw_server and cs_server with a DMNodeListener to
+    listen to events that happen when hardware changes occur.
+    This enables the session to keep track of asynchronous events to the device
+    and adjust cached values as needed to remain consistent with the hardware
+    state.
+
+    When an events happen on a tracked node, the registered callback is called
+    with node event details.
+
+    Usage:
+
+    ::
+
+        def _node_callback(self, action: DMNodeListener.NodeAction, node: Node, props: Optional[Set]):
+            ... handle callback ...
+
+
+        # register for callbacks
+        self.hw_server.get_view("memory").add_node_listener(DMNodeListener(self._node_callback))
+
+        ...
+
+
+    """
+
+    @unique
+    class NodeAction(Enum):
+        NODE_ADDED = "NODE_ADDED"
+        NODE_REMOVED = "NODE_REMOVED"
+        NODE_CHANGED = "NODE_CHANGED"
+
+    def __init__(self, callback: Callable[[NodeAction, dm.Node, Optional[Set]], None]):
+        super().__init__()
+        self._callback = callback
+
+    def nodes_added(self, nodes: List[dm.Node]):
+        if self._callback:
+            for node in nodes:
+                self._callback(DMNodeListener.NodeAction.NODE_ADDED, node, None)
+
+    def node_changed(self, node: dm.Node, updated_keys: Set[str]):
+        if self._callback:
+            self._callback(DMNodeListener.NodeAction.NODE_CHANGED, node, updated_keys)
+
+    def nodes_removed(self, nodes: List[dm.Node]):
+        if self._callback:
+            for node in nodes:
+                self._callback(DMNodeListener.NodeAction.NODE_REMOVED, node, None)

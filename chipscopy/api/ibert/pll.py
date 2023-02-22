@@ -12,44 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict
 
-from chipscopy.api.ibert.aliases import (
-    ALIAS_DICT,
-    HANDLE_NAME,
-    MODIFIABLE_ALIASES,
-    PLL_LOCK_STATUS,
-    PROPERTY_ENDPOINT,
-    TYPE,
-    PLL_RESET,
-)
+from chipscopy.api.ibert.aliases import PLL_LOCK_STATUS, PLL_RESET
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from typing_extensions import final
 
 if TYPE_CHECKING:  # pragma: no cover
-    from chipscopy.api.ibert.gt_group import GT
+    from chipscopy.api.ibert.gt_group import GTGroup  # noqa
 
 
 @final
 class PLL(SerialObjectBase["GTGroup", None]):
-    def __init__(self, name, parent, tcf_node, configuration):
-        SerialObjectBase.__init__(
-            self,
-            name=name,
-            type=configuration[TYPE],
-            parent=parent,
-            handle=configuration[HANDLE_NAME],
-            core_tcf_node=tcf_node,
-            property_for_alias=configuration.get(ALIAS_DICT, dict()),
-            is_property_endpoint=configuration.get(PROPERTY_ENDPOINT, False),
-            modifiable_aliases=configuration.get(MODIFIABLE_ALIASES, set()),
-        )
+    def __init__(self, pll_info: Dict[str, Any], parent, tcf_node):
+        SerialObjectBase.__init__(self, pll_info, parent, tcf_node)
 
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
 
-    def __repr__(self) -> str:
-        return self.name
+    # def __repr__(self) -> str:
+    #     return self.name
 
     @staticmethod
     def check_for_filter_match(filters_dict, filter_name, match_value) -> bool:

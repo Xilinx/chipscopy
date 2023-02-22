@@ -618,7 +618,7 @@ class LocatorService(locator.LocatorService):
                               struct.pack('iL', nBytes,
                                           names.buffer_info()[0])))[0]
 
-        namestr = names.tostring()
+        namestr = names.tobytes()
         if namestr and isinstance(namestr[0], int):
             namestr = ''.join(chr(b) for b in namestr)
         res = []

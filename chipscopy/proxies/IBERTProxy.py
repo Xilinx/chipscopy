@@ -43,6 +43,18 @@ class IBERTProxy(IBERTService):
         log[DOMAIN_NAME].debug("Sending initializeCmd")
         return self.send_xicom_command("initialize", (node_id,), done)
 
+    def initialize_architecture(self, node_id: str, done):
+        return self.send_xicom_command("initialize_architecture", (node_id,), done)
+
+    def discover_gt_groups(self, options: Dict[str, Any], done):
+        return self.send_xicom_command("discover_gt_groups", (options["node_id"], options), done)
+
+    def setup_gt_group(self, options: Dict[str, Any], done):
+        return self.send_xicom_command("setup_gt_group", (options["node_id"], options), done)
+
+    def get_obj_info(self, options: Dict[str, Any], done):
+        return self.send_xicom_command("get_obj_info", (options["node_id"], options), done)
+
     def tier1_initialize(self, node_id: str, done):
         return self.send_xicom_command("tier1_initialize", (node_id,), done)
 

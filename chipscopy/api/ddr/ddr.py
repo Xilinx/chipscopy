@@ -293,7 +293,9 @@ class DDR(DebugCore["DDRMCClient"]):
 
         return configs
 
-    def __get_cal_margins(self, mode_base: str, left_margs: Dict, right_margs: Dict, centers: Dict):
+    def __get_cal_margins(
+        self, mode_base: str, left_margs: Dict, right_margs: Dict, centers: Dict, prbs: bool = False
+    ):
         group_name = mode_base + "_left"
         results = self.ddr_node.get_property_group([group_name])
         left_margs.clear()
@@ -302,10 +304,11 @@ class DDR(DebugCore["DDRMCClient"]):
         results = self.ddr_node.get_property_group([group_name])
         right_margs.clear()
         right_margs.update(results)
-        group_name = mode_base + "_center"
-        results = self.ddr_node.get_property_group([group_name])
         centers.clear()
-        centers.update(results)
+        if not prbs:
+            group_name = mode_base + "_center"
+            results = self.ddr_node.get_property_group([group_name])
+            centers.update(results)
 
     def __output_read_margins(
         self,
@@ -388,6 +391,74 @@ class DDR(DebugCore["DDRMCClient"]):
                     ")",
                 )
 
+    def __output_gen5_margins(
+        self,
+        is_dq: bool,
+        bytes: int,
+        bits_byte: int,
+        left_margs: Dict,
+        right_margs: Dict,
+        centers: Dict,
+    ):
+        left_marg_vals = sorted(left_margs.items())
+        right_marg_vals = sorted(right_margs.items())
+        center_vals = {}
+        if not centers:
+            for idx in range(len(left_margs)):
+                center_vals[idx] = (0, 0)
+        else:
+            center_vals = sorted(centers.items())
+
+        if is_dq:
+            for byte in range(bytes):
+                for bit in range(bits_byte):
+                    left_marg = left_marg_vals[byte * bits_byte + bit][1]
+                    center = center_vals[byte * bits_byte + bit][1]
+                    right_marg = right_marg_vals[byte * bits_byte + bit][1]
+                    printer(
+                        "Byte ",
+                        str(byte),
+                        " Bit ",
+                        str(bit),
+                        " - Left Margin: ",
+                        str(left_marg[1]),
+                        "(",
+                        str(left_marg[0]),
+                        ") Center Point: ",
+                        str(center[1]),
+                        "(",
+                        str(center[0]),
+                        ") Right Margin: ",
+                        str(right_marg[1]),
+                        "(",
+                        str(right_marg[0]),
+                        ")",
+                    )
+        else:
+            # DBI for LP5 Read
+            # DM for Write
+            for byte in range(bytes):
+                left_marg = left_marg_vals[byte][1]
+                center = center_vals[byte][1]
+                right_marg = right_marg_vals[byte][1]
+                printer(
+                    "Byte ",
+                    str(byte),
+                    " - Left Margin: ",
+                    str(left_marg[1]),
+                    "(",
+                    str(left_marg[0]),
+                    ") Center Point: ",
+                    str(center[1]),
+                    "(",
+                    str(center[0]),
+                    ") Right Margin: ",
+                    str(right_marg[1]),
+                    "(",
+                    str(right_marg[0]),
+                    ")",
+                )
+
     def __output_write_margins(
         self, bytes: int, left_margs: Dict, right_margs: Dict, centers: Dict
     ):
@@ -448,9 +519,8 @@ class DDR(DebugCore["DDRMCClient"]):
         self.refresh_cal_status()
         self.refresh_health_status()
         printer("Calibration Status:  ", self.get_cal_status(), "\n")
-        if not self.is_gen5:
-            results = self.ddr_node.get_property("health_status")
-            printer("Overall Health:  ", results["health_status"], "\n")
+        results = self.ddr_node.get_property("health_status")
+        printer("Overall Health:  ", results["health_status"], "\n")
         results = self.ddr_node.get_property("cal_message")
         printer("Message:  ", results["cal_message"], "\n")
 
@@ -460,20 +530,19 @@ class DDR(DebugCore["DDRMCClient"]):
             printer("Error:  ", results["cal_error_msg"], "\n")
 
         # DDRMC ISR Registers
-        if not self.is_gen5:
-            printer("\n-------------------\n")
-            printer(" Status Registers\n")
-            printer("-------------------\n")
+        printer("\n-------------------\n")
+        printer(" Status Registers\n")
+        printer("-------------------\n")
 
-            printer("DDRMC ISR Table\n")
-            results = self.ddr_node.get_property_group(["ddrmc_isr_e", "ddrmc_isr_w"])
-            for key, val in sorted(results.items()):
-                printer("  ", key, ":  ", str(val))
+        printer("DDRMC ISR Table\n")
+        results = self.ddr_node.get_property_group(["ddrmc_isr_e", "ddrmc_isr_w"])
+        for key, val in sorted(results.items()):
+            printer("  ", key, ":  ", str(val))
 
-            printer("\nUB ISR Table\n")
-            results = self.ddr_node.get_property_group(["ub_isr_e", "ub_isr_w"])
-            for key, val in sorted(results.items()):
-                printer("  ", key, ":  ", str(val))
+        printer("\nUB ISR Table\n")
+        results = self.ddr_node.get_property_group(["ub_isr_e", "ub_isr_w"])
+        for key, val in sorted(results.items()):
+            printer("  ", key, ":  ", str(val))
 
         # Memory configuration info
         printer("\n----------------------------------\n")
@@ -503,22 +572,21 @@ class DDR(DebugCore["DDRMCClient"]):
             )
 
         # Cal Margin Analysis
-        if not self.is_gen5:
-            printer("\n---------------------------------------\n")
-            printer(" Calibration Window Margin Analysis \n")
-            printer("---------------------------------------\n")
+        printer("\n---------------------------------------\n")
+        printer(" Calibration Window Margin Analysis \n")
+        printer("---------------------------------------\n")
 
         if not sys_error:
             cal_margin_modes = {}
             left_margins = {}
             right_margins = {}
             center_points = {}
+            cal_margin_modes = self.get_cal_margin_mode()
+            num_byte = int(configs["Bytes"])
             if not self.is_gen5:
                 is_by_8 = True
-                num_byte = int(configs["Bytes"])
                 num_nibble = int(configs["Nibbles"])
                 self.refresh_cal_margin()
-                cal_margin_modes = self.get_cal_margin_mode()
                 if int(configs["Bits per Byte"]) == 4:
                     is_by_8 = False
 
@@ -623,6 +691,447 @@ class DDR(DebugCore["DDRMCClient"]):
                         self.__output_write_margins(
                             num_byte, left_margins, right_margins, center_points
                         )
+            # Is Gen5
+            else:
+                dual_freqs = configs.get("Memory Frequency 1")
+                if dual_freqs:
+                    num_freqs = 2
+                else:
+                    num_freqs = 1
+                num_ranks = int(configs["Ranks"])
+                num_bits_byte = int(configs["Bits per Byte"])
+                prbs_ctps_rise = {}
+                prbs_ctps_fall = {}
+                prbs_ctps = {}
+
+                # Main loop to go through dual frequencies
+                for freq in range(num_freqs):
+                    base = "Freq " + str(freq) + " Rank "
+                    for rank in range(num_ranks):
+                        # Read DQ Simp
+                        key = "f" + str(freq) + "_rd_dq_simp"
+                        if cal_margin_modes[key]:
+                            # Rising Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dq_simp_rise"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DQ Margin - Simple Pattern - Rising Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_rise = center_points.copy()
+
+                            # Falling Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dq_simp_fall"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DQ Margin - Simple Pattern - Falling Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_fall = center_points.copy()
+
+                        # Read DQ Comp
+                        key = "f" + str(freq) + "_rd_dq_comp"
+                        if cal_margin_modes[key]:
+                            # Rising Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dq_comp_rise"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DQ Margin - Complex Pattern - Rising Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_rise = center_points.copy()
+
+                            # Falling Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dq_comp_fall"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DQ Margin - Complex Pattern - Falling Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_fall = center_points.copy()
+
+                        # Read DQ PRBS
+                        key = "f" + str(freq) + "_rd_dq_prbs"
+                        if cal_margin_modes[key]:
+                            # Rising Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dq_prbs_rise"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points, True
+                            )
+                            if prbs_ctps_rise:
+                                center_points = prbs_ctps_rise.copy()
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DQ Margin - PRBS Pattern - Rising Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_rise.clear()
+
+                            # Falling Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dq_prbs_fall"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points, True
+                            )
+                            if prbs_ctps_fall:
+                                center_points = prbs_ctps_fall.copy()
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DQ Margin - PRBS Pattern - Falling Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_fall.clear()
+
+                        # Read DBI Simp
+                        key = "f" + str(freq) + "_rd_dbi_simp"
+                        if cal_margin_modes[key]:
+                            # Rising Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dbi_simp_rise"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DBI Margin - Simple Pattern - Rising Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_rise = center_points.copy()
+
+                            # Falling Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dbi_simp_fall"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DBI Margin - Simple Pattern - Falling Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_fall = center_points.copy()
+
+                        # Read DBI Comp
+                        key = "f" + str(freq) + "_rd_dbi_comp"
+                        if cal_margin_modes[key]:
+                            # Rising Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dbi_comp_rise"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DBI Margin - Complex Pattern - Rising Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_rise = center_points.copy()
+
+                            # Falling Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dbi_comp_fall"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DBI Margin - Complex Pattern - Falling Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_fall = center_points.copy()
+
+                        # Read DBI PRBS
+                        key = "f" + str(freq) + "_rd_dbi_prbs"
+                        if cal_margin_modes[key]:
+                            # Rising Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dbi_prbs_rise"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points, True
+                            )
+                            if prbs_ctps_rise:
+                                center_points = prbs_ctps_rise.copy()
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DBI Margin - PRBS Pattern - Rising Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_rise.clear()
+
+                            # Falling Edge
+                            group_name_base = (
+                                "f" + str(freq) + "_rank" + str(rank) + "_rd_dbi_prbs_fall"
+                            )
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points, True
+                            )
+                            if prbs_ctps_fall:
+                                center_points = prbs_ctps_fall.copy()
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Read DBI Margin - PRBS Pattern - Falling Edge Clock in pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps_fall.clear()
+
+                        # Write DQ Simp
+                        key = "f" + str(freq) + "_wr_dq_simp"
+                        if cal_margin_modes[key]:
+                            group_name_base = "f" + str(freq) + "_rank" + str(rank) + "_wr_dq_simp"
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Write DQ Margin - Simple Pattern - In pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps = center_points.copy()
+
+                        # Write DQ Comp
+                        key = "f" + str(freq) + "_wr_dq_comp"
+                        if cal_margin_modes[key]:
+                            group_name_base = "f" + str(freq) + "_rank" + str(rank) + "_wr_dq_comp"
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Write DQ Margin - Complex Pattern - In pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps = center_points.copy()
+
+                        # Write DQ PRBS
+                        key = "f" + str(freq) + "_wr_dq_prbs"
+                        if cal_margin_modes[key]:
+                            group_name_base = "f" + str(freq) + "_rank" + str(rank) + "_wr_dq_prbs"
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points, True
+                            )
+                            if prbs_ctps:
+                                center_points = prbs_ctps.copy()
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Write DQ Margin - PRBS Pattern - In pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                True,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps.clear()
+
+                        # Write DM Simp
+                        key = "f" + str(freq) + "_wr_dm_simp"
+                        if cal_margin_modes[key]:
+                            group_name_base = "f" + str(freq) + "_rank" + str(rank) + "_wr_dm_simp"
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Write DM Margin - Simple Pattern - In pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps = center_points.copy()
+
+                        # Write DM Comp
+                        key = "f" + str(freq) + "_wr_dm_comp"
+                        if cal_margin_modes[key]:
+                            group_name_base = "f" + str(freq) + "_rank" + str(rank) + "_wr_dm_comp"
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points
+                            )
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Write DM Margin - Complex Pattern - In pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
+                            prbs_ctps = center_points.copy()
+
+                        # Write DM PRBS
+                        key = "f" + str(freq) + "_wr_dm_prbs"
+                        if cal_margin_modes[key]:
+                            group_name_base = "f" + str(freq) + "_rank" + str(rank) + "_wr_dm_prbs"
+                            self.__get_cal_margins(
+                                group_name_base, left_margins, right_margins, center_points, True
+                            )
+                            if prbs_ctps:
+                                center_points = prbs_ctps.copy()
+                            printer(
+                                "\n",
+                                base + str(rank),
+                                " - Write DM Margin - PRBS Pattern - In pS and (delay taps):\n",
+                            )
+                            self.__output_gen5_margins(
+                                False,
+                                num_byte,
+                                num_bits_byte,
+                                left_margins,
+                                right_margins,
+                                center_points,
+                            )
         else:
             printer(
                 "\nNote: DDRMC system error is detected. Margin Analysis will not be provided for ",

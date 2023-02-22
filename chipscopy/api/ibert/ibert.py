@@ -15,19 +15,19 @@
 from __future__ import annotations
 
 from rich.tree import Tree
-from typing import TYPE_CHECKING, ClassVar, Dict, Optional
+from typing import TYPE_CHECKING
 
 from chipscopy.api import CoreType
 from chipscopy.api._detail.debug_core import DebugCore
 from chipscopy.api.containers import QueryList
-from chipscopy.api.ibert.aliases import CHILDREN, GT_GROUP_KEY, HANDLE_NAME, IBERT_KEY, TYPE
+from chipscopy.api.ibert.aliases import GT_GROUP_KEY, HANDLE_NAME, IBERT_KEY, DISPLAY_NAME
 from chipscopy.api.ibert.gt_group import GTGroup
 from chipscopy.api.report import report_hierarchy
 from chipscopy.utils import deprecated_api
 from typing_extensions import Final, final
 
 if TYPE_CHECKING:  # pragma: no cover
-    from chipscopy.client.ibert_core_client import IBERTCoreClient
+    from chipscopy.client.ibert_core_client import IBERTCoreClient  # noqa
 
 
 @final
@@ -36,10 +36,11 @@ class IBERT(DebugCore["IBERTCoreClient"]):
     Main API class to use IBERT (Integrated Bit Error Ratio Tester) debug core.
     """
 
-    def __init__(self, ibert_tcf_node, *, use_tiered_init: bool):
+    def __init__(self, ibert_tcf_node):
         super(IBERT, self).__init__(CoreType.IBERT, ibert_tcf_node)
+        _, core_info = self.core_tcf_node.initialize_architecture().popitem()
 
-        self.layout = None
+        self._gt_groups_discovery_complete: bool = False
 
         self.type: Final[str] = IBERT_KEY
         """Serial object type"""
@@ -47,20 +48,14 @@ class IBERT(DebugCore["IBERTCoreClient"]):
         self.children: QueryList[GTGroup] = QueryList()
         """Children of IBERT"""
 
-        if use_tiered_init:
-            # START = time.perf_counter()
-            tier1_init_data = self.core_tcf_node.tier1_initialize()
-            # print(f"Skeleton cmd runtime - {time.perf_counter() - START}")
-            self.name: str = tier1_init_data["DISPLAY_NAME"]
-            """Name of the IBERT core"""
+        self.name: str = core_info[DISPLAY_NAME]
+        """Name of the IBERT core"""
 
-            self.handle = "NA"
-            """Handle from cs_server"""
+        self.handle = core_info[HANDLE_NAME]
+        """Handle from cs_server"""
 
-            # This is used by the filter_by method in QueryList
-            self.filter_by = {"name": self.name, "type": self.type}
-        else:
-            self.setup()
+        # This is used by the filter_by method in QueryList
+        self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
 
     def __repr__(self) -> str:
         return self.name
@@ -76,7 +71,32 @@ class IBERT(DebugCore["IBERTCoreClient"]):
     @property
     def gt_groups(self) -> QueryList[GTGroup]:
         """GT Group children of the IBERT core"""
+        self.discover_gt_groups()
         return self.children.filter_by(type=GT_GROUP_KEY)
+
+    def discover_gt_groups(self, *, include_uninstantiated: bool = False):
+        """
+        Discover all GT Groups that are instantiated by the design.
+
+        Args:
+            include_uninstantiated (bool): If you wish to include un-instantiated GT Groups in the discovery process,
+                set this to 'True'.
+
+        Returns:
+            None
+        """
+        if self._gt_groups_discovery_complete:
+            return
+
+        gt_group_handles = self.core_tcf_node.discover_gt_groups(include_uninstantiated)
+        if isinstance(gt_group_handles, str):
+            gt_group_handles = [gt_group_handles]
+
+        for handle in gt_group_handles:
+            obj_info = self.core_tcf_node.get_obj_info(handle)
+            self.children.append(GTGroup(obj_info, self, self.core_tcf_node))
+
+        self._gt_groups_discovery_complete = True
 
     def reset(self):
         """
@@ -84,39 +104,6 @@ class IBERT(DebugCore["IBERTCoreClient"]):
         """
         for gt_group in self.gt_groups:
             gt_group.reset()
-
-    def setup(self):
-        # layout is None in case tiered init was used, else it's a dict with data
-        if self.layout is not None:
-            return
-
-        self.core_tcf_node.initialize()
-        layout = self.core_tcf_node.get_layout()
-
-        # At the top most level only one key = IBERT name is expected
-        self.name = list(layout.keys())[0]
-        configuration = layout[self.name]
-
-        self.handle = configuration[HANDLE_NAME]
-
-        # This is used by the filter_by method in QueryList
-        self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
-
-        if CHILDREN in configuration:
-            # Build the child objects
-            for child_name, child_configuration in configuration[CHILDREN].items():
-                if child_configuration[TYPE] == GT_GROUP_KEY:
-                    child_class = GTGroup
-                else:
-                    continue
-
-                new_child = child_class(
-                    name=child_name,
-                    parent=self,
-                    tcf_node=self.core_tcf_node,
-                    configuration=child_configuration,
-                )
-                self.children.append(new_child)
 
     @deprecated_api(release="2021.1", replacement="report_hierarchy(<Any serial object>)")
     def print_hierarchy(self):

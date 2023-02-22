@@ -42,6 +42,13 @@ class Cable(ABC):
     def __repr__(self):
         return self.to_json()
 
+    def __getitem__(self, item):
+        props = self.to_dict()
+        if item in props:
+            return props[item]
+        else:
+            raise AttributeError(f"No property {str(item)}")
+
     @property
     @abstractmethod
     def is_valid(self) -> bool:
@@ -83,7 +90,6 @@ class _JtagCable(Cable):
         hw_server: ServerInfo,
         cs_server: ServerInfo,
         disable_core_scan: bool,
-        use_legacy_scanner: bool,
         timeout: int,
     ):
         super().__init__()
@@ -93,7 +99,6 @@ class _JtagCable(Cable):
         self._disable_core_scan = disable_core_scan
         self._timeout = timeout
         self._should_wait_for_ready = True
-        self._use_legacy_scanner = use_legacy_scanner
         assert tcf_node.props.get("node_cls") == JtagCable
         assert tcf_node.is_valid is True
 
@@ -112,7 +117,6 @@ class _JtagCable(Cable):
             cs_server=self._cs_server,
             disable_core_scan=self._disable_core_scan,
             cable_ctx=self._tcf_node.ctx,
-            use_legacy_scaner=self._use_legacy_scanner,
         )
         return devices
 
@@ -193,7 +197,6 @@ def discover_cables(
     hw_server: ServerInfo,
     cs_server: Optional[ServerInfo],
     disable_core_scan: bool,
-    use_legacy_scanner: bool,
     timeout: int,
 ) -> QueryList[Cable]:
     """Given a hw_server and cs_server, scan for cables in hardware and return the list.
@@ -202,7 +205,6 @@ def discover_cables(
         hw_server: hardware server connection
         cs_server: chipscope server connection (or None if no connection)
         disable_core_scan: Disable scanning debug cores in all devices (global to cable)
-        use_legacy_scanner: Use legacy device scan algorithm
         timeout: cable device detection timeout in seconds
 
     Returns:
@@ -211,7 +213,5 @@ def discover_cables(
     cables: QueryList[Cable] = QueryList()
     view = hw_server.get_view("jtag")
     for node in view.get_children():
-        cables.append(
-            _JtagCable(node, hw_server, cs_server, disable_core_scan, use_legacy_scanner, timeout)
-        )
+        cables.append(_JtagCable(node, hw_server, cs_server, disable_core_scan, timeout))
     return cables

@@ -111,8 +111,6 @@ def _create_device_report(device: "Device", title="ChipScoPy Device"):
     report.add_column("Value", justify="left")
     for key in ["part", "dna", "cable_name", "cable_context", "jtag_index"]:
         report.add_row(key, str(json_data[key]))
-    for target_dict in json_data["node_identification"]:
-        report.add_row(target_dict["hier_name"], target_dict["context"])
     return report
 
 

@@ -14,7 +14,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2023.1.dev1671238423"
+version = "2023.1.dev1676913681"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -25,7 +25,7 @@ readme = "README.md"
 include = ["LICENSE", "epl-v20.html"]
 
 [tool.poetry.dependencies]
-python = "^3.7.1"
+python = "^3.8.3"
 more-itertools = "^8.2.0"
 typing_extensions = "^3.7.4"
 loguru = "^0.5.0"
@@ -41,19 +41,25 @@ matplotlib = { version = "^3.4.0", optional = true }
 PyQt5 = { version = "^5.15.4", optional = true }
 antlr4-python3-runtime = "^4.10"
 
-[tool.poetry.dev-dependencies]
-black = "^22.6.0"
+[tool.poetry.group.test.dependencies]
+pytest = "^6.2.1"
+coverage = "^5.1"
+pytest-mock = "^3.5.1"
+
+[tool.poetry.group.docs.dependencies]
 Sphinx = "3.5.4"
 sphinx-rtd-theme = "^0.5.2"
 sphinx-autodoc-typehints = "^1.10.3"
-pytest = "^6.2.1"
-coverage = "^5.1"
 recommonmark = "^0.6.0"
-pre-commit = "^2.7.1"
-jupytext = "^1.6.0"
-pytest-mock = "^3.5.1"
 sphinx-markdown-tables = "^0.0.15"
 rst2pdf = "^0.99"
+
+[tool.poetry.group.linter.dependencies]
+black = "^22.6.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.7.1"
+jupytext = "^1.6.0"
 
 [tool.poetry.scripts]
 chipscopy-get-examples = "chipscopy._cli.example_delivery:main"
