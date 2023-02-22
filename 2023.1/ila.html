@@ -1179,15 +1179,15 @@ The archive must contain these two files:</p>
 <dl class="py class">
 <dt id="chipscopy.api.ila.ILABitRange">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILABitRange</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_probe.html#ILABitRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILABitRange" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><dl class="py attribute">
 <dt id="chipscopy.api.ila.ILABitRange.index">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">index</span></code><a class="headerlink" href="#chipscopy.api.ila.ILABitRange.index" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">index</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILABitRange.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bit index.</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt id="chipscopy.api.ila.ILABitRange.length">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">length</span></code><a class="headerlink" href="#chipscopy.api.ila.ILABitRange.length" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">length</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILABitRange.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bit length.</p>
 </dd></dl>
 
@@ -1848,6 +1848,72 @@ of participating probe comparators</p>
 <dt id="chipscopy.api.ila.ILAWaveform">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ila.</span></code><code class="sig-name descname"><span class="pre">ILAWaveform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_waveform.html#ILAWaveform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waveform data, with data probe information.</p>
+<dl class="py attribute">
+<dt id="chipscopy.api.ila.ILAWaveform.data">
+<code class="sig-name descname"><span class="pre">data</span></code><em class="property"><span class="pre">:</span> <span class="pre">bytearray</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waveform data.</p>
+<p>Samples are aligned on byte boundary.</p>
+<p>This formula can be used to read a bit from the data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bytes_per_sample</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">//</span> <span class="n">sample_count</span>
+
+<span class="k">def</span> <span class="nf">get_bit_value</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">,</span> <span class="n">bytes_per_sample</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                  <span class="n">sample_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">data_bit_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">byte_value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">sample_index</span> <span class="o">*</span> <span class="n">bytes_per_sample</span> <span class="o">+</span> <span class="n">data_bit_index</span> <span class="o">//</span> <span class="mi">8</span><span class="p">]</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">data_bit_index</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">byte_value</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="chipscopy.api.ila.ILAWaveform.gap_index">
+<code class="sig-name descname"><span class="pre">gap_index</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.gap_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>None or 0, if the waveform has no gaps.
+If the value is &gt;0, one sample bit is reserved to indicate which samples are gaps,
+i.e. the samples with unknown values. ‘gap_index’ gives the bit location within the sample data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="chipscopy.api.ila.ILAWaveform.probes">
+<code class="sig-name descname"><span class="pre">probes</span></code><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">chipscopy.api.ila.ila_waveform.ILAWaveformProbe</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.probes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dict of {probe name, waveform probe}   See <a class="reference internal" href="#chipscopy.api.ila.ILAWaveformProbe" title="chipscopy.api.ila.ILAWaveformProbe"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILAWaveformProbe</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="chipscopy.api.ila.ILAWaveform.sample_count">
+<code class="sig-name descname"><span class="pre">sample_count</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.sample_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of data samples.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ila.ILAWaveform.set_sample">
+<code class="sig-name descname"><span class="pre">set_sample</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ila/ila_waveform.html#ILAWaveform.set_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.set_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sample may have more bytes than waveform samples have. Erase any gap bit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="chipscopy.api.ila.ILAWaveform.trigger_position">
+<code class="sig-name descname"><span class="pre">trigger_position</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.trigger_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trigger position index, for each data window.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="chipscopy.api.ila.ILAWaveform.width">
+<code class="sig-name descname"><span class="pre">width</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sample bit width.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="chipscopy.api.ila.ILAWaveform.window_size">
+<code class="sig-name descname"><span class="pre">window_size</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ila.ILAWaveform.window_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of samples in a window.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -2140,7 +2206,7 @@ Argument “sample_count” is rounded up to nearest power-of-two value.</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

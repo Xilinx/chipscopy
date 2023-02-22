@@ -358,12 +358,13 @@ function OptanonWrapper() { }
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Any</span>
 <span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">pack</span><span class="p">,</span> <span class="n">unpack</span>
 
-<span class="kn">from</span> <span class="nn">chipscopy.api._detail.ltx</span> <span class="kn">import</span> <span class="n">Ltx</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api</span> <span class="kn">import</span> <span class="n">DMNodeListener</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api._detail.ltx</span> <span class="kn">import</span> <span class="n">parse_ltx_files</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api._detail.trace</span> <span class="kn">import</span> <span class="n">Trace</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.containers</span> <span class="kn">import</span> <span class="n">QueryList</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ddr.ddr</span> <span class="kn">import</span> <span class="n">DDR</span>
@@ -380,11 +381,10 @@ function OptanonWrapper() { }
 <span class="kn">from</span> <span class="nn">chipscopy.client.axis_pcie_core_client</span> <span class="kn">import</span> <span class="n">AxisPCIeCoreClient</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.axis_trace_core_client</span> <span class="kn">import</span> <span class="n">AxisTraceClient</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.axis_vio_core_client</span> <span class="kn">import</span> <span class="n">AxisVIOCoreClient</span>
-<span class="kn">from</span> <span class="nn">chipscopy.client.core</span> <span class="kn">import</span> <span class="n">CoreParent</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.ddrmc_client</span> <span class="kn">import</span> <span class="n">DDRMCClient</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.hbm_client</span> <span class="kn">import</span> <span class="n">HBMClient</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.ibert_core_client</span> <span class="kn">import</span> <span class="n">IBERTCoreClient</span>
-<span class="kn">from</span> <span class="nn">chipscopy.client.jtagdevice</span> <span class="kn">import</span> <span class="n">JtagDevice</span><span class="p">,</span> <span class="n">JtagCable</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.jtagdevice</span> <span class="kn">import</span> <span class="n">JtagCable</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.noc_perfmon_core_client</span> <span class="kn">import</span> <span class="n">NoCPerfMonCoreClient</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.sysmon_core_client</span> <span class="kn">import</span> <span class="n">SysMonCoreClient</span>
 <span class="kn">from</span> <span class="nn">chipscopy.dm</span> <span class="kn">import</span> <span class="n">chipscope</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">Node</span>
@@ -414,17 +414,30 @@ function OptanonWrapper() { }
         <span class="n">hw_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span>
         <span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">],</span>
         <span class="n">device_spec</span><span class="p">:</span> <span class="n">DeviceSpec</span><span class="p">,</span>
-        <span class="n">device_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span>
+        <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="o">=</span> <span class="n">hw_server</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span> <span class="o">=</span> <span class="n">cs_server</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span> <span class="o">=</span> <span class="n">device_spec</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device_node</span> <span class="o">=</span> <span class="n">device_node</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span> <span class="o">=</span> <span class="n">disable_cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_props_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
         <span class="c1"># The following filter_by becomes a dictionary with architecture, jtag_index, context, etc.</span>
         <span class="c1"># This is used when asking for a device by filter from the device list like:</span>
         <span class="c1">#    report_devices(session.devices.get(dna=&quot;.*1234&quot;))</span>
         <span class="c1"># Needs improvement because QueryList filtering does not work with hierarchy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_node</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory_node_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debugcore_node</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scan_props</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="p">)</span>
@@ -433,29 +446,69 @@ function OptanonWrapper() { }
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="p">)</span>
-        <span class="n">parsed_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">raw_json</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">parsed_json</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">props</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No property </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">node_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_CHANGED</span><span class="p">,</span>
+            <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_REMOVED</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="c1"># Device properties are cached until an event indicates something</span>
+            <span class="c1"># changed that needs properties to be reread from hardware.</span>
+            <span class="n">cache_clear_contexts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_node</span><span class="p">:</span>
+                <span class="n">cache_clear_contexts</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device_node</span><span class="o">.</span><span class="n">ctx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="p">:</span>
+                <span class="n">cache_clear_contexts</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="o">.</span><span class="n">ctx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugcore_node</span><span class="p">:</span>
+                <span class="n">cache_clear_contexts</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">debugcore_node</span><span class="o">.</span><span class="n">ctx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span><span class="p">:</span>
+                <span class="n">cache_clear_contexts</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span><span class="o">.</span><span class="n">ctx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">ctx</span> <span class="ow">in</span> <span class="n">cache_clear_contexts</span><span class="p">:</span>
+                <span class="c1"># Mark the properties as invalid if any hardware node changed that could affect the values.</span>
+                <span class="c1"># This will force a re-read next time the properties are accessed through to_dict() for instance.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_props_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># print(&quot;****** node_callback:&quot;, action, node, node.ctx)</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_ADDED</span><span class="p">:</span>
+            <span class="c1"># print(&quot;****** node_callback:&quot;, action, node, node.ctx)</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">scan_props</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_props_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_top_level_device_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_jtag_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory_node_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_memory_target_nodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">debugcore_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_debugcore_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_chipscope_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;jtag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy_node_props</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="o">.</span><span class="n">props</span><span class="p">)</span>
+        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;is_valid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span>
+        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>  <span class="c1"># noqa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_props_are_valid</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_props</span>
 
 <div class="viewcode-block" id="Device.to_dict"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a dictionary representation of the device data&quot;&quot;&quot;</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">jtag_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_jtag_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">jtag_node</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">jtag_node</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">jtag_node</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;jtag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy_node_props</span><span class="p">(</span><span class="n">jtag_node</span><span class="p">,</span> <span class="n">jtag_node</span><span class="o">.</span><span class="n">props</span><span class="p">)</span>
-        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;is_valid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span>
-        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>  <span class="c1"># noqa</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_props_are_valid</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_props_are_valid</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scan_props</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_props</span></div>
 
 <div class="viewcode-block" id="Device.to_json"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a json representation of the device data&quot;&quot;&quot;</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+        <span class="n">raw_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_props</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">raw_json</span></div>
 
     <span class="c1"># NODE / LOW LEVEL</span>
@@ -483,24 +536,6 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Low level TCF node access - For advanced use&quot;&quot;&quot;</span>
         <span class="n">jtag_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;jtag&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">jtag_view</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="o">.</span><span class="n">parent_ctx</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">jtag_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JtagDevice</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Low level TCF node access - For advanced use&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_jtag_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">debugcore_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Low level TCF node access - For advanced use&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_debugcore_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">chipscope_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CoreParent</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Low level TCF node access - For advanced use&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_chipscope_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># DEBUG CORES</span>
 
@@ -696,13 +731,13 @@ function OptanonWrapper() { }
         <span class="n">hw_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span>
         <span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">],</span>
         <span class="n">device_spec</span><span class="p">:</span> <span class="n">DeviceSpec</span><span class="p">,</span>
-        <span class="n">device_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span>
+        <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">hw_server</span><span class="o">=</span><span class="n">hw_server</span><span class="p">,</span>
             <span class="n">cs_server</span><span class="o">=</span><span class="n">cs_server</span><span class="p">,</span>
             <span class="n">device_spec</span><span class="o">=</span><span class="n">device_spec</span><span class="p">,</span>
-            <span class="n">device_node</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
+            <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -826,20 +861,20 @@ function OptanonWrapper() { }
         <span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">],</span>
         <span class="n">device_spec</span><span class="p">:</span> <span class="n">DeviceSpec</span><span class="p">,</span>
         <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">device_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span>
-        <span class="n">use_dbg_core_tiered_init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_core_scan</span> <span class="o">=</span> <span class="n">disable_core_scan</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cores_to_scan</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># set during discover_and_setup_cores</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ltx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ltx_sources</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">programming_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_use_dbg_core_tiered_init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">use_dbg_core_tiered_init</span>
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">hw_server</span><span class="o">=</span><span class="n">hw_server</span><span class="p">,</span>
             <span class="n">cs_server</span><span class="o">=</span><span class="n">cs_server</span><span class="p">,</span>
             <span class="n">device_spec</span><span class="o">=</span><span class="n">device_spec</span><span class="p">,</span>
-            <span class="n">device_node</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
+            <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -959,6 +994,7 @@ function OptanonWrapper() { }
         <span class="n">programming_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">skip_reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">delay_after_program</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">progress</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ProgressFutureCallback</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">done</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">DoneFutureCallback</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -997,6 +1033,16 @@ function OptanonWrapper() { }
                 <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">progress_</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">ABORTED</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">delay_after_program</span><span class="p">):</span>
+                        <span class="c1"># This pushes end-of-config node events to the listeners</span>
+                        <span class="c1"># They seem to happen within about 2-3 seconds - need a more</span>
+                        <span class="c1"># reliable way to wait for them to finish.</span>
+                        <span class="c1"># If we don&#39;t wait, the DPC node may not be ready for use.</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;chipscope&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run_events</span><span class="p">()</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
                     <span class="n">progress_</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">completed</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">DONE</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">error</span>
@@ -1012,6 +1058,7 @@ function OptanonWrapper() { }
 
         <span class="n">jtag_programming_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">find_jtag_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">jtag_programming_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="n">jtag_programming_node</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_reset</span><span class="p">:</span>
             <span class="n">jtag_programming_node</span><span class="o">.</span><span class="n">future</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
@@ -1034,7 +1081,7 @@ function OptanonWrapper() { }
         <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">api_client_wrapper</span>
 
 <div class="viewcode-block" id="FpgaDevice.discover_and_setup_cores"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.FpgaDevice.discover_and_setup_cores">[docs]</a>    <span class="k">def</span> <span class="nf">discover_and_setup_cores</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">hub_address_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ltx_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">hub_address_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ltx_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
         <span class="c1"># Selectively disable scanning of cores depending on what comes in</span>
         <span class="c1"># This is second priority to the disable_core_scan in __init__.</span>
@@ -1050,7 +1097,7 @@ function OptanonWrapper() { }
                 <span class="s2">&quot;ddrmc_main&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ddr_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
                 <span class="s2">&quot;hbm&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hbm_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
                 <span class="s2">&quot;pcie&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pcie_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
-                <span class="s2">&quot;ibert&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ibert_scan&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                <span class="s2">&quot;ibert&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ibert_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
                 <span class="s2">&quot;sysmon&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sysmon_scan&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="p">}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
@@ -1066,8 +1113,7 @@ function OptanonWrapper() { }
             <span class="n">hub_address_list</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">ltx_file</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ltx</span> <span class="o">=</span> <span class="n">Ltx</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ltx</span><span class="o">.</span><span class="n">parse_file</span><span class="p">(</span><span class="n">ltx_file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ltx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ltx_sources</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_ltx_files</span><span class="p">(</span><span class="n">ltx_file</span><span class="p">)</span>
             <span class="n">hub_address_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ltx</span><span class="o">.</span><span class="n">get_debug_hub_addresses</span><span class="p">())</span>
             <span class="c1"># Remove any duplicate hub addresses in list, in case same one</span>
             <span class="c1"># was passed to function as well as in ltx</span>
@@ -1078,9 +1124,9 @@ function OptanonWrapper() { }
         <span class="c1"># Do this by default unless the user has explicitly told us not to with</span>
         <span class="c1"># &quot;disable_core_scan&quot; as an argument.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">disable_core_scan</span><span class="p">:</span>
-            <span class="c1"># setup_debug_cores can take a while...</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No chipscope server connection. Could not get chipscope view&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scan_props</span><span class="p">()</span>  <span class="c1"># in case chipscope_node needs refresh</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span><span class="o">.</span><span class="n">setup_cores</span><span class="p">(</span><span class="n">debug_hub_addrs</span><span class="o">=</span><span class="n">hub_address_list</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_create_debugcore_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -1103,8 +1149,7 @@ function OptanonWrapper() { }
         <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;npi_nir&quot;</span><span class="p">:</span>
             <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">NocPerfmon</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ibert&quot;</span><span class="p">:</span>
-            <span class="c1"># Pass on the value of tiered init. Allows the IBERT core wrapper to make adjustments to its setup flow.</span>
-            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">IBERT</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">use_tiered_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_use_dbg_core_tiered_init</span><span class="p">)</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">IBERT</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;sysmon&quot;</span><span class="p">:</span>
             <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">Sysmon</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ddrmc_main&quot;</span><span class="p">:</span>
@@ -1155,7 +1200,7 @@ function OptanonWrapper() { }
     <span class="k">def</span> <span class="nf">_get_debug_core_wrappers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">core_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">:</span>
         <span class="c1"># Returns a QueryList of the debug_core_wrappers matching the given core_type</span>
         <span class="c1">#   core_type is a class from CORE_TYPE_TO_CLASS_MAP</span>
-        <span class="c1">#   returned wrapper_type is ILA, VIO, etc wrapping the node</span>
+        <span class="c1">#   returned wrapper_type is ILA, VIO, etc. wrapping the node</span>
         <span class="c1">#</span>
         <span class="c1"># debug_core_wrappers are initialized if they don&#39;t yet exist for the</span>
         <span class="c1"># node. After initialization, they are hung on the node for future reference.</span>
@@ -1183,14 +1228,14 @@ function OptanonWrapper() { }
         <span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">],</span>
         <span class="n">device_spec</span><span class="p">:</span> <span class="n">DeviceSpec</span><span class="p">,</span>
         <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">device_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span>
+        <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">hw_server</span><span class="o">=</span><span class="n">hw_server</span><span class="p">,</span>
             <span class="n">cs_server</span><span class="o">=</span><span class="n">cs_server</span><span class="p">,</span>
             <span class="n">device_spec</span><span class="o">=</span><span class="n">device_spec</span><span class="p">,</span>
             <span class="n">disable_core_scan</span><span class="o">=</span><span class="n">disable_core_scan</span><span class="p">,</span>
-            <span class="n">device_node</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
+            <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1202,16 +1247,14 @@ function OptanonWrapper() { }
         <span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">],</span>
         <span class="n">device_spec</span><span class="p">:</span> <span class="n">DeviceSpec</span><span class="p">,</span>
         <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">device_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span>
-        <span class="n">use_dbg_core_tiered_init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">hw_server</span><span class="o">=</span><span class="n">hw_server</span><span class="p">,</span>
             <span class="n">cs_server</span><span class="o">=</span><span class="n">cs_server</span><span class="p">,</span>
             <span class="n">device_spec</span><span class="o">=</span><span class="n">device_spec</span><span class="p">,</span>
             <span class="n">disable_core_scan</span><span class="o">=</span><span class="n">disable_core_scan</span><span class="p">,</span>
-            <span class="n">device_node</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
-            <span class="n">use_dbg_core_tiered_init</span><span class="o">=</span><span class="n">use_dbg_core_tiered_init</span><span class="p">,</span>
+            <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -1457,7 +1500,7 @@ function OptanonWrapper() { }
     <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">cable_ctx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">use_legacy_scaner</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">use_dbg_core_tiered_init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
     <span class="n">devices</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
     <span class="n">device_scanner</span> <span class="o">=</span> <span class="n">create_device_scanner</span><span class="p">(</span><span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">use_legacy_scaner</span><span class="p">)</span>
@@ -1474,8 +1517,7 @@ function OptanonWrapper() { }
                     <span class="n">cs_server</span><span class="o">=</span><span class="n">cs_server</span><span class="p">,</span>
                     <span class="n">device_spec</span><span class="o">=</span><span class="n">device_spec</span><span class="p">,</span>
                     <span class="n">disable_core_scan</span><span class="o">=</span><span class="n">disable_core_scan</span><span class="p">,</span>
-                    <span class="n">device_node</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
-                    <span class="n">use_dbg_core_tiered_init</span><span class="o">=</span><span class="n">use_dbg_core_tiered_init</span><span class="p">,</span>
+                    <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">family</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span> <span class="o">=</span> <span class="n">UltrascaleDevice</span><span class="p">(</span>
@@ -1483,14 +1525,14 @@ function OptanonWrapper() { }
                     <span class="n">cs_server</span><span class="o">=</span><span class="n">cs_server</span><span class="p">,</span>
                     <span class="n">device_spec</span><span class="o">=</span><span class="n">device_spec</span><span class="p">,</span>
                     <span class="n">disable_core_scan</span><span class="o">=</span><span class="n">disable_core_scan</span><span class="p">,</span>
-                    <span class="n">device_node</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
+                    <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span> <span class="o">=</span> <span class="n">GenericDevice</span><span class="p">(</span>
                     <span class="n">hw_server</span><span class="o">=</span><span class="n">hw_server</span><span class="p">,</span>
                     <span class="n">cs_server</span><span class="o">=</span><span class="n">cs_server</span><span class="p">,</span>
                     <span class="n">device_spec</span><span class="o">=</span><span class="n">device_spec</span><span class="p">,</span>
-                    <span class="n">device_node</span><span class="o">=</span><span class="n">device_node</span><span class="p">,</span>
+                    <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
                 <span class="p">)</span>
 
         <span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="p">)</span>
@@ -1516,7 +1558,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

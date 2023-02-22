@@ -450,12 +450,8 @@ function OptanonWrapper() { }
       <li><a href="memory.html#chipscopy.api.memory.Memory.check_and_upgrade">check_and_upgrade() (chipscopy.api.memory.Memory static method)</a>
 </li>
       <li><a href="ibert/references/ibert.html#chipscopy.api.ibert.IBERT.children">children (chipscopy.api.ibert.IBERT attribute)</a>
-
-      <ul>
-        <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.children">(chipscopy.api.ibert.serial_object_base.SerialObjectBase attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.chipscope_node">chipscope_node() (chipscopy.api.device.device.Device property)</a>
+      <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.children">children() (chipscopy.api.ibert.serial_object_base.SerialObjectBase property)</a>
 </li>
       <li>
     chipscopy.api.containers
@@ -567,6 +563,8 @@ function OptanonWrapper() { }
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.data">data (chipscopy.api.ila.ILAWaveform attribute)</a>
+</li>
       <li><a href="ila.html#chipscopy.api.ila.ILAPort.data_bit_index">data_bit_index (chipscopy.api.ila.ILAPort attribute)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStaticInfo.data_depth">data_depth (chipscopy.api.ila.ILAStaticInfo attribute)</a>
@@ -589,8 +587,6 @@ function OptanonWrapper() { }
         <li><a href="device.html#chipscopy.api.device.device.VersalDevice.ddrs">(chipscopy.api.device.device.VersalDevice property)</a>
 </li>
       </ul></li>
-      <li><a href="device.html#chipscopy.api.device.device.Device.debugcore_node">debugcore_node() (chipscopy.api.device.device.Device property)</a>
-</li>
       <li><a href="ibert/references/scan_params.html#chipscopy.api.ibert.eye_scan.params.EyeScanParam.default_value">default_value (chipscopy.api.ibert.eye_scan.params.EyeScanParam attribute)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.delete_eye_scans">delete_eye_scans() (in module chipscopy.api.ibert)</a>
@@ -621,6 +617,8 @@ function OptanonWrapper() { }
         <li><a href="device.html#chipscopy.api.device.device.GenericDevice.discover_and_setup_cores">(chipscopy.api.device.device.GenericDevice method)</a>
 </li>
       </ul></li>
+      <li><a href="ibert/references/ibert.html#chipscopy.api.ibert.IBERT.discover_gt_groups">discover_gt_groups() (chipscopy.api.ibert.IBERT method)</a>
+</li>
       <li><a href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon.discover_noc_elements">discover_noc_elements() (chipscopy.api.noc.noc.NocPerfmon method)</a>
 </li>
       <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.display_eye_scan">display_eye_scan() (chipscopy.api.ddr.ddr.DDR method)</a>
@@ -739,6 +737,8 @@ function OptanonWrapper() { }
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.gap_index">gap_index (chipscopy.api.ila.ILAWaveform attribute)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.generate_report">generate_report() (chipscopy.api.ibert.eye_scan.EyeScan method)</a>
 
       <ul>
@@ -777,10 +777,10 @@ function OptanonWrapper() { }
 </li>
       <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.get_eye_scan_vref_percentage">get_eye_scan_vref_percentage() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
-      <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.get_measurements">get_measurements() (chipscopy.api.sysmon.Sysmon method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.get_measurements">get_measurements() (chipscopy.api.sysmon.Sysmon method)</a>
+</li>
       <li><a href="session/references.html#chipscopy.api.session.Session.get_param">get_param() (chipscopy.api.session.Session method)</a>
 </li>
       <li><a href="pcie/references/pcie.html#chipscopy.api.pcie.PCIe.get_plt">get_plt() (chipscopy.api.pcie.PCIe method)</a>
@@ -817,7 +817,7 @@ function OptanonWrapper() { }
 </li>
       <li><a href="ibert/references/gt_group.html#chipscopy.api.ibert.gt_group.GTGroup">GTGroup (class in chipscopy.api.ibert.gt_group)</a>
 </li>
-      <li><a href="ibert/references/gt_group.html#chipscopy.api.ibert.gt_group.GTGroup.gts">gts (chipscopy.api.ibert.gt_group.GTGroup attribute)</a>
+      <li><a href="ibert/references/gt_group.html#chipscopy.api.ibert.gt_group.GTGroup.gts">gts() (chipscopy.api.ibert.gt_group.GTGroup property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -929,10 +929,12 @@ function OptanonWrapper() { }
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.import_waveform">import_waveform() (in module chipscopy.api.ila.ILAWaveform)</a>
 </li>
-      <li><a href="ila.html#chipscopy.api.ila.ILAPort.index">index (chipscopy.api.ila.ILAPort attribute)</a>
+      <li><a href="ila.html#chipscopy.api.ila.ILABitRange.index">index (chipscopy.api.ila.ILABitRange attribute)</a>
+
+      <ul>
+        <li><a href="ila.html#chipscopy.api.ila.ILAPort.index">(chipscopy.api.ila.ILAPort attribute)</a>
 </li>
-      <li><a href="ila.html#chipscopy.api.ila.ILABitRange.index">index() (chipscopy.api.ila.ILABitRange property)</a>
-</li>
+      </ul></li>
       <li><a href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon.initialize">initialize() (chipscopy.api.noc.noc.NocPerfmon method)</a>
 </li>
       <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.initialize_sensors">initialize_sensors() (chipscopy.api.sysmon.Sysmon method)</a>
@@ -1004,16 +1006,12 @@ function OptanonWrapper() { }
       <li><a href="device.html#chipscopy.api.device.device.Device.jtag_cable_node">jtag_cable_node() (chipscopy.api.device.device.Device property)</a>
 </li>
   </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="device.html#chipscopy.api.device.device.Device.jtag_node">jtag_node() (chipscopy.api.device.device.Device property)</a>
-</li>
-  </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="ila.html#chipscopy.api.ila.ILABitRange.length">length() (chipscopy.api.ila.ILABitRange property)</a>
+      <li><a href="ila.html#chipscopy.api.ila.ILABitRange.length">length (chipscopy.api.ila.ILABitRange attribute)</a>
 </li>
       <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.line_rate">line_rate() (chipscopy.api.ibert.link.Link property)</a>
 </li>
@@ -1106,6 +1104,8 @@ function OptanonWrapper() { }
       <li><a href="ibert/appendix/serial_object_base.html#chipscopy.api.ibert.aliases.MICROBLAZE_KEY">MICROBLAZE_KEY (in module chipscopy.api.ibert.aliases)</a>
 </li>
       <li><a href="ibert/references/scan_params.html#chipscopy.api.ibert.eye_scan.params.EyeScanParam.modifiable">modifiable (chipscopy.api.ibert.eye_scan.params.EyeScanParam attribute)</a>
+</li>
+      <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.modifiable_aliases">modifiable_aliases() (chipscopy.api.ibert.serial_object_base.SerialObjectBase property)</a>
 </li>
       <li>
     module
@@ -1210,7 +1210,7 @@ function OptanonWrapper() { }
       </ul></li>
       <li><a href="ibert/appendix/serial_object_base.html#chipscopy.api.ibert.aliases.PLL_KEY">PLL_KEY (in module chipscopy.api.ibert.aliases)</a>
 </li>
-      <li><a href="ibert/references/gt_group.html#chipscopy.api.ibert.gt_group.GTGroup.plls">plls (chipscopy.api.ibert.gt_group.GTGroup attribute)</a>
+      <li><a href="ibert/references/gt_group.html#chipscopy.api.ibert.gt_group.GTGroup.plls">plls() (chipscopy.api.ibert.gt_group.GTGroup property)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.plot">plot (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
 </li>
@@ -1222,10 +1222,10 @@ function OptanonWrapper() { }
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO.port_in_count">port_in_count() (chipscopy.api.vio.VIO property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vio.html#chipscopy.api.vio.VIOProbe.port_index">port_index (chipscopy.api.vio.VIOProbe attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vio.html#chipscopy.api.vio.VIOProbe.port_name">port_name() (chipscopy.api.vio.VIOProbe property)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO.port_names">port_names() (chipscopy.api.vio.VIO property)</a>
@@ -1241,6 +1241,8 @@ function OptanonWrapper() { }
       <li><a href="vio.html#chipscopy.api.vio.VIOProbe.probe_name">probe_name (chipscopy.api.vio.VIOProbe attribute)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO.probe_names">probe_names() (chipscopy.api.vio.VIO property)</a>
+</li>
+      <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.probes">probes (chipscopy.api.ila.ILAWaveform attribute)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO.probes">probes() (chipscopy.api.vio.VIO property)</a>
 </li>
@@ -1258,7 +1260,7 @@ function OptanonWrapper() { }
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.progress_callback">progress_callback (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
 </li>
-      <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.property_for_alias">property_for_alias (chipscopy.api.ibert.serial_object_base.SerialObjectBase attribute)</a>
+      <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.property_for_alias">property_for_alias() (chipscopy.api.ibert.serial_object_base.SerialObjectBase property)</a>
 </li>
       <li><a href="ibert/references/property.html#chipscopy.api._detail.property.PropertyUpdateEvent">PropertyUpdateEvent (class in chipscopy.api._detail.property)</a>
 </li>
@@ -1385,7 +1387,11 @@ function OptanonWrapper() { }
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.RawData.sample_count">sample_count (chipscopy.api.ibert.eye_scan.RawData attribute)</a>
+
+      <ul>
+        <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.sample_count">(chipscopy.api.ila.ILAWaveform attribute)</a>
 </li>
+      </ul></li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.ScanPoint.samples">samples (chipscopy.api.ibert.eye_scan.ScanPoint attribute)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStatus.samples_captured">samples_captured (chipscopy.api.ila.ILAStatus attribute)</a>
@@ -1445,6 +1451,8 @@ function OptanonWrapper() { }
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.set_probe_enum">set_probe_enum() (chipscopy.api.ila.ila.ILA method)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ila.ILA.set_probe_trigger_value">set_probe_trigger_value() (chipscopy.api.ila.ila.ILA method)</a>
+</li>
+      <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.set_sample">set_sample() (chipscopy.api.ila.ILAWaveform method)</a>
 </li>
       <li><a href="ibert/references/scan_plotter.html#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.show">show() (chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot method)</a>
 </li>
@@ -1532,10 +1540,14 @@ function OptanonWrapper() { }
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAControl.trigger_condition">trigger_condition (chipscopy.api.ila.ILAControl attribute)</a>
 </li>
+      <li><a href="ila.html#chipscopy.api.ila.ILAControl.trigger_position">trigger_position (chipscopy.api.ila.ILAControl attribute)</a>
+
+      <ul>
+        <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.trigger_position">(chipscopy.api.ila.ILAWaveform attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="ila.html#chipscopy.api.ila.ILAControl.trigger_position">trigger_position (chipscopy.api.ila.ILAControl attribute)</a>
-</li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStatus.trigger_position_requested">trigger_position_requested (chipscopy.api.ila.ILAStatus attribute)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAProbeValues.trigger_value">trigger_value (chipscopy.api.ila.ILAProbeValues attribute)</a>
@@ -1574,12 +1586,14 @@ function OptanonWrapper() { }
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="device.html#chipscopy.api.device.device.UltrascaleDevice">UltrascaleDevice (class in chipscopy.api.device.device)</a>
 </li>
-      <li><a href="ibert/references/yk_scan.html#chipscopy.api.ibert.yk_scan.YKScan.updates_callback">updates_callback (chipscopy.api.ibert.yk_scan.YKScan attribute)</a>
+      <li><a href="ibert/references/gt.html#chipscopy.api.ibert.gt.GT.update_pll">update_pll() (chipscopy.api.ibert.gt.GT method)</a>
 </li>
-      <li><a href="ila.html#chipscopy.api.ila.ila.ILA.upload">upload() (chipscopy.api.ila.ila.ILA method)</a>
+      <li><a href="ibert/references/yk_scan.html#chipscopy.api.ibert.yk_scan.YKScan.updates_callback">updates_callback (chipscopy.api.ibert.yk_scan.YKScan attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ila.html#chipscopy.api.ila.ila.ILA.upload">upload() (chipscopy.api.ila.ila.ILA method)</a>
+</li>
       <li><a href="ila.html#chipscopy.api.ila.ila_external_trace.upload_external_waveform">upload_external_waveform() (chipscopy.api.ila.ila_external_trace method)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.RawData.ut">ut (chipscopy.api.ibert.eye_scan.RawData attribute)</a>
@@ -1630,10 +1644,16 @@ function OptanonWrapper() { }
         <li><a href="ila.html#chipscopy.api.ila.ila.ILA.wait_till_done">(chipscopy.api.ila.ila.ILA method)</a>
 </li>
       </ul></li>
+      <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.width">width (chipscopy.api.ila.ILAWaveform attribute)</a>
+</li>
       <li><a href="ila.html#chipscopy.api.ila.ILAControl.window_count">window_count (chipscopy.api.ila.ILAControl attribute)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAControl.window_size">window_size (chipscopy.api.ila.ILAControl attribute)</a>
+
+      <ul>
+        <li><a href="ila.html#chipscopy.api.ila.ILAWaveform.window_size">(chipscopy.api.ila.ILAWaveform attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ila.html#chipscopy.api.ila.ILAStatus.windows_captured">windows_captured (chipscopy.api.ila.ILAStatus attribute)</a>
@@ -1692,7 +1712,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

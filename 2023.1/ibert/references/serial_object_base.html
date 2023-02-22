@@ -384,12 +384,40 @@ function OptanonWrapper() { }
 <h1>chipscopy.api.ibert.serial_object_base<a class="headerlink" href="#chipscopy-api-ibert-serial-object-base" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.serial_object_base.</span></code><code class="sig-name descname"><span class="pre">SerialObjectBase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_tcf_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_for_alias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_property_endpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modifiable_aliases</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/serial_object_base.html#SerialObjectBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.serial_object_base.</span></code><code class="sig-name descname"><span class="pre">SerialObjectBase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_tcf_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/serial_object_base.html#SerialObjectBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract base class for all serial objects</p>
 <dl class="py method">
 <dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.aliases">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">aliases</span></code><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.aliases" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns:</p>
+<dd><p>All available aliases</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.children">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">children</span></code><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Direct children of this object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[~child_type]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.handle">
+<code class="sig-name descname"><span class="pre">handle</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object handle from cs_server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.modifiable_aliases">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">modifiable_aliases</span></code><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.modifiable_aliases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aliases that support value modification</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
@@ -398,38 +426,31 @@ function OptanonWrapper() { }
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.children">
-<code class="sig-name descname"><span class="pre">children</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="../../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><span class="pre">chipscopy.api.containers.QueryList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">child_type</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.children" title="Permalink to this definition">¶</a></dt>
-<dd><p>Direct children of this object</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.handle">
-<code class="sig-name descname"><span class="pre">handle</span></code><em class="property"><span class="pre">:</span> <span class="pre">typing_extensions.Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.handle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Object handle from cs_server</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.name">
-<code class="sig-name descname"><span class="pre">name</span></code><em class="property"><span class="pre">:</span> <span class="pre">typing_extensions.Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object name</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.parent">
-<code class="sig-name descname"><span class="pre">parent</span></code><em class="property"><span class="pre">:</span> <span class="pre">typing_extensions.Final</span><span class="p"><span class="pre">[</span></span><span class="pre">parent_type</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">parent_type</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parent of this object</p>
 </dd></dl>
 
-<dl class="py attribute">
+<dl class="py method">
 <dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.property_for_alias">
-<code class="sig-name descname"><span class="pre">property_for_alias</span></code><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.property_for_alias" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">property_for_alias</span></code><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.property_for_alias" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias to property name mapping</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="chipscopy.api.ibert.serial_object_base.SerialObjectBase.type">
-<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">typing_extensions.Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.type" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.serial_object_base.SerialObjectBase.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object type</p>
 </dd></dl>
 
@@ -570,7 +591,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

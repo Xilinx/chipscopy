@@ -355,10 +355,11 @@ function OptanonWrapper() { }
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">unique</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="kn">from</span> <span class="nn">chipscopy</span> <span class="kn">import</span> <span class="n">dm</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api._detail</span> <span class="kn">import</span> <span class="n">dataclass_fields</span><span class="p">,</span> <span class="n">filter_props</span>
+<span class="kn">from</span> <span class="nn">chipscopy.dm</span> <span class="kn">import</span> <span class="n">NodeListener</span>
 
 
 <span class="nd">@unique</span>
@@ -407,6 +408,58 @@ function OptanonWrapper() { }
         <span class="k">return</span> <span class="n">CoreInfo</span><span class="p">(</span><span class="o">**</span><span class="n">filter_props</span><span class="p">(</span><span class="n">tcf_node</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">CORE_INFO_MEMBERS</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">class</span> <span class="nc">DMNodeListener</span><span class="p">(</span><span class="n">NodeListener</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Session hooks into the hw_server and cs_server with a DMNodeListener to</span>
+<span class="sd">    listen to events that happen when hardware changes occur.</span>
+<span class="sd">    This enables the session to keep track of asynchronous events to the device</span>
+<span class="sd">    and adjust cached values as needed to remain consistent with the hardware</span>
+<span class="sd">    state.</span>
+
+<span class="sd">    When an events happen on a tracked node, the registered callback is called</span>
+<span class="sd">    with node event details.</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        def _node_callback(self, action: DMNodeListener.NodeAction, node: Node, props: Optional[Set]):</span>
+<span class="sd">            ... handle callback ...</span>
+
+
+<span class="sd">        # register for callbacks</span>
+<span class="sd">        self.hw_server.get_view(&quot;memory&quot;).add_node_listener(DMNodeListener(self._node_callback))</span>
+
+<span class="sd">        ...</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@unique</span>
+    <span class="k">class</span> <span class="nc">NodeAction</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="n">NODE_ADDED</span> <span class="o">=</span> <span class="s2">&quot;NODE_ADDED&quot;</span>
+        <span class="n">NODE_REMOVED</span> <span class="o">=</span> <span class="s2">&quot;NODE_REMOVED&quot;</span>
+        <span class="n">NODE_CHANGED</span> <span class="o">=</span> <span class="s2">&quot;NODE_CHANGED&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">NodeAction</span><span class="p">,</span> <span class="n">dm</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+    <span class="k">def</span> <span class="nf">nodes_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">dm</span><span class="o">.</span><span class="n">Node</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_ADDED</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">node_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">dm</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span> <span class="n">updated_keys</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_CHANGED</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">updated_keys</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">nodes_removed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">dm</span><span class="o">.</span><span class="n">Node</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_REMOVED</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -428,7 +481,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

@@ -354,24 +354,13 @@ cores. The collection of detected devices is held in the session.</p>
 <p>see <code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.Session.devices</span></code></p>
 <span class="target" id="module-chipscopy.api.device.device"></span><dl class="py class">
 <dt id="chipscopy.api.device.device.Device">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">Device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">Device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>The Device class represents a single device. It is the base class for other
 Xilinx or Generic devices.
 Depending on the device type, some features may be available or unavailable.</p>
 <p>Device has the kitchen sink of properties functions to make documentation and type hints easy.
 Child classes raise FeatureNotAvailable for functions they do not support.</p>
-<dl class="py method">
-<dt id="chipscopy.api.device.device.Device.chipscope_node">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">chipscope_node</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.chipscope_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Low level TCF node access - For advanced use</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">CoreParent</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt id="chipscopy.api.device.device.Device.context">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">context</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.context" title="Permalink to this definition">¶</a></dt>
@@ -393,17 +382,6 @@ list of detected DDRMC cores in the device</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="ddr.html#chipscopy.api.ddr.ddr.DDR" title="chipscopy.api.ddr.ddr.DDR"><code class="xref py py-class docutils literal notranslate"><span class="pre">DDR</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.Device.debugcore_node">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">debugcore_node</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.debugcore_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Low level TCF node access - For advanced use</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -517,17 +495,6 @@ list of detected ILA cores in the device</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">JtagCable</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="chipscopy.api.device.device.Device.jtag_node">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">jtag_node</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.jtag_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Low level TCF node access - For advanced use</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">JtagDevice</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -691,7 +658,7 @@ list of detected VIO cores in the device</p>
 
 <dl class="py class">
 <dt id="chipscopy.api.device.device.FpgaDevice">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">FpgaDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_dbg_core_tiered_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">FpgaDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.api.device.device.Device</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="py method">
 <dt id="chipscopy.api.device.device.FpgaDevice.ddrs">
@@ -714,7 +681,7 @@ what gets scanned.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>hub_address_list</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – List of debug hub addresses to scan</p></li>
-<li><p><strong>ltx_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – LTX file (which contains debug hub addresses)</p></li>
+<li><p><strong>ltx_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – LTX file (which contains debug hub addresses)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
@@ -863,7 +830,7 @@ list of detected PCIe cores in the device</p>
 
 <dl class="py method">
 <dt id="chipscopy.api.device.device.FpgaDevice.program">
-<code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">programming_file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.program" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">program</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">programming_file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_after_program</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#FpgaDevice.program"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.FpgaDevice.program" title="Permalink to this definition">¶</a></dt>
 <dd><p>Program the device with a given programming file (bit or pdi).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -935,7 +902,7 @@ list of detected VIO cores in the device</p>
 
 <dl class="py class">
 <dt id="chipscopy.api.device.device.GenericDevice">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">GenericDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">GenericDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#GenericDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.GenericDevice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.api.device.device.Device</span></code></a></p>
 <dl class="py method">
 <dt id="chipscopy.api.device.device.GenericDevice.ddrs">
@@ -1171,13 +1138,13 @@ list of detected VIO cores in the device</p>
 
 <dl class="py class">
 <dt id="chipscopy.api.device.device.UltrascaleDevice">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">UltrascaleDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#UltrascaleDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.UltrascaleDevice" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">UltrascaleDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#UltrascaleDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.UltrascaleDevice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#chipscopy.api.device.device.FpgaDevice" title="chipscopy.api.device.device.FpgaDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.api.device.device.FpgaDevice</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="chipscopy.api.device.device.VersalDevice">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">VersalDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_dbg_core_tiered_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#VersalDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">VersalDevice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#VersalDevice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.VersalDevice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#chipscopy.api.device.device.FpgaDevice" title="chipscopy.api.device.device.FpgaDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">chipscopy.api.device.device.FpgaDevice</span></code></a></p>
 <dl class="py method">
 <dt id="chipscopy.api.device.device.VersalDevice.ddrs">
@@ -1368,7 +1335,7 @@ list of detected VIO cores in the device</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

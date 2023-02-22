@@ -370,6 +370,7 @@ function OptanonWrapper() { }
 
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
@@ -415,11 +416,12 @@ function OptanonWrapper() { }
     <span class="n">chipscopy_report</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Attribute&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
     <span class="n">chipscopy_report</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Value&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
     <span class="n">chipscopy_report</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Build&quot;</span><span class="p">,</span> <span class="n">chipscopy</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+    <span class="c1"># Need to handle case like &quot;dev1668723891&quot;</span>
+    <span class="n">version_number_with_chars</span> <span class="o">=</span> <span class="n">chipscopy</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">version_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">isdigit</span><span class="p">,</span> <span class="n">version_number_with_chars</span><span class="p">)))</span>
     <span class="n">chipscopy_report</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
         <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
-        <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">chipscopy</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
-            <span class="s2">&quot;%b </span><span class="si">%d</span><span class="s2"> %Y-%H:%M:%S&quot;</span>
-        <span class="p">),</span>
+        <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">version_number</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b </span><span class="si">%d</span><span class="s2"> %Y-%H:%M:%S&quot;</span><span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">report</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;ChipScoPy&quot;</span><span class="p">,</span> <span class="n">chipscopy_report</span><span class="p">)</span>
@@ -517,7 +519,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

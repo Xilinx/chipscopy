@@ -356,88 +356,81 @@ function OptanonWrapper() { }
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">chipscopy.api.containers</span> <span class="kn">import</span> <span class="n">QueryList</span>
-<span class="kn">from</span> <span class="nn">chipscopy.api.ibert.aliases</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ALIAS_DICT</span><span class="p">,</span>
-    <span class="n">CHILDREN</span><span class="p">,</span>
-    <span class="n">GT_KEY</span><span class="p">,</span>
-    <span class="n">HANDLE_NAME</span><span class="p">,</span>
-    <span class="n">MODIFIABLE_ALIASES</span><span class="p">,</span>
-    <span class="n">PLL_KEY</span><span class="p">,</span>
-    <span class="n">PROPERTY_ENDPOINT</span><span class="p">,</span>
-    <span class="n">TYPE</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ibert.aliases</span> <span class="kn">import</span> <span class="n">CHILDREN</span><span class="p">,</span> <span class="n">GT_KEY</span><span class="p">,</span> <span class="n">PLL_KEY</span><span class="p">,</span> <span class="n">TYPE</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.gt</span> <span class="kn">import</span> <span class="n">GT</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.pll</span> <span class="kn">import</span> <span class="n">PLL</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.serial_object_base</span> <span class="kn">import</span> <span class="n">SerialObjectBase</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">final</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.ibert</span> <span class="kn">import</span> <span class="n">IBERT</span>
+    <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.ibert</span> <span class="kn">import</span> <span class="n">IBERT</span>  <span class="c1"># noqa</span>
 
 
 <div class="viewcode-block" id="GTGroup"><a class="viewcode-back" href="../../../../ibert/references/gt_group.html#chipscopy.api.ibert.gt_group.GTGroup">[docs]</a><span class="nd">@final</span>
 <span class="k">class</span> <span class="nc">GTGroup</span><span class="p">(</span><span class="n">SerialObjectBase</span><span class="p">[</span><span class="s2">&quot;IBERT&quot;</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">GT</span><span class="p">,</span> <span class="n">PLL</span><span class="p">]]):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
-        <span class="n">SerialObjectBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="n">configuration</span><span class="p">[</span><span class="n">TYPE</span><span class="p">],</span>
-            <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
-            <span class="n">handle</span><span class="o">=</span><span class="n">configuration</span><span class="p">[</span><span class="n">HANDLE_NAME</span><span class="p">],</span>
-            <span class="n">core_tcf_node</span><span class="o">=</span><span class="n">tcf_node</span><span class="p">,</span>
-            <span class="n">property_for_alias</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ALIAS_DICT</span><span class="p">,</span> <span class="nb">dict</span><span class="p">()),</span>
-            <span class="n">is_property_endpoint</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">PROPERTY_ENDPOINT</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">modifiable_aliases</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MODIFIABLE_ALIASES</span><span class="p">,</span> <span class="nb">set</span><span class="p">()),</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gt_group_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">):</span>
+        <span class="n">SerialObjectBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gt_group_info</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">)</span>
 
         <span class="c1"># This is used by the filter_by method in QueryList</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">&quot;handle&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">}</span>
 
-        <span class="k">if</span> <span class="n">CHILDREN</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">:</span>
-            <span class="k">return</span>
+    <span class="c1"># def __repr__(self) -&gt; str:</span>
+    <span class="c1">#     return self.name</span>
 
-        <span class="c1"># Build the child objects</span>
-        <span class="k">for</span> <span class="n">child_name</span><span class="p">,</span> <span class="n">child_configuration</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">[</span><span class="n">CHILDREN</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">child_configuration</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">GT_KEY</span><span class="p">:</span>
-                <span class="n">child_class</span> <span class="o">=</span> <span class="n">GT</span>
-            <span class="k">elif</span> <span class="n">child_configuration</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">PLL_KEY</span><span class="p">):</span>
-                <span class="n">child_class</span> <span class="o">=</span> <span class="n">PLL</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">continue</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">gts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">GT</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;GTs in this GT Group&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">GT_KEY</span><span class="p">)</span>
 
-            <span class="n">new_child</span> <span class="o">=</span> <span class="n">child_class</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">child_name</span><span class="p">,</span>
-                <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">tcf_node</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">,</span>
-                <span class="n">configuration</span><span class="o">=</span><span class="n">child_configuration</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_child</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">gts</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">GT</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">GT_KEY</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;GT children&quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">plls</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">PLL</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">PLL_KEY</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;PLL children&quot;&quot;&quot;</span>
-
-        <span class="c1"># Do this after self.plls has been populated;</span>
-        <span class="c1"># update_pll() looks through self.plls to determine the PLL for the GT</span>
-        <span class="k">for</span> <span class="n">gt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gts</span><span class="p">:</span>
-            <span class="n">gt</span><span class="o">.</span><span class="n">update_pll</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">plls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">PLL</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;PLL(s) in this GT Group&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">PLL_KEY</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GTGroup.reset"><a class="viewcode-back" href="../../../../ibert/references/gt_group.html#chipscopy.api.ibert.gt_group.GTGroup.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset the RXs, TXs and PLLs that are part of the GT Group</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Needn&#39;t call setup() here; Accessing &#39;gts&#39; and &#39;plls&#39; will trigger that call</span>
         <span class="k">for</span> <span class="n">gt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gts</span><span class="p">:</span>
             <span class="n">gt</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">pll</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plls</span><span class="p">:</span>
-            <span class="n">pll</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div></div>
+            <span class="n">pll</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_done</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">setup_gt_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">obj_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">get_obj_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">,</span> <span class="n">include_property</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_aliases</span><span class="p">(</span><span class="n">obj_info</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CHILDREN</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">child_info</span> <span class="ow">in</span> <span class="n">obj_info</span><span class="p">[</span><span class="n">CHILDREN</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GT</span><span class="p">,</span> <span class="n">PLL</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">child_info</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">GT_KEY</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">GT</span><span class="p">(</span><span class="n">child_info</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">child_info</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">PLL_KEY</span><span class="p">):</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">PLL</span><span class="p">(</span><span class="n">child_info</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">obj</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_done</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Call this only after setup is complete.</span>
+        <span class="k">for</span> <span class="n">gt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gts</span><span class="p">:</span>
+            <span class="n">gt</span><span class="o">.</span><span class="n">update_pll</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
@@ -459,7 +452,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

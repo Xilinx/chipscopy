@@ -354,19 +354,9 @@ function OptanonWrapper() { }
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">chipscopy.api.ibert.aliases</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ALIAS_DICT</span><span class="p">,</span>
-    <span class="n">CHILDREN</span><span class="p">,</span>
-    <span class="n">HANDLE_NAME</span><span class="p">,</span>
-    <span class="n">MODIFIABLE_ALIASES</span><span class="p">,</span>
-    <span class="n">PLL_SOURCE</span><span class="p">,</span>
-    <span class="n">PROPERTY_ENDPOINT</span><span class="p">,</span>
-    <span class="n">RX_KEY</span><span class="p">,</span>
-    <span class="n">TX_KEY</span><span class="p">,</span>
-    <span class="n">TYPE</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ibert.aliases</span> <span class="kn">import</span> <span class="n">CHILDREN</span><span class="p">,</span> <span class="n">RX_KEY</span><span class="p">,</span> <span class="n">TX_KEY</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">PLL_SOURCE</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.rx</span> <span class="kn">import</span> <span class="n">RX</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.serial_object_base</span> <span class="kn">import</span> <span class="n">SerialObjectBase</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.tx</span> <span class="kn">import</span> <span class="n">TX</span>
@@ -374,88 +364,92 @@ function OptanonWrapper() { }
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">final</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.gt_group</span> <span class="kn">import</span> <span class="n">GTGroup</span>
+    <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.gt_group</span> <span class="kn">import</span> <span class="n">GTGroup</span>  <span class="c1"># noqa</span>
     <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.pll</span> <span class="kn">import</span> <span class="n">PLL</span>
 
 
 <div class="viewcode-block" id="GT"><a class="viewcode-back" href="../../../../ibert/references/gt.html#chipscopy.api.ibert.gt.GT">[docs]</a><span class="nd">@final</span>
 <span class="k">class</span> <span class="nc">GT</span><span class="p">(</span><span class="n">SerialObjectBase</span><span class="p">[</span><span class="s2">&quot;GTGroup&quot;</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">TX</span><span class="p">,</span> <span class="n">RX</span><span class="p">]]):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
-        <span class="n">SerialObjectBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="n">configuration</span><span class="p">[</span><span class="n">TYPE</span><span class="p">],</span>
-            <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
-            <span class="n">handle</span><span class="o">=</span><span class="n">configuration</span><span class="p">[</span><span class="n">HANDLE_NAME</span><span class="p">],</span>
-            <span class="n">core_tcf_node</span><span class="o">=</span><span class="n">tcf_node</span><span class="p">,</span>
-            <span class="n">property_for_alias</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ALIAS_DICT</span><span class="p">,</span> <span class="nb">dict</span><span class="p">()),</span>
-            <span class="n">is_property_endpoint</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">PROPERTY_ENDPOINT</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">modifiable_aliases</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MODIFIABLE_ALIASES</span><span class="p">,</span> <span class="nb">set</span><span class="p">()),</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gt_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">):</span>
+        <span class="n">SerialObjectBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gt_info</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">)</span>
 
         <span class="c1"># This is used by the filter_by method in QueryList</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">&quot;handle&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">}</span>
 
-        <span class="k">if</span> <span class="n">CHILDREN</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="c1"># Create this before creating TX and RX. They will store a reference to this</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pll</span><span class="p">:</span> <span class="n">PLL</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="sd">&quot;&quot;&quot;PLL driving the GT&quot;&quot;&quot;</span>
+        <span class="s2">&quot;PLL driving this GT&quot;</span>
 
-        <span class="c1"># Build the child objects</span>
-        <span class="k">for</span> <span class="n">child_name</span><span class="p">,</span> <span class="n">child_configuration</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">[</span><span class="n">CHILDREN</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">child_configuration</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">RX_KEY</span><span class="p">:</span>
-                <span class="n">child_class</span> <span class="o">=</span> <span class="n">RX</span>
-            <span class="k">elif</span> <span class="n">child_configuration</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">TX_KEY</span><span class="p">:</span>
-                <span class="n">child_class</span> <span class="o">=</span> <span class="n">TX</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="n">new_child</span> <span class="o">=</span> <span class="n">child_class</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">child_name</span><span class="p">,</span>
-                <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">tcf_node</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">,</span>
-                <span class="n">configuration</span><span class="o">=</span><span class="n">child_configuration</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_child</span><span class="p">)</span>
-
-        <span class="c1"># We always expect a GT to have one valid RX and one valid TX, no more, no less.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="p">:</span> <span class="n">RX</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">RX_KEY</span><span class="p">),</span>
-            <span class="n">too_short</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No RX associated with GT </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">),</span>
-            <span class="n">too_long</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;More than one RX found for GT </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="p">:</span> <span class="n">RX</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="sd">&quot;&quot;&quot;RX of the GT&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="p">:</span> <span class="n">TX</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">TX_KEY</span><span class="p">),</span>
-            <span class="n">too_short</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No TX associated with GT </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">),</span>
-            <span class="n">too_long</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;More than one TX found for GT </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="p">:</span> <span class="n">TX</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="sd">&quot;&quot;&quot;TX of the GT&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-
-    <span class="k">def</span> <span class="nf">update_pll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">PLL_SOURCE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_for_alias</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="n">_</span><span class="p">,</span> <span class="n">pll_name_for_this_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">property_for_alias</span><span class="p">[</span><span class="n">PLL_SOURCE</span><span class="p">])</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">pll</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">plls</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pll</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">pll_name_for_this_gt</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pll</span> <span class="o">=</span> <span class="n">pll</span>
-                <span class="k">break</span>
+    <span class="c1"># def __repr__(self) -&gt; str:</span>
+    <span class="c1">#     return self.name</span>
 
 <div class="viewcode-block" id="GT.reset"><a class="viewcode-back" href="../../../../ibert/references/gt.html#chipscopy.api.ibert.gt.GT.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset the TX and RX in the GT</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rx</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tx</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GT.update_pll"><a class="viewcode-back" href="../../../../ibert/references/gt.html#chipscopy.api.ibert.gt.GT.update_pll">[docs]</a>    <span class="k">def</span> <span class="nf">update_pll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Updates the reference to the pll attribute based on the appropriate property value&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_done</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Call this only after setup is complete for the GT&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">PLL_SOURCE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_property_for_alias</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pll_name_for_this_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_property</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_property_for_alias</span><span class="p">[</span><span class="n">PLL_SOURCE</span><span class="p">])</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">pll</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">plls</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pll</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">pll_name_for_this_gt</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pll</span> <span class="o">=</span> <span class="n">pll</span>
+                <span class="k">break</span></div>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_done</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">obj_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">get_obj_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_aliases</span><span class="p">(</span><span class="n">obj_info</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CHILDREN</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Build the child objects</span>
+        <span class="k">for</span> <span class="n">child_name</span><span class="p">,</span> <span class="n">child_obj_info</span> <span class="ow">in</span> <span class="n">obj_info</span><span class="p">[</span><span class="n">CHILDREN</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TX</span><span class="p">,</span> <span class="n">RX</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">child_obj_info</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">RX_KEY</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">RX</span><span class="p">(</span><span class="n">child_obj_info</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">child_obj_info</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span> <span class="o">==</span> <span class="n">TX_KEY</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">TX</span><span class="p">(</span><span class="n">child_obj_info</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">obj</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+        <span class="c1"># We always expect a GT to have one valid RX and one valid TX, no more, no less.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rx</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">RX_KEY</span><span class="p">),</span>
+            <span class="n">too_short</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No RX associated with GT </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">),</span>
+            <span class="n">too_long</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;More than one RX found for GT </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tx</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">TX_KEY</span><span class="p">),</span>
+            <span class="n">too_short</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No TX associated with GT </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">),</span>
+            <span class="n">too_long</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;More than one TX found for GT </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_done</span> <span class="o">=</span> <span class="kc">True</span></div>
 </pre></div>
 
            </div>
@@ -477,7 +471,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

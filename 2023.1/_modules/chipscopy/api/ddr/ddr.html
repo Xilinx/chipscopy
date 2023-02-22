@@ -635,7 +635,9 @@ function OptanonWrapper() { }
 
         <span class="k">return</span> <span class="n">configs</span>
 
-    <span class="k">def</span> <span class="nf">__get_cal_margins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">left_margs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">right_margs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">centers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get_cal_margins</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mode_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">left_margs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">right_margs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">centers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">prbs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
         <span class="n">group_name</span> <span class="o">=</span> <span class="n">mode_base</span> <span class="o">+</span> <span class="s2">&quot;_left&quot;</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property_group</span><span class="p">([</span><span class="n">group_name</span><span class="p">])</span>
         <span class="n">left_margs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -644,10 +646,11 @@ function OptanonWrapper() { }
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property_group</span><span class="p">([</span><span class="n">group_name</span><span class="p">])</span>
         <span class="n">right_margs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">right_margs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-        <span class="n">group_name</span> <span class="o">=</span> <span class="n">mode_base</span> <span class="o">+</span> <span class="s2">&quot;_center&quot;</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property_group</span><span class="p">([</span><span class="n">group_name</span><span class="p">])</span>
         <span class="n">centers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="n">centers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">prbs</span><span class="p">:</span>
+            <span class="n">group_name</span> <span class="o">=</span> <span class="n">mode_base</span> <span class="o">+</span> <span class="s2">&quot;_center&quot;</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property_group</span><span class="p">([</span><span class="n">group_name</span><span class="p">])</span>
+            <span class="n">centers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__output_read_margins</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -726,6 +729,74 @@ function OptanonWrapper() { }
                     <span class="s2">&quot;)  Right Margin:  &quot;</span><span class="p">,</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">right_marg</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
                     <span class="s2">&quot; (&quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">right_marg</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__output_gen5_margins</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">is_dq</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="nb">bytes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">bits_byte</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">left_margs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">right_margs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">centers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">left_marg_vals</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">left_margs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="n">right_marg_vals</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">right_margs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="n">center_vals</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">centers</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">left_margs</span><span class="p">)):</span>
+                <span class="n">center_vals</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">center_vals</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">centers</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">is_dq</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">byte</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">bytes</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bits_byte</span><span class="p">):</span>
+                    <span class="n">left_marg</span> <span class="o">=</span> <span class="n">left_marg_vals</span><span class="p">[</span><span class="n">byte</span> <span class="o">*</span> <span class="n">bits_byte</span> <span class="o">+</span> <span class="n">bit</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">center</span> <span class="o">=</span> <span class="n">center_vals</span><span class="p">[</span><span class="n">byte</span> <span class="o">*</span> <span class="n">bits_byte</span> <span class="o">+</span> <span class="n">bit</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">right_marg</span> <span class="o">=</span> <span class="n">right_marg_vals</span><span class="p">[</span><span class="n">byte</span> <span class="o">*</span> <span class="n">bits_byte</span> <span class="o">+</span> <span class="n">bit</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">printer</span><span class="p">(</span>
+                        <span class="s2">&quot;Byte &quot;</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">byte</span><span class="p">),</span>
+                        <span class="s2">&quot; Bit &quot;</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">bit</span><span class="p">),</span>
+                        <span class="s2">&quot; - Left Margin: &quot;</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">left_marg</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="s2">&quot;(&quot;</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">left_marg</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="s2">&quot;) Center Point: &quot;</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="s2">&quot;(&quot;</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="s2">&quot;) Right Margin: &quot;</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">right_marg</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="s2">&quot;(&quot;</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">right_marg</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># DBI for LP5 Read</span>
+            <span class="c1"># DM for Write</span>
+            <span class="k">for</span> <span class="n">byte</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">bytes</span><span class="p">):</span>
+                <span class="n">left_marg</span> <span class="o">=</span> <span class="n">left_marg_vals</span><span class="p">[</span><span class="n">byte</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">center</span> <span class="o">=</span> <span class="n">center_vals</span><span class="p">[</span><span class="n">byte</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">right_marg</span> <span class="o">=</span> <span class="n">right_marg_vals</span><span class="p">[</span><span class="n">byte</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">printer</span><span class="p">(</span>
+                    <span class="s2">&quot;Byte &quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">byte</span><span class="p">),</span>
+                    <span class="s2">&quot; - Left Margin: &quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">left_marg</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                    <span class="s2">&quot;(&quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">left_marg</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="s2">&quot;) Center Point: &quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                    <span class="s2">&quot;(&quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="s2">&quot;) Right Margin: &quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">right_marg</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                    <span class="s2">&quot;(&quot;</span><span class="p">,</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">right_marg</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                     <span class="s2">&quot;)&quot;</span><span class="p">,</span>
                 <span class="p">)</span>
@@ -852,12 +923,12 @@ function OptanonWrapper() { }
             <span class="n">left_margins</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">right_margins</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">center_points</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">cal_margin_modes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cal_margin_mode</span><span class="p">()</span>
+            <span class="n">num_byte</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Bytes&quot;</span><span class="p">])</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
                 <span class="n">is_by_8</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">num_byte</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Bytes&quot;</span><span class="p">])</span>
                 <span class="n">num_nibble</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Nibbles&quot;</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">refresh_cal_margin</span><span class="p">()</span>
-                <span class="n">cal_margin_modes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cal_margin_mode</span><span class="p">()</span>
                 <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Bits per Byte&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                     <span class="n">is_by_8</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -962,6 +1033,447 @@ function OptanonWrapper() { }
                         <span class="bp">self</span><span class="o">.</span><span class="n">__output_write_margins</span><span class="p">(</span>
                             <span class="n">num_byte</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
                         <span class="p">)</span>
+            <span class="c1"># Is Gen5</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dual_freqs</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Memory Frequency 1&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dual_freqs</span><span class="p">:</span>
+                    <span class="n">num_freqs</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">num_freqs</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">num_ranks</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Ranks&quot;</span><span class="p">])</span>
+                <span class="n">num_bits_byte</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Bits per Byte&quot;</span><span class="p">])</span>
+                <span class="n">prbs_ctps_rise</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">prbs_ctps_fall</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">prbs_ctps</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="c1"># Main loop to go through dual frequencies</span>
+                <span class="k">for</span> <span class="n">freq</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_freqs</span><span class="p">):</span>
+                    <span class="n">base</span> <span class="o">=</span> <span class="s2">&quot;Freq &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; Rank &quot;</span>
+                    <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_ranks</span><span class="p">):</span>
+                        <span class="c1"># Read DQ Simp</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_simp&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="c1"># Rising Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_simp_rise&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DQ Margin - Simple Pattern - Rising Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_rise</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                            <span class="c1"># Falling Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_simp_fall&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DQ Margin - Simple Pattern - Falling Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_fall</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                        <span class="c1"># Read DQ Comp</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_comp&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="c1"># Rising Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_comp_rise&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DQ Margin - Complex Pattern - Rising Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_rise</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                            <span class="c1"># Falling Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_comp_fall&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DQ Margin - Complex Pattern - Falling Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_fall</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                        <span class="c1"># Read DQ PRBS</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_prbs&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="c1"># Rising Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_prbs_rise&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span><span class="p">,</span> <span class="kc">True</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">prbs_ctps_rise</span><span class="p">:</span>
+                                <span class="n">center_points</span> <span class="o">=</span> <span class="n">prbs_ctps_rise</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DQ Margin - PRBS Pattern - Rising Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_rise</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                            <span class="c1"># Falling Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dq_prbs_fall&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span><span class="p">,</span> <span class="kc">True</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">prbs_ctps_fall</span><span class="p">:</span>
+                                <span class="n">center_points</span> <span class="o">=</span> <span class="n">prbs_ctps_fall</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DQ Margin - PRBS Pattern - Falling Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_fall</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                        <span class="c1"># Read DBI Simp</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_simp&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="c1"># Rising Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_simp_rise&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DBI Margin - Simple Pattern - Rising Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_rise</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                            <span class="c1"># Falling Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_simp_fall&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DBI Margin - Simple Pattern - Falling Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_fall</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                        <span class="c1"># Read DBI Comp</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_comp&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="c1"># Rising Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_comp_rise&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DBI Margin - Complex Pattern - Rising Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_rise</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                            <span class="c1"># Falling Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_comp_fall&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DBI Margin - Complex Pattern - Falling Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_fall</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                        <span class="c1"># Read DBI PRBS</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_prbs&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="c1"># Rising Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_prbs_rise&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span><span class="p">,</span> <span class="kc">True</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">prbs_ctps_rise</span><span class="p">:</span>
+                                <span class="n">center_points</span> <span class="o">=</span> <span class="n">prbs_ctps_rise</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DBI Margin - PRBS Pattern - Rising Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_rise</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                            <span class="c1"># Falling Edge</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rd_dbi_prbs_fall&quot;</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span><span class="p">,</span> <span class="kc">True</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">prbs_ctps_fall</span><span class="p">:</span>
+                                <span class="n">center_points</span> <span class="o">=</span> <span class="n">prbs_ctps_fall</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Read DBI Margin - PRBS Pattern - Falling Edge Clock in pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps_fall</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                        <span class="c1"># Write DQ Simp</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dq_simp&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dq_simp&quot;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Write DQ Margin - Simple Pattern - In pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                        <span class="c1"># Write DQ Comp</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dq_comp&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dq_comp&quot;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Write DQ Margin - Complex Pattern - In pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                        <span class="c1"># Write DQ PRBS</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dq_prbs&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dq_prbs&quot;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span><span class="p">,</span> <span class="kc">True</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">prbs_ctps</span><span class="p">:</span>
+                                <span class="n">center_points</span> <span class="o">=</span> <span class="n">prbs_ctps</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Write DQ Margin - PRBS Pattern - In pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                        <span class="c1"># Write DM Simp</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dm_simp&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dm_simp&quot;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Write DM Margin - Simple Pattern - In pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                        <span class="c1"># Write DM Comp</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dm_comp&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dm_comp&quot;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span>
+                            <span class="p">)</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Write DM Margin - Complex Pattern - In pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">prbs_ctps</span> <span class="o">=</span> <span class="n">center_points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                        <span class="c1"># Write DM PRBS</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dm_prbs&quot;</span>
+                        <span class="k">if</span> <span class="n">cal_margin_modes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="n">group_name_base</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_wr_dm_prbs&quot;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__get_cal_margins</span><span class="p">(</span>
+                                <span class="n">group_name_base</span><span class="p">,</span> <span class="n">left_margins</span><span class="p">,</span> <span class="n">right_margins</span><span class="p">,</span> <span class="n">center_points</span><span class="p">,</span> <span class="kc">True</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">prbs_ctps</span><span class="p">:</span>
+                                <span class="n">center_points</span> <span class="o">=</span> <span class="n">prbs_ctps</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">printer</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span>
+                                <span class="s2">&quot; - Write DM Margin - PRBS Pattern - In pS and (delay taps):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__output_gen5_margins</span><span class="p">(</span>
+                                <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">num_byte</span><span class="p">,</span>
+                                <span class="n">num_bits_byte</span><span class="p">,</span>
+                                <span class="n">left_margins</span><span class="p">,</span>
+                                <span class="n">right_margins</span><span class="p">,</span>
+                                <span class="n">center_points</span><span class="p">,</span>
+                            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">printer</span><span class="p">(</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Note: DDRMC system error is detected. Margin Analysis will not be provided for &quot;</span><span class="p">,</span>
@@ -1710,7 +2222,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

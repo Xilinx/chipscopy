@@ -357,17 +357,37 @@ function OptanonWrapper() { }
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">builtins</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Generic</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Set</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Type</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">rich.tree</span> <span class="kn">import</span> <span class="n">Tree</span>
 
 <span class="kn">from</span> <span class="nn">chipscopy.api._detail.property</span> <span class="kn">import</span> <span class="n">PropertyCommands</span><span class="p">,</span> <span class="n">Watchlist</span><span class="p">,</span> <span class="n">WatchlistEventHandler</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.containers</span> <span class="kn">import</span> <span class="n">QueryList</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ibert.aliases</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DISPLAY_NAME</span><span class="p">,</span>
+    <span class="n">TYPE</span><span class="p">,</span>
+    <span class="n">HANDLE_NAME</span><span class="p">,</span>
+    <span class="n">PROPERTY_ENDPOINT</span><span class="p">,</span>
+    <span class="n">ALIAS_DICT</span><span class="p">,</span>
+    <span class="n">MODIFIABLE_ALIASES</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.ibert_core_client</span> <span class="kn">import</span> <span class="n">IBERTCoreClient</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Final</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span> <span class="nn">chipscopy.api.ibert</span> <span class="kn">import</span> <span class="n">IBERT</span>
+    <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.gt_group</span> <span class="kn">import</span> <span class="n">GTGroup</span>
 
 
 <span class="k">class</span> <span class="nc">IBERTWatchlist</span><span class="p">(</span><span class="n">Watchlist</span><span class="p">[</span><span class="s2">&quot;IBERTPropertyCommands&quot;</span><span class="p">]):</span>
@@ -438,7 +458,7 @@ function OptanonWrapper() { }
 <span class="sd">    core_tcf_node - Points to the IBERTCoreClient class and is needed to call server commands</span>
 <span class="sd">    _endpoint_tcf_node - Points to the Node class which is a child of core_tcf_node. </span>
 <span class="sd">     Needed to access props attached to a node</span>
-<span class="sd">     </span>
+
 <span class="sd">    Example with IBERT hierarchy </span>
 <span class="sd">        IBERT Versal GTY  &lt;-- core_tcf_node</span>
 <span class="sd">        ├── Quad_206 &lt;-- if self.endpoint_name == &quot;Quad_206&quot;, endpoint_tcf_node points to this</span>
@@ -553,41 +573,29 @@ function OptanonWrapper() { }
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">parent</span><span class="p">:</span> <span class="n">parent_type</span><span class="p">,</span>
-        <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">core_tcf_node</span><span class="p">:</span> <span class="n">IBERTCoreClient</span><span class="p">,</span>
-        <span class="n">property_for_alias</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">is_property_endpoint</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">modifiable_aliases</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">obj_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parent</span><span class="p">:</span> <span class="n">parent_type</span><span class="p">,</span> <span class="n">core_tcf_node</span><span class="p">:</span> <span class="n">IBERTCoreClient</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_info</span><span class="p">[</span><span class="n">DISPLAY_NAME</span><span class="p">]</span>
         <span class="sd">&quot;&quot;&quot;Object name&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_info</span><span class="p">[</span><span class="n">TYPE</span><span class="p">]</span>
         <span class="sd">&quot;&quot;&quot;Object type&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_info</span><span class="p">[</span><span class="n">HANDLE_NAME</span><span class="p">]</span>
         <span class="sd">&quot;&quot;&quot;Object handle from cs_server&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">parent_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="sd">&quot;&quot;&quot;Parent of this object&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">child_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
-        <span class="sd">&quot;&quot;&quot;Direct children of this object&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">child_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">IBERTCoreClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">core_tcf_node</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">property_for_alias</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">property_for_alias</span>
-        <span class="sd">&quot;&quot;&quot;Alias to property name mapping&quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">modifiable_aliases</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">modifiable_aliases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_property_for_alias</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_modifiable_aliases</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_property_endpoint</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SerialObjectBase</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">is_property_endpoint</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">obj_info</span><span class="p">[</span><span class="n">PROPERTY_ENDPOINT</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_property_endpoint</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">_property_endpoint</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -598,15 +606,17 @@ function OptanonWrapper() { }
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_property_endpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">_property_endpoint</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="p">:</span> <span class="n">IBERTPropertyCommands</span> <span class="o">=</span> <span class="n">IBERTPropertyCommands</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_property</span><span class="p">:</span> <span class="n">IBERTPropertyCommands</span> <span class="o">=</span> <span class="n">IBERTPropertyCommands</span><span class="p">(</span>
             <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
             <span class="n">property_endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_property_endpoint</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{}</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">def</span> <span class="nf">__rich_tree__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -621,15 +631,48 @@ function OptanonWrapper() { }
     <span class="c1"># Explicitly use property from builtins here, since this class has instance var with same name</span>
     <span class="nd">@builtins</span><span class="o">.</span><span class="n">property</span>
     <span class="k">def</span> <span class="nf">aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Returns:</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;All available aliases&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">property_for_alias</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
+    <span class="nd">@builtins</span><span class="o">.</span><span class="n">property</span>
+    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">child_type</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Direct children of this object&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span>
+
+    <span class="nd">@builtins</span><span class="o">.</span><span class="n">property</span>
+    <span class="k">def</span> <span class="nf">modifiable_aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Aliases that support value modification&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modifiable_aliases</span>
+
+    <span class="nd">@builtins</span><span class="o">.</span><span class="n">property</span>
+    <span class="k">def</span> <span class="nf">property</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IBERTPropertyCommands</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_property</span>
+
+    <span class="nd">@builtins</span><span class="o">.</span><span class="n">property</span>
+    <span class="k">def</span> <span class="nf">property_for_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Alias to property name mapping&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_property_for_alias</span>
+
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reset is not supported for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reset is not supported for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">obj_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ALIAS_DICT</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_property_for_alias</span> <span class="o">=</span> <span class="n">obj_info</span><span class="p">[</span><span class="n">ALIAS_DICT</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">obj_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MODIFIABLE_ALIASES</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_modifiable_aliases</span> <span class="o">=</span> <span class="n">obj_info</span><span class="p">[</span><span class="n">MODIFIABLE_ALIASES</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_done</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">obj_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">get_obj_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_aliases</span><span class="p">(</span><span class="n">obj_info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_done</span> <span class="o">=</span> <span class="kc">True</span></div>
 </pre></div>
 
            </div>
@@ -651,7 +694,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

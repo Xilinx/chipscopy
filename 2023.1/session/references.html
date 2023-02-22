@@ -392,6 +392,8 @@ the cs_server.</p>
 <li><p><strong>xvc_mm_server_url</strong> – Url for the testing xvc memory map server - For special debug core testing use cases</p></li>
 <li><p><strong>cable_timeout</strong> – Seconds before timing out when detecting devices on a jtag cable</p></li>
 <li><p><strong>use_legacy_scanner</strong> – Use legacy device scan algorithm</p></li>
+<li><p><strong>initial_device_scan</strong> – Do an initial device scan when opening session (lazy initialization otherwise)</p></li>
+<li><p><strong>disable_cache</strong> – Control client caching (experimental)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -419,7 +421,7 @@ the cs_server.</p>
 <h1>chipscopy.api.session<a class="headerlink" href="#chipscopy-api-session" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="chipscopy.api.session.Session">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.session.</span></code><code class="sig-name descname"><span class="pre">Session</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xvc_mm_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass_version_check</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cable_timeout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_legacy_scanner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_dbg_core_tiered_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.session.</span></code><code class="sig-name descname"><span class="pre">Session</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xvc_mm_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass_version_check</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cable_timeout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_legacy_scanner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_device_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Top level object that tracks a connection to a hardware server and optionally, chipscope
 server. To create and destroy a session, use the factory function
@@ -439,15 +441,13 @@ Similar to vivado get_hw_targets command. target_cables may be jtag or virtual.<
 <dl class="py method">
 <dt id="chipscopy.api.session.Session.devices">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">devices</span></code><a class="headerlink" href="#chipscopy.api.session.Session.devices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of devices connected to this hw_server and cable. Devices may
-contain several chains across cables, so don’t always assume a single jtag chain
-is returned</p>
+<dd><p>Returns a list of devices connected to this hw_server and cable.
+Devices may span multiple jtag chains. No ordering is guaranteed.
+Devices are cached after scanning until an event changes state and
+requires a re-scan if caching is enabled.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>cable</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Cable</span></code>]) – Get devices for specified cable. None=Scan all cables</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="../device.html#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a>]</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="../device.html#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -513,7 +513,7 @@ Default is “NONE”</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

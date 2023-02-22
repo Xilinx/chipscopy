@@ -452,7 +452,7 @@ function OptanonWrapper() { }
     <span class="k">def</span> <span class="nf">get_window_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trigger_position</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">set_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ILAWaveform.set_sample"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILAWaveform.set_sample">[docs]</a>    <span class="k">def</span> <span class="nf">set_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Sample may have more bytes than waveform samples have. Erase any gap bit.&quot;&quot;&quot;</span>
         <span class="n">sample_byte_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bytes_per_sample</span><span class="p">()</span>
         <span class="n">copy_byte_count</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sample_byte_count</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">))</span>
@@ -462,7 +462,7 @@ function OptanonWrapper() { }
             <span class="k">return</span>
         <span class="n">gap_byte_index</span><span class="p">,</span> <span class="n">gap_bit_index</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="mh">0xFF</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">gap_bit_index</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">gap_byte_index</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">gap_byte_index</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="n">mask</span></div>
 
 <div class="viewcode-block" id="ILAWaveform.export_waveform"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILAWaveform.export_waveform">[docs]</a>    <span class="k">def</span> <span class="nf">export_waveform</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1289,7 +1289,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

@@ -356,39 +356,22 @@ function OptanonWrapper() { }
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">chipscopy.api.ibert.aliases</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ALIAS_DICT</span><span class="p">,</span>
-    <span class="n">HANDLE_NAME</span><span class="p">,</span>
-    <span class="n">MODIFIABLE_ALIASES</span><span class="p">,</span>
-    <span class="n">PROPERTY_ENDPOINT</span><span class="p">,</span>
-    <span class="n">TYPE</span><span class="p">,</span>
-    <span class="n">TX_RESET</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ibert.aliases</span> <span class="kn">import</span> <span class="n">TX_RESET</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.serial_object_base</span> <span class="kn">import</span> <span class="n">SerialObjectBase</span>
 <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">final</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.gt</span> <span class="kn">import</span> <span class="n">GT</span>
+    <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.gt</span> <span class="kn">import</span> <span class="n">GT</span>  <span class="c1"># noqa</span>
     <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.link</span> <span class="kn">import</span> <span class="n">Link</span>
     <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.pll</span> <span class="kn">import</span> <span class="n">PLL</span>
 
 
 <div class="viewcode-block" id="TX"><a class="viewcode-back" href="../../../../ibert/references/tx.html#chipscopy.api.ibert.tx.TX">[docs]</a><span class="nd">@final</span>
 <span class="k">class</span> <span class="nc">TX</span><span class="p">(</span><span class="n">SerialObjectBase</span><span class="p">[</span><span class="s2">&quot;GT&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
-        <span class="n">SerialObjectBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="n">configuration</span><span class="p">[</span><span class="n">TYPE</span><span class="p">],</span>
-            <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
-            <span class="n">handle</span><span class="o">=</span><span class="n">configuration</span><span class="p">[</span><span class="n">HANDLE_NAME</span><span class="p">],</span>
-            <span class="n">core_tcf_node</span><span class="o">=</span><span class="n">tcf_node</span><span class="p">,</span>
-            <span class="n">property_for_alias</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ALIAS_DICT</span><span class="p">,</span> <span class="nb">dict</span><span class="p">()),</span>
-            <span class="n">is_property_endpoint</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">PROPERTY_ENDPOINT</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">modifiable_aliases</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MODIFIABLE_ALIASES</span><span class="p">,</span> <span class="nb">set</span><span class="p">()),</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tx_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">):</span>
+        <span class="n">SerialObjectBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tx_info</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tcf_node</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">link</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Link</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="sd">&quot;&quot;&quot;Link the TX is part of&quot;&quot;&quot;</span>
@@ -396,8 +379,8 @@ function OptanonWrapper() { }
         <span class="c1"># This is used by the filter_by method in QueryList</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">&quot;handle&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+    <span class="c1"># def __repr__(self) -&gt; str:</span>
+    <span class="c1">#     return self.name</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pll</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PLL</span><span class="p">:</span>
@@ -413,6 +396,8 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset the TX</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="n">TX_RESET</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_for_alias</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TX &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="si">}</span><span class="s2">&#39; cannot be reset!&quot;</span><span class="p">)</span>
 
@@ -440,7 +425,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>

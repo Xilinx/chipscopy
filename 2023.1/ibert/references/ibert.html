@@ -384,12 +384,27 @@ function OptanonWrapper() { }
 <h1>chipscopy.api.ibert<a class="headerlink" href="#chipscopy-api-ibert" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="chipscopy.api.ibert.IBERT">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.</span></code><code class="sig-name descname"><span class="pre">IBERT</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ibert_tcf_node</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tiered_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/ibert.html#IBERT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.IBERT" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.</span></code><code class="sig-name descname"><span class="pre">IBERT</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ibert_tcf_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/ibert.html#IBERT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.IBERT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main API class to use IBERT (Integrated Bit Error Ratio Tester) debug core.</p>
 <dl class="py attribute">
 <dt id="chipscopy.api.ibert.IBERT.children">
 <code class="sig-name descname"><span class="pre">children</span></code><em class="property"><span class="pre">:</span> <span class="pre">QueryList</span><span class="p"><span class="pre">[</span></span><span class="pre">GTGroup</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.IBERT.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>Children of IBERT</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ibert.IBERT.discover_gt_groups">
+<code class="sig-name descname"><span class="pre">discover_gt_groups</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_uninstantiated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/ibert.html#IBERT.discover_gt_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.IBERT.discover_gt_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discover all GT Groups that are instantiated by the design.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_uninstantiated</strong> (<em>bool</em>) – If you wish to include un-instantiated GT Groups in the discovery process,
+set this to ‘True’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -460,7 +475,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on December 12, 2022.
+        Last updated on February 05, 2023.
       </span>
 
     </p>
