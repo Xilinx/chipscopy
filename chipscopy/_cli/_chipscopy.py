@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -91,7 +92,8 @@ _cs_url: str = os.getenv("CS_SERVER_URL", "localhost:3042")
 
 def display_banner():
     print(f"\n******** Xilinx ChipScoPy v{chipscopy.__version__}")
-    print("  ****** Copyright 2021-2022 Xilinx, Inc. All Rights Reserved.\n")
+    print("  ****** Copyright (C) 2021-2022 Xilinx, Inc. All Rights Reserved.\n")
+    print("  ****** Copyright (C) 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.\n")
     print("WARNING: Commands and options are subject to change.")
     print()
 

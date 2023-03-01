@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1260,21 +1261,32 @@ class DDR(DebugCore["DDRMCClient"]):
         lp4_range_two = 20.4
         ddr4_incr_size = 0.65
         lp4_incr_size = 0.4
+        lp5_base = 10.0
+        lp5_incr_size = 0.5
         read_incr_size = 0.0976563
         prop_list = []
+        # Gen5 Write Vref
+        vref_threshold = 128
 
         prop_list.append("mgchk_rw_mode")
         prop_list.append("mem_type")
-        prop_list.append("mgchk_def_wr_vref_range")
+        if not self.is_gen5:
+            prop_list.append("mgchk_def_wr_vref_range")
+            vref_threshold = 50
 
         results = self.ddr_node.get_property(prop_list)
         rw_mode = results["mgchk_rw_mode"]
         mem_type = results["mem_type"]
-        write_vref_range = results["mgchk_def_wr_vref_range"]
+        if not self.is_gen5:
+            write_vref_range = results["mgchk_def_wr_vref_range"]
 
         if rw_mode:
-            if vref > 50:
-                printer("ERROR: Cannot enter Vref values larger than 50 for Write Margin mode")
+            if vref > vref_threshold:
+                printer(
+                    "ERROR: Cannot enter Vref values larger than ",
+                    vref_threshold,
+                    " for Write Margin mode",
+                )
                 return
             if mem_type == 1:
                 if write_vref_range == 0:
@@ -1288,6 +1300,12 @@ class DDR(DebugCore["DDRMCClient"]):
                 else:
                     base_value = lp4_range_two
                 incr_size = lp4_incr_size
+            elif mem_type == 5:
+                base_value = lp5_base
+                incr_size = lp5_incr_size
+            elif mem_type == 4:
+                # This needs to be finalized later
+                pass
         else:
             incr_size = read_incr_size
 
@@ -1450,8 +1468,63 @@ class DDR(DebugCore["DDRMCClient"]):
         self.eye_scan_data = data_list
         self.ddr_node.set_property({"es_data_need_update": 0})
 
+    def __update_gen5_eye_scan_data(self):
+        edges = ["left", "right"]
+        clocks = ["nqtr", "pqtr"]
+        clock_defs = {
+            "nqtr": "fall_",
+            "pqtr": "rise_",
+        }
+        data_list = []
+
+        engine_data = self.ddr_node.get_eye_scan_data()
+        data_length = len(engine_data)
+
+        # If initial vref scan went wrong after enabled, needless to process data further
+        if not data_length > 1:
+            return
+
+        scan_mode = engine_data[0]["config.mode"]
+        bit_count = engine_data[0]["config.bits"]
+        byte_count = engine_data[0]["config.bytes"]
+        data_list.append(engine_data[0])
+
+        if "Read" in scan_mode:
+            old_key_base = "rdmargin_"
+            new_key_base = "read_"
+            for data in engine_data[1:]:
+                for bit in range(int(bit_count)):
+                    for clock in clocks:
+                        for edge in edges:
+                            old_key = (
+                                old_key_base + clock + "_" + edge + "_bit" + "{:02d}".format(bit)
+                            )
+                            ps_name = new_key_base + clock_defs[clock] + "{:02d}".format(bit)
+                            new_key = ps_name + "_" + edge
+                            tap_value = data[old_key]
+                            data[new_key] = tap_value
+                            del data[old_key]
+                temp_data = {key: val for key, val in data.items() if "wrmargin" not in key}
+                new_data = OrderedDict(sorted(temp_data.items()))
+                data_list.append(new_data)
+        else:
+            old_key_base = "wrmargin_"
+            new_key_base = "write_"
+            for data in engine_data[1:]:
+                temp_data = {key: val for key, val in data.items() if "rdmargin" not in key}
+                new_data = OrderedDict(sorted(temp_data.items()))
+                data_list.append(new_data)
+
+        self.eye_scan_data = data_list
+        self.ddr_node.set_property({"es_data_need_update": 0})
+
     def __draw_eye_scan_graph(
-        self, margin_data: List, base_name: str, margin_title: str, def_vref: float
+        self,
+        margin_data: List,
+        base_name: str,
+        margin_title: str,
+        def_vref: float,
+        unit_string: str = "",
     ):
         vrefs = []
         left_margs = []
@@ -1461,16 +1534,42 @@ class DDR(DebugCore["DDRMCClient"]):
         x_min = 0
         x_max = 0
 
-        for data in margin_data:
-            vrefs.append(float(data["config.vrefp"]))
-            key_name = base_name + "_left"
-            left_margs.append(int(data[key_name]))
-            key_name += "_ps"
-            left_ps.append(int(data[key_name]))
-            key_name = base_name + "_right"
-            right_margs.append(int(data[key_name]))
-            key_name += "_ps"
-            right_ps.append(int(data[key_name]))
+        if not self.is_gen5:
+            for data in margin_data:
+                vrefs.append(float(data["config.vrefp"]))
+                key_name = base_name + "_left"
+                left_margs.append(int(data[key_name]))
+                key_name += "_ps"
+                left_ps.append(int(data[key_name]))
+                key_name = base_name + "_right"
+                right_margs.append(int(data[key_name]))
+                key_name += "_ps"
+                right_ps.append(int(data[key_name]))
+        else:
+            ps_factors = self.ddr_node.get_margin_ps_factors()
+            ps_factor = ps_factors[0]
+
+            if "wrmargin" in base_name:
+                for data in margin_data:
+                    vrefs.append(float(data["config.vrefp"]))
+                    key_name = base_name + "left_lsb_" + unit_string
+                    tap_val = int(data[key_name])
+                    key_name = base_name + "left_msb_" + unit_string
+                    msb_val = int(data[key_name])
+                    left_marg = (msb_val * (2**9)) + tap_val
+                    left_margs.append(left_marg)
+                    ps_val = int(round(left_marg * ps_factor))
+                    left_ps.append(ps_val)
+                    key_name = base_name + "right_lsb_" + unit_string
+                    tap_val = int(data[key_name])
+                    key_name = base_name + "right_msb_" + unit_string
+                    msb_val = int(data[key_name])
+                    right_marg = (msb_val * (2**9)) + tap_val
+                    right_margs.append(right_marg)
+                    ps_val = int(round(right_marg * ps_factor))
+                    right_ps.append(ps_val)
+            else:
+                pass
 
         x_min = max(left_ps)
         x_max = max(right_ps)
@@ -1569,7 +1668,10 @@ class DDR(DebugCore["DDRMCClient"]):
             file_name = "eye_scan_data"
 
         file_name = os.path.splitext(file_name)[0] + ".csv"
-        self.__update_eye_scan_data()
+        if self.is_gen5:
+            self.__update_gen5_eye_scan_data()
+        else:
+            self.__update_eye_scan_data()
 
         if not self.eye_scan_data:
             printer("ERROR: No scan data is found. Please re-run 2D eye scan.")
@@ -1643,11 +1745,24 @@ class DDR(DebugCore["DDRMCClient"]):
         vref_steps = results["es_vref_steps"]
 
         if rw_mode:
-            if (vref_min > 50) or (vref_max > 50):
-                printer("ERROR: Cannot set Vref values larger than 50 under Write margin mode.")
+            if self.is_gen5:
+                vref_threshold = 128
+            else:
+                vref_threshold = 50
+
+            if (vref_min > vref_threshold) or (vref_max > vref_threshold):
+                printer(
+                    "ERROR: Cannot set Vref values larger than ",
+                    vref_threshold,
+                    " under Write margin mode.",
+                )
                 return False
-            if vref_steps > 51:
-                printer("ERROR: Cannot set Vref step sizes larger than 51 for Write Margin mode")
+            if vref_steps > vref_threshold + 1:
+                printer(
+                    "ERROR: Cannot set Vref step sizes larger than ",
+                    vref_threshold + 1,
+                    " for Write Margin mode",
+                )
                 return False
 
         if vref_min > vref_max:
@@ -1757,7 +1872,10 @@ class DDR(DebugCore["DDRMCClient"]):
 
         if data_need_update:
             self.eye_scan_data.clear()
-            self.__update_eye_scan_data()
+            if self.is_gen5:
+                self.__update_gen5_eye_scan_data()
+            else:
+                self.__update_eye_scan_data()
 
         if not self.eye_scan_data:
             printer(
@@ -1778,13 +1896,30 @@ class DDR(DebugCore["DDRMCClient"]):
         mem_type = data_list[0]["config.mem_type"]
         df_vref = data_list[0]["config.df_vrefp"]
         df_vref = float(df_vref)
-        nibble_count = data_list[0]["config.nibbles"]
+        if not self.is_gen5:
+            nibble_count = data_list[0]["config.nibbles"]
+        else:
+            bit_count = data_list[0]["config.bits"]
         byte_count = data_list[0]["config.bytes"]
         unit_val = "{:02d}".format(unit_index)
         data_list = data_list[1:]
+        unit_str = ""
 
         # Some logical data check first on user inputs
-        if unit_mode == "nibble":
+        if unit_mode == "bit":
+            if (unit_index < 0) or (unit_index >= int(bit_count)):
+                max_unit = int(bit_count) - 1
+                err_msg = (
+                    "ERROR: unit_index given for "
+                    + unit_mode
+                    + " mode needs to be between 0 and "
+                    + str(max_unit)
+                )
+                err_msg += ", based on current memory configuration."
+                printer(err_msg)
+                return
+            unit_str = unit_mode + unit_val
+        elif unit_mode == "nibble":
             if (unit_index < 0) or (unit_index >= int(nibble_count)):
                 max_unit = int(nibble_count) - 1
                 err_msg = (
@@ -1808,6 +1943,7 @@ class DDR(DebugCore["DDRMCClient"]):
                 err_msg += ", based on current memory configuration."
                 printer(err_msg)
                 return
+            unit_str = unit_mode + str(unit_index)
 
         mc_name = "MC" + str(self.mc_index)
         mc_name += "(" + self.mc_loc + ")"
@@ -1833,11 +1969,17 @@ class DDR(DebugCore["DDRMCClient"]):
                 fig = self.__draw_eye_scan_graph(data_list, name_base, margin_mode, df_vref)
                 figure_list.append(fig)
         else:
-            name_base = "write_" + unit_val
             margin_mode = scan_mode + " - " + unit_mode.capitalize() + str(unit_index) + "<br>"
             margin_mode += mc_name + " - "
             margin_mode += mem_type + " - Rank" + str(rank_num)
-            fig = self.__draw_eye_scan_graph(data_list, name_base, margin_mode, df_vref)
+            if not self.is_gen5:
+                name_base = "write_" + unit_val
+                fig = self.__draw_eye_scan_graph(data_list, name_base, margin_mode, df_vref)
+            else:
+                name_base = "wrmargin_"
+                fig = self.__draw_eye_scan_graph(
+                    data_list, name_base, margin_mode, df_vref, unit_str
+                )
             figure_list.append(fig)
 
         if not return_as_list:

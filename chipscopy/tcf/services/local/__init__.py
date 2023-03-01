@@ -1,6 +1,7 @@
 # *****************************************************************************
-# * Copyright (c) 2020 Xilinx, Inc.
 # * Copyright (c) 2011, 2013 Wind River Systems, Inc. and others.
+# * Copyright(C) 2020-2022 Xilinx, Inc.
+# * Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
 # * which accompanies this distribution, and is available at
