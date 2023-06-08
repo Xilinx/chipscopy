@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -122,8 +123,9 @@ def version_consistency_check(
 
     # First compare chipscopy and hw_server
     if (
-        chipscopy_version.year != hw_server_version.year
-        or chipscopy_version.major != hw_server_version.major
+        chipscopy_version.year
+        != hw_server_version.year
+        # or chipscopy_version.major != hw_server_version.major
     ):
         mismatch_detected = True
 
@@ -134,9 +136,9 @@ def version_consistency_check(
         # Next compare cs_server with chipscopy and hw_server
         if (
             chipscopy_version.year != cs_server_version.year
-            or chipscopy_version.major != cs_server_version.major
+            # or chipscopy_version.major != cs_server_version.major
             or hw_server_version.year != cs_server_version.year
-            or hw_server_version.major != cs_server_version.major
+            # or hw_server_version.major != cs_server_version.major
         ):
             mismatch_detected = True
 

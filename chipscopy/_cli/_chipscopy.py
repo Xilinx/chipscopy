@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import json
 import re
 from collections import deque
 from operator import itemgetter
@@ -22,7 +23,6 @@ import os
 from more_itertools import one
 
 import chipscopy
-from chipscopy.api.device.device_scanner import create_device_scanner
 from chipscopy import create_session, report_versions, report_devices
 
 
@@ -92,7 +92,8 @@ _cs_url: str = os.getenv("CS_SERVER_URL", "localhost:3042")
 
 def display_banner():
     print(f"\n******** Xilinx ChipScoPy v{chipscopy.__version__}")
-    print("  ****** Copyright 2021-2022 Xilinx, Inc. All Rights Reserved.\n")
+    print("  ****** Copyright (C) 2021-2022 Xilinx, Inc. All Rights Reserved.\n")
+    print("  ****** Copyright (C) 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.\n")
     print("WARNING: Commands and options are subject to change.")
     print()
 
@@ -244,8 +245,10 @@ def program(
 def json_devices():
     # click command string above is required because of underscore in name
     session = create_session(hw_server_url=_hw_url, cs_server_url=_cs_url)
-    scanner = create_device_scanner(session.hw_server, session.cs_server)
-    print(scanner.to_json())
+    all_devices = []
+    for device in session.devices:
+        all_devices.append(device.to_dict())
+    json.dumps(all_devices, indent=4)
 
 
 class TreePrinter(NodeVisitorBase):

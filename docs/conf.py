@@ -154,6 +154,7 @@ html_static_path = ['_static']
 vivado_version = __vivado_version__
 rst_epilog = """
 .. |vivado_v| replace:: {0}
+.. |ced_link| replace:: `ChipScoPy CED <https://github.com/Xilinx/XilinxCEDStore/tree/{0}/ced/Xilinx/IPI/chipscopy>`__
 """.format(vivado_version)
 
 # Custom sidebar templates, must be a dictionary that maps document names

@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,9 +26,9 @@ from chipscopy.api.session import create_session, delete_session
 from chipscopy.dm.request import null_callback
 from chipscopy.api.report import report_versions, report_devices, report_hierarchy
 
-__author__ = "Xilinx, Inc."
-__copyright__ = "Copyright 2020, Xilinx, Inc."
-__email__ = "labtools@xilinx.com"
+__author__ = "Advanced Micro Devices, Inc."
+__copyright__ = "Copyright (C) 2022-2023, Advanced Micro Devices, Inc."
+__email__ = "support@xilinx.com"
 try:
     __version__ = importlib_metadata.version(__package__)
 except importlib_metadata.PackageNotFoundError:  # for frozen app support, enter correct version here

@@ -6,7 +6,8 @@ if __name__ is not None and "." in __name__:
 else:
     from ILATsmParser import ILATsmParser
 
-# Copyright 2022 Xilinx, Inc.
+# Copyright (C) 2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

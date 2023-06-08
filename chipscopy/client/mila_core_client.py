@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@ from itertools import islice
 
 from chipscopy import dm
 from chipscopy.client import connect_xicom
+from chipscopy.client.server_info import ServerInfo
 from chipscopy.client.core_property_client import PropertyValues
 from chipscopy.client.core import get_cs_view, CoreParent, CoreClient
 from chipscopy.tcf.services import DoneHWCommand, mila
@@ -469,8 +471,7 @@ def display_waveform_in_jupyter(
     )
 
 
-def find_mila_cores(cs_url: str, hw_url: str = "", silent: bool = False) -> MILACoreClient:
-
+def connect_servers(cs_url: str, hw_url: str = "", silent: bool = False) -> (ServerInfo, dm.Node):
     if hw_url != "":
         server = connect_xicom(cs_url)
         server.connect_remote(hw_url)
@@ -504,24 +505,26 @@ def find_mila_cores(cs_url: str, hw_url: str = "", silent: bool = False) -> MILA
         print("ChipScope View:")
         cs_view.print_tree(False)
 
+    return server, dpc
+
+
+def find_mila_cores(cs_url: str, hw_url: str = "", silent: bool = False) -> MILACoreClient:
+
+    server_info, parent_node = connect_servers(cs_url, hw_url, silent)
+    cs_view = get_cs_view(server_info)
+
     # Find MILAs under DPC, returning as generator
-    milas = cs_view.find_nodes(dpc, MILACoreClient)
+    milas = cs_view.find_nodes(parent_node, MILACoreClient)
 
     return milas
 
 
 def get_mila_by_index(cs_url: str, hw_url: str, idx: int) -> MILACoreClient:
 
-    milas = find_mila_cores(cs_url, hw_url, True)
-    mila_list = list(milas)
-    mila_count = len(mila_list)
+    server_info, parent_node = connect_servers(cs_url, hw_url, True)
 
-    if (idx < 0) or not (idx < mila_count):
-        raise Exception(
-            f"Invalid index given to get target MILA: {idx} \
-                          \nTotal number of MILA found is: {mila_count}"
-        )
-
-    mila = mila_list[idx]
+    mila = server_info.cs_target(
+        parent=parent_node, type="ddrmc_main", index=idx, cls=MILACoreClient
+    )
 
     return mila

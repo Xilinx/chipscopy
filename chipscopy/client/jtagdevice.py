@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -367,7 +368,6 @@ class JtagDevice(JtagNode):
 
         # add pending to indicate that this node is being changed
         self.add_pending(proc.config_begin(self.ctx, {}, config_started))
-        send_data()
 
     def reset(self):
         """

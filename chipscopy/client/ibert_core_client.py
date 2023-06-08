@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Literal
 
 from chipscopy import dm
+from chipscopy.api.ibert.aliases import DISPLAY_NAME
 from chipscopy.client import core
 from chipscopy.client.core import CoreClient
 from chipscopy.dm.request import DoneCallback
@@ -31,7 +33,7 @@ class IBERTCoreClient(CoreClient):
         return return_val
 
     def post_init(self):
-        super(IBERTCoreClient, self).post_init()
+        pass
 
     def get_child_with_name(self, name: str, done: DoneCallback):
         """
@@ -39,10 +41,7 @@ class IBERTCoreClient(CoreClient):
         """
         for child_ctx in self.children:
             child_node = self.manager.get_node(child_ctx)
-            # Only nodes that are safe to read from will have the 'display_name' prop set.
-            # eg: If the access path check returns False for certain child_nodes of GTYP,
-            # their 'display_name' prop won't be set.
-            if "display_name" in child_node.props and name == child_node.props["display_name"]:
+            if "Name" in child_node.props and name == child_node.props["Name"]:
                 done(result=child_node)
                 return
 
@@ -51,10 +50,65 @@ class IBERTCoreClient(CoreClient):
     def get_service_proxy(self):
         return self.manager.channel.getRemoteService("IBERT")
 
+    def tier1_initialize(self, done: DoneCallback = None):
+        service, done_cb = self.make_done(done)
+        log[DOMAIN_NAME].info(f"Initializing IBERT core skeleton")
+        token = service.tier1_initialize(self.ctx, done_cb)
+        return self.add_pending(token)
+
     def initialize(self, done: DoneCallback = None):
         service, done_cb = self.make_done(done)
         log[DOMAIN_NAME].info(f"Initializing IBERT service")
         token = service.initialize(self.ctx, done_cb)
+        return self.add_pending(token)
+
+    def initialize_architecture(self, done: DoneCallback = None):
+        service, done_cb = self.make_done(done)
+        token = service.initialize_architecture(self.ctx, done_cb)
+        return self.add_pending(token)
+
+    def discover_gt_groups(self, include_uninstantiated: bool = False, done: DoneCallback = None):
+        """
+        Discover GT Groups that are part of this IBERT core.
+
+        Args:
+            include_uninstantiated (bool): Set this to True, if you wish to include GT Groups,
+                un-instantiated by the design, in the list of discovered GT Groups.
+
+            done: Callback function called when GT Groups have been discovered
+
+        Returns:
+
+        """
+        service, done_cb = self.make_done(done)
+        options = {"node_id": self.ctx, "include_uninstantiated": include_uninstantiated}
+        token = service.discover_gt_groups(options, done_cb)
+        return self.add_pending(token)
+
+    def setup_gt_group(
+        self, gt_group: str, done: DoneCallback = None, *, skip_post_ops: bool = False
+    ):
+        service, done_cb = self.make_done(done)
+        options = {"node_id": self.ctx, "gt_group": gt_group, "skip_post_ops": skip_post_ops}
+        token = service.setup_gt_group(options, done_cb)
+        return self.add_pending(token)
+
+    def get_obj_info(
+        self,
+        handle: str,
+        done: DoneCallback = None,
+        *,
+        include_alias: bool = True,
+        include_property: Literal["no", "all", "client_visible"] = "no",
+    ):
+        service, done_cb = self.make_done(done)
+        options = {
+            "node_id": self.ctx,
+            "handle": handle,
+            "include_alias": include_alias,
+            "include_property": include_property,
+        }
+        token = service.get_obj_info(options, done_cb)
         return self.add_pending(token)
 
     def setup(self, done: DoneCallback = None):

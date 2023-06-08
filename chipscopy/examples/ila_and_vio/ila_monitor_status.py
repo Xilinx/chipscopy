@@ -1,11 +1,27 @@
-# %% [markdown]
+# ---
+# jupyter:
+#   jupytext:
+#     cell_metadata_filter: -all
+#     formats: ipynb,py
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.10.1
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
+
 # <link rel="preconnect" href="https://fonts.gstatic.com">
 # <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 #
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright 2022 Xilinx, Inc.<br><br>
+# Copyright (c) 2021-2022 Xilinx, Inc.<br>
+# Copyright (c) 2022-2023 Advanced Micro Devices, Inc.<br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
@@ -17,13 +33,11 @@
 # </p>
 #
 
-# %% [markdown]
 # # ChipScoPy ILA Monitor Status Example
 #
 #
 # <img src="../img/api_overview.png" width="500" align="left">
 
-# %% [markdown]
 # ## Description
 # An advanced example showing how to monitor the ILA capture status, by running the function ILA.monitor_status(), in asynchroneous mode.
 #
@@ -41,7 +55,6 @@
 # - ChipScoPy 2022.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
-# %% [markdown]
 # # Overview
 # ### Function monitor_status() Documentation
 #     A. Function monitor_status()
@@ -66,7 +79,6 @@
 #     12. Upload and Print Data
 # --------------------
 
-# %% [markdown]
 # ## A. Function monitor_status()
 #
 #     def monitor_status(
@@ -88,14 +100,12 @@
 # - ILAStatus when called synchronously.
 # - "future object" when called asynchronously.
 
-# %% [markdown]
 # ## B. Calling monitor_status() in Synchronous Mode
 # - Typical mode when using this function. It is not covered in this example.
 # - Function waits until all data has been captured in the ILA core, or timeout.
 # - Use default argument value *None* for both arguments *progress* and *done* .
 # - Returns an ILAStatus object.
 
-# %% [markdown]
 # ## C. Calling monitor_status() in Asynchronous Mode
 #
 # - This mode is useful for reporting the capture status to stdout or a GUI.
@@ -105,7 +115,6 @@
 # - Asynchronous Mode is selected, by specifying a *done* function, which is called after the function has completed.
 # - If no user defined callback is needed, set *done* argument to dummy function *chipscopy.null_callback*, to enable asynchronous mode.
 
-# %% [markdown]
 # ## D. Future Object
 #
 # When the *monitor_status* function is called in asynchronous mode, it will return a *future* object.
@@ -129,7 +138,6 @@
 #
 # - *future.cancel()*  - Cancels the status monitor. An exception will be raised in the thread, which called the function *ILA.monitor_status*.
 
-# %% [markdown]
 # ## E. Progress Function
 #
 # - User-defined function which takes one argument *future*.
@@ -144,7 +152,6 @@
 # >                # future.result holds an ILAStatus object.
 # >                print_status(future.progress)
 
-# %% [markdown]
 # ## F. ILAStatus Class
 #
 # The following data attributes are available to read, when monitoring the ILA capture status.
@@ -160,7 +167,6 @@
 # | windows_requested           | int      | Requested number of windows, when ILA was armed.            |
 # | trigger_position_requested  | int      | Requested trigger position, when ILA was armed.             |
 
-# %% [markdown]
 # ## G.  ILAState Enum Values
 #
 # ILA Capture State Transitions:<br>
@@ -174,10 +180,8 @@
 # | POST_TRIGGER | Capturing post-trigger samples.  |
 #
 
-# %% [markdown]
 # # Example Steps
 
-# %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
 #
 # After this step,
@@ -185,7 +189,6 @@
 # - URL paths are set correctly
 # - File paths to example files are set correctly
 
-# %%
 import os
 from time import sleep
 import chipscopy
@@ -194,7 +197,7 @@ from chipscopy import get_examples_dir_or_die, null_callback
 from chipscopy import create_session, report_versions
 from chipscopy.api.ila import ILAStatus, ILAState
 
-# %%
+# +
 # Specify locations of the running hw_server and cs_server below.
 # To make things convenient, we default to values from the following environment variables.
 # Modify these if needed.
@@ -213,9 +216,9 @@ print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
+# -
 
 
-# %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
@@ -223,23 +226,19 @@ print(f"PROBES_FILE:{PROBES_FILE}")
 # - Session is initialized and connected to server(s)
 # - Versions are detected and reported to stdout
 
-# %%
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
 report_versions(session)
 
-# %% [markdown]
 # ## 3 - Program the device with the example design
 #
 # After this step,
 # - Device is programmed with the example programming file
 
-# %%
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
 device.program(PROGRAMMING_FILE)
 
 
-# %% [markdown]
 # ## 4 - Discover Debug Cores
 #
 # Debug core discovery initializes the chipscope server debug cores. This brings debug cores in the chipscope server online.
@@ -249,24 +248,20 @@ device.program(PROGRAMMING_FILE)
 # - The cs_server is initialized and ready for use
 # - ILA and VIO core instances in the device are reported
 
-# %%
 device.discover_and_setup_cores(ltx_file=PROBES_FILE)
 print(f"Debug cores setup and ready for use.")
 
-# %%
 # Print out the ILA core instance UUIDs and instance names
 ila_cores = device.ila_cores
 for index, ila_core in enumerate(ila_cores):
     print(f"{index} - {ila_core.core_info.uuid}   {ila_core.name}")
 
-# %%
 # Print out the VIO core instance UUIDs and instance names
 vio_cores = device.vio_cores
 for index, vio_core in enumerate(vio_cores):
     print(f"{index} - {vio_core.core_info.uuid}   {vio_core.name}")
 
 
-# %% [markdown]
 # ## 5 - VIO Control and ILA Capture
 #
 # ILA and VIO are two important building blocks for debugging applications in hardware.
@@ -277,10 +272,9 @@ for index, vio_core in enumerate(vio_cores):
 # - An ILA core captures the counter values
 #
 
-# %% [markdown]
 # <img src="img/capture_data.png" width="400" align="left">
 
-# %%
+# +
 # Grab the two cores we are interested in for the demonstration
 # As shown above, a counter is connected to the ILA core.
 # The VIO core controls the counter.
@@ -290,16 +284,15 @@ vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 
 print(f"Using ILA: {ila.core_info.uuid}  {ila.name}")
 print(f"Using VIO: {vio.core_info.uuid}  {vio.name}")
+# -
 
 
-# %% [markdown]
 # ## 6 - Configure the counter using VIO output probes
 #
 # Set up the VIO core to enable counting up, from 0
 #
 # <img src="img/vio_control_counter.png" width="300" align="left">
 
-# %%
 vio.reset_vio()
 vio.write_probes(
     {
@@ -313,7 +306,6 @@ vio.write_probes(
 print("Counter is now free-running and counting up")
 
 
-# %% [markdown]
 # ## 7 - Define Status Progress Function
 # - The **status_progress** function will be given to the **ila.monitor_status()** function, as an argument.
 # - The function is called when status changes, but not more often than twice per second.
@@ -324,7 +316,7 @@ print("Counter is now free-running and counting up")
 # - Note: The monitor function will run in the Event Tread, which handles commands sent to the cs_server.
 # - Important: Do not call an API function which communicates with the cs_server or device, from inside the monitor function. It may put the program in a deadlock.
 
-# %%
+# +
 def status_progress(future):
     """Called in Event Thread"""
     st: ILAStatus = future.progress
@@ -348,7 +340,8 @@ def print_status(st: ILAStatus):
         print(f" - Samples in current window: " f"{st.samples_captured} of {st.samples_requested}.")
 
 
-# %% [markdown]
+# -
+
 # ## 8 - Arm ILA to Trigger on VIO Up/Down virtual switch
 #
 # - Set ILA to trigger when UP/DOWN counter signal edge rises or falls.
@@ -356,10 +349,9 @@ def print_status(st: ILAStatus):
 # - Once transition happens, trigger in the middle of the buffer.
 # - Request 10 windows.
 
-# %% [markdown]
 # <img src="img/edge_trigger.png" width="550" align="left">
 
-# %%
+# +
 ila.reset_probes()
 ila.set_probe_trigger_value("chipscopy_i/counters/slow_counter_0_UP_1", ["==", "B"])
 ila.run_basic_trigger(window_count=10, window_size=8, trigger_position=4)
@@ -367,14 +359,15 @@ ila.run_basic_trigger(window_count=10, window_size=8, trigger_position=4)
 print("ILA is armed")
 
 
-# %% [markdown]
+# -
+
 # ## 9 - Start Status Monitor
 # - Define a *done* function *monitor_status_done*, which will be called when status monitoring ends.
 # - Start the Status Monitor.
 # - Passing in the *status_progress* function, defined above.
 # - Get the *future* object from the *monitor_status* function.
 
-# %%
+# +
 def monitor_status_done(future):
     print("\nCallback function monitor_status_done() called.")
     if not future.error:
@@ -387,8 +380,8 @@ def monitor_status_done(future):
 future = ila.monitor_status(
     max_wait_minutes=0.5, progress=status_progress, done=monitor_status_done
 )
+# -
 
-# %% [markdown]
 # ## 10 - Toggle Counter Direction - Monitor Status
 # - Use VIO to toggle counter up/down switch 3 times: DOWN/UP/DOWN.
 # - This will cause the running ILA to trigger 3 times, capturing 3 windows of data.
@@ -398,20 +391,18 @@ future = ila.monitor_status(
 #     - *status_progress* prints out message when calling *future.cancel()*.
 #     - *done* function *monitor_status_done* prints message when called.
 
-# %%
 for switch_value in [0, 1, 0]:
     print("\nChanging counter up/down direction.")
     vio.write_probes({"chipscopy_i/counters/slow_counter_0_UP": switch_value})
     # Sleep 2.0 seconds.
     sleep(2.0)
 
-# %% [markdown]
 # ## 11 - Status Monitor Completes
 # - *future.result* will block until capture completes or is cancelled.
 # - Status monitoring is cancelled.
 # - *future.result* thows the cancel exception.
 
-# %%
+# +
 status = None
 try:
     # future.result is blocking, until monitor_status() function has completed or timed-out or been cancelled.
@@ -426,13 +417,12 @@ else:
     ila.refresh_status()
 
 print(f"Windows avaliable to upload: {ila.status.windows_captured}.")
+# -
 
-# %% [markdown]
 # ## 12 - Upload and Print Data
 # - Print the captured ILA samples and mark the trigger position.
 # - Note that counter changes direction after the trigger mark.
 
-# %%
 ila.upload()
 samples = ila.waveform.get_data(
     ["chipscopy_i/counters/slow_counter_0_Q_1"],
@@ -445,4 +435,4 @@ for trigger, sample_index, window_index, window_sample_index, value in zip(*samp
         f"Window:{window_index}  Window Sample:{window_sample_index}  {value:10}  0x{value:08X} {trigger}"
     )
 
-# %%
+

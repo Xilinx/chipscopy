@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,9 +40,24 @@ class IBERTProxy(IBERTService):
         super(IBERTProxy, self).__init__(channel)
         self.listeners = {}
 
-    def initialize(self, node_id: str, done) -> None:
+    def initialize(self, node_id: str, done):
         log[DOMAIN_NAME].debug("Sending initializeCmd")
         return self.send_xicom_command("initialize", (node_id,), done)
+
+    def initialize_architecture(self, node_id: str, done):
+        return self.send_xicom_command("initialize_architecture", (node_id,), done)
+
+    def discover_gt_groups(self, options: Dict[str, Any], done):
+        return self.send_xicom_command("discover_gt_groups", (options["node_id"], options), done)
+
+    def setup_gt_group(self, options: Dict[str, Any], done):
+        return self.send_xicom_command("setup_gt_group", (options["node_id"], options), done)
+
+    def get_obj_info(self, options: Dict[str, Any], done):
+        return self.send_xicom_command("get_obj_info", (options["node_id"], options), done)
+
+    def tier1_initialize(self, node_id: str, done):
+        return self.send_xicom_command("tier1_initialize", (node_id,), done)
 
     def setup(self, options: Dict[str, Any], done):
         return self.send_xicom_command("setup", (options["node_id"], options), done)

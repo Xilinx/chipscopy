@@ -1,6 +1,7 @@
 # *****************************************************************************
-# * Copyright (c) 2020 Xilinx, Inc.
 # * Copyright (c) 2011, 2013 Wind River Systems, Inc. and others.
+# * Copyright(C) 2020-2022 Xilinx, Inc.
+# * Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
 # * which accompanies this distribution, and is available at
@@ -29,13 +30,20 @@ class CommandRequest(object):
         self.args = fromJSONSequence(data) if data else None
 
     def sendError(self, error, *result):
-        error_props = {
-            "Code": 0x20001,  # ERR_OTHER default used by hw_server
-            "Time": int(time.perf_counter() * 1000),
-            "Format": str(error),
-            "Class": error.__class__.__name__,
-            "Module": error.__class__.__module__
-        }
+        if type(error) is list:
+            error_props = {
+                "Code": 0x20001,  # ERR_OTHER default used by hw_server
+                "Time": int(time.perf_counter() * 1000),
+                "Format": str(error),
+            }
+        else:
+            error_props = {
+                "Code": 0x20001,  # ERR_OTHER default used by hw_server
+                "Time": int(time.perf_counter() * 1000),
+                "Format": str(error),
+                "Class": error.__class__.__name__,
+                "Module": error.__class__.__module__
+            }
         self.channel.sendResult(self.token, toJSONSequence((error_props, *result)))
 
     def sendResult(self, *result):

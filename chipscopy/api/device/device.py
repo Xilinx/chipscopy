@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,20 +12,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import json
 import re
 import time
-from abc import ABC, abstractmethod
-from collections import defaultdict
+from collections import defaultdict, deque
+from enum import Enum
 from pathlib import Path
-from typing import Optional, Union, Dict, List
+from typing import Optional, Union, Dict, List, Set, Any, NewType, Literal
 from struct import pack, unpack
 
-from chipscopy.api._detail.ltx import Ltx
+from chipscopy.api import DMNodeListener
+from chipscopy.api._detail.ltx import parse_ltx_files
 from chipscopy.api._detail.trace import Trace
 from chipscopy.api.containers import QueryList
 from chipscopy.api.ddr.ddr import DDR
+from chipscopy.api.device.device_spec import DeviceSpec
 from chipscopy.api.hbm.hbm import HBM
 from chipscopy.api.ibert import IBERT
 from chipscopy.api.ila import ILA
@@ -42,14 +45,17 @@ from chipscopy.client.core import CoreParent
 from chipscopy.client.ddrmc_client import DDRMCClient
 from chipscopy.client.hbm_client import HBMClient
 from chipscopy.client.ibert_core_client import IBERTCoreClient
-from chipscopy.client.jtagdevice import JtagDevice, JtagCable
+from chipscopy.client.jtagdevice import JtagCable, JtagDevice
+from chipscopy.client.mem import MemoryNode
 from chipscopy.client.noc_perfmon_core_client import NoCPerfMonCoreClient
 from chipscopy.client.sysmon_core_client import SysMonCoreClient
 from chipscopy.dm import chipscope, request, Node
 from chipscopy.utils.printer import printer, PercentProgressBar
-from chipscopy.api.device.device_spec import DeviceSpec
-from chipscopy.api.device.device_scanner import create_device_scanner
+from chipscopy.api.device.device_scanner import (
+    scan_all_views,
+)
 from chipscopy.api.device.device_util import copy_node_props
+from chipscopy.utils.logger import log
 
 
 class FeatureNotAvailableError(Exception):
@@ -57,413 +63,33 @@ class FeatureNotAvailableError(Exception):
         super().__init__("Feature not available on this architecture")
 
 
-class Device(ABC):
+class DeviceFamily(Enum):
+    GENERIC = "generic"
+    UPLUS = "ultrascaleplus"
+    VERSAL = "versal"
+    XVC = "xvc"
+
+    @staticmethod
+    def get_family_for_name(family_name: str) -> "DeviceFamily":
+        if family_name == "versal":
+            return DeviceFamily.VERSAL
+        elif family_name.startswith("xvc"):
+            return DeviceFamily.XVC
+        elif family_name.endswith("uplus"):
+            return DeviceFamily.UPLUS
+        else:
+            return DeviceFamily.GENERIC
+
+
+class Device:
     """The Device class represents a single device. It is the base class for other
-    Xilinx or Generic devices.
-    Depending on the device type, some features may be available or unavailable.
+    Xilinx or Generic devices. Depending on the device type, some features may be available or unavailable.
 
     Device has the kitchen sink of properties functions to make documentation and type hints easy.
     Child classes raise FeatureNotAvailable for functions they do not support.
     """
 
-    def __init__(
-        self,
-        *,
-        hw_server: ServerInfo,
-        cs_server: Optional[ServerInfo],
-        device_spec: DeviceSpec,
-        device_node: Node,
-    ):
-        self.hw_server = hw_server
-        self.cs_server = cs_server
-        self._device_spec = device_spec
-        self.device_node = device_node
-        # The following filter_by becomes a dictionary with architecture, jtag_index, context, etc.
-        # This is used when asking for a device by filter from the device list like:
-        #    report_devices(session.devices.get(dna=".*1234"))
-        # Needs improvement because QueryList filtering does not work with hierarchy
-        self.filter_by = self.to_dict()
-
-    def __str__(self) -> str:
-        return str(self._device_spec)
-
-    def __repr__(self) -> str:
-        return self.to_json()
-
-    def __getitem__(self, item):
-        raw_json = repr(self._device_spec)
-        parsed_json = json.loads(raw_json)
-        return parsed_json[item]
-
-    def to_dict(self) -> Dict:
-        """Returns a dictionary representation of the device data"""
-        d = {}
-        d.update(self._device_spec.to_dict())
-        try:
-            jtag_node = self._device_spec.find_jtag_node(self.hw_server)
-        except ValueError:
-            jtag_node = None
-        except AttributeError:
-            jtag_node = None
-        if jtag_node:
-            d["jtag"] = copy_node_props(jtag_node, jtag_node.props)
-        d["is_valid"] = self.is_valid
-        d["context"] = self.context
-        return dict(sorted(d.items()))  # noqa
-
-    def to_json(self) -> str:
-        """Returns a json representation of the device data"""
-        raw_json = json.dumps(self.to_dict(), indent=4, default=lambda o: str(o))
-        return raw_json
-
-    # NODE / LOW LEVEL
-
-    @property
-    def context(self) -> str:
-        """Returns the unique context for this device. Normally this is the
-        jtag node context. If this device is not on a jtag chain, the top
-        level device context will be a non-jtag node.
-        """
-        return self.device_node.ctx if self.device_node else None
-
-    @property
-    def is_programmed(self) -> bool:
-        """Returns True if this Device is programmed, False otherwise."""
-        raise NotImplementedError
-
-    @property
-    def is_valid(self) -> bool:
-        """Returns True if this Node is valid, False otherwise."""
-        return self.device_node and self.device_node.is_valid
-
-    @property
-    def jtag_cable_node(self) -> Optional[JtagCable]:
-        """Low level TCF node access - For advanced use"""
-        jtag_view = self.hw_server.get_view("jtag")
-        return jtag_view.get_node(self.jtag_node.parent_ctx)
-
-    @property
-    def jtag_node(self) -> Optional[JtagDevice]:
-        """Low level TCF node access - For advanced use"""
-        return self._device_spec.find_jtag_node(self.hw_server)
-
-    @property
-    def debugcore_node(self) -> Optional[Node]:
-        """Low level TCF node access - For advanced use"""
-        return self._device_spec.find_debugcore_node(self.hw_server)
-
-    @property
-    def chipscope_node(self) -> Optional[CoreParent]:
-        """Low level TCF node access - For advanced use"""
-        if self.cs_server:
-            return self._device_spec.find_chipscope_node(self.cs_server)
-        else:
-            return None
-
-    # DEBUG CORES
-
-    @property
-    @abstractmethod
-    def ibert_cores(self) -> QueryList[IBERT]:
-        """Returns:
-        list of detected IBERT cores in the device"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def vio_cores(self) -> QueryList[VIO]:
-        """Returns:
-        list of detected VIO cores in the device"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def ila_cores(self) -> QueryList[ILA]:
-        """Returns:
-        list of detected ILA cores in the device"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def trace_cores(self) -> QueryList[Trace]:
-        """Returns:
-        list of detected Trace cores in the device"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def pcie_cores(self) -> QueryList[PCIe]:
-        """Returns:
-        list of detected PCIe cores in the device"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def noc_core(self) -> QueryList[NocPerfmon]:
-        """Returns:
-        List with NOC roots for the device"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def ddrs(self) -> QueryList[DDR]:
-        """Returns:
-        list of detected DDRMC cores in the device"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def hbms(self) -> QueryList[HBM]:
-        """Returns:
-        list of detected HBM cores in the device"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def sysmon_root(self) -> QueryList[Sysmon]:
-        """Returns:
-        List with one SysMon core for the device"""
-        raise NotImplementedError
-
-    @abstractmethod
-    def discover_and_setup_cores(
-        self, *, hub_address_list: Optional[List[int]] = None, ltx_file: str = None, **kwargs
-    ):
-        """Scan device for debug cores. This may take some time depending on
-        what gets scanned.
-
-        Args:
-            hub_address_list: List of debug hub addresses to scan
-            ltx_file: LTX file (which contains debug hub addresses)
-
-        Keyword Arguments:
-            ila_scan: True=Scan Device for ILAs
-            vio_scan: True=Scan Device for VIOs
-            ibert_scan: True=Scan Device for IBERTs
-            pcie_scan: True=Scan Device for PCIEs
-            noc_scan: True=Scan Device for NOC
-            ddr_scan: True=Scan Device for DDRs
-            hbm_scan: True=Scan Device for HBMs
-            sysmon_scan: True=Scan Device for System Monitor
-        """
-        raise NotImplementedError
-
-    # MEMORY
-
-    @property
-    @abstractmethod
-    def memory_target_names(self):
-        """Returns:
-        list of supported memory targets"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def memory(self) -> QueryList[Memory]:
-        """Returns:
-        the memory access for the device"""
-        raise NotImplementedError
-
-    @abstractmethod
-    def memory_read(self, address: int, num: int = 1, *, size, target=None) -> List[int]:
-        """Read num values from given memory address.  This method is slow because it locates the memory context
-        in the target tree every time. If you want to execute a large number of memory operations, grab a memory
-        context and do all the operations in batch.
-        Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
-        target every time. Inner loops should just call the find_memory_target once.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def memory_write(self, address: int, values: List[int], *, size, target=None):
-        """Write list of values to given memory address. This method is slow because it locates the memory context
-        in the target tree every time. If you want to execute a large number of memory operations, grab a memory
-        context and do the operations in batch.
-        Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
-        target every time. Inner loops should just call the find_memory_target once.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def _dpc_read_bytes(
-        self,
-        address: int,
-        data: bytearray,
-        *,
-        offset: int = 0,
-        byte_size: int = None,
-        show_progress_bar: bool = True,
-    ):
-        raise NotImplementedError
-
-    @abstractmethod
-    def _dpc_write_bytes(
-        self,
-        address: int,
-        data: bytearray,
-        *,
-        offset: int = 0,
-        byte_size: int = None,
-        show_progress_bar: bool = True,
-    ):
-        raise NotImplementedError
-
-    # PROGRAMMING
-
-    @abstractmethod
-    def get_program_log(self, memory_target=None) -> str:
-        """
-        Returns: Programming log read from hardware (None=Use default transport)
-
-        Args:
-            memory_target: Optional name of memory target such as APU, RPU, DPC
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def reset(self):
-        """Reset the device to a non-programmed state."""
-        raise NotImplementedError
-
-    @abstractmethod
-    def program(
-        self,
-        programming_file: Union[str, Path],
-        *,
-        skip_reset: bool = False,
-        show_progress_bar: bool = True,
-        progress: request.ProgressFutureCallback = None,
-        done: request.DoneFutureCallback = None,
-    ):
-        """Program the device with a given programming file (bit or pdi).
-
-        Args:
-            programming_file: PDI file path
-            skip_reset: False = Do not reset device prior to program
-            show_progress_bar: False if the progress bar doesn't need to be shown
-            progress: Optional progress callback
-            done: Optional async future callback
-        """
-        raise NotImplementedError
-
-
-class GenericDevice(Device):
-    def __init__(
-        self,
-        *,
-        hw_server: ServerInfo,
-        cs_server: Optional[ServerInfo],
-        device_spec: DeviceSpec,
-        device_node: Node,
-    ):
-        super().__init__(
-            hw_server=hw_server,
-            cs_server=cs_server,
-            device_spec=device_spec,
-            device_node=device_node,
-        )
-
-    @property
-    def is_programmed(self) -> bool:
-        raise FeatureNotAvailableError
-
-    def memory_read(self, address: int, num: int = 1, *, size, target=None) -> List[int]:
-        raise FeatureNotAvailableError
-
-    def memory_write(self, address: int, values: List[int], *, size, target=None):
-        raise FeatureNotAvailableError
-
-    def _dpc_read_bytes(
-        self,
-        address: int,
-        data: bytearray,
-        *,
-        offset: int = 0,
-        byte_size: int = None,
-        show_progress_bar: bool = True,
-    ):
-        raise FeatureNotAvailableError
-
-    def _dpc_write_bytes(
-        self,
-        address: int,
-        data: bytearray,
-        *,
-        offset: int = 0,
-        byte_size: int = None,
-        show_progress_bar: bool = True,
-    ):
-        raise FeatureNotAvailableError
-
-    @property
-    def ibert_cores(self) -> QueryList[IBERT]:
-        raise FeatureNotAvailableError
-
-    @property
-    def vio_cores(self) -> QueryList[VIO]:
-        raise FeatureNotAvailableError
-
-    @property
-    def ila_cores(self) -> QueryList[ILA]:
-        raise FeatureNotAvailableError
-
-    @property
-    def trace_cores(self) -> QueryList[Trace]:
-        raise FeatureNotAvailableError
-
-    @property
-    def pcie_cores(self) -> QueryList[PCIe]:
-        raise FeatureNotAvailableError
-
-    @property
-    def noc_core(self) -> QueryList[NocPerfmon]:
-        raise FeatureNotAvailableError
-
-    @property
-    def ddrs(self) -> QueryList[DDR]:
-        raise FeatureNotAvailableError
-
-    @property
-    def hbms(self) -> QueryList[HBM]:
-        raise FeatureNotAvailableError
-
-    @property
-    def sysmon_root(self) -> QueryList[Sysmon]:
-        raise FeatureNotAvailableError
-
-    def discover_and_setup_cores(
-        self, *, hub_address_list: Optional[List[int]] = None, ltx_file: str = None, **kwargs
-    ):
-        raise FeatureNotAvailableError
-
-    @property
-    def memory_target_names(self):
-        raise FeatureNotAvailableError
-
-    @property
-    def memory(self) -> QueryList[Memory]:
-        raise FeatureNotAvailableError
-
-    def get_program_log(self, memory_target=None) -> str:
-        raise FeatureNotAvailableError
-
-    def reset(self):
-        raise FeatureNotAvailableError
-
-    def program(
-        self,
-        programming_file: Union[str, Path],
-        *,
-        skip_reset: bool = False,
-        show_progress_bar: bool = True,
-        progress: request.ProgressFutureCallback = None,
-        done: request.DoneFutureCallback = None,
-    ):
-        raise FeatureNotAvailableError
-
-
-class FpgaDevice(Device, ABC):
-    CORE_TYPE_TO_CLASS_MAP = {
+    _CORE_TYPE_TO_CLASS_MAP = {
         "vio": AxisVIOCoreClient,
         "ila": AxisIlaCoreClient,
         "trace": AxisTraceClient,
@@ -484,22 +110,127 @@ class FpgaDevice(Device, ABC):
         cs_server: Optional[ServerInfo],
         device_spec: DeviceSpec,
         disable_core_scan: bool,
-        device_node: Node,
+        disable_cache: bool,
     ):
+        self.hw_server = hw_server
+        self.cs_server = cs_server
+
+        self._device_spec = device_spec
+        self.default_target: Literal["DPC", "DAP"] = "DPC"
+
+        self.family_name = self._device_spec.get_arch_name()
+        self.device_family = DeviceFamily.get_family_for_name(self.family_name)
+        self.part_name = self._device_spec.get_part_name()
+        self.dna = self._device_spec.get_dna()
+        self.jtag_index = self._device_spec.jtag_index
+
         self.disable_core_scan = disable_core_scan
-        self.cores_to_scan = {}  # set during discover_and_setup_cores
+        self._disable_cache = disable_cache
+
         self.ltx = None
-        self.programming_error: Optional[str] = None
+        self.ltx_sources = []
+        self.cores_to_scan = {}  # set during discover_and_setup_cores
+        self.programming_error: Optional[str] = None  # Keep error for query after programming
         self.programming_done: bool = False
-        super().__init__(
-            hw_server=hw_server,
-            cs_server=cs_server,
-            device_spec=device_spec,
-            device_node=device_node,
-        )
+
+        # The following filter_by becomes a dictionary with architecture, jtag_index, context, etc.
+        # This is used when asking for a device by filter from the device list like:
+        #    report_devices(session.devices.get(dna=".*1234"))
+        # Needs improvement because QueryList filtering does not work with hierarchy
+        # Should always be the last part of __init__ because of to_dict() call...
+        self.filter_by = self.to_dict()
+
+    def __str__(self) -> str:
+        return f"{self.part_name}:{self.dna}:{self.context}"
+
+    def __repr__(self) -> str:
+        return self.to_json()
+
+    def __getitem__(self, item):
+        props = self.to_dict()
+        if item in props:
+            return props[item]
+        else:
+            raise AttributeError(f"No property {str(item)}")
+
+    def node_callback(self, action: DMNodeListener.NodeAction, node: Node, props: Optional[Set]):
+        def owns_context(self, node_ctx: str):
+            """Returns true if the node_ctx is managed by this device"""
+            if node_ctx in [self.jtag_node, self.device_node]:
+                return True
+            else:
+                return False
+
+        pass
+        # TODO: Implement for dynamic node tracking
+        # if action in [
+        #     DMNodeListener.NodeAction.NODE_CHANGED,
+        #     DMNodeListener.NodeAction.NODE_REMOVED,
+        # ]:
+        #     # Device properties are cached until an event indicates something
+        #     # changed that needs properties to be reread from hardware.
+        #     cache_clear_contexts = set()
+        #     if self.device_node:
+        #         cache_clear_contexts.add(self.device_node.ctx)
+        #     if self.jtag_node:
+        #         cache_clear_contexts.add(self.jtag_node.ctx)
+        #     if self.debugcore_node:
+        #         cache_clear_contexts.add(self.debugcore_node.ctx)
+        #     if self.chipscope_node:
+        #         cache_clear_contexts.add(self.chipscope_node.ctx)
+        #     if node.ctx in cache_clear_contexts:
+        #         # Mark the properties as invalid if any hardware node changed that could affect the values.
+        #         # This will force a re-read next time the properties are accessed through to_dict() for instance.
+        #         # self._props_are_valid = False
+        #         # print("****** node_callback:", action, node, node.ctx)
+        #         pass
+        # elif action == DMNodeListener.NodeAction.NODE_ADDED:
+        #     # print("****** node_callback:", action, node, node.ctx)
+        #     pass
+
+    def scan_props(self) -> Dict[str, Any]:
+        props = {}
+        if self.hw_server and self.jtag_node:
+            node = self.jtag_node
+            props["jtag"] = copy_node_props(node, node.props)
+        props["is_valid"] = self.is_valid
+        props["context"] = self.context
+        props["is_programmed"] = self.is_programmed
+        props["is_programmable"] = self.is_programmable
+        props["part"] = self.part_name
+        props["family"] = self.family_name
+        props["dna"] = self.dna
+        props["jtag_index"] = self.jtag_index
+        props["cable_context"] = self._device_spec.jtag_cable_ctx
+        props["jtag_context"] = self._device_spec.jtag_device_ctx
+        props["cable_name"] = self._device_spec.get_jtag_cable_name()
+        props = dict(sorted(props.items()))  # noqa
+        return props
+
+    def to_dict(self) -> Dict:
+        """Returns a dictionary representation of the device data"""
+        # TODO: Cache results to make this faster
+        props = self.scan_props()
+        return props
+
+    def to_json(self) -> str:
+        """Returns a json representation of the device data"""
+        raw_json = json.dumps(self.to_dict(), indent=4, default=lambda o: str(o))
+        return raw_json
+
+    # NODE / LOW LEVEL
+
+    @property
+    def context(self) -> str:
+        """Returns the unique context for this device. Normally this is the
+        jtag node context. If this device is not on a jtag chain, the top
+        level device context will be a non-jtag node.
+        """
+        return self._device_spec.device_ctx
 
     @property
     def is_programmed(self) -> bool:
+        """Returns True if this Device is programmed, False otherwise."""
         # TODO: Queries hardware for jtag program status. This could be slow -
         # is there a way to collect this once, then track by subsequent events pushed from
         # the hw_server if we detect DONE went low?
@@ -525,157 +256,102 @@ class FpgaDevice(Device, ABC):
         return is_programmed_
 
     @property
+    def is_programmable(self) -> bool:
+        """Returns True if this Device is programmable, False otherwise"""
+        is_programmable_ = False
+        node = self.jtag_node
+        if node:
+            return node.props.get("is_programmable", False)
+
+    @property
+    def is_valid(self) -> bool:
+        """Returns True if this Node is valid, False otherwise."""
+        return self._device_spec.is_valid
+
+    @property
+    def jtag_cable_node(self) -> Optional[JtagCable]:
+        """Low level TCF node access - For advanced use"""
+        return self._device_spec.get_jtag_cable_node()
+
+    @property
+    def jtag_node(self) -> Optional[JtagDevice]:
+        """Low level TCF node access - For advanced use"""
+        return self._device_spec.get_jtag_node()
+
+    @property
+    def debugcore_node(self) -> Optional[CoreParent]:
+        """Low level TCF node access - For advanced use"""
+        return self._device_spec.get_debugcore_node(target=None, default_target=self.default_target)
+
+    @property
+    def chipscope_node(self) -> Optional[CoreParent]:
+        """Low level TCF node access - For advanced use"""
+        return self._device_spec.get_chipscope_node(target=None, default_target=self.default_target)
+
+    # DEBUG CORES
+
+    @property
     def ibert_cores(self) -> QueryList[IBERT]:
-        raise FeatureNotAvailableError
+        """Returns:
+        list of detected IBERT cores in the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        return self._get_debug_core_wrappers(IBERTCoreClient)
 
     @property
     def vio_cores(self) -> QueryList[VIO]:
+        """Returns:
+        list of detected VIO cores in the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
         return self._get_debug_core_wrappers(AxisVIOCoreClient)
 
     @property
     def ila_cores(self) -> QueryList[ILA]:
+        """Returns:
+        list of detected ILA cores in the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
         return self._get_debug_core_wrappers(AxisIlaCoreClient)
 
     @property
     def trace_cores(self) -> QueryList[Trace]:
-        raise FeatureNotAvailableError
+        """Returns:
+        list of detected Trace cores in the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        return self._get_debug_core_wrappers(AxisTraceClient)
 
     @property
     def pcie_cores(self) -> QueryList[PCIe]:
-        raise FeatureNotAvailableError
+        """Returns:
+        list of detected PCIe cores in the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        return self._get_debug_core_wrappers(AxisPCIeCoreClient)
 
     @property
     def noc_core(self) -> QueryList[NocPerfmon]:
-        raise FeatureNotAvailableError
+        """Returns:
+        List with NOC roots for the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        return self._get_debug_core_wrappers(NoCPerfMonCoreClient)
 
     @property
     def ddrs(self) -> QueryList[DDR]:
-        raise FeatureNotAvailableError
+        """Returns:
+        list of detected DDRMC cores in the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        return self._get_debug_core_wrappers(DDRMCClient)
 
     @property
     def hbms(self) -> QueryList[HBM]:
-        raise FeatureNotAvailableError
+        """Returns:
+        list of detected HBM cores in the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        return self._get_debug_core_wrappers(HBMClient)
 
     @property
     def sysmon_root(self) -> QueryList[Sysmon]:
-        raise FeatureNotAvailableError
-
-    @property
-    def memory_target_names(self):
-        raise FeatureNotAvailableError
-
-    @property
-    def memory(self) -> QueryList[Memory]:
-        raise FeatureNotAvailableError
-
-    def to_dict(self) -> Dict:
-        d = super().to_dict()
-        d["is_programmed"] = self.is_programmed
-        return d
-
-    def memory_read(self, address: int, num: int = 1, *, size, target=None) -> List[int]:
-        raise FeatureNotAvailableError
-
-    def memory_write(self, address: int, values: List[int], *, size, target=None):
-        raise FeatureNotAvailableError
-
-    def _dpc_read_bytes(
-        self,
-        address: int,
-        data: bytearray,
-        *,
-        offset: int = 0,
-        byte_size: int = None,
-        show_progress_bar: bool = True,
-    ):
-        raise FeatureNotAvailableError
-
-    def _dpc_write_bytes(
-        self,
-        address: int,
-        data: bytearray,
-        *,
-        offset: int = 0,
-        byte_size: int = None,
-        show_progress_bar: bool = True,
-    ):
-        raise FeatureNotAvailableError
-
-    def get_program_log(self, memory_target=None) -> str:
-        raise FeatureNotAvailableError
-
-    def reset(self):
-        jtag_programming_node = self._device_spec.find_jtag_node(self.hw_server)
-        assert jtag_programming_node is not None
-        jtag_programming_node.future().reset()
-        time.sleep(0.5)
-
-    def program(
-        self,
-        programming_file: Union[str, Path],
-        *,
-        skip_reset: bool = False,
-        show_progress_bar: bool = True,
-        progress: request.ProgressFutureCallback = None,
-        done: request.DoneFutureCallback = None,
-    ):
-        program_future = request.CsFutureSync(done=done, progress=progress)
-
-        if isinstance(programming_file, str):
-            programming_file = Path(programming_file)
-
-        if not programming_file.exists():
-            raise FileNotFoundError(
-                f"Programming file: {str(programming_file.resolve())} doesn't exists!"
-            )
-
-        printer(f"Programming device with: {str(programming_file.resolve())}\n", level="info")
-
-        if show_progress_bar:
-            progress_ = PercentProgressBar()
-            progress_.add_task(
-                description="Device program progress",
-                status=PercentProgressBar.Status.STARTING,
-                visible=show_progress_bar,
-            )
-
-        def progress_update(future):
-            if program_future:
-                program_future.set_progress(future.progress)
-
-            if show_progress_bar:
-                progress_.update(
-                    completed=future.progress * 100, status=PercentProgressBar.Status.IN_PROGRESS
-                )
-
-        def done_programming(future):
-            if show_progress_bar:
-                if future.error is not None:
-                    progress_.update(status=PercentProgressBar.Status.ABORTED)
-                else:
-                    progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
-
-            self.programming_error = future.error
-            self.programming_done = True
-            if future.error:
-                program_future.set_exception(future.error)
-            else:
-                program_future.set_result(None)
-
-        def finalize_program():
-            if self.programming_error is not None:
-                raise RuntimeError(self.programming_error)
-
-        jtag_programming_node = self._device_spec.find_jtag_node(self.hw_server)
-        assert jtag_programming_node is not None
-        if not skip_reset:
-            jtag_programming_node.future().reset()
-
-        jtag_programming_node.future(
-            progress=progress_update, done=done_programming, final=finalize_program
-        ).config(str(programming_file.resolve()))
-
-        return program_future if done else program_future.result
+        """Returns:
+        List with one SysMon core for the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        return self._get_debug_core_wrappers(SysMonCoreClient)
 
     @staticmethod
     def _set_client_wrapper(node, api_client_wrapper):
@@ -688,56 +364,6 @@ class FpgaDevice(Device, ABC):
     def _get_client_wrapper(node):
         # Gets the tacked on wrapper from a node.
         return node.api_client_wrapper
-
-    def discover_and_setup_cores(
-        self, *, hub_address_list: Optional[List[int]] = None, ltx_file: str = None, **kwargs
-    ):
-        # Selectively disable scanning of cores depending on what comes in
-        # This is second priority to the disable_core_scan in __init__.
-        self.cores_to_scan = {}
-        if self.disable_core_scan:
-            for core_name in FpgaDevice.CORE_TYPE_TO_CLASS_MAP.keys():
-                self.cores_to_scan[core_name] = False
-        else:
-            self.cores_to_scan = {
-                "ila": kwargs.get("ila_scan", True),
-                "vio": kwargs.get("vio_scan", True),
-                "npi_nir": kwargs.get("noc_scan", False),
-                "ddrmc_main": kwargs.get("ddr_scan", True),
-                "hbm": kwargs.get("hbm_scan", True),
-                "pcie": kwargs.get("pcie_scan", True),
-                "ibert": kwargs.get("ibert_scan", False),
-                "sysmon": kwargs.get("sysmon_scan", False),
-            }
-        if not self.cs_server:
-            raise RuntimeError("cs_server is not connected")
-
-        self.ltx = None
-
-        # Make sure debug_hub_addrs is a list of hub addresses.
-        # It may come as an int or a list or None
-        if isinstance(hub_address_list, int):
-            hub_address_list = [hub_address_list]
-        if not hub_address_list:
-            hub_address_list = []
-
-        if ltx_file:
-            self.ltx = Ltx()
-            self.ltx.parse_file(ltx_file)
-            hub_address_list.extend(self.ltx.get_debug_hub_addresses())
-            # Remove any duplicate hub addresses in list, in case same one
-            # was passed to function as well as in ltx
-            # Below is a quick python trick to uniquify a list.
-            hub_address_list = list(dict.fromkeys(hub_address_list))
-
-        # Set up all debug cores in hw_server for the given hub addresses
-        # Do this by default unless the user has explicitly told us not to with
-        # "disable_core_scan" as an argument.
-        if not self.disable_core_scan:
-            # setup_debug_cores can take a while...
-            if not self.chipscope_node:
-                raise RuntimeError("No chipscope server connection. Could not get chipscope view")
-            self.chipscope_node.setup_cores(debug_hub_addrs=hub_address_list)
 
     def _create_debugcore_wrapper(self, node):
         # Factory to build debug_core_wrappers
@@ -786,31 +412,31 @@ class FpgaDevice(Device, ABC):
         # faster, around 1 ms.
         #
         # Best to avoid calling this function in an inner loop.
-        #
+
         cs_view = self.cs_server.get_view(chipscope)
         found_cores = defaultdict(list)
+
+        def check_and_upgrade_node(node):
+            if self.cores_to_scan.get(cs_node.type, True):
+                core_class_type = Device._CORE_TYPE_TO_CLASS_MAP.get(node.type, None)
+                if core_class_type and core_class_type.is_compatible(node):
+                    upgraded_node = cs_view.get_node(node.ctx, core_class_type)
+                    found_cores[core_class_type].append(upgraded_node)
+
         # Using the self.chipscope_node restricts nodes to this device only
         for cs_node in cs_view.get_children(self.chipscope_node):
             if cs_node.type == "debug_hub":
                 debug_hub_children = cs_view.get_children(cs_node)
                 for child in debug_hub_children:
-                    if self.cores_to_scan.get(child.type, True):
-                        core_class_type = FpgaDevice.CORE_TYPE_TO_CLASS_MAP.get(child.type, None)
-                        if core_class_type and core_class_type.is_compatible(child):
-                            upgraded_node = cs_view.get_node(child.ctx, core_class_type)
-                            found_cores[core_class_type].append(upgraded_node)
+                    check_and_upgrade_node(child)
             else:
-                if self.cores_to_scan.get(cs_node.type, True):
-                    core_class_type = FpgaDevice.CORE_TYPE_TO_CLASS_MAP.get(cs_node.type, None)
-                    if core_class_type and core_class_type.is_compatible(cs_node):
-                        upgraded_node = cs_view.get_node(cs_node.ctx, core_class_type)
-                        found_cores[core_class_type].append(upgraded_node)
+                check_and_upgrade_node(cs_node)
         return found_cores
 
     def _get_debug_core_wrappers(self, core_type) -> QueryList:
         # Returns a QueryList of the debug_core_wrappers matching the given core_type
         #   core_type is a class from CORE_TYPE_TO_CLASS_MAP
-        #   returned wrapper_type is ILA, VIO, etc wrapping the node
+        #   returned wrapper_type is ILA, VIO, etc. wrapping the node
         #
         # debug_core_wrappers are initialized if they don't yet exist for the
         # node. After initialization, they are hung on the node for future reference.
@@ -818,121 +444,161 @@ class FpgaDevice(Device, ABC):
         found_cores = QueryList()
         all_debug_core_nodes = self._find_all_debugcore_nodes()
         for node in all_debug_core_nodes.get(core_type, []):
-            debug_core_wrapper = FpgaDevice._get_client_wrapper(node)
+            debug_core_wrapper = Device._get_client_wrapper(node)
             if debug_core_wrapper is None:
                 # Lazy debugcore initialization here.
                 # Initialization happens the first time we access the debug core.
                 debug_core_wrapper = self._create_debugcore_wrapper(node)
             self._set_client_wrapper(node, debug_core_wrapper)
             # Now the node should have a proper debug_core_wrapper attached.
-            if FpgaDevice._get_client_wrapper(node):
-                found_cores.append(FpgaDevice._get_client_wrapper(node))
+            if Device._get_client_wrapper(node):
+                found_cores.append(Device._get_client_wrapper(node))
         return found_cores
 
-
-class UltrascaleDevice(FpgaDevice):
-    def __init__(
+    def discover_and_setup_cores(
         self,
         *,
-        hw_server: ServerInfo,
-        cs_server: Optional[ServerInfo],
-        device_spec: DeviceSpec,
-        disable_core_scan: bool,
-        device_node: Node,
+        hub_address_list: Optional[List[int]] = None,
+        ltx_file: Union[Path, str] = None,
+        **kwargs,
     ):
-        super().__init__(
-            hw_server=hw_server,
-            cs_server=cs_server,
-            device_spec=device_spec,
-            disable_core_scan=disable_core_scan,
-            device_node=device_node,
-        )
+        """Scan device for debug cores. This may take some time depending on
+        what gets scanned.
 
+        Args:
+            hub_address_list: List of debug hub addresses to scan
+            ltx_file: LTX file (which contains debug hub addresses)
 
-class VersalDevice(FpgaDevice):
-    def __init__(
-        self,
-        *,
-        hw_server: ServerInfo,
-        cs_server: Optional[ServerInfo],
-        device_spec: DeviceSpec,
-        disable_core_scan: bool,
-        device_node: Node,
-    ):
-        super().__init__(
-            hw_server=hw_server,
-            cs_server=cs_server,
-            device_spec=device_spec,
-            disable_core_scan=disable_core_scan,
-            device_node=device_node,
-        )
+        Keyword Arguments:
+            ila_scan: True=Scan Device for ILAs
+            vio_scan: True=Scan Device for VIOs
+            ibert_scan: True=Scan Device for IBERTs
+            pcie_scan: True=Scan Device for PCIEs
+            noc_scan: True=Scan Device for NOC
+            ddr_scan: True=Scan Device for DDRs
+            hbm_scan: True=Scan Device for HBMs
+            sysmon_scan: True=Scan Device for System Monitor
+        """
+        # Selectively disable scanning of cores depending on what comes in
+        # This is second priority to the disable_core_scan in __init__.
+        self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
+        self.cores_to_scan = {}
+        if self.disable_core_scan:
+            for core_name in Device._CORE_TYPE_TO_CLASS_MAP.keys():
+                self.cores_to_scan[core_name] = False
+        else:
+            self.cores_to_scan = {
+                "ila": kwargs.get("ila_scan", True),
+                "vio": kwargs.get("vio_scan", True),
+                "npi_nir": kwargs.get("noc_scan", False),
+                "ddrmc_main": kwargs.get("ddr_scan", True),
+                "hbm": kwargs.get("hbm_scan", True),
+                "pcie": kwargs.get("pcie_scan", True),
+                "ibert": kwargs.get("ibert_scan", True),
+                "sysmon": kwargs.get("sysmon_scan", False),
+            }
+        if not self.cs_server:
+            raise RuntimeError("cs_server is not connected")
+
+        self.ltx = None
+
+        # Make sure debug_hub_addrs is a list of hub addresses.
+        # It may come as an int or a list or None
+        if isinstance(hub_address_list, int):
+            hub_address_list = [hub_address_list]
+        if not hub_address_list:
+            hub_address_list = []
+
+        if ltx_file:
+            self.ltx, self.ltx_sources, _ = parse_ltx_files(ltx_file)  # noqa
+            hub_address_list.extend(self.ltx.get_debug_hub_addresses())
+            # Remove any duplicate hub addresses in list, in case same one
+            # was passed to function as well as in ltx
+            # Below is a quick python trick to uniquify a list.
+            hub_address_list = list(dict.fromkeys(hub_address_list))
+
+        # Set up all debug cores in hw_server for the given hub addresses
+        # Do this by default unless the user has explicitly told us not to with
+        # "disable_core_scan" as an argument.
+        if not self.disable_core_scan:
+            if not self.cs_server:
+                raise RuntimeError("No chipscope server connection. Could not get chipscope view")
+            self.chipscope_node.setup_cores(debug_hub_addrs=hub_address_list)
+
+    # MEMORY
 
     @property
-    def ibert_cores(self) -> QueryList[IBERT]:
-        return self._get_debug_core_wrappers(IBERTCoreClient)
-
-    @property
-    def vio_cores(self) -> QueryList[VIO]:
-        return self._get_debug_core_wrappers(AxisVIOCoreClient)
-
-    @property
-    def ila_cores(self) -> QueryList[ILA]:
-        return self._get_debug_core_wrappers(AxisIlaCoreClient)
-
-    @property
-    def trace_cores(self) -> QueryList[Trace]:
-        return self._get_debug_core_wrappers(AxisTraceClient)
-
-    @property
-    def pcie_cores(self) -> QueryList[PCIe]:
-        return self._get_debug_core_wrappers(AxisPCIeCoreClient)
-
-    @property
-    def noc_core(self) -> QueryList[NocPerfmon]:
-        return self._get_debug_core_wrappers(NoCPerfMonCoreClient)
-
-    @property
-    def ddrs(self):
-        return self._get_debug_core_wrappers(DDRMCClient)
-
-    @property
-    def hbms(self):
-        return self._get_debug_core_wrappers(HBMClient)
-
-    @property
-    def sysmon_root(self) -> QueryList[Sysmon]:
-        return self._get_debug_core_wrappers(SysMonCoreClient)
-
-    @property
-    def memory_target_names(self):
+    def memory_target_names(self) -> List[str]:
+        """Returns:
+        list of supported memory targets"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
         valid_memory_targets = (
             r"(Versal .*)|(DPC)|(APU)|(RPU)|(PPU)|(PSM)|(Cortex.*)|(MicroBlaze.*)"
         )
-        memory_target_names = list()
-        memory_node_list = self._device_spec.get_memory_target_nodes(self.hw_server)
-        for memory_node in memory_node_list:
-            memory_target_name = memory_node.props.get("Name")
-            if len(memory_target_name) > 0 and re.search(valid_memory_targets, memory_target_name):
+        memory_view = self.hw_server.get_view("memory")
+        memory_node_list = []
+        mem_dpc_node = self._device_spec.get_memory_node(target="DPC")
+        if mem_dpc_node:
+            memory_node_list.append(mem_dpc_node)
+        mem_dap_node = self._device_spec.get_memory_node(target="DAP")
+        if mem_dap_node:
+            memory_node_list.append(mem_dap_node)
+
+        nodes_to_travel = deque(memory_node_list)
+        memory_node_list = []
+        while nodes_to_travel:
+            node = nodes_to_travel.popleft()
+            if MemoryNode.is_compatible(node):
+                memory_node = memory_view.get_node(node.ctx, MemoryNode)
+                memory_node_list.append(memory_node)
+                nodes_to_travel.extendleft(memory_view.get_children(memory_node))
+
+        # Now the memory_node_list has all memory nodes.
+        # Make the list of what we found and return it
+        memory_target_names = []
+        for node in memory_node_list:
+            memory_target_name = node.props.get("Name")
+            if memory_target_name and re.search(valid_memory_targets, memory_target_name):
                 memory_target_names.append(memory_target_name)
         return memory_target_names
 
     @property
     def memory(self) -> QueryList[Memory]:
-        target_nodes = self._device_spec.get_memory_target_nodes(self.hw_server)
-        memory_node_list = QueryList()
+        """Returns:
+        the memory access for the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        target_nodes = self._device_spec.get_all_memory_nodes()
+        node_list = QueryList()
         for node in target_nodes:
-            if Memory.is_compatible(node):
-                memory_node_list.append(node)
-        return memory_node_list
-
-    def memory_write(self, address: int, values: List[int], *, size="w", target=None):
-        node = self._device_spec.find_memory_target(self.hw_server, target)
-        node.memory_write(address=address, values=values, size=size)
+            node_list.append(node)
+        return node_list
 
     def memory_read(self, address: int, num: int = 1, *, size="w", target=None) -> List[int]:
-        node = self._device_spec.find_memory_target(self.hw_server, target)
+        """Read num values from given memory address.  This method is slow because it locates the memory context
+        in the target tree every time. If you want to execute a large number of memory operations, grab a memory
+        context and do all the operations in batch.
+        Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
+        target every time. Inner loops should just call the find_memory_target once.
+        """
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        node = self._device_spec.search_memory_node_deep(target, default_target=self.default_target)
+        if not node:
+            raise (ValueError(f"Could not find memory node for target {target}"))
         retval = node.memory_read(address=address, num=num, size=size)
         return retval
+
+    def memory_write(self, address: int, values: List[int], *, size="w", target=None):
+        """Write list of values to given memory address. This method is slow because it locates the memory context
+        in the target tree every time. If you want to execute a large number of memory operations, grab a memory
+        context and do the operations in batch.
+        Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory
+        target every time. Inner loops should just call the find_memory_target once.
+        """
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        node = self._device_spec.search_memory_node_deep(target, default_target=self.default_target)
+        if not node:
+            raise (ValueError(f"Could not find memory node for target {target}"))
+        node.memory_write(address=address, values=values, size=size)
 
     def _dpc_read_bytes(
         self,
@@ -1034,6 +700,8 @@ class VersalDevice(FpgaDevice):
 
         bar.update(status=PercentProgressBar.Status.DONE)
 
+    # PROGRAMMING
+
     @staticmethod
     def _plm2bytearray(raw_plm_data: List[int]) -> bytearray:
         # Memory returns a list of 32-bit ints - convert them to a linear byte array for easier string manipulation
@@ -1087,62 +755,179 @@ class VersalDevice(FpgaDevice):
 
         # plm_log_bytearray = bytearray(b'@' * (plm_len + plm_wrapped_len))
         plm_data = mem.memory_read(address=plm_addr, num=plm_len, size="w")
-        plm_log_bytearray = VersalDevice._plm2bytearray(plm_data)
+        plm_log_bytearray = Device._plm2bytearray(plm_data)
 
         if plm_wrapped_addr:
             plm_data = mem.memory_read(address=plm_wrapped_addr, num=plm_wrapped_len, size="w")
-            plm_log_bytearray += VersalDevice._plm2bytearray(plm_data)
+            plm_log_bytearray += Device._plm2bytearray(plm_data)
 
         plm_log_str = plm_log_bytearray.decode("utf-8")
         return plm_log_str
 
     def get_program_log(self, memory_target="APU") -> str:
+        """
+        Returns: Programming log read from hardware (None=Use default transport)
+
+        Args:
+            memory_target: Optional name of memory target such as APU, RPU, DPC
+        """
+        self._raise_if_family_not(DeviceFamily.VERSAL)
         try:
             mem = self.memory.get(name=memory_target)
         except ValueError:
             raise ValueError(f"Memory target {memory_target} not available")
-        return VersalDevice._read_plm_log(mem)
+        return Device._read_plm_log(mem)
+
+    def reset(self):
+        """Reset the device to a non-programmed state."""
+        self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
+        jtag_programming_node = self.jtag_node
+        assert jtag_programming_node is not None
+        jtag_programming_node.future().reset()
+        time.sleep(0.5)
+
+    def program(
+        self,
+        programming_file: Union[str, Path],
+        *,
+        skip_reset: bool = False,
+        delay_after_program: int = 0,
+        show_progress_bar: bool = True,
+        progress: request.ProgressFutureCallback = None,
+        done: request.DoneFutureCallback = None,
+    ):
+        """Program the device with a given programming file (bit or pdi).
+
+        Args:
+            programming_file: PDI file path
+            skip_reset: False = Do not reset device prior to program
+            delay_after_program: Seconds to delay at end of programming (default=0)
+            show_progress_bar: False if the progress bar doesn't need to be shown
+            progress: Optional progress callback
+            done: Optional async future callback
+        """
+        self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
+        program_future = request.CsFutureSync(done=done, progress=progress)
+
+        if isinstance(programming_file, str):
+            programming_file = Path(programming_file)
+
+        if not programming_file.exists():
+            raise FileNotFoundError(
+                f"Programming file: {str(programming_file.resolve())} doesn't exists!"
+            )
+
+        printer(f"Programming device with: {str(programming_file.resolve())}\n", level="info")
+
+        if show_progress_bar:
+            progress_ = PercentProgressBar()
+            progress_.add_task(
+                description="Device program progress",
+                status=PercentProgressBar.Status.STARTING,
+                visible=show_progress_bar,
+            )
+
+        def progress_update(future):
+            if program_future:
+                program_future.set_progress(future.progress)
+
+            if show_progress_bar:
+                progress_.update(
+                    completed=future.progress * 100, status=PercentProgressBar.Status.IN_PROGRESS
+                )
+
+        def done_programming(future):
+            if show_progress_bar:
+                if future.error is not None:
+                    progress_.update(status=PercentProgressBar.Status.ABORTED)
+                else:
+                    for i in range(delay_after_program):
+                        # This pushes end-of-config node events to the listeners
+                        # They seem to happen within about 2-3 seconds - need a more
+                        # reliable way to wait for them to finish.
+                        # If we don't wait, the DPC node may not be ready for use.
+                        time.sleep(0.5)
+                        if self.cs_server:
+                            self.cs_server.get_view("chipscope").run_events()
+                        time.sleep(0.5)
+
+                    progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
+
+            self.programming_error = future.error
+            self.programming_done = True
+            if future.error:
+                program_future.set_exception(future.error)
+            else:
+                program_future.set_result(None)
+
+        def finalize_program():
+            if self.programming_error is not None:
+                raise RuntimeError(self.programming_error)
+
+        jtag_programming_node = self.jtag_node
+        assert jtag_programming_node is not None
+        if not skip_reset:
+            jtag_programming_node.future().reset()
+
+        jtag_programming_node.future(
+            progress=progress_update, done=done_programming, final=finalize_program
+        ).config(str(programming_file.resolve()))
+
+        return program_future if done else program_future.result
+
+    def _raise_if_family_not(self, *args):
+        if self.device_family == DeviceFamily.XVC:
+            # special partial setup case for xvc sw testing - always ok
+            return
+        if self.device_family not in args:
+            raise FeatureNotAvailableError()
+
+
+# Legacy support - to not break old code that may have referenced the classes
+# that were removed (and now all implemented by Device)
+
+VersalDevice = NewType("VersalDevice", Device)
+UltrascaleDevice = NewType("UltrascaleDevice", Device)
+GenericDevice = NewType("GenericDevice", Device)
 
 
 def discover_devices(
     hw_server: ServerInfo,
-    cs_server: ServerInfo,
-    disable_core_scan: bool,
+    cs_server: ServerInfo = None,
+    disable_core_scan: bool = False,
     cable_ctx: Optional[str] = None,
-    use_legacy_scaner: bool = True,
+    disable_cache: bool = True,
 ) -> QueryList[Device]:
-    devices: QueryList[Device] = QueryList()
-    device_scanner = create_device_scanner(hw_server, cs_server, use_legacy_scaner)
-    for device_spec in device_scanner.scan_devices(cable_ctx=cable_ctx):
-        device_node = device_spec.find_top_level_device_node(hw_server)
-        if cable_ctx:
-            assert device_node.parent_ctx == cable_ctx
 
-        if device_node.device_wrapper is None:
-            family = device_spec.to_dict().get("family")
-            if use_legacy_scaner or family == "versal" or family == "xvc_defined_family":
-                device_node.device_wrapper = VersalDevice(
+    log.client.debug(
+        f"discover_devices: hw_server={hw_server}, cs_server={cs_server}, disable_core_scan={disable_core_scan}, cable_ctx={cable_ctx}",
+        disable_cache={disable_cache},
+    )
+    include_dna = True
+    devices: QueryList[Device] = QueryList()
+    idx = 0
+    for key, device_record_list in scan_all_views(hw_server, cs_server, include_dna).items():
+        device_spec = DeviceSpec.create_from_device_records(
+            hw_server, cs_server, device_record_list
+        )
+        if cable_ctx is None or device_spec.jtag_cable_ctx == cable_ctx:
+            device_node = device_spec.get_device_node()
+            if device_node.device_wrapper is None:
+                device_node.device_wrapper = Device(
                     hw_server=hw_server,
                     cs_server=cs_server,
                     device_spec=device_spec,
                     disable_core_scan=disable_core_scan,
-                    device_node=device_node,
+                    disable_cache=disable_cache,
                 )
-            elif family is not None:
-                device_node.device_wrapper = UltrascaleDevice(
-                    hw_server=hw_server,
-                    cs_server=cs_server,
-                    device_spec=device_spec,
-                    disable_core_scan=disable_core_scan,
-                    device_node=device_node,
+                log.client.debug(
+                    f"discover_devices: created new device: {device_node.device_wrapper}"
                 )
             else:
-                device_node.device_wrapper = GenericDevice(
-                    hw_server=hw_server,
-                    cs_server=cs_server,
-                    device_spec=device_spec,
-                    device_node=device_node,
+                log.client.debug(
+                    f"discover_devices: reusing device wrapper: {device_node.device_wrapper}"
                 )
-
-        devices.append(device_node.device_wrapper)
+            devices.append(device_node.device_wrapper)
+            log.client.info(f"discover_devices: {idx}: {device_node.device_wrapper}")
+            idx += 1
     return devices

@@ -12,49 +12,51 @@ This document covers frequently asked questions about ChipScoPy.
 
 **A:** chip-sco-pee and chip-sco-pie are both accepted. Sometimes it is entertaining to randomly flip during a conversation and see if others flip too.
 
-**Q: What is the minimum version of Vivado hw_server and cs_server required?**
-
-**A:** Version 2021.1 for both the hw_server and cs_server is the minimum tool requirement for ChipScoPy 2021.1.
-
 **Q: What is the minimum Python version required to use ChipScoPy?**
 
 **A:** Python 3.8 or above is required. To install Python, Go to python.org or the Microsoft Store and download Python 3.8 or better. 
 
 **Q: How do I know which version of ChipScoPy to use with Vivado cs_server and hw_server?**
 
-**A:** The major and minor version of ChipScopy should always match the major and minor version of the Xilinx cs_server and hw_server tools. For instance, ChipScoPy 2021.1 will work against the 2021.1 cs_server and 2021.1 hw_server combination. 
+**A:** For best results, ChipScopy should match the version of the Xilinx cs_server and hw_server tools. For instance, ChipScoPy 2022.1 will work best with the 2022.1 cs_server and 2022.1 hw_server combination. 
 
-ChipScoPy stores the matching tool information is stored in the variable `__vivado_version__`.
-You may also use the command line utility `csutil` installed with ChipScoPy.
-```
-csutil --version
-```
+Using pip, you can specify install a specific version. `pip install chipscopy==2022.1.*` will install the 2022.1 version of ChipScoPy.
 
-Using pip, you can specify install a specific version. `pip install chipscopy==2021.1.*` will install the latest 2021.1 version of ChipScoPy.
+See the FAQ entry "Is there a policy regarding backward-compatibility in ChipScoPy?" for more details.
 
-**Q: Does this API work for non-Versal devices?**
+**Q: Is there a policy regarding backward-compatibility in ChipScoPy?**
 
-**A:** No. At this time, the ChipScoPy API only supports Versal devices and debug IP.
+**A:** Minor releases, for example within the same year (2022.1 and 2022.2) are expected to be backwards compatible with hw_server and cs_server of the same year. 
+
+Different yearly releases (eg: 2022.2 and 2023.1) may have incompatibilities. 
+
+It is fine to use ChipScoPy to program devices with PDIs created with older Vivado versions.
 
 **Q: How can I print the ChipScoPy version?**
 
 **A:** From an active ChipScoPy virtual environment:
 
+ChipScoPy stores the matching tool information is stored in the variable `__vivado_version__`.
+
+You may use the command line utility `csutil` installed with ChipScoPy.
+```
+csutil --version
+```
+
+Or use Python:
+
 ```python
 (venv) >python
 Python 3.8.8 (tags/v3.8.8:024d805, Feb 19 2021, 13:18:16) [MSC v.1928 64 bit (AMD64)] on win32
 Type "help", "copyright", "credits" or "license" for more information.
-    >>> import chipscopy
+>>> import chipscopy
 >>> print(chipscopy.__version__)
 2021.1.1614310630
 ```
 
-**Q: Is there a policy regarding backward-compatibility in ChipScoPy?**
+**Q: Does this API work for non-Versal devices?**
 
-**A:** Minor releases, for example within the same year (2022.1 and 2022.2) are expected to be backwards compatible. We highly recommend that the user
-employs the same version of ChipScoPy, cs_server, hw_server and the chipscopy examples! 
-
-Major releases 2022.2 -> 2023.1 may have incompatibilities. 
+**A:** No. At this time, the ChipScoPy API only supports Versal devices and debug IP.
 
 **Q: What does *"TCF channel terminated ConnectionRefusedError: [Errno 111] Connection refused"* mean ?**
 
@@ -82,7 +84,9 @@ https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/ab
 
 **Q: What is the ChipScoPy source code copyright and license?**
 
-**A:** Copyright 2021-2022 Xilinx, Inc.
+**A:** Copyright (C) 2021-2022, Xilinx, Inc.
+
+Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

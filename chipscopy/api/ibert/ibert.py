@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,19 +16,19 @@
 from __future__ import annotations
 
 from rich.tree import Tree
-from typing import TYPE_CHECKING, ClassVar, Dict, Optional
+from typing import TYPE_CHECKING
 
 from chipscopy.api import CoreType
 from chipscopy.api._detail.debug_core import DebugCore
 from chipscopy.api.containers import QueryList
-from chipscopy.api.ibert.aliases import CHILDREN, GT_GROUP_KEY, HANDLE_NAME, IBERT_KEY, TYPE
+from chipscopy.api.ibert.aliases import GT_GROUP_KEY, HANDLE_NAME, IBERT_KEY, DISPLAY_NAME
 from chipscopy.api.ibert.gt_group import GTGroup
 from chipscopy.api.report import report_hierarchy
 from chipscopy.utils import deprecated_api
 from typing_extensions import Final, final
 
 if TYPE_CHECKING:  # pragma: no cover
-    from chipscopy.client.ibert_core_client import IBERTCoreClient
+    from chipscopy.client.ibert_core_client import IBERTCoreClient  # noqa
 
 
 @final
@@ -38,50 +39,24 @@ class IBERT(DebugCore["IBERTCoreClient"]):
 
     def __init__(self, ibert_tcf_node):
         super(IBERT, self).__init__(CoreType.IBERT, ibert_tcf_node)
+        _, core_info = self.core_tcf_node.initialize_architecture().popitem()
 
-        self.layout = self.core_tcf_node.get_layout()
-
-        # At the top most level only one key = IBERT name is expected
-        name = list(self.layout.keys())[0]
-        configuration = self.layout[name]
-
-        # ---------------------------------------------------------------
-        # Essential members from SerialObjectBase defined here
-        # ---------------------------------------------------------------
-        self.name: Final[str] = name
-        """Name of the IBERT core"""
+        self._gt_groups_discovery_complete: bool = False
 
         self.type: Final[str] = IBERT_KEY
         """Serial object type"""
 
-        self.handle: Final[str] = configuration[HANDLE_NAME]
-        """Handle from cs_server"""
-
         self.children: QueryList[GTGroup] = QueryList()
         """Children of IBERT"""
-        # ---------------------------------------------------------------
+
+        self.name: str = core_info[DISPLAY_NAME]
+        """Name of the IBERT core"""
+
+        self.handle = core_info[HANDLE_NAME]
+        """Handle from cs_server"""
 
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
-
-        if CHILDREN in configuration:
-            # Build the child objects
-            for child_name, child_configuration in configuration[CHILDREN].items():
-                if child_configuration[TYPE] == GT_GROUP_KEY:
-                    child_class = GTGroup
-                else:
-                    continue
-
-                new_child = child_class(
-                    name=child_name,
-                    parent=self,
-                    tcf_node=self.core_tcf_node,
-                    configuration=child_configuration,
-                )
-                self.children.append(new_child)
-
-        self.gt_groups: QueryList[GTGroup] = self.children.filter_by(type=GT_GROUP_KEY)
-        """GT Group children of the IBERT core"""
 
     def __repr__(self) -> str:
         return self.name
@@ -93,6 +68,36 @@ class IBERT(DebugCore["IBERTCoreClient"]):
             root.add(child.__rich_tree__())
 
         return root
+
+    @property
+    def gt_groups(self) -> QueryList[GTGroup]:
+        """GT Group children of the IBERT core"""
+        self.discover_gt_groups()
+        return self.children.filter_by(type=GT_GROUP_KEY)
+
+    def discover_gt_groups(self, *, include_uninstantiated: bool = False):
+        """
+        Discover all GT Groups that are instantiated by the design.
+
+        Args:
+            include_uninstantiated (bool): If you wish to include un-instantiated GT Groups in the discovery process,
+                set this to 'True'.
+
+        Returns:
+            None
+        """
+        if self._gt_groups_discovery_complete:
+            return
+
+        gt_group_handles = self.core_tcf_node.discover_gt_groups(include_uninstantiated)
+        if isinstance(gt_group_handles, str):
+            gt_group_handles = [gt_group_handles]
+
+        for handle in gt_group_handles:
+            obj_info = self.core_tcf_node.get_obj_info(handle)
+            self.children.append(GTGroup(obj_info, self, self.core_tcf_node))
+
+        self._gt_groups_discovery_complete = True
 
     def reset(self):
         """

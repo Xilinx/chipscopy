@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -141,12 +142,12 @@ class EyeScanPlot:
         extracted_data = re.match(
             r"^(.*) UI to (.*) UI$", self.eye_scan.scan_data.all_params[EYE_SCAN_HORZ_RANGE]
         )
-        max_horz_range_ui, min_horz_range_ui = (
+        min_horz_range_ui, max_horz_range_ui = (
             float(extracted_data.group(1)),
             float(extracted_data.group(2)),
         )
 
-        max_horz_range_codes, min_horz_range_codes = max(self._x), min(self._y)
+        max_horz_range_codes, min_horz_range_codes = max(self._x), min(self._x)
         for index, x_in_codes in enumerate(self._x):
             self._x[index] = min_horz_range_ui + (
                 ((x_in_codes - min_horz_range_codes) * (max_horz_range_ui - min_horz_range_ui))

@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,24 +15,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Any, Dict
 
-from chipscopy.api.ibert.aliases import (
-    ALIAS_DICT,
-    HANDLE_NAME,
-    MODIFIABLE_ALIASES,
-    PROPERTY_ENDPOINT,
-    TYPE,
-    RX_RESET,
-    RX_SUPPORTED_SCANS,
-    RX_EYE_SCAN,
-    RX_YK_SCAN,
-)
+from chipscopy.api.ibert.aliases import RX_RESET, RX_SUPPORTED_SCANS, RX_EYE_SCAN, RX_YK_SCAN
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from typing_extensions import final
 
 if TYPE_CHECKING:  # pragma: no cover
-    from chipscopy.api.ibert.gt import GT
+    from chipscopy.api.ibert.gt import GT  # noqa
     from chipscopy.api.ibert.link import Link
     from chipscopy.api.ibert.pll import PLL
     from chipscopy.api.ibert.eye_scan import EyeScan
@@ -40,42 +31,36 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @final
 class RX(SerialObjectBase["GT", None]):
-    def __init__(self, name, parent, tcf_node, configuration: dict):
-        SerialObjectBase.__init__(
-            self,
-            name=name,
-            type=configuration[TYPE],
-            parent=parent,
-            handle=configuration[HANDLE_NAME],
-            core_tcf_node=tcf_node,
-            property_for_alias=configuration.get(ALIAS_DICT, dict()),
-            is_property_endpoint=configuration.get(PROPERTY_ENDPOINT, False),
-            modifiable_aliases=configuration.get(MODIFIABLE_ALIASES, set()),
-        )
+    def __init__(self, rx_info: Dict[str, Any], parent, tcf_node):
+        SerialObjectBase.__init__(self, rx_info, parent, tcf_node)
 
         self.link: Optional[Link] = None
         """Link the RX is part of"""
 
-        if RX_SUPPORTED_SCANS in configuration:
-            if RX_EYE_SCAN in configuration[RX_SUPPORTED_SCANS]:
+        if RX_SUPPORTED_SCANS in rx_info:
+            if RX_EYE_SCAN in rx_info[RX_SUPPORTED_SCANS]:
                 self.eye_scan: Optional[EyeScan] = None
                 """Most recently run eye scan"""
                 self.eye_scan_names: List[str] = list()
                 """Name of all the eye scans run"""
 
-            elif RX_YK_SCAN in configuration[RX_SUPPORTED_SCANS]:
+            elif RX_YK_SCAN in rx_info[RX_SUPPORTED_SCANS]:
                 self.yk_scan: Optional[YKScan] = None
                 """YK scan object"""
 
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
 
-    def __repr__(self) -> str:
-        return self.name
+    # def __repr__(self) -> str:
+    #     return self.name
 
     @property
     def eye_scan_supported(self) -> bool:
         return hasattr(self, "eye_scan")
+
+    @property
+    def yk_scan_supported(self) -> bool:
+        return hasattr(self, "yk_scan")
 
     @property
     def pll(self) -> PLL:
@@ -91,6 +76,8 @@ class RX(SerialObjectBase["GT", None]):
         """
         Reset the RX
         """
+        self.setup()
+
         if RX_RESET not in self.property_for_alias:
             raise RuntimeError(f"Rx '{self.handle}' cannot be reset!")
 

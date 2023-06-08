@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,13 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import json
 import sys
-from typing import Optional, Dict, Any, List, Union, Callable
+import traceback
+from typing import Optional, Dict, Any, List, Union, Callable, Set
 
+from chipscopy.api import DMNodeListener
 from chipscopy.client.jtagdevice import JtagDevice, JtagCable
-from chipscopy.dm import chipscope
+from chipscopy.dm import chipscope, Node
 from chipscopy.utils.logger import log
 from chipscopy.utils.version import version_consistency_check
 from chipscopy.client import connect, disconnect
@@ -53,7 +56,8 @@ class Session:
         disable_core_scan: bool,
         bypass_version_check: bool,
         cable_timeout: int,
-        use_legacy_scanner: bool,
+        disable_cache: bool,
+        initial_device_scan: bool,
     ):
         self._disable_core_scan: bool = disable_core_scan
         self._bypass_version_check: bool = bypass_version_check
@@ -62,10 +66,15 @@ class Session:
         self._xvc_mm_server_url: str = xvc_mm_server_url
         self._cable_timeout = cable_timeout
         self._cables_are_initialized = False
-        self._use_legacy_scanner = use_legacy_scanner
+        self._disable_cache = disable_cache
+        self._initial_device_scan = initial_device_scan
 
         self.hw_server: Optional[ServerInfo] = None
         self.cs_server: Optional[ServerInfo] = None
+
+        self._devices: Optional[QueryList[Device]] = None
+
+        self._dm_node_listener = DMNodeListener(self.node_callback)
 
     def __str__(self):
         return f"{self.handle}"
@@ -73,7 +82,18 @@ class Session:
     def __repr__(self):
         return self.to_json()
 
+    def __getitem__(self, item):
+        props = self.to_dict()
+        if item in props:
+            return props[item]
+        else:
+            raise AttributeError(f"No property {str(item)}")
+
     def to_json(self):
+        json_dict = json.dumps(self.to_dict(), indent=4)
+        return json_dict
+
+    def to_dict(self):
         ret_dict = {
             "name": self.handle,
             "hw_server_url": self._hw_server_url,
@@ -82,15 +102,34 @@ class Session:
             "bypass_version_check": self._bypass_version_check,
             "disable_core_scan": self._disable_core_scan,
             "cable_timeout": self._cable_timeout,
+            "handle": self.handle,
         }
-        json_dict = json.dumps(ret_dict, indent=4)
-        return json_dict
+        return ret_dict
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            traceback.print_exception(exc_type, exc_val, exc_tb)
         delete_session(self)
+
+    def node_callback(self, action: DMNodeListener.NodeAction, node: Node, props: Optional[Set]):
+        pass
+        # if node:
+        #     for device in self._devices:
+        #         # Always pass events down to devices, so they can decide what to do with the event
+        #         device.node_callback(action, node, props)
+        #         if self._devices_are_valid:
+        #             # Need to invalidate the session cache if any known device node was added or removed. This forces a
+        #             # rescan from hardware next time the device list is accessed.
+        #             if action == DMNodeListener.NodeAction.NODE_REMOVED:
+        #                 if node.ctx in [device.jtag_node, device.device_node]:
+        #                     self._devices_are_valid = False
+        #             elif action == DMNodeListener.NodeAction.NODE_ADDED:
+        #                 # Harder to know if an added node will impact the device list. To be safe, invalidate
+        #                 # cache any time nodes are added to be safe.
+        #                 self._devices_are_valid = False
 
     @classmethod
     def _add_connection(
@@ -114,25 +153,51 @@ class Session:
                 # TODO: Look into root cause later - happens intermittently in pytest infra causing tests to fail
                 pass
 
-    def connect(self):
+    def connect_hw_server(self):
         if not self._hw_server_url:
             raise ValueError("hw_server_url must point to a valid hw_server")
         self.hw_server = Session._connect_server("hw_server", self._hw_server_url, connect_hw)
+
+    def connect_cs_server(self):
         if self._cs_server_url:
             self.cs_server = Session._connect_server("cs_server", self._cs_server_url, connect)
             self.cs_server.connect_remote(self.hw_server.url)
             if self._xvc_mm_server_url:
                 self.cs_server.connect_xvc(self._xvc_mm_server_url, self._hw_server_url)
+
+    def connect(self):
+        if not self.hw_server:
+            self.connect_hw_server()
+        if not self.cs_server:
+            self.connect_cs_server()
         Session._add_connection(self.hw_server, self.cs_server, self)
         try:
             # Quick sanity check - throws RuntimeError on version mismatch
             version_consistency_check(self.hw_server, self.cs_server, self._bypass_version_check)
+            if self.hw_server:
+                for view_name in ["memory", "jtag", "debugcore"]:
+                    self.hw_server.get_view(view_name).add_node_listener(self._dm_node_listener)
+            if self.cs_server:
+                self.cs_server.get_view("chipscope").add_node_listener(self._dm_node_listener)
+            if self._initial_device_scan:
+                # Ensures we have a set of pre-scanned devices ready to go for first use.
+                # Downside is this does take up-front time, so it is optional.
+                # If not done at session creation, it will be done when devices are first accessed with session.devices
+                # TODO: implement
+                # _ = self.devices
+                pass
         except RuntimeError:
             self.disconnect()
             t, v, tb = sys.exc_info()
             raise t(v).with_traceback(tb)
 
     def disconnect(self):
+        if self.hw_server:
+            for view_name in ["memory", "jtag", "debugcore"]:
+                self.hw_server.get_view(view_name).remove_node_listener(self._dm_node_listener)
+        if self.cs_server:
+            self.cs_server.get_view("chipscope").remove_node_listener(self._dm_node_listener)
+
         Session._remove_connection(self)
         if self.cs_server:
             self.cs_server.disconnect_remote(f"TCP:{self.hw_server.url}")
@@ -216,7 +281,7 @@ class Session:
         jtag_cables.set_custom_match_function(matcher)
         jtag_view_dict = get_jtag_view_dict(self.hw_server)
         view = self.hw_server.get_view("jtag")
-        for (jtag_cable_ctx, cable_values) in jtag_view_dict.items():
+        for jtag_cable_ctx, cable_values in jtag_view_dict.items():
             jtag_cable = view.get_node(ctx=jtag_cable_ctx, cls=JtagCable)
             jtag_cables.append(jtag_cable)
         return jtag_cables
@@ -226,34 +291,35 @@ class Session:
         """Returns a list of all cables connected to the hw_server.
         Similar to vivado get_hw_targets command. target_cables may be jtag or virtual.
         """
-        return discover_cables(
-            self.hw_server,
-            self.cs_server,
-            self._disable_core_scan,
-            self._use_legacy_scanner,
-            self._cable_timeout,
-        )
-
-    @property
-    def devices(self, cable: Optional[Cable] = None) -> QueryList[Device]:
-        """Returns a list of devices connected to this hw_server and cable. Devices may
-        contain several chains across cables, so don't always assume a single jtag chain
-        is returned
-
-        Args:
-            cable: Get devices for specified cable. None=Scan all cables
-        """
-        if not self._cables_are_initialized:
-            wait_for_all_cables_ready(self.hw_server, self._cable_timeout)
-            self._cables_are_initialized = True
-        cable_ctx = cable.context if cable else None
-        devices = discover_devices(
+        retval = discover_cables(
             hw_server=self.hw_server,
             cs_server=self.cs_server,
             disable_core_scan=self._disable_core_scan,
-            cable_ctx=cable_ctx,
-            use_legacy_scaner=self._use_legacy_scanner,
+            timeout=self._cable_timeout,
         )
+        return retval
+
+    def scan_devices(self) -> QueryList[Device]:
+        if not self._cables_are_initialized:
+            wait_for_all_cables_ready(self.hw_server, self._cable_timeout)
+            self._cables_are_initialized = True
+        self._devices = discover_devices(
+            hw_server=self.hw_server,
+            cs_server=self.cs_server,
+            disable_core_scan=self._disable_core_scan,
+            cable_ctx=None,
+            disable_cache=self._disable_cache,
+        )
+        return self._devices
+
+    @property
+    def devices(self) -> QueryList[Device]:
+        """Returns a list of devices connected to this hw_server and cable.
+        Devices may span multiple jtag chains. No ordering is guaranteed.
+        Devices are cached after scanning until an event changes state and
+        requires a re-scan if caching is enabled.
+        """
+        devices = self.scan_devices()
         return devices
 
     @property
@@ -343,17 +409,21 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
         bypass_version_check: Set True to change hw_server and cs_server version mismatch to warning instead of error
         xvc_mm_server_url: Url for the testing xvc memory map server - For special debug core testing use cases
         cable_timeout: Seconds before timing out when detecting devices on a jtag cable
-        use_legacy_scanner: Use legacy device scan algorithm
+        initial_device_scan: Do an initial device scan when opening session (lazy initialization otherwise)
+        disable_cache: Control client caching (experimental)
+        auto_connect: Automatically connect to server(s) when session is created
 
     Returns:
         New session object.
 
     """
     disable_core_scan = kwargs.get("disable_core_scan", False)
-    bypass_version_check = kwargs.get("bypass_version_check", False)
+    bypass_version_check = kwargs.get("bypass_version_check", True)
     xvc_mm_server_url = kwargs.get("xvc_mm_server_url", None)
     cable_timeout = kwargs.get("cable_timeout", 4)
-    use_legacy_scanner = kwargs.get("use_legacy_scanner", False)
+    initial_device_scan = kwargs.get("initial_device_scan", True)
+    disable_cache = kwargs.get("disable_cache", True)
+    auto_connect = kwargs.get("auto_connect", True)
 
     # Create session even if there already exists a session with the same cs_server and hw_server
     # It *should* be safe.
@@ -364,9 +434,11 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
         disable_core_scan=disable_core_scan,
         bypass_version_check=bypass_version_check,
         cable_timeout=cable_timeout,
-        use_legacy_scanner=use_legacy_scanner,
+        disable_cache=disable_cache,
+        initial_device_scan=initial_device_scan,
     )
-    session.connect()
+    if auto_connect:
+        session.connect()
     return session
 
 

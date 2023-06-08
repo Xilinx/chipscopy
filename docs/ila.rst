@@ -251,6 +251,8 @@ ILATrigOutMode (enum)
 ILAWaveform
 """""""""""
 .. autoclass:: chipscopy.api.ila.ILAWaveform
+    :members:
+    :exclude-members: export_waveform, get_data, get_probe_data, import_waveform
 
 ILAWaveformProbe
 """"""""""""""""

@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,85 +15,78 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Union
+from typing import TYPE_CHECKING, Dict, Union, Any
 
 from chipscopy.api.containers import QueryList
-from chipscopy.api.ibert.aliases import (
-    ALIAS_DICT,
-    CHILDREN,
-    GT_KEY,
-    HANDLE_NAME,
-    MODIFIABLE_ALIASES,
-    PLL_KEY,
-    PROPERTY_ENDPOINT,
-    TYPE,
-)
+from chipscopy.api.ibert.aliases import CHILDREN, GT_KEY, PLL_KEY, TYPE
 from chipscopy.api.ibert.gt import GT
 from chipscopy.api.ibert.pll import PLL
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from typing_extensions import final
 
 if TYPE_CHECKING:  # pragma: no cover
-    from chipscopy.api.ibert.ibert import IBERT
+    from chipscopy.api.ibert.ibert import IBERT  # noqa
 
 
 @final
 class GTGroup(SerialObjectBase["IBERT", Union[GT, PLL]]):
-    def __init__(self, name, parent, tcf_node, configuration):
-        SerialObjectBase.__init__(
-            self,
-            name=name,
-            type=configuration[TYPE],
-            parent=parent,
-            handle=configuration[HANDLE_NAME],
-            core_tcf_node=tcf_node,
-            property_for_alias=configuration.get(ALIAS_DICT, dict()),
-            is_property_endpoint=configuration.get(PROPERTY_ENDPOINT, False),
-            modifiable_aliases=configuration.get(MODIFIABLE_ALIASES, set()),
-        )
+    def __init__(self, gt_group_info: Dict[str, Any], parent, tcf_node):
+        SerialObjectBase.__init__(self, gt_group_info, parent, tcf_node)
 
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
 
-        if CHILDREN not in configuration:
-            return
+    # def __repr__(self) -> str:
+    #     return self.name
 
-        # Build the child objects
-        for child_name, child_configuration in configuration[CHILDREN].items():
-            if child_configuration[TYPE] == GT_KEY:
-                child_class = GT
-            elif child_configuration[TYPE].startswith(PLL_KEY):
-                child_class = PLL
-            else:
-                continue
+    @property
+    def gts(self) -> QueryList[GT]:
+        """GTs in this GT Group"""
+        self.setup()
+        return self._children.filter_by(type=GT_KEY)
 
-            new_child = child_class(
-                name=child_name,
-                parent=self,
-                tcf_node=self.core_tcf_node,
-                configuration=child_configuration,
-            )
-            self.children.append(new_child)
-
-        self.gts: QueryList[GT] = self.children.filter_by(type=GT_KEY)
-        """GT children"""
-
-        self.plls: QueryList[PLL] = self.children.filter_by(type=PLL_KEY)
-        """PLL children"""
-
-        # Do this after self.plls has been populated;
-        # update_pll() looks through self.plls to determine the PLL for the GT
-        for gt in self.gts:
-            gt.update_pll()
-
-    def __repr__(self) -> str:
-        return self.name
+    @property
+    def plls(self) -> QueryList[PLL]:
+        """PLL(s) in this GT Group"""
+        self.setup()
+        return self._children.filter_by(type=PLL_KEY)
 
     def reset(self):
         """
         Reset the RXs, TXs and PLLs that are part of the GT Group
         """
+        # Needn't call setup() here; Accessing 'gts' and 'plls' will trigger that call
         for gt in self.gts:
             gt.reset()
         for pll in self.plls:
             pll.reset()
+
+    def setup(self):
+        if self.setup_done:
+            return
+
+        self.core_tcf_node.setup_gt_group(self.name)
+        obj_info = self.core_tcf_node.get_obj_info(self.handle, include_property="no")
+
+        self._build_aliases(obj_info)
+
+        if not obj_info.get(CHILDREN):
+            return
+
+        for child_info in obj_info[CHILDREN].values():
+            obj: Union[GT, PLL]
+            if child_info[TYPE] == GT_KEY:
+                obj = GT(child_info, self, self.core_tcf_node)
+            elif child_info[TYPE].startswith(PLL_KEY):
+                obj = PLL(child_info, self, self.core_tcf_node)
+            else:
+                continue
+
+            obj.setup()
+            self._children.append(obj)
+
+        self.setup_done = True
+
+        # Call this only after setup is complete.
+        for gt in self.gts:
+            gt.update_pll()

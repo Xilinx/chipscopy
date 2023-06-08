@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -591,11 +592,12 @@ class PerfTGController:
                 self.tg_rst_probe = probe
 
     def start(self):
+        print("PerfTG start")
         self.device.memory_write(self.tg_start, [0x1])
         # CR-1062874
         # Second write of the ctrl reg is required for the start command to be effective.
-        sleep(0.5)
-        self.device.memory_write(self.tg_start, [0x1])
+        # sleep(0.5)
+        # self.device.memory_write(self.tg_start, [0x1])
 
     def stop(self):
         # this doesn't seem to be doing much

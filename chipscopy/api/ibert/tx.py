@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,39 +15,22 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Dict, Any
 
-from chipscopy.api.ibert.aliases import (
-    ALIAS_DICT,
-    HANDLE_NAME,
-    MODIFIABLE_ALIASES,
-    PROPERTY_ENDPOINT,
-    TYPE,
-    TX_RESET,
-)
+from chipscopy.api.ibert.aliases import TX_RESET
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from typing_extensions import final
 
 if TYPE_CHECKING:  # pragma: no cover
-    from chipscopy.api.ibert.gt import GT
+    from chipscopy.api.ibert.gt import GT  # noqa
     from chipscopy.api.ibert.link import Link
     from chipscopy.api.ibert.pll import PLL
 
 
 @final
 class TX(SerialObjectBase["GT", None]):
-    def __init__(self, name, parent, tcf_node, configuration):
-        SerialObjectBase.__init__(
-            self,
-            name=name,
-            type=configuration[TYPE],
-            parent=parent,
-            handle=configuration[HANDLE_NAME],
-            core_tcf_node=tcf_node,
-            property_for_alias=configuration.get(ALIAS_DICT, dict()),
-            is_property_endpoint=configuration.get(PROPERTY_ENDPOINT, False),
-            modifiable_aliases=configuration.get(MODIFIABLE_ALIASES, set()),
-        )
+    def __init__(self, tx_info: Dict[str, Any], parent, tcf_node):
+        SerialObjectBase.__init__(self, tx_info, parent, tcf_node)
 
         self.link: Optional[Link] = None
         """Link the TX is part of"""
@@ -54,8 +38,8 @@ class TX(SerialObjectBase["GT", None]):
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
 
-    def __repr__(self) -> str:
-        return self.name
+    # def __repr__(self) -> str:
+    #     return self.name
 
     @property
     def pll(self) -> PLL:
@@ -71,6 +55,8 @@ class TX(SerialObjectBase["GT", None]):
         """
         Reset the TX
         """
+        self.setup()
+
         if TX_RESET not in self.property_for_alias:
             raise RuntimeError(f"TX '{self.handle}' cannot be reset!")
 

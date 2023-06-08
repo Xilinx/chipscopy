@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +18,13 @@ from typing_extensions import Final
 TYPE: Final[str] = "Type"
 CHILDREN: Final[str] = "Children"
 ALIAS_DICT: Final[str] = "Alias dict"
+DISPLAY_NAME: Final[str] = "Display name"
 HANDLE_NAME: Final[str] = "Handle name"
 PROPERTY_ENDPOINT: Final[str] = "Property endpoint"
 MODIFIABLE_ALIASES: Final[str] = "Modifiable aliases"
 
 COUNT_KEY: Final[str] = "Count"
-PROPERTIES_KEY: Final[str] = "Properties"
+PROPERTIES: Final[str] = "Properties"
 NAME_PREFIX_KEY: Final[str] = "Name prefix"
 
 # -------------------------------------------------------------------
@@ -80,6 +82,7 @@ RX_COMMON_MODE: Final[str] = "Common Mode"
 # Microblaze
 # ----------------------
 MB_ELF_VERSION: Final[str] = "ELF Version"
+MB_ARBITRATION_NEEDED: Final[str] = "MB arbitration needed"
 
 # -----------------------------------
 # Eye scan related
