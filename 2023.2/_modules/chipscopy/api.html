@@ -338,7 +338,8 @@ function OptanonWrapper() { }
            <div itemprop="articleBody">
             
   <h1>Source code for chipscopy.api</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2021 Xilinx, Inc.</span>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -405,7 +406,13 @@ function OptanonWrapper() { }
 <span class="k">def</span> <span class="nf">get_core_info</span><span class="p">(</span><span class="n">tcf_node</span><span class="p">:</span> <span class="n">dm</span><span class="o">.</span><span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CoreInfo</span><span class="p">]:</span>
     <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">CORE_INFO_MEMBERS</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">tcf_node</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
         <span class="c1"># Only fabric cores have core info information.</span>
-        <span class="k">return</span> <span class="n">CoreInfo</span><span class="p">(</span><span class="o">**</span><span class="n">filter_props</span><span class="p">(</span><span class="n">tcf_node</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">CORE_INFO_MEMBERS</span><span class="p">))</span>
+        <span class="c1"># Convert UUID to a hex string.</span>
+        <span class="n">ci</span> <span class="o">=</span> <span class="n">filter_props</span><span class="p">(</span><span class="n">tcf_node</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">CORE_INFO_MEMBERS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ci</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">],</span> <span class="nb">bytearray</span><span class="p">):</span>
+            <span class="n">uuid</span> <span class="o">=</span> <span class="n">ci</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">uuid</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+            <span class="n">ci</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">CoreInfo</span><span class="p">(</span><span class="o">**</span><span class="n">ci</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="kc">None</span>
 
@@ -481,7 +488,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 20, 2023.
+        Last updated on June 02, 2023.
       </span>
 
     </p>

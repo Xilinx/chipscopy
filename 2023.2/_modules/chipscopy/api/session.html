@@ -340,8 +340,8 @@ function OptanonWrapper() { }
            <div itemprop="articleBody">
             
   <h1>Source code for chipscopy.api.session</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2021-2022 Xilinx, Inc.</span>
-<span class="c1"># Copyright 2023 Advanced Micro Devices, Inc.</span>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -495,15 +495,23 @@ function OptanonWrapper() { }
                 <span class="c1"># TODO: Look into root cause later - happens intermittently in pytest infra causing tests to fail</span>
                 <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">connect_hw_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;hw_server_url must point to a valid hw_server&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_connect_server</span><span class="p">(</span><span class="s2">&quot;hw_server&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">,</span> <span class="n">connect_hw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">connect_cs_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_url</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_connect_server</span><span class="p">(</span><span class="s2">&quot;cs_server&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_url</span><span class="p">,</span> <span class="n">connect</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">connect_remote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xvc_mm_server_url</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">connect_xvc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xvc_mm_server_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_hw_server</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_cs_server</span><span class="p">()</span>
         <span class="n">Session</span><span class="o">.</span><span class="n">_add_connection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Quick sanity check - throws RuntimeError on version mismatch</span>
@@ -615,7 +623,7 @@ function OptanonWrapper() { }
         <span class="n">jtag_cables</span><span class="o">.</span><span class="n">set_custom_match_function</span><span class="p">(</span><span class="n">matcher</span><span class="p">)</span>
         <span class="n">jtag_view_dict</span> <span class="o">=</span> <span class="n">get_jtag_view_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
         <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;jtag&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">jtag_cable_ctx</span><span class="p">,</span> <span class="n">cable_values</span><span class="p">)</span> <span class="ow">in</span> <span class="n">jtag_view_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">jtag_cable_ctx</span><span class="p">,</span> <span class="n">cable_values</span> <span class="ow">in</span> <span class="n">jtag_view_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">jtag_cable</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">ctx</span><span class="o">=</span><span class="n">jtag_cable_ctx</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">JtagCable</span><span class="p">)</span>
             <span class="n">jtag_cables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jtag_cable</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">jtag_cables</span>
@@ -745,6 +753,7 @@ function OptanonWrapper() { }
 <span class="sd">        cable_timeout: Seconds before timing out when detecting devices on a jtag cable</span>
 <span class="sd">        initial_device_scan: Do an initial device scan when opening session (lazy initialization otherwise)</span>
 <span class="sd">        disable_cache: Control client caching (experimental)</span>
+<span class="sd">        auto_connect: Automatically connect to server(s) when session is created</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        New session object.</span>
@@ -756,6 +765,7 @@ function OptanonWrapper() { }
     <span class="n">cable_timeout</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cable_timeout&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">initial_device_scan</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;initial_device_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">disable_cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;disable_cache&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">auto_connect</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;auto_connect&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Create session even if there already exists a session with the same cs_server and hw_server</span>
     <span class="c1"># It *should* be safe.</span>
@@ -769,7 +779,8 @@ function OptanonWrapper() { }
         <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
         <span class="n">initial_device_scan</span><span class="o">=</span><span class="n">initial_device_scan</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">auto_connect</span><span class="p">:</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">session</span></div>
 
 
@@ -802,7 +813,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 20, 2023.
+        Last updated on June 02, 2023.
       </span>
 
     </p>

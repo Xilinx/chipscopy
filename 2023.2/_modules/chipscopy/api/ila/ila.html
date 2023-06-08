@@ -340,7 +340,8 @@ function OptanonWrapper() { }
            <div itemprop="articleBody">
             
   <h1>Source code for chipscopy.api.ila.ila</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2022 Xilinx, Inc.</span>
+<span></span><span class="c1"># Copyright (C) 2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -355,6 +356,7 @@ function OptanonWrapper() { }
 <span class="c1"># limitations under the License.</span>
 
 <span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">TextIOBase</span>
@@ -402,6 +404,16 @@ function OptanonWrapper() { }
 <span class="kn">from</span> <span class="nn">chipscopy.api._detail.debug_core</span> <span class="kn">import</span> <span class="n">DebugCore</span>
 <span class="kn">from</span> <span class="nn">chipscopy</span> <span class="kn">import</span> <span class="n">CoreType</span>
 <span class="kn">from</span> <span class="nn">chipscopy.utils</span> <span class="kn">import</span> <span class="n">Enum2StrEncoder</span><span class="p">,</span> <span class="n">deprecated_api</span>
+
+
+<span class="k">def</span> <span class="nf">ensure_ila_init</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
 
 
 <div class="viewcode-block" id="ILAStaticInfo"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILAStaticInfo">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -459,23 +471,81 @@ function OptanonWrapper() { }
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcf_ila</span><span class="p">:</span> <span class="n">TCF_AxisIlaCoreClient</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">ltx</span><span class="p">:</span> <span class="n">Ltx</span><span class="p">):</span>
 
         <span class="n">DebugCore</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">core_type</span><span class="o">=</span><span class="n">CoreType</span><span class="o">.</span><span class="n">AXIS_ILA</span><span class="p">,</span> <span class="n">core_tcf_node</span><span class="o">=</span><span class="n">tcf_ila</span><span class="p">)</span>
-        <span class="n">init_vals</span> <span class="o">=</span> <span class="n">ILA</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="n">tcf_ila</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_info</span><span class="p">,</span> <span class="n">ltx</span><span class="p">)</span>
+        <span class="n">ltx_core</span> <span class="o">=</span> <span class="n">ltx</span><span class="o">.</span><span class="n">get_core</span><span class="p">(</span><span class="n">CoreType</span><span class="o">.</span><span class="n">AXIS_ILA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_info</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span> <span class="k">if</span> <span class="n">ltx</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ltx</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ltx_core</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unable to find ILA core with uuid:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">core_info</span><span class="o">.</span><span class="n">uuid</span><span class="si">}</span><span class="s2"> in LTX file.&quot;</span>
+            <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">static_info</span><span class="p">:</span> <span class="n">ILAStaticInfo</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;static_info&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">:</span> <span class="n">ILAStatus</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="p">:</span> <span class="n">ILAControl</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;control&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span> <span class="p">[</span><span class="n">ILAPort</span><span class="p">]</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;ports&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">probes</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">ILAProbe</span><span class="p">}</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;probes&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">probe_values</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">ILAProbeValues</span><span class="p">}</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;probe_values&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">waveform</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ILAWaveform</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_probe_to_port_seqs</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="n">ILABitRange</span><span class="p">]}</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;probe_to_port_seqs&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">ltx_core</span><span class="o">.</span><span class="n">cell_name</span> <span class="k">if</span> <span class="n">ltx_core</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;hw_ila_</span><span class="si">{</span><span class="n">ILA</span><span class="o">.</span><span class="n">__next_ila_number</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">ILA</span><span class="o">.</span><span class="n">__next_ila_number</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_device</span> <span class="o">=</span> <span class="n">device</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_downstreams_refs</span><span class="p">:</span> <span class="p">[</span><span class="n">LtxStreamRef</span><span class="p">]</span> <span class="o">=</span> <span class="n">ltx</span><span class="o">.</span><span class="n">get_downstream_refs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">ltx</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">waveform</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Data members to be initialized later.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_static_info</span><span class="p">:</span> <span class="n">ILAStaticInfo</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="p">:</span> <span class="n">ILAStatus</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_control</span><span class="p">:</span> <span class="n">ILAControl</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ports</span><span class="p">:</span> <span class="p">[</span><span class="n">ILAPort</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probes</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">ILAProbe</span><span class="p">}</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probe_values</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">ILAProbeValues</span><span class="p">}</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probe_to_port_seqs</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="n">ILABitRange</span><span class="p">]}</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_downstreams_refs</span><span class="p">:</span> <span class="p">[</span><span class="n">LtxStreamRef</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tsm_state_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># This is used by the filter_by method in QueryList</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_info</span><span class="o">.</span><span class="n">uuid</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_complete</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_complete</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Initialize ILA service, for this ILA, in the cs_server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+        <span class="n">init_vals</span> <span class="o">=</span> <span class="n">ILA</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="o">.</span><span class="n">ltx</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_static_info</span><span class="p">:</span> <span class="n">ILAStaticInfo</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;static_info&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="p">:</span> <span class="n">ILAStatus</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_control</span><span class="p">:</span> <span class="n">ILAControl</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;control&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ports</span><span class="p">:</span> <span class="p">[</span><span class="n">ILAPort</span><span class="p">]</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;ports&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probes</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">ILAProbe</span><span class="p">}</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;probes&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probe_values</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">ILAProbeValues</span><span class="p">}</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;probe_values&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probe_to_port_seqs</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="n">ILABitRange</span><span class="p">]}</span> <span class="o">=</span> <span class="n">init_vals</span><span class="p">[</span><span class="s2">&quot;probe_to_port_seqs&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_downstreams_refs</span><span class="p">:</span> <span class="p">[</span><span class="n">LtxStreamRef</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="o">.</span><span class="n">ltx</span><span class="o">.</span><span class="n">get_downstream_refs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="o">.</span><span class="n">ltx</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tsm_state_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_complete</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">static_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ILAStaticInfo</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_info</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ILAStatus</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">control</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ILAControl</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ports</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">ILAPort</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ports</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">probes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">ILAProbe</span><span class="p">}:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">probe_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">ILAProbeValues</span><span class="p">}:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probe_values</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns instance name&quot;&quot;&quot;</span>
@@ -505,11 +575,13 @@ function OptanonWrapper() { }
         <span class="n">json_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="bp">cls</span><span class="o">=</span><span class="n">Enum2StrEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">json_dict</span>
 
-<div class="viewcode-block" id="ILA.refresh_status"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.refresh_status">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ILA.refresh_status"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.refresh_status">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">refresh_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Read dynamic status and store in attribute &#39;ila.status&#39;.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">tcf_refresh_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsm_state_names</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">tcf_refresh_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsm_state_names</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ILA.run_trigger_immediately"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.run_trigger_immediately">[docs]</a>    <span class="k">def</span> <span class="nf">run_trigger_immediately</span><span class="p">(</span>
+<div class="viewcode-block" id="ILA.run_trigger_immediately"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.run_trigger_immediately">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">run_trigger_immediately</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">trigger_position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">window_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -539,7 +611,8 @@ function OptanonWrapper() { }
         <span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="ILA.run_basic_trigger"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.run_basic_trigger">[docs]</a>    <span class="k">def</span> <span class="nf">run_basic_trigger</span><span class="p">(</span>
+<div class="viewcode-block" id="ILA.run_basic_trigger"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.run_basic_trigger">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">run_basic_trigger</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">trigger_position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">ILA_TRIGGER_POSITION_HALF</span><span class="p">,</span>
         <span class="n">window_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -573,7 +646,8 @@ function OptanonWrapper() { }
             <span class="n">trig_out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ILA.run_advanced_trigger"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.run_advanced_trigger">[docs]</a>    <span class="k">def</span> <span class="nf">run_advanced_trigger</span><span class="p">(</span>
+<div class="viewcode-block" id="ILA.run_advanced_trigger"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.run_advanced_trigger">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">run_advanced_trigger</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">trigger_state_machine</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TextIOBase</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">trigger_position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">ILA_TRIGGER_POSITION_HALF</span><span class="p">,</span>
@@ -703,7 +777,7 @@ function OptanonWrapper() { }
             <span class="n">capture_condition</span><span class="p">,</span> <span class="n">trig_in</span><span class="p">,</span> <span class="n">trig_out</span><span class="p">,</span> <span class="n">trigger_condition</span><span class="p">,</span> <span class="n">t_pos</span><span class="p">,</span> <span class="n">window_count</span><span class="p">,</span> <span class="n">w_size</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">control</span> <span class="o">=</span> <span class="n">control</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_control</span> <span class="o">=</span> <span class="n">control</span>
         <span class="c1"># Set probe trigger values.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">reset_probe</span><span class="p">(</span><span class="n">reset_trigger_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reset_capture_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">tcf_probe_values</span> <span class="o">=</span> <span class="n">probe_values_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probe_values</span><span class="p">)</span>
@@ -725,7 +799,8 @@ function OptanonWrapper() { }
         <span class="c1"># NYI feature</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="ILA.upload"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.upload">[docs]</a>    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="ILA.upload"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.upload">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Upload waveform. If the ILA has not triggered yet, it will return with value *False*.</span>
 <span class="sd">        The uploaded waveform is at *self.waveform*.</span>
@@ -742,7 +817,8 @@ function OptanonWrapper() { }
             <span class="bp">self</span><span class="o">.</span><span class="n">waveform</span> <span class="o">=</span> <span class="n">ILAWaveform</span><span class="p">(</span><span class="o">**</span><span class="n">wave</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">uploaded</span></div>
 
-<div class="viewcode-block" id="ILA.wait_till_done"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.wait_till_done">[docs]</a>    <span class="k">def</span> <span class="nf">wait_till_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_wait_minutes</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ILAStatus</span><span class="p">:</span>
+<div class="viewcode-block" id="ILA.wait_till_done"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.wait_till_done">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">wait_till_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_wait_minutes</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ILAStatus</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wait until all data has been captured, or until timeout.</span>
 <span class="sd">        Call this function after arming the ILA, before uploading the waveform.</span>
@@ -754,7 +830,8 @@ function OptanonWrapper() { }
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitor_status</span><span class="p">(</span><span class="n">max_wait_minutes</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ILA.monitor_status"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.monitor_status">[docs]</a>    <span class="k">def</span> <span class="nf">monitor_status</span><span class="p">(</span>
+<div class="viewcode-block" id="ILA.monitor_status"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.monitor_status">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">monitor_status</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">max_wait_minutes</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">done</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">DoneFutureCallback</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ILAStatus</span> <span class="ow">or</span> <span class="n">request</span><span class="o">.</span><span class="n">CsFutureRequestSync</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -832,7 +909,7 @@ function OptanonWrapper() { }
 
         <span class="k">def</span> <span class="nf">final</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>  <span class="c1"># called on main thread</span>
             <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">_result</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">_result</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">_result</span>
 
         <span class="k">def</span> <span class="nf">status_process</span><span class="p">(</span><span class="n">props</span><span class="p">:</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="n">ILAStatus</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tcf_props_to_status</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsm_state_names</span><span class="p">)</span>
@@ -845,7 +922,8 @@ function OptanonWrapper() { }
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="n">final</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">monitor_status</span><span class="p">(</span><span class="n">status_process</span><span class="p">,</span> <span class="n">max_wait_minutes</span><span class="o">=</span><span class="n">max_wait_minutes</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ILA.reset_probes"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.reset_probes">[docs]</a>    <span class="k">def</span> <span class="nf">reset_probes</span><span class="p">(</span>
+<div class="viewcode-block" id="ILA.reset_probes"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.reset_probes">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">reset_probes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">reset_trigger_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">reset_capture_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Reset probe compare values, to dont-cares.</span>
@@ -862,7 +940,8 @@ function OptanonWrapper() { }
             <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">probe_values</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">values</span><span class="o">.</span><span class="n">capture_value</span> <span class="o">=</span> <span class="p">[]</span></div>
 
-<div class="viewcode-block" id="ILA.set_probe_trigger_value"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.set_probe_trigger_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_probe_trigger_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trigger_value</span><span class="p">:</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ILA.set_probe_trigger_value"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.set_probe_trigger_value">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">set_probe_trigger_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trigger_value</span><span class="p">:</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;For basic trigger mode, set probe compare value(s).</span>
 
 <span class="sd">            A compare value consists of a pair: &lt;operator&gt; and &lt;value&gt;</span>
@@ -906,7 +985,8 @@ function OptanonWrapper() { }
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_probe_value</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">trigger_value</span><span class="p">,</span> <span class="n">is_trigger</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ILA.set_probe_capture_value"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.set_probe_capture_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_probe_capture_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">capture_value</span><span class="p">:</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ILA.set_probe_capture_value"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.set_probe_capture_value">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">set_probe_capture_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">capture_value</span><span class="p">:</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;For basic capture mode, set probe compare value to filter samples.</span>
 
 <span class="sd">        Args:</span>
@@ -920,7 +1000,8 @@ function OptanonWrapper() { }
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_probe_value</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capture_value</span><span class="p">,</span> <span class="n">is_trigger</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ILA.get_probe_trigger_value"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.get_probe_trigger_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_probe_trigger_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[]:</span>
+<div class="viewcode-block" id="ILA.get_probe_trigger_value"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.get_probe_trigger_value">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">get_probe_trigger_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[]:</span>
         <span class="sd">&quot;&quot;&quot;Get basic trigger mode compare value(s) for a probe.</span>
 
 <span class="sd">        Args:</span>
@@ -934,7 +1015,8 @@ function OptanonWrapper() { }
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Probe </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not a defined trigger probe.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">trigger_value</span></div>
 
-<div class="viewcode-block" id="ILA.get_probe_capture_value"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.get_probe_capture_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_probe_capture_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[]:</span>
+<div class="viewcode-block" id="ILA.get_probe_capture_value"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.get_probe_capture_value">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">get_probe_capture_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[]:</span>
         <span class="sd">&quot;&quot;&quot;Get basic capture mode compare value for a probe.</span>
 
 <span class="sd">        Args:</span>
@@ -961,8 +1043,6 @@ function OptanonWrapper() { }
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="n">tcf_ila</span><span class="p">:</span> <span class="n">TCF_AxisIlaCoreClient</span><span class="p">,</span> <span class="n">core_info</span><span class="p">:</span> <span class="n">CoreInfo</span><span class="p">,</span> <span class="n">ltx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Ltx</span><span class="p">]):</span>
-        <span class="n">ila_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hw_ila_</span><span class="si">{</span><span class="n">ILA</span><span class="o">.</span><span class="n">__next_ila_number</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">ILA</span><span class="o">.</span><span class="n">__next_ila_number</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">props</span> <span class="o">=</span> <span class="n">tcf_ila</span><span class="o">.</span><span class="n">get_property_group</span><span class="p">([</span><span class="s2">&quot;static_info&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;control&quot;</span><span class="p">])</span>
         <span class="n">post_process_status</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
@@ -974,7 +1054,7 @@ function OptanonWrapper() { }
         <span class="k">if</span> <span class="n">ltx</span><span class="p">:</span>
             <span class="n">verify_ports</span><span class="p">(</span><span class="n">ltx</span><span class="p">,</span> <span class="n">core_info</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span> <span class="n">ports</span><span class="p">)</span>
 
-        <span class="n">probes</span><span class="p">,</span> <span class="n">probe_to_port_seqs</span><span class="p">,</span> <span class="n">cell_name</span><span class="p">,</span> <span class="n">enum_defs</span> <span class="o">=</span> <span class="n">create_probes_from_ports_and_ltx</span><span class="p">(</span>
+        <span class="n">probes</span><span class="p">,</span> <span class="n">probe_to_port_seqs</span><span class="p">,</span> <span class="n">enum_defs</span> <span class="o">=</span> <span class="n">create_probes_from_ports_and_ltx</span><span class="p">(</span>
             <span class="n">tcf_ila</span><span class="p">,</span> <span class="n">ports</span><span class="p">,</span> <span class="n">ltx</span><span class="p">,</span> <span class="n">core_info</span><span class="o">.</span><span class="n">uuid</span>
         <span class="p">)</span>
         <span class="n">probe_values</span> <span class="o">=</span> <span class="p">{</span>
@@ -987,21 +1067,19 @@ function OptanonWrapper() { }
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">probe</span> <span class="ow">in</span> <span class="n">probes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
         <span class="p">}</span>
-        <span class="k">if</span> <span class="n">cell_name</span><span class="p">:</span>
-            <span class="n">ila_name</span> <span class="o">=</span> <span class="n">cell_name</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;core_info&quot;</span><span class="p">:</span> <span class="n">core_info</span><span class="p">,</span>
             <span class="s2">&quot;static_info&quot;</span><span class="p">:</span> <span class="n">static_info</span><span class="p">,</span>
             <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
             <span class="s2">&quot;control&quot;</span><span class="p">:</span> <span class="n">control</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">ila_name</span><span class="p">,</span>
             <span class="s2">&quot;ports&quot;</span><span class="p">:</span> <span class="n">ports</span><span class="p">,</span>
             <span class="s2">&quot;probes&quot;</span><span class="p">:</span> <span class="n">probes</span><span class="p">,</span>
             <span class="s2">&quot;probe_to_port_seqs&quot;</span><span class="p">:</span> <span class="n">probe_to_port_seqs</span><span class="p">,</span>
             <span class="s2">&quot;probe_values&quot;</span><span class="p">:</span> <span class="n">probe_values</span><span class="p">,</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="ILA.get_probe_enum"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.get_probe_enum">[docs]</a>    <span class="k">def</span> <span class="nf">get_probe_enum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">EnumMeta</span><span class="p">]:</span>
+<div class="viewcode-block" id="ILA.get_probe_enum"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.get_probe_enum">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">get_probe_enum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">EnumMeta</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Get enum class, which defines valid enum values for the probe.</span>
 
 <span class="sd">        Args:</span>
@@ -1016,7 +1094,8 @@ function OptanonWrapper() { }
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Probe </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not a defined probe.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">enum_def</span></div>
 
-<div class="viewcode-block" id="ILA.set_probe_enum"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.set_probe_enum">[docs]</a>    <span class="k">def</span> <span class="nf">set_probe_enum</span><span class="p">(</span>
+<div class="viewcode-block" id="ILA.set_probe_enum"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ila.ILA.set_probe_enum">[docs]</a>    <span class="nd">@ensure_ila_init</span>
+    <span class="k">def</span> <span class="nf">set_probe_enum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">enum_def</span><span class="p">:</span> <span class="n">enum</span><span class="o">.</span><span class="n">EnumMeta</span><span class="p">,</span> <span class="n">display_as_enum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Set enum values for a probe, by providing a enum class.</span>
@@ -1157,7 +1236,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 20, 2023.
+        Last updated on June 02, 2023.
       </span>
 
     </p>

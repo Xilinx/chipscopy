@@ -226,7 +226,7 @@ function OptanonWrapper() { }
             
             
               <div class="version">
-                2023.2
+                2023.1
               </div>
             
           
@@ -475,6 +475,38 @@ Val = stage calibration result</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.get_eye_scan_default_read_vref">
+<code class="sig-name descname"><span class="pre">get_eye_scan_default_read_vref</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.get_eye_scan_default_read_vref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.get_eye_scan_default_read_vref" title="Permalink to this definition">¶</a></dt>
+<dd><p>A helper function for Gen5 DDRMC designs for querying default Read VRef value used
+during Calibration, in encoded format for control registers (not in percentage format).</p>
+<p>Args:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A calculated value of default Read VRef done during Calibration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.get_eye_scan_default_write_vref">
+<code class="sig-name descname"><span class="pre">get_eye_scan_default_write_vref</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.get_eye_scan_default_write_vref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.get_eye_scan_default_write_vref" title="Permalink to this definition">¶</a></dt>
+<dd><p>A helper function for Gen5 DDRMC designs for querying default Write VRef value used
+during Calibration, in encoded format for control registers (not in percentage format).</p>
+<p>Args:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A calculated value of default Write VRef done during Calibration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="chipscopy.api.ddr.ddr.DDR.get_eye_scan_vref_percentage">
 <code class="sig-name descname"><span class="pre">get_eye_scan_vref_percentage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.get_eye_scan_vref_percentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.get_eye_scan_vref_percentage" title="Permalink to this definition">¶</a></dt>
 <dd><p>A user helper function that takes in an encoding vref value intended for the margin scan,
@@ -631,6 +663,26 @@ A default file name will be given if none is supplied.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="chipscopy.api.ddr.ddr.DDR.select_eye_scan_prbs_pattern">
+<code class="sig-name descname"><span class="pre">select_eye_scan_prbs_pattern</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choice</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.select_eye_scan_prbs_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.select_eye_scan_prbs_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select 2D eye scan traffic pattern to specific PRBS modes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>choice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <dl class="simple">
+<dt>Choice number valid between 0 to 2 only and corrosponding to following pattern:</dt><dd><ol class="arabic simple" start="0">
+<li><p>PRBS 23</p></li>
+<li><p>PRBS 10</p></li>
+<li><p>PRBS 7</p></li>
+</ol>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="chipscopy.api.ddr.ddr.DDR.set_eye_scan_complex_pattern">
 <code class="sig-name descname"><span class="pre">set_eye_scan_complex_pattern</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/ddr/ddr.html#DDR.set_eye_scan_complex_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ddr.ddr.DDR.set_eye_scan_complex_pattern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set 2D eye scan traffic pattern to complex mode</p>
@@ -763,7 +815,7 @@ Valid integer range between 1 to 51 for Write mode.</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 20, 2023.
+        Last updated on June 08, 2023.
       </span>
 
     </p>

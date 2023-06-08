@@ -224,7 +224,7 @@ function OptanonWrapper() { }
             
             
               <div class="version">
-                2023.2
+                2023.1
               </div>
             
           
@@ -340,8 +340,8 @@ function OptanonWrapper() { }
            <div itemprop="articleBody">
             
   <h1>Source code for chipscopy.api.device.device</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2021-2022 Xilinx, Inc.</span>
-<span class="c1"># Copyright 2023 Advanced Micro Devices, Inc.</span>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -397,6 +397,7 @@ function OptanonWrapper() { }
     <span class="n">scan_all_views</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.device.device_util</span> <span class="kn">import</span> <span class="n">copy_node_props</span>
+<span class="kn">from</span> <span class="nn">chipscopy.utils.logger</span> <span class="kn">import</span> <span class="n">log</span>
 
 
 <div class="viewcode-block" id="FeatureNotAvailableError"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.FeatureNotAvailableError">[docs]</a><span class="k">class</span> <span class="nc">FeatureNotAvailableError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -1240,8 +1241,13 @@ function OptanonWrapper() { }
     <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
 
+    <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;discover_devices: hw_server=</span><span class="si">{</span><span class="n">hw_server</span><span class="si">}</span><span class="s2">, cs_server=</span><span class="si">{</span><span class="n">cs_server</span><span class="si">}</span><span class="s2">, disable_core_scan=</span><span class="si">{</span><span class="n">disable_core_scan</span><span class="si">}</span><span class="s2">, cable_ctx=</span><span class="si">{</span><span class="n">cable_ctx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">disable_cache</span><span class="o">=</span><span class="p">{</span><span class="n">disable_cache</span><span class="p">},</span>
+    <span class="p">)</span>
     <span class="n">include_dna</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">devices</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">device_record_list</span> <span class="ow">in</span> <span class="n">scan_all_views</span><span class="p">(</span><span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">include_dna</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">device_spec</span> <span class="o">=</span> <span class="n">DeviceSpec</span><span class="o">.</span><span class="n">create_from_device_records</span><span class="p">(</span>
             <span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">device_record_list</span>
@@ -1256,7 +1262,16 @@ function OptanonWrapper() { }
                     <span class="n">disable_core_scan</span><span class="o">=</span><span class="n">disable_core_scan</span><span class="p">,</span>
                     <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
                 <span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;discover_devices: created new device: </span><span class="si">{</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;discover_devices: reusing device wrapper: </span><span class="si">{</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
             <span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;discover_devices: </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">devices</span>
 </pre></div>
 
@@ -1279,7 +1294,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 20, 2023.
+        Last updated on June 08, 2023.
       </span>
 
     </p>

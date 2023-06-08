@@ -224,7 +224,7 @@ function OptanonWrapper() { }
             
             
               <div class="version">
-                2023.2
+                2023.1
               </div>
             
           
@@ -340,7 +340,8 @@ function OptanonWrapper() { }
            <div itemprop="articleBody">
             
   <h1>Source code for chipscopy.api.ddr.ddr</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2021 Xilinx, Inc.</span>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -1543,6 +1544,34 @@ function OptanonWrapper() { }
 
         <span class="k">return</span></div>
 
+<div class="viewcode-block" id="DDR.select_eye_scan_prbs_pattern"><a class="viewcode-back" href="../../../../ddr.html#chipscopy.api.ddr.ddr.DDR.select_eye_scan_prbs_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">select_eye_scan_prbs_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choice</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select 2D eye scan traffic pattern to specific PRBS modes.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">            choice:</span>
+<span class="sd">                Choice number valid between 0 to 2 only and corrosponding to following pattern:</span>
+<span class="sd">                    0) PRBS 23</span>
+<span class="sd">                    1) PRBS 10</span>
+<span class="sd">                    2) PRBS 7</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">choice</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;ERROR: Please enter an integer value from 0 to 2 for PRBS pattern selection.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">choice</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;ERROR: Cannot enter a choice number larger than 2.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">decoded_pattern_choice</span> <span class="o">=</span> <span class="n">choice</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">set_property</span><span class="p">({</span><span class="s2">&quot;mgchk_pattern_mode&quot;</span><span class="p">:</span> <span class="n">decoded_pattern_choice</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">commit_property_group</span><span class="p">([])</span>
+
+        <span class="k">return</span></div>
+
 <div class="viewcode-block" id="DDR.set_eye_scan_rank"><a class="viewcode-back" href="../../../../ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_rank">[docs]</a>    <span class="k">def</span> <span class="nf">set_eye_scan_rank</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the target rank number on the DDR for 2D eye scan to run on.</span>
@@ -1569,6 +1598,47 @@ function OptanonWrapper() { }
         <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">commit_property_group</span><span class="p">([])</span>
 
         <span class="k">return</span></div>
+
+<div class="viewcode-block" id="DDR.get_eye_scan_default_read_vref"><a class="viewcode-back" href="../../../../ddr.html#chipscopy.api.ddr.ddr.DDR.get_eye_scan_default_read_vref">[docs]</a>    <span class="k">def</span> <span class="nf">get_eye_scan_default_read_vref</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A helper function for Gen5 DDRMC designs for querying default Read VRef value used</span>
+<span class="sd">        during Calibration, in encoded format for control registers (not in percentage format).</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            A calculated value of default Read VRef done during Calibration</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;mgchk_def_rd_vref_h1p_lsb&quot;</span><span class="p">,</span> <span class="s2">&quot;mgchk_def_rd_vref_h1p_msb&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">vref_lower</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;mgchk_def_rd_vref_h1p_lsb&quot;</span><span class="p">]</span>
+        <span class="n">vref_upper</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;mgchk_def_rd_vref_h1p_msb&quot;</span><span class="p">]</span>
+        <span class="n">vref_value</span> <span class="o">=</span> <span class="n">vref_lower</span>
+
+        <span class="k">if</span> <span class="n">vref_upper</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">vref_value</span> <span class="o">+=</span> <span class="mi">512</span>
+
+        <span class="k">return</span> <span class="n">vref_value</span></div>
+
+<div class="viewcode-block" id="DDR.get_eye_scan_default_write_vref"><a class="viewcode-back" href="../../../../ddr.html#chipscopy.api.ddr.ddr.DDR.get_eye_scan_default_write_vref">[docs]</a>    <span class="k">def</span> <span class="nf">get_eye_scan_default_write_vref</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A helper function for Gen5 DDRMC designs for querying default Write VRef value used</span>
+<span class="sd">        during Calibration, in encoded format for control registers (not in percentage format).</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            A calculated value of default Write VRef done during Calibration</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">([</span><span class="s2">&quot;mgchk_def_wr_vref&quot;</span><span class="p">])</span>
+        <span class="n">vref_value</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;mgchk_def_wr_vref&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">vref_value</span></div>
 
 <div class="viewcode-block" id="DDR.get_eye_scan_vref_percentage"><a class="viewcode-back" href="../../../../ddr.html#chipscopy.api.ddr.ddr.DDR.get_eye_scan_vref_percentage">[docs]</a>    <span class="k">def</span> <span class="nf">get_eye_scan_vref_percentage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vref</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1602,21 +1672,32 @@ function OptanonWrapper() { }
         <span class="n">lp4_range_two</span> <span class="o">=</span> <span class="mf">20.4</span>
         <span class="n">ddr4_incr_size</span> <span class="o">=</span> <span class="mf">0.65</span>
         <span class="n">lp4_incr_size</span> <span class="o">=</span> <span class="mf">0.4</span>
+        <span class="n">lp5_base</span> <span class="o">=</span> <span class="mf">10.0</span>
+        <span class="n">lp5_incr_size</span> <span class="o">=</span> <span class="mf">0.5</span>
         <span class="n">read_incr_size</span> <span class="o">=</span> <span class="mf">0.0976563</span>
         <span class="n">prop_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Gen5 Write Vref</span>
+        <span class="n">vref_threshold</span> <span class="o">=</span> <span class="mi">128</span>
 
         <span class="n">prop_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mgchk_rw_mode&quot;</span><span class="p">)</span>
         <span class="n">prop_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mem_type&quot;</span><span class="p">)</span>
-        <span class="n">prop_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mgchk_def_wr_vref_range&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+            <span class="n">prop_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mgchk_def_wr_vref_range&quot;</span><span class="p">)</span>
+            <span class="n">vref_threshold</span> <span class="o">=</span> <span class="mi">50</span>
 
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">prop_list</span><span class="p">)</span>
         <span class="n">rw_mode</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;mgchk_rw_mode&quot;</span><span class="p">]</span>
         <span class="n">mem_type</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;mem_type&quot;</span><span class="p">]</span>
-        <span class="n">write_vref_range</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;mgchk_def_wr_vref_range&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+            <span class="n">write_vref_range</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;mgchk_def_wr_vref_range&quot;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">rw_mode</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">vref</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
-                <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;ERROR: Cannot enter Vref values larger than 50 for Write Margin mode&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vref</span> <span class="o">&gt;</span> <span class="n">vref_threshold</span><span class="p">:</span>
+                <span class="n">printer</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR: Cannot enter Vref values larger than &quot;</span><span class="p">,</span>
+                    <span class="n">vref_threshold</span><span class="p">,</span>
+                    <span class="s2">&quot; for Write Margin mode&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="k">return</span>
             <span class="k">if</span> <span class="n">mem_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">write_vref_range</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1630,6 +1711,12 @@ function OptanonWrapper() { }
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">base_value</span> <span class="o">=</span> <span class="n">lp4_range_two</span>
                 <span class="n">incr_size</span> <span class="o">=</span> <span class="n">lp4_incr_size</span>
+            <span class="k">elif</span> <span class="n">mem_type</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="n">base_value</span> <span class="o">=</span> <span class="n">lp5_base</span>
+                <span class="n">incr_size</span> <span class="o">=</span> <span class="n">lp5_incr_size</span>
+            <span class="k">elif</span> <span class="n">mem_type</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="c1"># This needs to be finalized later</span>
+                <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">incr_size</span> <span class="o">=</span> <span class="n">read_incr_size</span>
 
@@ -1792,8 +1879,61 @@ function OptanonWrapper() { }
         <span class="bp">self</span><span class="o">.</span><span class="n">eye_scan_data</span> <span class="o">=</span> <span class="n">data_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">set_property</span><span class="p">({</span><span class="s2">&quot;es_data_need_update&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
+    <span class="k">def</span> <span class="nf">__update_gen5_eye_scan_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">]</span>
+        <span class="n">clocks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;nqtr&quot;</span><span class="p">,</span> <span class="s2">&quot;pqtr&quot;</span><span class="p">]</span>
+        <span class="n">clock_defs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;nqtr&quot;</span><span class="p">:</span> <span class="s2">&quot;fall_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pqtr&quot;</span><span class="p">:</span> <span class="s2">&quot;rise_&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">engine_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_eye_scan_data</span><span class="p">()</span>
+        <span class="n">data_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">engine_data</span><span class="p">)</span>
+
+        <span class="c1"># If initial vref scan went wrong after enabled, needless to process data further</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">scan_mode</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.mode&quot;</span><span class="p">]</span>
+        <span class="n">bit_count</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.bits&quot;</span><span class="p">]</span>
+        <span class="n">byte_count</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.bytes&quot;</span><span class="p">]</span>
+        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s2">&quot;Read&quot;</span> <span class="ow">in</span> <span class="n">scan_mode</span><span class="p">:</span>
+            <span class="n">old_key_base</span> <span class="o">=</span> <span class="s2">&quot;rdmargin_&quot;</span>
+            <span class="n">new_key_base</span> <span class="o">=</span> <span class="s2">&quot;read_&quot;</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bit_count</span><span class="p">)):</span>
+                    <span class="k">for</span> <span class="n">clock</span> <span class="ow">in</span> <span class="n">clocks</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+                            <span class="n">old_key</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">old_key_base</span> <span class="o">+</span> <span class="n">clock</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">edge</span> <span class="o">+</span> <span class="s2">&quot;_bit&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">reformat_name</span> <span class="o">=</span> <span class="n">new_key_base</span> <span class="o">+</span> <span class="n">clock_defs</span><span class="p">[</span><span class="n">clock</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span>
+                            <span class="n">new_key</span> <span class="o">=</span> <span class="n">reformat_name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">edge</span>
+                            <span class="n">tap_value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span>
+                            <span class="n">data</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tap_value</span>
+                            <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span>
+                <span class="n">temp_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;wrmargin&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">}</span>
+                <span class="n">new_data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">temp_data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+                <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="n">temp_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;rdmargin&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">}</span>
+                <span class="n">new_data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">temp_data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+                <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eye_scan_data</span> <span class="o">=</span> <span class="n">data_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">set_property</span><span class="p">({</span><span class="s2">&quot;es_data_need_update&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+
     <span class="k">def</span> <span class="nf">__draw_eye_scan_graph</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">margin_data</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">base_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">margin_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">def_vref</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">margin_data</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span>
+        <span class="n">base_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">margin_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">def_vref</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">unit_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">vrefs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">left_margs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1803,16 +1943,53 @@ function OptanonWrapper() { }
         <span class="n">x_min</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">x_max</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">margin_data</span><span class="p">:</span>
-            <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">]))</span>
-            <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;_left&quot;</span>
-            <span class="n">left_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
-            <span class="n">key_name</span> <span class="o">+=</span> <span class="s2">&quot;_ps&quot;</span>
-            <span class="n">left_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
-            <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;_right&quot;</span>
-            <span class="n">right_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
-            <span class="n">key_name</span> <span class="o">+=</span> <span class="s2">&quot;_ps&quot;</span>
-            <span class="n">right_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">margin_data</span><span class="p">:</span>
+                <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">]))</span>
+                <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;_left&quot;</span>
+                <span class="n">left_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
+                <span class="n">key_name</span> <span class="o">+=</span> <span class="s2">&quot;_ps&quot;</span>
+                <span class="n">left_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
+                <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;_right&quot;</span>
+                <span class="n">right_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
+                <span class="n">key_name</span> <span class="o">+=</span> <span class="s2">&quot;_ps&quot;</span>
+                <span class="n">right_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ps_factors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_margin_ps_factors</span><span class="p">()</span>
+            <span class="n">ps_factor</span> <span class="o">=</span> <span class="n">ps_factors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="s2">&quot;wrmargin&quot;</span> <span class="ow">in</span> <span class="n">base_name</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">margin_data</span><span class="p">:</span>
+                    <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">]))</span>
+                    <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;left_lsb_&quot;</span> <span class="o">+</span> <span class="n">unit_string</span>
+                    <span class="n">tap_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
+                    <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;left_msb_&quot;</span> <span class="o">+</span> <span class="n">unit_string</span>
+                    <span class="n">msb_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
+                    <span class="n">left_marg</span> <span class="o">=</span> <span class="p">(</span><span class="n">msb_val</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">9</span><span class="p">))</span> <span class="o">+</span> <span class="n">tap_val</span>
+                    <span class="n">left_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_marg</span><span class="p">)</span>
+                    <span class="n">ps_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">left_marg</span> <span class="o">*</span> <span class="n">ps_factor</span><span class="p">))</span>
+                    <span class="n">left_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ps_val</span><span class="p">)</span>
+                    <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;right_lsb_&quot;</span> <span class="o">+</span> <span class="n">unit_string</span>
+                    <span class="n">tap_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
+                    <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;right_msb_&quot;</span> <span class="o">+</span> <span class="n">unit_string</span>
+                    <span class="n">msb_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
+                    <span class="n">right_marg</span> <span class="o">=</span> <span class="p">(</span><span class="n">msb_val</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">9</span><span class="p">))</span> <span class="o">+</span> <span class="n">tap_val</span>
+                    <span class="n">right_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_marg</span><span class="p">)</span>
+                    <span class="n">ps_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">right_marg</span> <span class="o">*</span> <span class="n">ps_factor</span><span class="p">))</span>
+                    <span class="n">right_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ps_val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">margin_data</span><span class="p">:</span>
+                    <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">]))</span>
+                    <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;_left&quot;</span>
+                    <span class="n">left_marg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
+                    <span class="n">left_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_marg</span><span class="p">)</span>
+                    <span class="n">ps_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">left_marg</span> <span class="o">*</span> <span class="n">ps_factor</span><span class="p">))</span>
+                    <span class="n">left_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ps_val</span><span class="p">)</span>
+                    <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;_right&quot;</span>
+                    <span class="n">right_marg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
+                    <span class="n">right_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_marg</span><span class="p">)</span>
+                    <span class="n">ps_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">right_marg</span> <span class="o">*</span> <span class="n">ps_factor</span><span class="p">))</span>
+                    <span class="n">right_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ps_val</span><span class="p">)</span>
 
         <span class="n">x_min</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">left_ps</span><span class="p">)</span>
         <span class="n">x_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">right_ps</span><span class="p">)</span>
@@ -1911,7 +2088,10 @@ function OptanonWrapper() { }
             <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;eye_scan_data&quot;</span>
 
         <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__update_eye_scan_data</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__update_gen5_eye_scan_data</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__update_eye_scan_data</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">eye_scan_data</span><span class="p">:</span>
             <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;ERROR: No scan data is found. Please re-run 2D eye scan.&quot;</span><span class="p">)</span>
@@ -1985,11 +2165,24 @@ function OptanonWrapper() { }
         <span class="n">vref_steps</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;es_vref_steps&quot;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">rw_mode</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">vref_min</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vref_max</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">):</span>
-                <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;ERROR: Cannot set Vref values larger than 50 under Write margin mode.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+                <span class="n">vref_threshold</span> <span class="o">=</span> <span class="mi">128</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vref_threshold</span> <span class="o">=</span> <span class="mi">50</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">vref_min</span> <span class="o">&gt;</span> <span class="n">vref_threshold</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vref_max</span> <span class="o">&gt;</span> <span class="n">vref_threshold</span><span class="p">):</span>
+                <span class="n">printer</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR: Cannot set Vref values larger than &quot;</span><span class="p">,</span>
+                    <span class="n">vref_threshold</span><span class="p">,</span>
+                    <span class="s2">&quot; under Write margin mode.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">vref_steps</span> <span class="o">&gt;</span> <span class="mi">51</span><span class="p">:</span>
-                <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;ERROR: Cannot set Vref step sizes larger than 51 for Write Margin mode&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vref_steps</span> <span class="o">&gt;</span> <span class="n">vref_threshold</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">printer</span><span class="p">(</span>
+                    <span class="s2">&quot;ERROR: Cannot set Vref step sizes larger than &quot;</span><span class="p">,</span>
+                    <span class="n">vref_threshold</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">&quot; for Write Margin mode&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">vref_min</span> <span class="o">&gt;</span> <span class="n">vref_max</span><span class="p">:</span>
@@ -2099,7 +2292,10 @@ function OptanonWrapper() { }
 
         <span class="k">if</span> <span class="n">data_need_update</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">eye_scan_data</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__update_eye_scan_data</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__update_gen5_eye_scan_data</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__update_eye_scan_data</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">eye_scan_data</span><span class="p">:</span>
             <span class="n">printer</span><span class="p">(</span>
@@ -2120,13 +2316,30 @@ function OptanonWrapper() { }
         <span class="n">mem_type</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.mem_type&quot;</span><span class="p">]</span>
         <span class="n">df_vref</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.df_vrefp&quot;</span><span class="p">]</span>
         <span class="n">df_vref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">df_vref</span><span class="p">)</span>
-        <span class="n">nibble_count</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.nibbles&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+            <span class="n">nibble_count</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.nibbles&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bit_count</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.bits&quot;</span><span class="p">]</span>
         <span class="n">byte_count</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.bytes&quot;</span><span class="p">]</span>
         <span class="n">unit_val</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit_index</span><span class="p">)</span>
         <span class="n">data_list</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">unit_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="c1"># Some logical data check first on user inputs</span>
-        <span class="k">if</span> <span class="n">unit_mode</span> <span class="o">==</span> <span class="s2">&quot;nibble&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">unit_mode</span> <span class="o">==</span> <span class="s2">&quot;bit&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">unit_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">unit_index</span> <span class="o">&gt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bit_count</span><span class="p">)):</span>
+                <span class="n">max_unit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bit_count</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;ERROR: unit_index given for &quot;</span>
+                    <span class="o">+</span> <span class="n">unit_mode</span>
+                    <span class="o">+</span> <span class="s2">&quot; mode needs to be between 0 and &quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">max_unit</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">err_msg</span> <span class="o">+=</span> <span class="s2">&quot;, based on current memory configuration.&quot;</span>
+                <span class="n">printer</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="n">unit_str</span> <span class="o">=</span> <span class="n">unit_mode</span> <span class="o">+</span> <span class="n">unit_val</span>
+        <span class="k">elif</span> <span class="n">unit_mode</span> <span class="o">==</span> <span class="s2">&quot;nibble&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">unit_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">unit_index</span> <span class="o">&gt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nibble_count</span><span class="p">)):</span>
                 <span class="n">max_unit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nibble_count</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
                 <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -2150,6 +2363,7 @@ function OptanonWrapper() { }
                 <span class="n">err_msg</span> <span class="o">+=</span> <span class="s2">&quot;, based on current memory configuration.&quot;</span>
                 <span class="n">printer</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
                 <span class="k">return</span>
+            <span class="n">unit_str</span> <span class="o">=</span> <span class="n">unit_mode</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_index</span><span class="p">)</span>
 
         <span class="n">mc_name</span> <span class="o">=</span> <span class="s2">&quot;MC&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mc_index</span><span class="p">)</span>
         <span class="n">mc_name</span> <span class="o">+=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mc_loc</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
@@ -2175,11 +2389,17 @@ function OptanonWrapper() { }
                 <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">name_base</span><span class="p">,</span> <span class="n">margin_mode</span><span class="p">,</span> <span class="n">df_vref</span><span class="p">)</span>
                 <span class="n">figure_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">name_base</span> <span class="o">=</span> <span class="s2">&quot;write_&quot;</span> <span class="o">+</span> <span class="n">unit_val</span>
             <span class="n">margin_mode</span> <span class="o">=</span> <span class="n">scan_mode</span> <span class="o">+</span> <span class="s2">&quot; - &quot;</span> <span class="o">+</span> <span class="n">unit_mode</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&lt;br&gt;&quot;</span>
             <span class="n">margin_mode</span> <span class="o">+=</span> <span class="n">mc_name</span> <span class="o">+</span> <span class="s2">&quot; - &quot;</span>
             <span class="n">margin_mode</span> <span class="o">+=</span> <span class="n">mem_type</span> <span class="o">+</span> <span class="s2">&quot; - Rank&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank_num</span><span class="p">)</span>
-            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">name_base</span><span class="p">,</span> <span class="n">margin_mode</span><span class="p">,</span> <span class="n">df_vref</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+                <span class="n">name_base</span> <span class="o">=</span> <span class="s2">&quot;write_&quot;</span> <span class="o">+</span> <span class="n">unit_val</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">name_base</span><span class="p">,</span> <span class="n">margin_mode</span><span class="p">,</span> <span class="n">df_vref</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name_base</span> <span class="o">=</span> <span class="s2">&quot;wrmargin_&quot;</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span>
+                    <span class="n">data_list</span><span class="p">,</span> <span class="n">name_base</span><span class="p">,</span> <span class="n">margin_mode</span><span class="p">,</span> <span class="n">df_vref</span><span class="p">,</span> <span class="n">unit_str</span>
+                <span class="p">)</span>
             <span class="n">figure_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">return_as_list</span><span class="p">:</span>
@@ -2222,7 +2442,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 20, 2023.
+        Last updated on June 08, 2023.
       </span>
 
     </p>

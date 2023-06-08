@@ -24,6 +24,8 @@ Host System Hardware
    - `Xilinx SmartLynq Data Cable <https://www.xilinx.com/products/boards-and-kits/smartlynq-data-cable.html>`_
    - `Xilinx SmartLynq+ Module <https://www.xilinx.com/products/boards-and-kits/smartlynq-plus.html>`_
 
+.. note:: At this time it is not recommended to run cs_server natively on the SmartLynq+ module!
+
 
 Host System Software
 ~~~~~~~~~~~~~~~~~~~~
@@ -37,6 +39,16 @@ Host System Software
 
 
 .. note:: Please see :ref:`chipscopy_installation` for a complete guide to installation.
+
+
+Network Considerations
+~~~~~~~~~~~~~~~~~~~~~~
+
+While ``hw_server``, ``cs_server``, and ChipScoPy can be connected over TCP/IP networks for enhanced flexibility, it is not
+recommended that they span large WANs. This can introduce performance issues. Specifically using them over VPN may have
+undesirable results.
+
+For best results all servers should be on a local physical LAN, contact your network administrator if you have questions.
 
 
 Supported Versal-Based Boards

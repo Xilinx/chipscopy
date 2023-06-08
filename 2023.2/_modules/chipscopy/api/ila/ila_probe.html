@@ -340,7 +340,8 @@ function OptanonWrapper() { }
            <div itemprop="articleBody">
             
   <h1>Source code for chipscopy.api.ila.ila_probe</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2021 Xilinx, Inc.</span>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -723,7 +724,7 @@ function OptanonWrapper() { }
 <span class="k">def</span> <span class="nf">create_probes_from_ports_and_ltx</span><span class="p">(</span>
     <span class="n">tcf_ila</span><span class="p">:</span> <span class="n">TCF_AxisIlaCoreClient</span><span class="p">,</span> <span class="n">ports</span><span class="p">:</span> <span class="p">[</span><span class="n">ILAPort</span><span class="p">],</span> <span class="n">ltx</span><span class="p">:</span> <span class="n">Ltx</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">({},</span> <span class="p">{},</span> <span class="nb">str</span><span class="p">,</span> <span class="p">{}):</span>
-    <span class="sd">&quot;&quot;&quot;Returns:  probes, map_to_port_seqs, cell_name, probe enum defs&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Returns:  probes, map_to_port_seqs, probe enum defs&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">process_one_tcf_probe</span><span class="p">(</span><span class="n">attrs</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="p">{}:</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
@@ -775,13 +776,11 @@ function OptanonWrapper() { }
                 <span class="n">res</span><span class="p">[</span><span class="n">ltx_p</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">enum_def</span>
         <span class="k">return</span> <span class="n">res</span>
 
-    <span class="n">cell_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">tcf_ila</span><span class="o">.</span><span class="n">undefine_probe</span><span class="p">([])</span>
     <span class="n">ltx_core</span> <span class="o">=</span> <span class="n">ltx</span><span class="o">.</span><span class="n">get_core</span><span class="p">(</span><span class="n">CoreType</span><span class="o">.</span><span class="n">AXIS_ILA</span><span class="p">,</span> <span class="n">uuid</span><span class="p">)</span> <span class="k">if</span> <span class="n">ltx</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">ltx</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ltx_core</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to find ILA core with uuid:</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2"> in LTX file.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ltx_core</span><span class="p">:</span>
-        <span class="n">cell_name</span> <span class="o">=</span> <span class="n">ltx_core</span><span class="o">.</span><span class="n">cell_name</span>
         <span class="n">probe_defs</span> <span class="o">=</span> <span class="n">ltx_probes_to_tcf_pdefs</span><span class="p">(</span><span class="n">ltx_core</span><span class="p">)</span>
         <span class="n">tcf_ila</span><span class="o">.</span><span class="n">define_probe</span><span class="p">(</span><span class="n">probe_defs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -797,7 +796,7 @@ function OptanonWrapper() { }
         <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;map&quot;</span><span class="p">]:</span> <span class="n">process_one_tcf_probe_mapping</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="n">tcf_probes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
     <span class="n">probes</span> <span class="o">=</span> <span class="p">{</span><span class="n">p_name</span><span class="p">:</span> <span class="n">ILAProbe</span><span class="p">(</span><span class="o">**</span><span class="n">probe</span><span class="p">)</span> <span class="k">for</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">probe</span> <span class="ow">in</span> <span class="n">probe_dicts</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="k">return</span> <span class="n">probes</span><span class="p">,</span> <span class="n">map_to_port_seqs</span><span class="p">,</span> <span class="n">cell_name</span><span class="p">,</span> <span class="n">enum_defs</span>
+    <span class="k">return</span> <span class="n">probes</span><span class="p">,</span> <span class="n">map_to_port_seqs</span><span class="p">,</span> <span class="n">enum_defs</span>
 
 
 <span class="k">def</span> <span class="nf">verify_probe_enum_def</span><span class="p">(</span><span class="n">probe</span><span class="p">:</span> <span class="n">ILAProbe</span><span class="p">,</span> <span class="n">enum_def</span><span class="p">:</span> <span class="n">enum</span><span class="o">.</span><span class="n">EnumMeta</span><span class="p">):</span>
@@ -834,7 +833,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on February 20, 2023.
+        Last updated on June 02, 2023.
       </span>
 
     </p>
