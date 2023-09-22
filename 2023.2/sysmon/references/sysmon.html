@@ -416,6 +416,55 @@ internal sensors. For information on how to use this API please contact &#64;dko
 </dd></dl>
 
 <dl class="py method">
+<dt id="chipscopy.api.sysmon.Sysmon.read_sensor">
+<code class="sig-name descname"><span class="pre">read_sensor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/sysmon.html#Sysmon.read_sensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.sysmon.Sysmon.read_sensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read single sensor value from hw
+:type sensor: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
+:param sensor: the name of the sensor to read</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>refreshed value of specific sensor (float) or None if sensor isn’t detected in design</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.sysmon.Sysmon.read_sensors">
+<code class="sig-name descname"><span class="pre">read_sensors</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/sysmon.html#Sysmon.read_sensors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.sysmon.Sysmon.read_sensors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a list of sensor values from hw
+:type sensors: <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
+:param sensors: list of the names of the sensors to read</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>refreshed values of specific sensors (float)
+if the sensor isn’t sequenced in the design then a warning msg is printed and the sensor is dropped from
+the list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.sysmon.Sysmon.read_temp">
+<code class="sig-name descname"><span class="pre">read_temp</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/sysmon.html#Sysmon.read_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.sysmon.Sysmon.read_temp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read temp values from hw
+:param None:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>refreshed value of device_temp, max, and min in Celsius</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="chipscopy.api.sysmon.Sysmon.refresh_measurement_schedule">
 <code class="sig-name descname"><span class="pre">refresh_measurement_schedule</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/sysmon.html#Sysmon.refresh_measurement_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.sysmon.Sysmon.refresh_measurement_schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamically scans the SysMon to determine the sensors scheduled into the system, in order.</p>
@@ -486,7 +535,7 @@ temps) at the specified <code class="docutils literal notranslate"><span class="
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>

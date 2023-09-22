@@ -413,6 +413,9 @@ function OptanonWrapper() { }
         <span class="k">if</span> <span class="n">arch_type</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">arch_type</span> <span class="o">==</span> <span class="s2">&quot;gen5&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">crypto_en</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">crypto_type</span> <span class="o">=</span> <span class="s2">&quot;N/A&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__get_crypto_status</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eye_scan_data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;mc_index&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mc_index</span><span class="p">,</span> <span class="s2">&quot;mc_loc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mc_loc</span><span class="p">}</span>
 
@@ -555,6 +558,19 @@ function OptanonWrapper() { }
 
         <span class="k">return</span> <span class="n">results</span></div>
 
+    <span class="k">def</span> <span class="nf">__get_crypto_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Only care if it is Gen5 and User enabled</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">props</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;crypto_en&quot;</span><span class="p">,</span> <span class="s2">&quot;crypto_status&quot;</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">props</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;crypto_en&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crypto_en</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">crypto_type</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;crypto_status&quot;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">__get_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
         <span class="n">configs</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
         <span class="n">is_lrdimm</span> <span class="o">=</span> <span class="kc">False</span>
@@ -620,15 +636,21 @@ function OptanonWrapper() { }
         <span class="n">freq_one</span> <span class="o">=</span> <span class="s2">&quot;Unknown&quot;</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s2">&quot;dual_freq_en&quot;</span><span class="p">)</span>
         <span class="n">dual_freq</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;dual_freq_en&quot;</span><span class="p">]</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s2">&quot;f0_period&quot;</span><span class="p">)</span>
-        <span class="n">period</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;f0_period&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+            <span class="n">f0_ck_name</span> <span class="o">=</span> <span class="s2">&quot;f0_ck_period&quot;</span>
+            <span class="n">f1_ck_name</span> <span class="o">=</span> <span class="s2">&quot;f1_ck_period&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f0_ck_name</span> <span class="o">=</span> <span class="s2">&quot;f0_period&quot;</span>
+            <span class="n">f1_ck_name</span> <span class="o">=</span> <span class="s2">&quot;f1_period&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">f0_ck_name</span><span class="p">)</span>
+        <span class="n">period</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">f0_ck_name</span><span class="p">]</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">period</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">period</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
             <span class="n">freq0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1000000</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">period</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
             <span class="n">freq_zero</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; MHz&quot;</span>
         <span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Memory Frequency 0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq_zero</span>
         <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">dual_freq</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s2">&quot;f1_period&quot;</span><span class="p">)</span>
-            <span class="n">period</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;f1_period&quot;</span><span class="p">]</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">f1_ck_name</span><span class="p">)</span>
+            <span class="n">period</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">f1_ck_name</span><span class="p">]</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">period</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">period</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
                 <span class="n">freq1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1000000</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">period</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
                 <span class="n">freq_one</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; MHz&quot;</span>
@@ -859,11 +881,22 @@ function OptanonWrapper() { }
         <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;-------------------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">printer</span><span class="p">(</span><span class="s2">&quot; DDRMC Status </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;-------------------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># User enabled status check</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">:</span>
+            <span class="n">printer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;is not enabled.&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">out_file</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">orig_out</span>
+                <span class="n">out_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh_cal_status</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh_health_status</span><span class="p">()</span>
         <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Calibration Status:  &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cal_status</span><span class="p">(),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s2">&quot;health_status&quot;</span><span class="p">)</span>
         <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Overall Health:  &quot;</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;health_status&quot;</span><span class="p">],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
+            <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Crypto Status:  &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">crypto_type</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s2">&quot;cal_message&quot;</span><span class="p">)</span>
         <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Message:  &quot;</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;cal_message&quot;</span><span class="p">],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -1831,12 +1864,11 @@ function OptanonWrapper() { }
         <span class="n">scan_mode</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.mode&quot;</span><span class="p">]</span>
         <span class="n">nibble_count</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.nibbles&quot;</span><span class="p">]</span>
         <span class="n">byte_count</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.bytes&quot;</span><span class="p">]</span>
-        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="s2">&quot;Read&quot;</span> <span class="ow">in</span> <span class="n">scan_mode</span><span class="p">:</span>
             <span class="n">old_key_base</span> <span class="o">=</span> <span class="s2">&quot;rdmargin_&quot;</span>
             <span class="n">new_key_base</span> <span class="o">=</span> <span class="s2">&quot;read_&quot;</span>
-            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">nibble</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">nibble_count</span><span class="p">)):</span>
                     <span class="k">for</span> <span class="n">clock</span> <span class="ow">in</span> <span class="n">clocks</span><span class="p">:</span>
                         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
@@ -1863,7 +1895,7 @@ function OptanonWrapper() { }
         <span class="k">else</span><span class="p">:</span>
             <span class="n">old_key_base</span> <span class="o">=</span> <span class="s2">&quot;wrmargin_&quot;</span>
             <span class="n">new_key_base</span> <span class="o">=</span> <span class="s2">&quot;write_&quot;</span>
-            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">byte</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">byte_count</span><span class="p">)):</span>
                     <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
                         <span class="n">old_key</span> <span class="o">=</span> <span class="n">old_key_base</span> <span class="o">+</span> <span class="n">edge</span> <span class="o">+</span> <span class="s2">&quot;_byte&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">byte</span><span class="p">)</span>
@@ -1902,12 +1934,11 @@ function OptanonWrapper() { }
         <span class="n">scan_mode</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.mode&quot;</span><span class="p">]</span>
         <span class="n">bit_count</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.bits&quot;</span><span class="p">]</span>
         <span class="n">byte_count</span> <span class="o">=</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.bytes&quot;</span><span class="p">]</span>
-        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">engine_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="s2">&quot;Read&quot;</span> <span class="ow">in</span> <span class="n">scan_mode</span><span class="p">:</span>
             <span class="n">old_key_base</span> <span class="o">=</span> <span class="s2">&quot;rdmargin_&quot;</span>
             <span class="n">new_key_base</span> <span class="o">=</span> <span class="s2">&quot;read_&quot;</span>
-            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bit_count</span><span class="p">)):</span>
                     <span class="k">for</span> <span class="n">clock</span> <span class="ow">in</span> <span class="n">clocks</span><span class="p">:</span>
                         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
@@ -1923,7 +1954,7 @@ function OptanonWrapper() { }
                 <span class="n">new_data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">temp_data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
                 <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">engine_data</span><span class="p">:</span>
                 <span class="n">temp_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;rdmargin&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">}</span>
                 <span class="n">new_data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">temp_data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
                 <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
@@ -1947,12 +1978,20 @@ function OptanonWrapper() { }
         <span class="n">total_margs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">left_ps</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">right_ps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">def_window_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">min_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">max_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">def_margin</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">vref_swing</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">x_min</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">x_max</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">y_min</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">y_max</span> <span class="o">=</span> <span class="mf">0.0</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">margin_data</span><span class="p">:</span>
-                <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">]))</span>
+                <span class="n">cur_vref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">])</span>
+                <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_vref</span><span class="p">)</span>
                 <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;_left&quot;</span>
                 <span class="n">left_marg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
                 <span class="n">left_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_marg</span><span class="p">)</span>
@@ -1963,14 +2002,34 @@ function OptanonWrapper() { }
                 <span class="n">right_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_marg</span><span class="p">)</span>
                 <span class="n">key_name</span> <span class="o">+=</span> <span class="s2">&quot;_ps&quot;</span>
                 <span class="n">right_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">]))</span>
-                <span class="n">total_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_marg</span> <span class="o">+</span> <span class="n">right_marg</span><span class="p">)</span>
+                <span class="n">total_margin</span> <span class="o">=</span> <span class="n">left_marg</span> <span class="o">+</span> <span class="n">right_marg</span>
+                <span class="n">total_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_margin</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">def_window_found</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">cur_vref</span> <span class="o">==</span> <span class="n">def_vref</span><span class="p">:</span>
+                        <span class="n">def_margin</span> <span class="o">=</span> <span class="n">total_margin</span>
+                        <span class="n">def_window_found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">cur_vref</span> <span class="o">&lt;</span> <span class="n">def_vref</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">total_margin</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">min_found</span><span class="p">:</span>
+                            <span class="n">min_found</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">min_found</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">total_margin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">y_min</span> <span class="o">=</span> <span class="n">cur_vref</span>
+                        <span class="n">y_max</span> <span class="o">=</span> <span class="n">cur_vref</span>
+                        <span class="n">min_found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">max_found</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">total_margin</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">max_found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">y_max</span> <span class="o">=</span> <span class="n">cur_vref</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ps_factors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_margin_ps_factors</span><span class="p">()</span>
             <span class="n">ps_factor</span> <span class="o">=</span> <span class="n">ps_factors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="s2">&quot;wrmargin&quot;</span> <span class="ow">in</span> <span class="n">base_name</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">margin_data</span><span class="p">:</span>
-                    <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">]))</span>
+                    <span class="n">cur_vref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">])</span>
+                    <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_vref</span><span class="p">)</span>
                     <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;left_lsb_&quot;</span> <span class="o">+</span> <span class="n">unit_string</span>
                     <span class="n">tap_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
                     <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;left_msb_&quot;</span> <span class="o">+</span> <span class="n">unit_string</span>
@@ -1987,10 +2046,30 @@ function OptanonWrapper() { }
                     <span class="n">right_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_marg</span><span class="p">)</span>
                     <span class="n">ps_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">right_marg</span> <span class="o">*</span> <span class="n">ps_factor</span><span class="p">))</span>
                     <span class="n">right_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ps_val</span><span class="p">)</span>
-                    <span class="n">total_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_marg</span> <span class="o">+</span> <span class="n">right_marg</span><span class="p">)</span>
+                    <span class="n">total_margin</span> <span class="o">=</span> <span class="n">left_marg</span> <span class="o">+</span> <span class="n">right_marg</span>
+                    <span class="n">total_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_margin</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">def_window_found</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">cur_vref</span> <span class="o">==</span> <span class="n">def_vref</span><span class="p">:</span>
+                            <span class="n">def_margin</span> <span class="o">=</span> <span class="n">total_margin</span>
+                            <span class="n">def_window_found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="n">cur_vref</span> <span class="o">&lt;</span> <span class="n">def_vref</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">total_margin</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">min_found</span><span class="p">:</span>
+                                <span class="n">min_found</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">min_found</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">total_margin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">y_min</span> <span class="o">=</span> <span class="n">cur_vref</span>
+                            <span class="n">y_max</span> <span class="o">=</span> <span class="n">cur_vref</span>
+                            <span class="n">min_found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">max_found</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">total_margin</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">max_found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">y_max</span> <span class="o">=</span> <span class="n">cur_vref</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">margin_data</span><span class="p">:</span>
-                    <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">]))</span>
+                    <span class="n">cur_vref</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;config.vrefp&quot;</span><span class="p">])</span>
+                    <span class="n">vrefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_vref</span><span class="p">)</span>
                     <span class="n">key_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s2">&quot;_left&quot;</span>
                     <span class="n">left_marg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key_name</span><span class="p">])</span>
                     <span class="n">left_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_marg</span><span class="p">)</span>
@@ -2001,11 +2080,43 @@ function OptanonWrapper() { }
                     <span class="n">right_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_marg</span><span class="p">)</span>
                     <span class="n">ps_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">right_marg</span> <span class="o">*</span> <span class="n">ps_factor</span><span class="p">))</span>
                     <span class="n">right_ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ps_val</span><span class="p">)</span>
-                    <span class="n">total_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_marg</span> <span class="o">+</span> <span class="n">right_marg</span><span class="p">)</span>
+                    <span class="n">total_margin</span> <span class="o">=</span> <span class="n">left_marg</span> <span class="o">+</span> <span class="n">right_marg</span>
+                    <span class="n">total_margs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_margin</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">def_window_found</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">cur_vref</span> <span class="o">==</span> <span class="n">def_vref</span><span class="p">:</span>
+                            <span class="n">def_margin</span> <span class="o">=</span> <span class="n">total_margin</span>
+                            <span class="n">def_window_found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="n">cur_vref</span> <span class="o">&lt;</span> <span class="n">def_vref</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">total_margin</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">min_found</span><span class="p">:</span>
+                                <span class="n">min_found</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">min_found</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">total_margin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">y_min</span> <span class="o">=</span> <span class="n">cur_vref</span>
+                            <span class="n">y_max</span> <span class="o">=</span> <span class="n">cur_vref</span>
+                            <span class="n">min_found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">max_found</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">total_margin</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">max_found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">y_max</span> <span class="o">=</span> <span class="n">cur_vref</span>
 
         <span class="n">x_min</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">left_ps</span><span class="p">)</span>
         <span class="n">x_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">right_ps</span><span class="p">)</span>
-        <span class="n">cur_max</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">total_margs</span><span class="p">))</span>
+        <span class="n">max_marg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">total_margs</span><span class="p">)</span>
+        <span class="n">max_marg_idx</span> <span class="o">=</span> <span class="n">total_margs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">max_marg</span><span class="p">)</span>
+        <span class="n">max_marg_vref</span> <span class="o">=</span> <span class="n">vrefs</span><span class="p">[</span><span class="n">max_marg_idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">def_window_found</span><span class="p">:</span>
+            <span class="n">def_window</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">init_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">scan_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eye_scan_data</span>
+            <span class="n">init_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scan_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span>
+                <span class="n">init_list</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">def_vref</span><span class="p">,</span> <span class="n">def_window</span><span class="p">,</span> <span class="n">unit_string</span><span class="p">,</span> <span class="n">margin_only</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">def_margin</span> <span class="o">=</span> <span class="n">def_window</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">vref_swing</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">y_max</span> <span class="o">-</span> <span class="n">y_min</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">cur_max</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">max_marg</span><span class="p">,</span> <span class="n">max_marg_vref</span><span class="p">,</span> <span class="n">def_margin</span><span class="p">,</span> <span class="n">def_vref</span><span class="p">,</span> <span class="n">vref_swing</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">margin_only</span><span class="p">:</span>
             <span class="k">return</span>
@@ -2159,6 +2270,7 @@ function OptanonWrapper() { }
 <span class="sd">            load_eye_scan_data()</span>
 <span class="sd">            display_eye_scan()</span>
 <span class="sd">            check_eye_scan_window()</span>
+<span class="sd">            check_eye_scan_height()</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            done: Optional command callback that will be invoked when the scan is finished</span>
@@ -2208,9 +2320,9 @@ function OptanonWrapper() { }
 
         <span class="n">percent_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eye_scan_vref_percentage</span><span class="p">(</span><span class="n">vref_min</span><span class="p">)</span>
         <span class="n">percent_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eye_scan_vref_percentage</span><span class="p">(</span><span class="n">vref_max</span><span class="p">)</span>
-        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Min VRef is set at: &quot;</span><span class="p">,</span> <span class="n">percent_min</span><span class="p">,</span> <span class="s2">&quot;%, value &quot;</span><span class="p">,</span> <span class="n">vref_min</span><span class="p">)</span>
-        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Max VRef is set at: &quot;</span><span class="p">,</span> <span class="n">percent_max</span><span class="p">,</span> <span class="s2">&quot;%, value &quot;</span><span class="p">,</span> <span class="n">vref_max</span><span class="p">)</span>
-        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Number of VRef steps is set at: &quot;</span><span class="p">,</span> <span class="n">vref_steps</span><span class="p">)</span>
+        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Min VRef is set at:&quot;</span><span class="p">,</span> <span class="n">percent_min</span><span class="p">,</span> <span class="s2">&quot;%, encoded value&quot;</span><span class="p">,</span> <span class="n">vref_min</span><span class="p">)</span>
+        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Max VRef is set at:&quot;</span><span class="p">,</span> <span class="n">percent_max</span><span class="p">,</span> <span class="s2">&quot;%, encoded value&quot;</span><span class="p">,</span> <span class="n">vref_max</span><span class="p">)</span>
+        <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Number of VRef steps is set at:&quot;</span><span class="p">,</span> <span class="n">vref_steps</span><span class="p">)</span>
 
         <span class="n">vref_incr_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">vref_max</span> <span class="o">-</span> <span class="n">vref_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">vref_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">max_step_size</span> <span class="o">=</span> <span class="n">vref_max</span> <span class="o">-</span> <span class="n">vref_min</span> <span class="o">+</span> <span class="mi">1</span>
@@ -2299,14 +2411,16 @@ function OptanonWrapper() { }
 
 <span class="sd">            get_margin_only: Optional argument, default to False. If set to True, this API call</span>
 <span class="sd">                will process scan data only, per the specified unit_index, find its widest margin</span>
-<span class="sd">                windows and return the values as list. No graphing results will be given.</span>
+<span class="sd">                windows and return the values and along with their VRef points as a list of tuples.</span>
+<span class="sd">                No graphing results will be given.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A list of Figure objects from Plotly, if return_as_list is specified as True,</span>
 <span class="sd">            None is return otherwise by default, but graphs will be displayed in a browser.</span>
 
-<span class="sd">            If optional argument get_margin_only is set to True. A list, which contains integers</span>
-<span class="sd">            representing the widest window margin found after a scan is returned.</span>
+<span class="sd">            If optional argument get_margin_only is set to True. A list, which contains tuples as</span>
+<span class="sd">            (int, float) representing the widest window margin found and along with their VRef points</span>
+<span class="sd">            after a scan is returned.</span>
 
 <span class="sd">            For Read Margin, two data results are displayed or returned. (First data for Rising</span>
 <span class="sd">            Clock edge, and the second for Falling Clock edge) For Write Margin, only one data</span>
@@ -2342,6 +2456,7 @@ function OptanonWrapper() { }
 
         <span class="n">figure_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">data_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eye_scan_data</span>
+        <span class="n">mc_id</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.mc_id&quot;</span><span class="p">]</span>
         <span class="n">scan_mode</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.mode&quot;</span><span class="p">]</span>
         <span class="n">unit_mode</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.unit&quot;</span><span class="p">]</span>
         <span class="n">rank_num</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;config.rank&quot;</span><span class="p">]</span>
@@ -2356,8 +2471,8 @@ function OptanonWrapper() { }
         <span class="n">unit_val</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit_index</span><span class="p">)</span>
         <span class="n">data_list</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="n">unit_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">max_window</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">window_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">max_window</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of tuple (int, float)</span>
+        <span class="n">window_results</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of tuple (int, float)</span>
 
         <span class="c1"># Some logical data check first on user inputs</span>
         <span class="k">if</span> <span class="n">unit_mode</span> <span class="o">==</span> <span class="s2">&quot;bit&quot;</span><span class="p">:</span>
@@ -2399,8 +2514,7 @@ function OptanonWrapper() { }
                 <span class="k">return</span>
             <span class="n">unit_str</span> <span class="o">=</span> <span class="n">unit_mode</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_index</span><span class="p">)</span>
 
-        <span class="n">mc_name</span> <span class="o">=</span> <span class="s2">&quot;MC&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mc_index</span><span class="p">)</span>
-        <span class="n">mc_name</span> <span class="o">+=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mc_loc</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+        <span class="n">mc_name</span> <span class="o">=</span> <span class="n">mc_id</span>
 
         <span class="k">if</span> <span class="s2">&quot;Read&quot;</span> <span class="ow">in</span> <span class="n">scan_mode</span><span class="p">:</span>
             <span class="n">clocks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rise_&quot;</span><span class="p">,</span> <span class="s2">&quot;fall_&quot;</span><span class="p">]</span>
@@ -2425,7 +2539,13 @@ function OptanonWrapper() { }
                         <span class="n">data_list</span><span class="p">,</span> <span class="n">name_base</span><span class="p">,</span> <span class="n">margin_mode</span><span class="p">,</span> <span class="n">df_vref</span><span class="p">,</span> <span class="n">max_window</span>
                     <span class="p">)</span>
                     <span class="n">figure_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-                    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Margin window found:&quot;</span><span class="p">,</span> <span class="n">clock_defs</span><span class="p">[</span><span class="n">clock</span><span class="p">],</span> <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;fine taps&quot;</span><span class="p">)</span>
+                    <span class="n">printer</span><span class="p">(</span>
+                        <span class="s2">&quot;Margin window found:&quot;</span><span class="p">,</span>
+                        <span class="n">clock_defs</span><span class="p">[</span><span class="n">clock</span><span class="p">],</span>
+                        <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="s2">&quot;fine taps at VRef %:&quot;</span><span class="p">,</span>
+                        <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span>
                         <span class="n">data_list</span><span class="p">,</span> <span class="n">name_base</span><span class="p">,</span> <span class="n">margin_mode</span><span class="p">,</span> <span class="n">df_vref</span><span class="p">,</span> <span class="n">max_window</span><span class="p">,</span> <span class="n">margin_only</span><span class="o">=</span><span class="kc">True</span>
@@ -2443,7 +2563,12 @@ function OptanonWrapper() { }
                     <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span>
                         <span class="n">data_list</span><span class="p">,</span> <span class="n">name_base</span><span class="p">,</span> <span class="n">margin_mode</span><span class="p">,</span> <span class="n">df_vref</span><span class="p">,</span> <span class="n">max_window</span>
                     <span class="p">)</span>
-                    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Margin window found:&quot;</span><span class="p">,</span> <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;fine taps&quot;</span><span class="p">)</span>
+                    <span class="n">printer</span><span class="p">(</span>
+                        <span class="s2">&quot;Margin window found:&quot;</span><span class="p">,</span>
+                        <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="s2">&quot;fine taps at VRef %:&quot;</span><span class="p">,</span>
+                        <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="p">)</span>
                     <span class="n">figure_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span>
@@ -2456,7 +2581,12 @@ function OptanonWrapper() { }
                     <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span>
                         <span class="n">data_list</span><span class="p">,</span> <span class="n">name_base</span><span class="p">,</span> <span class="n">margin_mode</span><span class="p">,</span> <span class="n">df_vref</span><span class="p">,</span> <span class="n">max_window</span><span class="p">,</span> <span class="n">unit_str</span>
                     <span class="p">)</span>
-                    <span class="n">printer</span><span class="p">(</span><span class="s2">&quot;Margin window found:&quot;</span><span class="p">,</span> <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;fine taps&quot;</span><span class="p">)</span>
+                    <span class="n">printer</span><span class="p">(</span>
+                        <span class="s2">&quot;Margin window found:&quot;</span><span class="p">,</span>
+                        <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="s2">&quot;fine taps at VRef %:&quot;</span><span class="p">,</span>
+                        <span class="n">max_window</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="p">)</span>
                     <span class="n">figure_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__draw_eye_scan_graph</span><span class="p">(</span>
@@ -2490,57 +2620,78 @@ function OptanonWrapper() { }
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">figure_list</span></div>
 
-<div class="viewcode-block" id="DDR.check_eye_scan_window"><a class="viewcode-back" href="../../../../ddr.html#chipscopy.api.ddr.ddr.DDR.check_eye_scan_window">[docs]</a>    <span class="k">def</span> <span class="nf">check_eye_scan_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="DDR.check_eye_scan_height"><a class="viewcode-back" href="../../../../ddr.html#chipscopy.api.ddr.ddr.DDR.check_eye_scan_height">[docs]</a>    <span class="k">def</span> <span class="nf">check_eye_scan_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate and obtain the widest 2D eye scan margin window by a specified unit index. This function</span>
-<span class="sd">        also checks and determines if the window passes a pre-determined minimum requirement, per memory</span>
-<span class="sd">        configuration. By default, it tries to process from the scan data found in the most recent 2D eye scan</span>
-<span class="sd">        run. Users have the option to load scan data first prior to using this function, in order to process</span>
-<span class="sd">        specific set of scan data, see load_eye_scan_data().</span>
+<span class="sd">        Calculate and obtain the VRef swing/height found from a margin scan by a specified unit index.</span>
+<span class="sd">        The height is defined by having the lowest point of VRef that a non-zero margin window starts, and ends</span>
+<span class="sd">        with the highest VRef point found in the same fashion. By default, it tries to process from the scan</span>
+<span class="sd">        data found in the most recent 2D eye scan run. Users have the option to load scan data first prior to</span>
+<span class="sd">        using this function, in order to process specific set of scan data, see load_eye_scan_data().</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            unit_index: Specify the index from a set of scan data users intend to display, based on</span>
 <span class="sd">                unit mode found in the scan settings (bit, nibble, byte)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A list, which contains tuples of (int, bool) will be returned. The first integer item from the</span>
-<span class="sd">            tuples represents the widest window margin found after a scan, and the second item indicates if</span>
-<span class="sd">            this result passes a check or not.</span>
+<span class="sd">            A list, which contains lists of floating point values representing the VRef percentage values</span>
+<span class="sd">            in the following item order: [VRef swing, minimum VRef, maximum VRef]</span>
+<span class="sd">            For Read Margin, two sets of data list are being returned. (First item from the list is for Rising</span>
+<span class="sd">            Clock edge, and the second is for Falling Clock edge) For Write Margin, only one set of data list</span>
+<span class="sd">            will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vref_results</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># List of list [float, float, float]</span>
+
+        <span class="n">window_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_eye_scan</span><span class="p">(</span><span class="n">unit_index</span><span class="p">,</span> <span class="n">get_margin_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">window_results</span><span class="p">:</span>
+            <span class="n">vref_results</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">window</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">window</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">window</span><span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
+
+        <span class="k">return</span> <span class="n">vref_results</span></div>
+
+<div class="viewcode-block" id="DDR.check_eye_scan_window"><a class="viewcode-back" href="../../../../ddr.html#chipscopy.api.ddr.ddr.DDR.check_eye_scan_window">[docs]</a>    <span class="k">def</span> <span class="nf">check_eye_scan_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">default_vref</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate and obtain the widest 2D eye scan margin window by a specified unit index. This function</span>
+<span class="sd">        also checks the margin window found at default VRef setting determined by the memory controller.</span>
+<span class="sd">        By default, it tries to process from the scan data found in the most recent 2D eye scan run. Users</span>
+<span class="sd">        have the option to load scan data first prior to using this function, in order to process specific</span>
+<span class="sd">        set of scan data, see load_eye_scan_data().</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            unit_index: Specify the index from a set of scan data users intend to display, based on</span>
+<span class="sd">                unit mode found in the scan settings (bit, nibble, byte)</span>
+
+<span class="sd">            default_vref: Optional argument, default to False, which means the function will check and report</span>
+<span class="sd">                the widest margin window found and along with its corrosponding vref value at the earliest point.</span>
+<span class="sd">                If set to True, the function will report margin window found at its default VRef point instead.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list, which contains tuples of (int, float) will be returned. The first integer item from the</span>
+<span class="sd">            tuples represents the window margin found after a scan, and the second item indicates the VRef</span>
+<span class="sd">            setting value in floating point.</span>
 
 <span class="sd">            For Read Margin, two data results are being returned. (First tuple of data is for Rising</span>
 <span class="sd">            Clock edge, and the second is for Falling Clock edge) For Write Margin, only one tuple</span>
 <span class="sd">            result will be returned.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">read_min_taps</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">write_min_taps</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">checked_results</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># List of tuples (int, bool)</span>
+        <span class="n">checked_results</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># List of tuples (int, float)</span>
+        <span class="n">return_idx0</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">return_idx1</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="n">window_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_eye_scan</span><span class="p">(</span><span class="n">unit_index</span><span class="p">,</span> <span class="n">get_margin_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_gen5</span><span class="p">:</span>
-            <span class="c1"># Deriving from calculated average UI equivalent, in fine taps value</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;bisc_dt_ui&quot;</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddr_node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="n">min_window</span> <span class="o">=</span> <span class="n">val</span> <span class="o">*</span> <span class="mf">0.3</span>
-            <span class="n">read_min_taps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">min_window</span><span class="p">))</span>
-            <span class="n">write_min_taps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">min_window</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">default_vref</span><span class="p">:</span>
+            <span class="n">return_idx0</span> <span class="o">+=</span> <span class="mi">2</span>
+            <span class="n">return_idx1</span> <span class="o">+=</span> <span class="mi">2</span>
 
         <span class="c1"># Read Modes</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">window_results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">window_results</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">window</span> <span class="o">&gt;</span> <span class="n">read_min_taps</span><span class="p">:</span>
-                    <span class="n">checked_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">window</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">checked_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">window</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+                <span class="n">checked_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">window</span><span class="p">[</span><span class="n">return_idx0</span><span class="p">],</span> <span class="n">window</span><span class="p">[</span><span class="n">return_idx1</span><span class="p">]))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Write Modes</span>
             <span class="n">window</span> <span class="o">=</span> <span class="n">window_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">window</span> <span class="o">&gt;</span> <span class="n">write_min_taps</span><span class="p">:</span>
-                <span class="n">checked_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">window</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">checked_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">window</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+            <span class="n">checked_results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">window</span><span class="p">[</span><span class="n">return_idx0</span><span class="p">],</span> <span class="n">window</span><span class="p">[</span><span class="n">return_idx1</span><span class="p">]))</span>
 
         <span class="k">return</span> <span class="n">checked_results</span></div>
 
@@ -2567,7 +2718,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>

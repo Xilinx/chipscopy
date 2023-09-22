@@ -637,6 +637,40 @@ list of detected PCIe cores in the device</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="chipscopy.api.device.device.Device.scan_is_programmable">
+<code class="sig-name descname"><span class="pre">scan_is_programmable</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.scan_is_programmable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.scan_is_programmable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if this Device is programmable, False otherwise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.scan_is_programmed">
+<code class="sig-name descname"><span class="pre">scan_is_programmed</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.scan_is_programmed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.scan_is_programmed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if this Device is programmed, False otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="chipscopy.api.device.device.Device.scan_props">
+<code class="sig-name descname"><span class="pre">scan_props</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#Device.scan_props"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.Device.scan_props" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan device properties from hardware.</p>
+<p>Returns: Dict of properties</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="chipscopy.api.device.device.Device.sysmon_root">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sysmon_root</span></code><a class="headerlink" href="#chipscopy.api.device.device.Device.sysmon_root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns:
@@ -654,7 +688,7 @@ List with one SysMon core for the device</p>
 <dd><p>Returns a dictionary representation of the device data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -696,9 +730,22 @@ list of detected VIO cores in the device</p>
 
 </dd></dl>
 
+<dl class="py exception">
+<dt id="chipscopy.api.device.device.DeviceException">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">DeviceException</span></code><a class="reference internal" href="_modules/chipscopy/api/device/device.html#DeviceException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.DeviceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
 <dl class="py class">
 <dt id="chipscopy.api.device.device.DeviceFamily">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">DeviceFamily</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#DeviceFamily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.DeviceFamily" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="chipscopy.api.device.device.DeviceState">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.device.device.</span></code><code class="sig-name descname"><span class="pre">DeviceState</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/device/device.html#DeviceState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.device.device.DeviceState" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>An enumeration.</p>
 </dd></dl>
@@ -740,7 +787,7 @@ list of detected VIO cores in the device</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>

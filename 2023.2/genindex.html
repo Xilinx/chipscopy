@@ -354,6 +354,7 @@ function OptanonWrapper() { }
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -440,6 +441,8 @@ function OptanonWrapper() { }
       <li><a href="ila.html#chipscopy.api.ila.ILAProbeValues.capture_value">capture_value (chipscopy.api.ila.ILAProbeValues attribute)</a>
 </li>
       <li><a href="memory.html#chipscopy.api.memory.Memory.check_and_upgrade">check_and_upgrade() (chipscopy.api.memory.Memory static method)</a>
+</li>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.check_eye_scan_height">check_eye_scan_height() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
       <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.check_eye_scan_window">check_eye_scan_window() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
@@ -581,17 +584,21 @@ function OptanonWrapper() { }
 </li>
       <li><a href="session/references.html#chipscopy.delete_session">delete_session() (in module chipscopy)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ibert/references/yk_scan.html#chipscopy.api.ibert.delete_yk_scans">delete_yk_scans() (in module chipscopy.api.ibert)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ibert/references/link_group.html#chipscopy.api.ibert.link.group.LinkGroup.description">description (chipscopy.api.ibert.link.group.LinkGroup attribute)</a>
 </li>
       <li><a href="device.html#chipscopy.api.device.device.Device">Device (class in chipscopy.api.device.device)</a>
 </li>
+      <li><a href="device.html#chipscopy.api.device.device.DeviceException">DeviceException</a>
+</li>
       <li><a href="device.html#chipscopy.api.device.device.DeviceFamily">DeviceFamily (class in chipscopy.api.device.device)</a>
 </li>
       <li><a href="session/references.html#chipscopy.api.session.Session.devices">devices() (chipscopy.api.session.Session property)</a>
+</li>
+      <li><a href="device.html#chipscopy.api.device.device.DeviceState">DeviceState (class in chipscopy.api.device.device)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIOProbe.direction">direction (chipscopy.api.vio.VIOProbe attribute)</a>
 </li>
@@ -631,6 +638,8 @@ function OptanonWrapper() { }
         <li><a href="ila.html#chipscopy.api.ila.ILAWaveformProbe.enum_def">(chipscopy.api.ila.ILAWaveformProbe attribute)</a>
 </li>
       </ul></li>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.error">error (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.RawData.error_count">error_count (chipscopy.api.ibert.eye_scan.RawData attribute)</a>
 </li>
       <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.error_count">error_count() (chipscopy.api.ibert.link.Link property)</a>
@@ -805,15 +814,19 @@ function OptanonWrapper() { }
       </ul></li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStaticInfo.has_advanced_trigger">has_advanced_trigger (chipscopy.api.ila.ILAStaticInfo attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ila.html#chipscopy.api.ila.ILAStaticInfo.has_capture_control">has_capture_control (chipscopy.api.ila.ILAStaticInfo attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ila.html#chipscopy.api.ila.ILAStaticInfo.has_trig_in">has_trig_in (chipscopy.api.ila.ILAStaticInfo attribute)</a>
 </li>
       <li><a href="ila.html#chipscopy.api.ila.ILAStaticInfo.has_trig_out">has_trig_out (chipscopy.api.ila.ILAStaticInfo attribute)</a>
 </li>
       <li><a href="device.html#chipscopy.api.device.device.Device.hbms">hbms() (chipscopy.api.device.device.Device property)</a>
+</li>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.MetricData.horizontal_opening">horizontal_opening (chipscopy.api.ibert.eye_scan.MetricData attribute)</a>
+</li>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.MetricData.horizontal_percentage">horizontal_percentage (chipscopy.api.ibert.eye_scan.MetricData attribute)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.RawData.horizontal_range">horizontal_range (chipscopy.api.ibert.eye_scan.RawData attribute)</a>
 </li>
@@ -1007,10 +1020,14 @@ function OptanonWrapper() { }
         <li><a href="memory.html#chipscopy.api.memory.Memory.memory_write">(chipscopy.api.memory.Memory method)</a>
 </li>
       </ul></li>
-      <li><a href="ibert/appendix/serial_object_base.html#chipscopy.api.ibert.aliases.MICROBLAZE_KEY">MICROBLAZE_KEY (in module chipscopy.api.ibert.aliases)</a>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.metric_data">metric_data (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
+</li>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.MetricData">MetricData (class in chipscopy.api.ibert.eye_scan)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ibert/appendix/serial_object_base.html#chipscopy.api.ibert.aliases.MICROBLAZE_KEY">MICROBLAZE_KEY (in module chipscopy.api.ibert.aliases)</a>
+</li>
       <li><a href="ibert/references/scan_params.html#chipscopy.api.ibert.eye_scan.params.EyeScanParam.modifiable">modifiable (chipscopy.api.ibert.eye_scan.params.EyeScanParam attribute)</a>
 </li>
       <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.SerialObjectBase.modifiable_aliases">modifiable_aliases() (chipscopy.api.ibert.serial_object_base.SerialObjectBase property)</a>
@@ -1077,6 +1094,20 @@ function OptanonWrapper() { }
       <li><a href="device.html#chipscopy.api.device.device.Device.noc_core">noc_core() (chipscopy.api.device.device.Device property)</a>
 </li>
       <li><a href="noc-perfmon/references/noc.html#chipscopy.api.noc.noc.NocPerfmon">NocPerfmon (class in chipscopy.api.noc.noc)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.MetricData.open_area">open_area (chipscopy.api.ibert.eye_scan.MetricData attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.open_data_points">open_data_points (chipscopy.api.ibert.eye_scan.EyeScan attribute)</a>
+</li>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.MetricData.open_percentage">open_percentage (chipscopy.api.ibert.eye_scan.MetricData attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1182,6 +1213,12 @@ function OptanonWrapper() { }
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO.read_probes">read_probes() (chipscopy.api.vio.VIO method)</a>
 </li>
+      <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_sensor">read_sensor() (chipscopy.api.sysmon.Sysmon method)</a>
+</li>
+      <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_sensors">read_sensors() (chipscopy.api.sysmon.Sysmon method)</a>
+</li>
+      <li><a href="sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_temp">read_temp() (chipscopy.api.sysmon.Sysmon method)</a>
+</li>
       <li><a href="ibert/references/link.html#chipscopy.api.ibert.link.Link.refresh">refresh() (chipscopy.api.ibert.link.Link method)</a>
 
       <ul>
@@ -1212,10 +1249,10 @@ function OptanonWrapper() { }
         <li><a href="ibert/references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.report">(in module chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands)</a>
 </li>
       </ul></li>
-      <li><a href="report.html#chipscopy.report_hierarchy">report_hierarchy() (in module chipscopy)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="report.html#chipscopy.report_hierarchy">report_hierarchy() (in module chipscopy)</a>
+</li>
       <li><a href="report.html#chipscopy.report_versions">report_versions() (in module chipscopy)</a>
 </li>
       <li><a href="device.html#chipscopy.api.device.device.Device.reset">reset() (chipscopy.api.device.device.Device method)</a>
@@ -1288,7 +1325,13 @@ function OptanonWrapper() { }
         <li><a href="ibert/references/yk_scan.html#chipscopy.api.ibert.yk_scan.YKScan.scan_data">(chipscopy.api.ibert.yk_scan.YKScan attribute)</a>
 </li>
       </ul></li>
+      <li><a href="device.html#chipscopy.api.device.device.Device.scan_is_programmable">scan_is_programmable() (chipscopy.api.device.device.Device method)</a>
+</li>
+      <li><a href="device.html#chipscopy.api.device.device.Device.scan_is_programmed">scan_is_programmed() (chipscopy.api.device.device.Device method)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.Plot2DData.scan_points">scan_points (chipscopy.api.ibert.eye_scan.Plot2DData attribute)</a>
+</li>
+      <li><a href="device.html#chipscopy.api.device.device.Device.scan_props">scan_props() (chipscopy.api.device.device.Device method)</a>
 </li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.ScanData">ScanData (class in chipscopy.api.ibert.eye_scan)</a>
 </li>
@@ -1314,10 +1357,10 @@ function OptanonWrapper() { }
 </li>
       <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_max">set_eye_scan_vref_max() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
-      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_min">set_eye_scan_vref_min() (chipscopy.api.ddr.ddr.DDR method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_min">set_eye_scan_vref_min() (chipscopy.api.ddr.ddr.DDR method)</a>
+</li>
       <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_vref_steps">set_eye_scan_vref_steps() (chipscopy.api.ddr.ddr.DDR method)</a>
 </li>
       <li><a href="ddr.html#chipscopy.api.ddr.ddr.DDR.set_eye_scan_write_mode">set_eye_scan_write_mode() (chipscopy.api.ddr.ddr.DDR method)</a>
@@ -1466,8 +1509,12 @@ function OptanonWrapper() { }
 </li>
       <li><a href="ibert/references/property.html#chipscopy.api._detail.property.PropertyUpdateEvent.values">values (chipscopy.api._detail.property.PropertyUpdateEvent attribute)</a>
 </li>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.MetricData.vertical_opening">vertical_opening (chipscopy.api.ibert.eye_scan.MetricData attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.MetricData.vertical_percentage">vertical_percentage (chipscopy.api.ibert.eye_scan.MetricData attribute)</a>
+</li>
       <li><a href="ibert/references/scan.html#chipscopy.api.ibert.eye_scan.RawData.vertical_range">vertical_range (chipscopy.api.ibert.eye_scan.RawData attribute)</a>
 </li>
       <li><a href="vio.html#chipscopy.api.vio.VIO">VIO (class in chipscopy.api.vio)</a>
@@ -1556,7 +1603,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>

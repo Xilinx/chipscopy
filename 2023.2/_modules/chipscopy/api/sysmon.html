@@ -375,6 +375,8 @@ function OptanonWrapper() { }
         <span class="c1"># This is used by the filter_by method in QueryList</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
@@ -403,8 +405,9 @@ function OptanonWrapper() { }
 <span class="sd">            Returns a dict where the keys are the root IDs and the values are the named sensors.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sensors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_measurement_schedule</span><span class="p">(</span><span class="n">done</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">sensors</span></div>
+        <span class="n">schedule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_measurement_schedule</span><span class="p">(</span><span class="n">done</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="o">=</span> <span class="n">schedule</span>
+        <span class="k">return</span> <span class="n">schedule</span></div>
 
 <div class="viewcode-block" id="Sysmon.get_measurements"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.get_measurements">[docs]</a>    <span class="k">def</span> <span class="nf">get_measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">done</span><span class="p">:</span> <span class="n">DoneHWCommand</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -458,7 +461,99 @@ function OptanonWrapper() { }
 <span class="sd">            interval: poll period (in ms)</span>
 <span class="sd">            done: Optional command callback that will be invoked when the response is received.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">stream_sensor_data</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">stream_sensor_data</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Sysmon.read_sensor"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_sensor">[docs]</a>    <span class="k">def</span> <span class="nf">read_sensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read single sensor value from hw</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sensor:  the name of the sensor to read</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            refreshed value of specific sensor (float) or None if sensor isn&#39;t detected in design</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;warning: read_sensor(): measurement schedule is empty or has not been refreshed&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">sensor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;warning: read_sensor(): requested sensor </span><span class="si">{</span><span class="n">sensor</span><span class="si">}</span><span class="s2"> is not in the measurement schedule&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">supply_idx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">sensor</span> <span class="o">==</span> <span class="n">s</span><span class="p">:</span>
+                <span class="n">supply_idx</span> <span class="o">=</span> <span class="n">idx</span>
+                <span class="k">break</span>
+
+        <span class="n">supply_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;supply</span><span class="si">{</span><span class="n">supply_idx</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># greedy</span>
+        <span class="n">current_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_property</span><span class="p">(</span><span class="n">supply_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_value</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Sysmon.read_sensors"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_sensors">[docs]</a>    <span class="k">def</span> <span class="nf">read_sensors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read a list of sensor values from hw</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sensors:  list of the names of the sensors to read</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            refreshed values of specific sensors (float)</span>
+<span class="sd">            if the sensor isn&#39;t sequenced in the design then a warning msg is printed and the sensor is dropped from</span>
+<span class="sd">            the list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">props_to_refresh</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">out_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">supply_x_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;warning: read_sensors(): measurement schedule is empty or has not been refreshed&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">sensor</span> <span class="ow">in</span> <span class="n">sensors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sensor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;warning: read_sensors(): requested sensor </span><span class="si">{</span><span class="n">sensor</span><span class="si">}</span><span class="s2"> is not in the measurement schedule&quot;</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">supply_idx</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">sensor</span> <span class="o">==</span> <span class="n">s</span><span class="p">:</span>
+                    <span class="n">supply_idx</span> <span class="o">=</span> <span class="n">idx</span>
+                    <span class="k">break</span>
+
+            <span class="n">out_data</span><span class="p">[</span><span class="n">sensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">supply_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;supply</span><span class="si">{</span><span class="n">supply_idx</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">supply_x_map</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensor</span>
+            <span class="n">props_to_refresh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">supply_name</span><span class="p">)</span>
+
+        <span class="n">current_sensor_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_property</span><span class="p">(</span><span class="n">props_to_refresh</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">supply_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">current_sensor_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out_data</span><span class="p">[</span><span class="n">supply_x_map</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">out_data</span></div>
+
+<div class="viewcode-block" id="Sysmon.read_temp"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_temp">[docs]</a>    <span class="k">def</span> <span class="nf">read_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read temp values from hw</span>
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            refreshed value of device_temp, max, and min in Celsius</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">temp_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_property</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;device_temp&quot;</span><span class="p">,</span> <span class="s2">&quot;device_temp_max_max&quot;</span><span class="p">,</span> <span class="s2">&quot;device_temp_min_min&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">temp_dict</span></div></div>
 </pre></div>
 
            </div>
@@ -480,7 +575,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>

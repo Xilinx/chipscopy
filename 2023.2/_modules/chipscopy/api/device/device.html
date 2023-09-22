@@ -365,8 +365,8 @@ function OptanonWrapper() { }
 <span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">pack</span><span class="p">,</span> <span class="n">unpack</span>
 
 <span class="kn">from</span> <span class="nn">chipscopy.api</span> <span class="kn">import</span> <span class="n">DMNodeListener</span>
-<span class="kn">from</span> <span class="nn">chipscopy.api._detail.ltx</span> <span class="kn">import</span> <span class="n">parse_ltx_files</span>
-<span class="kn">from</span> <span class="nn">chipscopy.api._detail.trace</span> <span class="kn">import</span> <span class="n">Trace</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api._detail.ltx</span> <span class="kn">import</span> <span class="n">parse_ltx_files</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api._detail.trace</span> <span class="kn">import</span> <span class="n">Trace</span>  <span class="c1"># noqa</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.containers</span> <span class="kn">import</span> <span class="n">QueryList</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ddr.ddr</span> <span class="kn">import</span> <span class="n">DDR</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.device.device_spec</span> <span class="kn">import</span> <span class="n">DeviceSpec</span>
@@ -403,6 +403,16 @@ function OptanonWrapper() { }
 <div class="viewcode-block" id="FeatureNotAvailableError"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.FeatureNotAvailableError">[docs]</a><span class="k">class</span> <span class="nc">FeatureNotAvailableError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Feature not available on this architecture&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DeviceException"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.DeviceException">[docs]</a><span class="k">class</span> <span class="nc">DeviceException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DeviceState"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.DeviceState">[docs]</a><span class="k">class</span> <span class="nc">DeviceState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">VALID</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">NEEDS_REFRESH</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">INVALID</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 
 <div class="viewcode-block" id="DeviceFamily"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.DeviceFamily">[docs]</a><span class="k">class</span> <span class="nc">DeviceFamily</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -454,6 +464,9 @@ function OptanonWrapper() { }
         <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cached_props</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="o">=</span> <span class="n">hw_server</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span> <span class="o">=</span> <span class="n">cs_server</span>
 
@@ -467,13 +480,15 @@ function OptanonWrapper() { }
         <span class="bp">self</span><span class="o">.</span><span class="n">jtag_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_index</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_core_scan</span> <span class="o">=</span> <span class="n">disable_core_scan</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span> <span class="o">=</span> <span class="n">disable_cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disable_cache</span> <span class="o">=</span> <span class="n">disable_cache</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ltx</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ltx_sources</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cores_to_scan</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># set during discover_and_setup_cores</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Keep error for query after programming</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">programming_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
 
         <span class="c1"># The following filter_by becomes a dictionary with architecture, jtag_index, context, etc.</span>
         <span class="c1"># This is used when asking for a device by filter from the device list like:</span>
@@ -495,50 +510,77 @@ function OptanonWrapper() { }
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No property </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_raise_if_state_invalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">INVALID</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Device </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> is invalid - session rescan required&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Refresh device properties from hardware</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cached_props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_props</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">disable_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">VALID</span>
+
     <span class="k">def</span> <span class="nf">node_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">]):</span>
-        <span class="k">def</span> <span class="nf">owns_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_ctx</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Returns true if the node_ctx is managed by this device&quot;&quot;&quot;</span>
-            <span class="k">if</span> <span class="n">node_ctx</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_node</span><span class="p">]:</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># Called from session when a TCF node event happens</span>
+        <span class="c1"># TODO: TypeError: &#39;ParodyLogger&#39; object is not callable</span>
+        <span class="c1"># log.client.trace(f&quot;node_callback: action={action}, node={node.ctx}&quot;)</span>
 
-        <span class="k">pass</span>
-        <span class="c1"># TODO: Implement for dynamic node tracking</span>
-        <span class="c1"># if action in [</span>
-        <span class="c1">#     DMNodeListener.NodeAction.NODE_CHANGED,</span>
-        <span class="c1">#     DMNodeListener.NodeAction.NODE_REMOVED,</span>
-        <span class="c1"># ]:</span>
-        <span class="c1">#     # Device properties are cached until an event indicates something</span>
-        <span class="c1">#     # changed that needs properties to be reread from hardware.</span>
-        <span class="c1">#     cache_clear_contexts = set()</span>
-        <span class="c1">#     if self.device_node:</span>
-        <span class="c1">#         cache_clear_contexts.add(self.device_node.ctx)</span>
-        <span class="c1">#     if self.jtag_node:</span>
-        <span class="c1">#         cache_clear_contexts.add(self.jtag_node.ctx)</span>
-        <span class="c1">#     if self.debugcore_node:</span>
-        <span class="c1">#         cache_clear_contexts.add(self.debugcore_node.ctx)</span>
-        <span class="c1">#     if self.chipscope_node:</span>
-        <span class="c1">#         cache_clear_contexts.add(self.chipscope_node.ctx)</span>
-        <span class="c1">#     if node.ctx in cache_clear_contexts:</span>
-        <span class="c1">#         # Mark the properties as invalid if any hardware node changed that could affect the values.</span>
-        <span class="c1">#         # This will force a re-read next time the properties are accessed through to_dict() for instance.</span>
-        <span class="c1">#         # self._props_are_valid = False</span>
-        <span class="c1">#         # print(&quot;****** node_callback:&quot;, action, node, node.ctx)</span>
-        <span class="c1">#         pass</span>
-        <span class="c1"># elif action == DMNodeListener.NodeAction.NODE_ADDED:</span>
-        <span class="c1">#     # print(&quot;****** node_callback:&quot;, action, node, node.ctx)</span>
-        <span class="c1">#     pass</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span> <span class="ow">or</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_ADDED</span><span class="p">:</span>
+            <span class="c1"># Maybe in the future we will track if a child node was added to anything in the</span>
+            <span class="c1">#     Device tree... For now just ignore.</span>
+            <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">scan_props</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="c1"># Top level device contexts that can represent the device - track for device removal</span>
+        <span class="n">root_device_contexts</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">device_ctx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_device_ctx</span><span class="p">}</span>
+
+        <span class="c1"># Expanded set of device contexts that are important to track for node changes</span>
+        <span class="n">all_device_contexts</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">device_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_device_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">debugcore_dap_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">debugcore_dpc_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">memory_dap_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">memory_dpc_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">chipscope_dap_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">chipscope_dpc_ctx</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_REMOVED</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">ctx</span> <span class="ow">in</span> <span class="n">root_device_contexts</span><span class="p">:</span>
+            <span class="c1"># Removed a node that is the anchor for this device... Invalidate the device so any subsequent</span>
+            <span class="c1">#     user API calls return an invalid device message</span>
+
+            <span class="c1"># TODO: TypeError: &#39;ParodyLogger&#39; object is not callable</span>
+            <span class="c1"># log.client.warn(f&quot;DEVICE {str(self)} marked invalid -- rescan required!&quot;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">INVALID</span>
+            <span class="n">device_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_device_node</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">device_node</span><span class="p">:</span>
+                <span class="c1"># Remove any cached information for the invalid device</span>
+                <span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_CHANGED</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">ctx</span> <span class="ow">in</span> <span class="n">all_device_contexts</span><span class="p">:</span>
+            <span class="c1"># One of our watched nodes changed - need to re-scan properties from hardware on next call</span>
+
+            <span class="c1"># TODO: TypeError: &#39;ParodyLogger&#39; object is not callable</span>
+            <span class="c1"># log.client.debug(</span>
+            <span class="c1">#     f&quot;NODE_CHANGED on device {str(self)}, Node: {node.ctx} - setting NEEDS_REFRESH&quot;</span>
+            <span class="c1"># )</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span>
+
+<div class="viewcode-block" id="Device.scan_props"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.scan_props">[docs]</a>    <span class="k">def</span> <span class="nf">scan_props</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scan device properties from hardware.</span>
+
+<span class="sd">        Returns: Dict of properties</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">props</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="p">:</span>
             <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
             <span class="n">props</span><span class="p">[</span><span class="s2">&quot;jtag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy_node_props</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="p">)</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_valid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_programmed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_programmed</span>
-        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_programmable</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_programmed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_is_programmed</span><span class="p">()</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_is_programmable</span><span class="p">()</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;part&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">part_name</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;family&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">family_name</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;dna&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dna</span>
@@ -547,13 +589,14 @@ function OptanonWrapper() { }
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;jtag_context&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_device_ctx</span>
         <span class="n">props</span><span class="p">[</span><span class="s2">&quot;cable_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_jtag_cable_name</span><span class="p">()</span>
         <span class="n">props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>  <span class="c1"># noqa</span>
-        <span class="k">return</span> <span class="n">props</span>
-
-<div class="viewcode-block" id="Device.to_dict"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a dictionary representation of the device data&quot;&quot;&quot;</span>
-        <span class="c1"># TODO: Cache results to make this faster</span>
-        <span class="n">props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_props</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">props</span></div>
+
+<div class="viewcode-block" id="Device.to_dict"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a dictionary representation of the device data&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cached_props</span></div>
 
 <div class="viewcode-block" id="Device.to_json"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a json representation of the device data&quot;&quot;&quot;</span>
@@ -570,12 +613,12 @@ function OptanonWrapper() { }
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">device_ctx</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_programmed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="Device.scan_is_programmed"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.scan_is_programmed">[docs]</a>    <span class="k">def</span> <span class="nf">scan_is_programmed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns True if this Device is programmed, False otherwise.&quot;&quot;&quot;</span>
         <span class="c1"># TODO: Queries hardware for jtag program status. This could be slow -</span>
-        <span class="c1"># is there a way to collect this once, then track by subsequent events pushed from</span>
-        <span class="c1"># the hw_server if we detect DONE went low?</span>
+        <span class="c1">#       is there a way to collect this once, then track by subsequent events pushed from</span>
+        <span class="c1">#       the hw_server if we detect DONE went low?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">is_programmed_</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
@@ -595,15 +638,26 @@ function OptanonWrapper() { }
                         <span class="n">is_programmed_</span> <span class="o">=</span> <span class="n">done_reg</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># noqa</span>
             <span class="n">is_programmed_</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">is_programmed_</span>
+        <span class="k">return</span> <span class="n">is_programmed_</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_programmable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">is_programmed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if this Device is programmed, False otherwise.&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_programmed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Device.scan_is_programmable"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.scan_is_programmable">[docs]</a>    <span class="k">def</span> <span class="nf">scan_is_programmable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns True if this Device is programmable, False otherwise&quot;&quot;&quot;</span>
         <span class="n">is_programmable_</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
         <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_programmable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if this Device is programmable, False otherwise&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -637,6 +691,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        list of detected IBERT cores in the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">IBERTCoreClient</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -644,6 +699,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        list of detected VIO cores in the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">AxisVIOCoreClient</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -651,6 +707,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        list of detected ILA cores in the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">AxisIlaCoreClient</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -658,6 +715,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        list of detected Trace cores in the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">AxisTraceClient</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -665,6 +723,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        list of detected PCIe cores in the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">AxisPCIeCoreClient</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -672,6 +731,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        List with NOC roots for the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">NoCPerfMonCoreClient</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -679,6 +739,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        list of detected DDRMC cores in the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">DDRMCClient</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -686,6 +747,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        list of detected HBM cores in the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">HBMClient</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -693,6 +755,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        List with one SysMon core for the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">SysMonCoreClient</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -824,6 +887,7 @@ function OptanonWrapper() { }
         <span class="c1"># Selectively disable scanning of cores depending on what comes in</span>
         <span class="c1"># This is second priority to the disable_core_scan in __init__.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cores_to_scan</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">disable_core_scan</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">core_name</span> <span class="ow">in</span> <span class="n">Device</span><span class="o">.</span><span class="n">_CORE_TYPE_TO_CLASS_MAP</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -874,6 +938,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        list of supported memory targets&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">valid_memory_targets</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">r</span><span class="s2">&quot;(Versal .*)|(DPC)|(APU)|(RPU)|(PPU)|(PSM)|(Cortex.*)|(MicroBlaze.*)&quot;</span>
         <span class="p">)</span>
@@ -909,6 +974,7 @@ function OptanonWrapper() { }
         <span class="sd">&quot;&quot;&quot;Returns:</span>
 <span class="sd">        the memory access for the device&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">target_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_all_memory_nodes</span><span class="p">()</span>
         <span class="n">node_list</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">target_nodes</span><span class="p">:</span>
@@ -923,6 +989,7 @@ function OptanonWrapper() { }
 <span class="sd">        target every time. Inner loops should just call the find_memory_target once.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">search_memory_node_deep</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">default_target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_target</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
             <span class="k">raise</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find memory node for target </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
@@ -961,6 +1028,7 @@ function OptanonWrapper() { }
 <span class="sd">            byte_size (int): Number of bytes to read. Default is the size of the *data* buffer.</span>
 <span class="sd">            show_progress_bar (bool): Show if True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugcore_node</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">show_progress_bar</span><span class="p">:</span>
             <span class="n">node</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">byte_size</span><span class="p">)</span>
@@ -1011,6 +1079,7 @@ function OptanonWrapper() { }
 <span class="sd">            byte_size (int): Number of bytes to write. Default is the size of the *data* buffer.</span>
 <span class="sd">            show_progress_bar (bool): Show if True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugcore_node</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">show_progress_bar</span><span class="p">:</span>
             <span class="n">node</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">byte_size</span><span class="p">)</span>
@@ -1114,6 +1183,7 @@ function OptanonWrapper() { }
 <span class="sd">            memory_target: Optional name of memory target such as APU, RPU, DPC</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">memory_target</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -1123,8 +1193,10 @@ function OptanonWrapper() { }
 <div class="viewcode-block" id="Device.reset"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reset the device to a non-programmed state.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">jtag_programming_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
         <span class="k">assert</span> <span class="n">jtag_programming_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span>
         <span class="n">jtag_programming_node</span><span class="o">.</span><span class="n">future</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span></div>
 
@@ -1149,7 +1221,9 @@ function OptanonWrapper() { }
 <span class="sd">            done: Optional async future callback</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
         <span class="n">program_future</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">CsFutureSync</span><span class="p">(</span><span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">programming_file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">programming_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">programming_file</span><span class="p">)</span>
@@ -1238,7 +1312,7 @@ function OptanonWrapper() { }
     <span class="n">cs_server</span><span class="p">:</span> <span class="n">ServerInfo</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">cable_ctx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
 
     <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -1252,8 +1326,16 @@ function OptanonWrapper() { }
         <span class="n">device_spec</span> <span class="o">=</span> <span class="n">DeviceSpec</span><span class="o">.</span><span class="n">create_from_device_records</span><span class="p">(</span>
             <span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">device_record_list</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">device_spec</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="c1"># This can happen when a chipscope server is serving multiple sessions.</span>
+            <span class="c1"># The cs_server reports back connection information for the</span>
+            <span class="c1"># other sessions which should be ignored.</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;discover_devices: No device_node for dna key: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> --&gt; ignored.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
         <span class="k">if</span> <span class="n">cable_ctx</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">device_spec</span><span class="o">.</span><span class="n">jtag_cable_ctx</span> <span class="o">==</span> <span class="n">cable_ctx</span><span class="p">:</span>
             <span class="n">device_node</span> <span class="o">=</span> <span class="n">device_spec</span><span class="o">.</span><span class="n">get_device_node</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">device_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span> <span class="o">=</span> <span class="n">Device</span><span class="p">(</span>
                     <span class="n">hw_server</span><span class="o">=</span><span class="n">hw_server</span><span class="p">,</span>
@@ -1294,7 +1376,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>

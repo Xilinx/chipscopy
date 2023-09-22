@@ -388,12 +388,17 @@ function OptanonWrapper() { }
     <span class="n">EYE_SCAN_UT</span><span class="p">,</span>
     <span class="n">EYE_SCAN_VERT_RANGE</span><span class="p">,</span>
     <span class="n">MB_ELF_VERSION</span><span class="p">,</span>
+    <span class="n">EYE_SCAN_HORZ_STEP</span><span class="p">,</span>
+    <span class="n">EYE_SCAN_VERT_STEP</span><span class="p">,</span>
+    <span class="n">EYE_SCAN_MAX_HORZ_RANGE</span><span class="p">,</span>
+    <span class="n">EYE_SCAN_MIN_HORZ_RANGE</span><span class="p">,</span>
+    <span class="n">EYE_SCAN_MAX_VERT_RANGE</span><span class="p">,</span>
+    <span class="n">EYE_SCAN_MIN_VERT_RANGE</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.rx</span> <span class="kn">import</span> <span class="n">RX</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.eye_scan.params</span> <span class="kn">import</span> <span class="n">EyeScanParam</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.ibert.eye_scan.plotter</span> <span class="kn">import</span> <span class="n">EyeScanPlot</span>
 <span class="kn">from</span> <span class="nn">chipscopy.utils.printer</span> <span class="kn">import</span> <span class="n">printer</span><span class="p">,</span> <span class="n">PercentProgressBar</span>
-
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span> <span class="nn">chipscopy.dm</span> <span class="kn">import</span> <span class="n">Node</span>
@@ -450,6 +455,31 @@ function OptanonWrapper() { }
     <span class="sd">&quot;&quot;&quot;2D plot data. This will only be available if the scan completed successfully&quot;&quot;&quot;</span></div>
 
 
+<div class="viewcode-block" id="MetricData"><a class="viewcode-back" href="../../../../ibert/references/scan.html#chipscopy.api.ibert.eye_scan.MetricData">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MetricData</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for storing scan metric data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">open_area</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;open area in the eye scan&quot;&quot;&quot;</span>
+
+    <span class="n">open_percentage</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="sd">&quot;&quot;&quot;open area percentage of the eye scan&quot;&quot;&quot;</span>
+
+    <span class="n">horizontal_opening</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;zero offset horizontal opening of the eye scan&quot;&quot;&quot;</span>
+
+    <span class="n">horizontal_percentage</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="sd">&quot;&quot;&quot;zero offset horizontal opening percent of the eye scan&quot;&quot;&quot;</span>
+
+    <span class="n">vertical_opening</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;zero offset vertical opening of the eye scan&quot;&quot;&quot;</span>
+
+    <span class="n">vertical_percentage</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="sd">&quot;&quot;&quot;zero offset horizontal opening percent of the eye scan&quot;&quot;&quot;</span></div>
+
+
 <div class="viewcode-block" id="EyeScan"><a class="viewcode-back" href="../../../../ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">EyeScan</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -473,6 +503,9 @@ function OptanonWrapper() { }
     <span class="n">progress_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="sd">&quot;&quot;&quot;Callback function called when eye scan update is received&quot;&quot;&quot;</span>
 
+    <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;String detailing reason for scan abort&quot;&quot;&quot;</span>
+
     <span class="n">filter_by</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 
     <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">EYE_SCAN_NOT_STARTED</span>
@@ -490,14 +523,20 @@ function OptanonWrapper() { }
     <span class="n">elf_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="sd">&quot;&quot;&quot;ELF version read from the MicroBlaze&quot;&quot;&quot;</span>
 
-    <span class="n">data_points_read</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">data_points_read</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="sd">&quot;&quot;&quot;Number of data points scanned by the MicroBlaze&quot;&quot;&quot;</span>
 
-    <span class="n">data_points_expected</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">data_points_expected</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="sd">&quot;&quot;&quot;Total number of data points expected to be scanned by the MicroBlaze&quot;&quot;&quot;</span>
+
+    <span class="n">open_data_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;Number of data points scanned by the MicroBlaze&quot;&quot;&quot;</span>
 
     <span class="n">scan_data</span><span class="p">:</span> <span class="n">ScanData</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="sd">&quot;&quot;&quot;Scan data stored in an instance of the :py:class:`ScanData` class&quot;&quot;&quot;</span>
+
+    <span class="n">metric_data</span><span class="p">:</span> <span class="n">MetricData</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;metric data stored in an instance of :py:class:`MetricData` class&quot;&quot;&quot;</span>
 
     <span class="n">plot</span><span class="p">:</span> <span class="n">EyeScanPlot</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="sd">&quot;&quot;&quot;`EyeScanPlot` instance for interacting with the plot&quot;&quot;&quot;</span>
@@ -540,8 +579,10 @@ function OptanonWrapper() { }
         <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">elf_version</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scan_data</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_points_read</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_points_expected</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_data_points</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_points_read</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_points_expected</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_scan_done_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
@@ -562,6 +603,74 @@ function OptanonWrapper() { }
         <span class="bp">self</span><span class="o">.</span><span class="n">rx</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_out_old_data</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_calculate_vertical_horizontal_opening</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_params</span><span class="p">):</span>
+        <span class="n">horizontal_middle</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">max_horizontal</span> <span class="o">=</span> <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_MAX_HORZ_RANGE</span><span class="p">]</span>
+        <span class="n">min_horizontal</span> <span class="o">=</span> <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_MIN_HORZ_RANGE</span><span class="p">]</span>
+        <span class="n">horizontal_step</span> <span class="o">=</span> <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_HORZ_STEP</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">max_horizontal</span> <span class="o">!=</span> <span class="o">-</span><span class="n">min_horizontal</span><span class="p">:</span>
+            <span class="n">middle</span> <span class="o">=</span> <span class="p">((</span><span class="n">max_horizontal</span> <span class="o">-</span> <span class="n">min_horizontal</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">horizontal_middle</span> <span class="o">=</span> <span class="n">min_horizontal</span> <span class="o">+</span> <span class="n">middle</span> <span class="o">-</span> <span class="p">(</span><span class="n">min_horizontal</span> <span class="o">%</span> <span class="n">horizontal_step</span><span class="p">)</span>
+
+        <span class="n">vertical_middle</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">max_vertical</span> <span class="o">=</span> <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_MAX_VERT_RANGE</span><span class="p">]</span>
+        <span class="n">min_vertical</span> <span class="o">=</span> <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_MIN_VERT_RANGE</span><span class="p">]</span>
+        <span class="n">vertical_step</span> <span class="o">=</span> <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_VERT_STEP</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">max_vertical</span> <span class="o">!=</span> <span class="o">-</span><span class="n">min_vertical</span><span class="p">:</span>
+            <span class="n">middle</span> <span class="o">=</span> <span class="p">((</span><span class="n">max_vertical</span> <span class="o">-</span> <span class="n">min_vertical</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">vertical_middle</span> <span class="o">=</span> <span class="n">min_vertical</span> <span class="o">+</span> <span class="n">middle</span> <span class="o">-</span> <span class="p">(</span><span class="n">min_vertical</span> <span class="o">%</span> <span class="n">vertical_step</span><span class="p">)</span>
+
+        <span class="n">zero_offset_horz_min</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">zero_offset_horz_max</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000</span>
+        <span class="n">zero_offset_vert_min</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">zero_offset_vert_max</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000</span>
+        <span class="n">zero_offset_vertical_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">zero_offset_horizontal_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_data</span><span class="o">.</span><span class="n">processed</span><span class="o">.</span><span class="n">scan_points</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">errors</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">horizontal_middle</span><span class="p">:</span>
+                    <span class="n">zero_offset_vertical_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">zero_offset_vert_min</span><span class="p">:</span>
+                        <span class="n">zero_offset_vert_min</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span>
+                    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span> <span class="o">&gt;</span> <span class="n">zero_offset_vert_max</span><span class="p">:</span>
+                        <span class="n">zero_offset_vert_max</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span>
+
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">vertical_middle</span><span class="p">:</span>
+                    <span class="n">zero_offset_horizontal_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">zero_offset_horz_min</span><span class="p">:</span>
+                        <span class="n">zero_offset_horz_min</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span>
+                    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">zero_offset_horz_max</span><span class="p">:</span>
+                        <span class="n">zero_offset_horz_max</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span>
+
+        <span class="n">zero_offset_vert_opening</span> <span class="o">=</span> <span class="n">zero_offset_vert_max</span> <span class="o">-</span> <span class="n">zero_offset_vert_min</span>
+        <span class="n">zero_offset_horz_opening</span> <span class="o">=</span> <span class="n">zero_offset_horz_max</span> <span class="o">-</span> <span class="n">zero_offset_horz_min</span>
+
+        <span class="k">if</span> <span class="n">zero_offset_vert_opening</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">zero_offset_vert_opening</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">zero_offset_horz_opening</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">zero_offset_horz_opening</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">zero_offset_vert_max</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&gt;=</span> <span class="n">zero_offset_horz_min</span><span class="p">:</span>
+            <span class="n">zero_offset_vert_opening</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">zero_offset_horz_max</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&gt;=</span> <span class="n">zero_offset_horz_min</span><span class="p">:</span>
+            <span class="n">zero_offset_horz_opening</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span><span class="o">.</span><span class="n">vertical_opening</span> <span class="o">=</span> <span class="n">zero_offset_vert_opening</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span><span class="o">.</span><span class="n">horizontal_opening</span> <span class="o">=</span> <span class="n">zero_offset_horz_opening</span>
+
+        <span class="n">num_of_columns</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_horizontal</span> <span class="o">-</span> <span class="n">min_horizontal</span><span class="p">)</span> <span class="o">/</span> <span class="n">horizontal_step</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span><span class="o">.</span><span class="n">horizontal_percentage</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
+            <span class="nb">float</span><span class="p">((</span><span class="n">zero_offset_horizontal_count</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_of_columns</span><span class="p">),</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="n">num_of_rows</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_vertical</span> <span class="o">-</span> <span class="n">min_vertical</span><span class="p">)</span> <span class="o">/</span> <span class="n">vertical_step</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span><span class="o">.</span><span class="n">vertical_percentage</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
+            <span class="nb">float</span><span class="p">((</span><span class="n">zero_offset_vertical_count</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_of_rows</span><span class="p">),</span> <span class="mi">2</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="EyeScan.start"><a class="viewcode-back" href="../../../../ibert/references/scan.html#chipscopy.api.ibert.eye_scan.EyeScan.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -666,6 +775,17 @@ function OptanonWrapper() { }
 
             <span class="k">if</span> <span class="n">EYE_SCAN_2D_PLOT</span> <span class="ow">in</span> <span class="n">scan_report</span><span class="p">:</span>
                 <span class="n">ber_floor_value</span> <span class="o">=</span> <span class="n">scan_report</span><span class="p">[</span><span class="n">EYE_SCAN_2D_PLOT</span><span class="p">][</span><span class="n">EYE_SCAN_2D_PLOT_BER_FLOOR_VALUE</span><span class="p">]</span>
+                <span class="n">plot_params</span> <span class="o">=</span> <span class="n">scan_report</span><span class="p">[</span><span class="n">EYE_SCAN_SCAN_PARAMETERS</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span> <span class="o">=</span> <span class="n">MetricData</span><span class="p">(</span>
+                        <span class="n">open_area</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">open_percentage</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">vertical_opening</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">vertical_percentage</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">horizontal_opening</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">horizontal_percentage</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="p">)</span>
 
                 <span class="n">scan_points</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">ScanPoint</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">scan_report</span><span class="p">[</span><span class="n">EYE_SCAN_2D_PLOT</span><span class="p">][</span><span class="n">EYE_SCAN_2D_PLOT_DATA</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -685,13 +805,27 @@ function OptanonWrapper() { }
                         <span class="c1"># Combine errors if new error != 0 and old error == 0</span>
                         <span class="k">if</span> <span class="n">errors</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">scan_point</span><span class="o">.</span><span class="n">errors</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                             <span class="n">scan_point</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="n">errors</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">open_data_points</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span><span class="o">.</span><span class="n">open_area</span> <span class="o">-=</span> <span class="p">(</span>
+                                <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_HORZ_STEP</span><span class="p">]</span> <span class="o">*</span> <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_VERT_STEP</span><span class="p">]</span>
+                            <span class="p">)</span>
 
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">scan_points</span><span class="p">[</span><span class="n">data_point</span><span class="p">]</span> <span class="o">=</span> <span class="n">ScanPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ber</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">errors</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">open_data_points</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span><span class="o">.</span><span class="n">open_area</span> <span class="o">+=</span> <span class="p">(</span>
+                                <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_HORZ_STEP</span><span class="p">]</span> <span class="o">*</span> <span class="n">plot_params</span><span class="p">[</span><span class="n">EYE_SCAN_VERT_STEP</span><span class="p">]</span>
+                            <span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">scan_data</span><span class="o">.</span><span class="n">processed</span> <span class="o">=</span> <span class="n">Plot2DData</span><span class="p">(</span>
                     <span class="n">scan_points</span><span class="o">=</span><span class="n">scan_points</span><span class="p">,</span> <span class="n">ber_floor_value</span><span class="o">=</span><span class="n">ber_floor_value</span>
                 <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">metric_data</span><span class="o">.</span><span class="n">open_percentage</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
+                    <span class="nb">float</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">open_data_points</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">scan_points</span><span class="p">)),</span> <span class="mi">2</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_vertical_horizontal_opening</span><span class="p">(</span><span class="n">plot_params</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">EYE_SCAN_PROGRESS</span> <span class="ow">in</span> <span class="n">scan_report</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">scan_report</span><span class="p">[</span><span class="n">EYE_SCAN_PROGRESS</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
@@ -712,11 +846,8 @@ function OptanonWrapper() { }
                     <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">EyeScanPlot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">EYE_SCAN_ABORTED</span>
-                    <span class="n">printer</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Reason for aborting </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scan_report</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;Not available&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="n">level</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span>
-                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">scan_report</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Not available&quot;</span><span class="p">)</span>
+                    <span class="n">printer</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reason for aborting </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">)</span>
 
                 <span class="c1"># If user has registered done callback function call it.</span>
                 <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done_callback</span><span class="p">):</span>
@@ -826,7 +957,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>

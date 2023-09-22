@@ -357,30 +357,28 @@ function OptanonWrapper() { }
 <span class="c1">#</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">chipscopy.api</span> <span class="kn">import</span> <span class="n">DMNodeListener</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.jtagdevice</span> <span class="kn">import</span> <span class="n">JtagDevice</span><span class="p">,</span> <span class="n">JtagCable</span>
 <span class="kn">from</span> <span class="nn">chipscopy.dm</span> <span class="kn">import</span> <span class="n">chipscope</span><span class="p">,</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">chipscopy.utils.logger</span> <span class="kn">import</span> <span class="n">log</span>
 <span class="kn">from</span> <span class="nn">chipscopy.utils.version</span> <span class="kn">import</span> <span class="n">version_consistency_check</span>
-<span class="kn">from</span> <span class="nn">chipscopy.client</span> <span class="kn">import</span> <span class="n">connect</span><span class="p">,</span> <span class="n">disconnect</span>
-<span class="kn">from</span> <span class="nn">chipscopy.client.util</span> <span class="kn">import</span> <span class="n">connect_hw</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client</span> <span class="kn">import</span> <span class="n">connect</span> <span class="k">as</span> <span class="n">client_connect</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client</span> <span class="kn">import</span> <span class="n">disconnect</span> <span class="k">as</span> <span class="n">client_disconnect</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.util</span> <span class="kn">import</span> <span class="n">connect_hw</span><span class="p">,</span> <span class="n">process_param_str</span><span class="p">,</span> <span class="n">parse_params</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.view_info</span> <span class="kn">import</span> <span class="n">ViewInfo</span>
 <span class="kn">from</span> <span class="nn">chipscopy.client.server_info</span> <span class="kn">import</span> <span class="n">ServerInfo</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.containers</span> <span class="kn">import</span> <span class="n">QueryList</span>
-<span class="kn">from</span> <span class="nn">chipscopy.api.device.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">FeatureNotAvailableError</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.device.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">FeatureNotAvailableError</span><span class="p">,</span> <span class="n">DeviceState</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.device.device_util</span> <span class="kn">import</span> <span class="n">get_jtag_view_dict</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.memory</span> <span class="kn">import</span> <span class="n">Memory</span>
 <span class="kn">from</span> <span class="nn">chipscopy.api.cable</span> <span class="kn">import</span> <span class="n">Cable</span><span class="p">,</span> <span class="n">discover_devices</span><span class="p">,</span> <span class="n">wait_for_all_cables_ready</span><span class="p">,</span> <span class="n">discover_cables</span>
 
 <span class="n">DOMAIN_NAME</span> <span class="o">=</span> <span class="s2">&quot;client&quot;</span>
-
-<span class="c1"># Global session tracking here. We keep a list of who is connected at any time.</span>
-<span class="c1"># Format:</span>
-<span class="c1">#    dict[hex(id(session))] = (hw_server, cs_server, session)</span>
-<span class="n">_connected_session_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <div class="viewcode-block" id="Session"><a class="viewcode-back" href="../../../session/references.html#chipscopy.Session">[docs]</a><span class="k">class</span> <span class="nc">Session</span><span class="p">:</span>
@@ -388,6 +386,19 @@ function OptanonWrapper() { }
 <span class="sd">    server. To create and destroy a session, use the factory function</span>
 <span class="sd">    create_session() and delete_session().</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_session_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+
+    <span class="c1"># Global session tracking here. We keep a list of who is connected at any time.</span>
+    <span class="c1"># Format:</span>
+    <span class="c1">#    dict[hex(id(session))] = (hw_server, cs_server, session)</span>
+    <span class="n">_connected_session_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">,</span> <span class="n">ServerInfo</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># cs_server channel reference counting.</span>
+    <span class="c1"># cs_server instances are shared for the same host/port.</span>
+    <span class="c1"># Format:</span>
+    <span class="c1">#    dict[(normalized_host,port)] = (count, cs_server)</span>
+    <span class="n">_cs_server_channel_ref_count</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ServerInfo</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -400,7 +411,9 @@ function OptanonWrapper() { }
         <span class="n">cable_timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">initial_device_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">cs_server_sharing</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_sharing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">cs_server_sharing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">disable_core_scan</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bypass_version_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">bypass_version_check</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">hw_server_url</span>
@@ -409,12 +422,15 @@ function OptanonWrapper() { }
         <span class="bp">self</span><span class="o">.</span><span class="n">_cable_timeout</span> <span class="o">=</span> <span class="n">cable_timeout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cables_are_initialized</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span> <span class="o">=</span> <span class="n">disable_cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_node_listeners</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initial_device_scan</span> <span class="o">=</span> <span class="n">initial_device_scan</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_need_to_scan_devices</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_device_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span> <span class="o">=</span> <span class="n">DMNodeListener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_callback</span><span class="p">)</span>
 
@@ -457,96 +473,191 @@ function OptanonWrapper() { }
         <span class="n">delete_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">node_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">]):</span>
-        <span class="k">pass</span>
-        <span class="c1"># if node:</span>
-        <span class="c1">#     for device in self._devices:</span>
-        <span class="c1">#         # Always pass events down to devices, so they can decide what to do with the event</span>
-        <span class="c1">#         device.node_callback(action, node, props)</span>
-        <span class="c1">#         if self._devices_are_valid:</span>
-        <span class="c1">#             # Need to invalidate the session cache if any known device node was added or removed. This forces a</span>
-        <span class="c1">#             # rescan from hardware next time the device list is accessed.</span>
-        <span class="c1">#             if action == DMNodeListener.NodeAction.NODE_REMOVED:</span>
-        <span class="c1">#                 if node.ctx in [device.jtag_node, device.device_node]:</span>
-        <span class="c1">#                     self._devices_are_valid = False</span>
-        <span class="c1">#             elif action == DMNodeListener.NodeAction.NODE_ADDED:</span>
-        <span class="c1">#                 # Harder to know if an added node will impact the device list. To be safe, invalidate</span>
-        <span class="c1">#                 # cache any time nodes are added to be safe.</span>
-        <span class="c1">#                 self._devices_are_valid = False</span>
+        <span class="c1"># This callback is called when nodes are added, changed, or removed.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+            <span class="n">valid_device_list</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
+            <span class="n">devices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_devices_with_lock</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
+                <span class="c1"># Propagate node events to devices, so they can decide what to do with the event</span>
+                <span class="n">device</span><span class="o">.</span><span class="n">node_callback</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">device</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">INVALID</span><span class="p">:</span>
+                    <span class="c1"># Not typical - could be a board power off situation</span>
+                    <span class="c1"># Anything that causes a device to be INVALID means we need to re-scan the</span>
+                    <span class="c1"># devices and get that one removed from the list.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_need_to_scan_devices</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">valid_device_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_device_with_lock</span><span class="p">(</span><span class="n">valid_device_list</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_add_connection</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">hw_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">],</span> <span class="n">session</span><span class="p">:</span> <span class="s2">&quot;Session&quot;</span>
     <span class="p">):</span>
-        <span class="n">_connected_session_dict</span><span class="p">[</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">session</span><span class="p">))]</span> <span class="o">=</span> <span class="p">(</span><span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_session_lock</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_connected_session_dict</span><span class="p">[</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">session</span><span class="p">))]</span> <span class="o">=</span> <span class="p">(</span><span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_remove_connection</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="s2">&quot;Session&quot;</span><span class="p">):</span>
-        <span class="k">del</span> <span class="n">_connected_session_dict</span><span class="p">[</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">session</span><span class="p">))]</span>
+        <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_session_lock</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_connected_session_dict</span><span class="p">[</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">session</span><span class="p">))]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_all_sessions</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]:</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_session_lock</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">id_key</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_connected_session_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">sessions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sessions</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">disconnect_all_sessions</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="n">sessions_to_disconnect</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">id_key</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_connected_session_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">sessions_to_disconnect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">sessions_to_disconnect</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">session</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="c1"># TODO: Look into root cause later - happens intermittently in pytest infra causing tests to fail</span>
-                <span class="k">pass</span>
+        <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_session_lock</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">id_key</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_connected_session_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">sessions_to_disconnect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">sessions_to_disconnect</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">session</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                    <span class="c1"># TODO: Look into root cause later - happens intermittently in pytest infra causing tests to fail</span>
+                    <span class="k">pass</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_connected_session_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_cs_server_channel_ref_count</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="n">param_str</span> <span class="o">=</span> <span class="n">process_param_str</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">host_port_dict</span> <span class="o">=</span> <span class="n">parse_params</span><span class="p">(</span><span class="n">param_str</span><span class="p">)</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="n">host_port_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Host&quot;</span><span class="p">)</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">host_port_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Port&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span>
 
     <span class="k">def</span> <span class="nf">connect_hw_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">:</span>
+            <span class="c1"># A hw_server is always required when creating a session</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;hw_server_url must point to a valid hw_server&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_connect_server</span><span class="p">(</span><span class="s2">&quot;hw_server&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">,</span> <span class="n">connect_hw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;hw_server already connected&quot;</span><span class="p">)</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_connect_server</span><span class="p">(</span><span class="s2">&quot;hw_server&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">,</span> <span class="n">connect_hw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="o">=</span> <span class="n">server</span>
+
+    <span class="k">def</span> <span class="nf">disconnect_hw_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
+            <span class="c1"># silently ignore disconnect calls if no server was ever connected - no harm</span>
+            <span class="k">return</span>
+        <span class="n">client_disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">connect_cs_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_url</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_connect_server</span><span class="p">(</span><span class="s2">&quot;cs_server&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_url</span><span class="p">,</span> <span class="n">connect</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">connect_remote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xvc_mm_server_url</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">connect_xvc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xvc_mm_server_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_url</span><span class="p">:</span>
+            <span class="c1"># A cs_server is OPTIONAL required when creating a session - so no error</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;cs_server already connected&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Due to a client limitation, we can not connect multiple times to the</span>
+        <span class="c1"># server from the same process. This causes errors due to the manager being</span>
+        <span class="c1"># removed on second connect.</span>
+        <span class="c1">#</span>
+        <span class="c1"># WORKAROUND:</span>
+        <span class="c1"># Reference count to safely share the cs_server connection</span>
+        <span class="c1">#</span>
+        <span class="n">host</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_parse_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_url</span><span class="p">)</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+
+        <span class="c1"># entry = Tuple(ref_count, cs_server)</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_cs_server_channel_ref_count</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_sharing</span><span class="p">:</span>
+            <span class="c1"># This is the first session - create ref_cnt entry and server</span>
+            <span class="n">server</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_connect_server</span><span class="p">(</span><span class="s2">&quot;cs_server&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_url</span><span class="p">,</span> <span class="n">client_connect</span><span class="p">)</span>
+            <span class="n">entry</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">server</span><span class="p">)</span>
+
+        <span class="c1"># Increment reference count for every session connection to same cs_server</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">server</span><span class="p">)</span>
+        <span class="n">Session</span><span class="o">.</span><span class="n">_cs_server_channel_ref_count</span><span class="p">[(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)]</span> <span class="o">=</span> <span class="n">entry</span>
+
+        <span class="n">server</span><span class="o">.</span><span class="n">connect_remote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xvc_mm_server_url</span> <span class="ow">and</span> <span class="n">server</span><span class="p">:</span>
+            <span class="n">server</span><span class="o">.</span><span class="n">connect_xvc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xvc_mm_server_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server_url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span> <span class="o">=</span> <span class="n">server</span>
+
+    <span class="k">def</span> <span class="nf">disconnect_cs_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+            <span class="c1"># silently ignore disconnect calls if no server was ever connected - no harm</span>
+            <span class="k">return</span>
+        <span class="n">host</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_parse_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_url</span><span class="p">)</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+
+        <span class="c1"># entry = Tuple(ref_count, cs_server)</span>
+        <span class="n">entry</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ServerInfo</span><span class="p">]</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">_cs_server_channel_ref_count</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span><span class="p">:</span>
+            <span class="c1"># This should not be possible - no entry indicates something unbalanced happened.</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Error during disconnect - no ref_cnt for session.cs_server&quot;</span><span class="p">)</span>
+
+        <span class="n">ref_cnt</span><span class="p">,</span> <span class="n">server</span> <span class="o">=</span> <span class="n">entry</span>
+        <span class="n">ref_cnt</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="n">server</span><span class="o">.</span><span class="n">disconnect_remote</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TCP:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">ref_cnt</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server_sharing</span><span class="p">:</span>
+            <span class="c1"># This is the last session - delete the ref count tracking entry from dict</span>
+            <span class="k">del</span> <span class="n">Session</span><span class="o">.</span><span class="n">_cs_server_channel_ref_count</span><span class="p">[(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)]</span>
+            <span class="n">client_disconnect</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># This is not the last session - just decrement the ref count</span>
+            <span class="n">Session</span><span class="o">.</span><span class="n">_cs_server_channel_ref_count</span><span class="p">[(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ref_cnt</span><span class="p">,</span> <span class="n">server</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">connect_hw_server</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_hw_server</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="n">Session</span><span class="o">.</span><span class="n">_session_lock</span><span class="p">:</span>
+            <span class="c1"># cs_server changes are locked because they use a reference counted</span>
+            <span class="c1"># shared cs_server - this is delicate</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect_cs_server</span><span class="p">()</span>
+
         <span class="n">Session</span><span class="o">.</span><span class="n">_add_connection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Quick sanity check - throws RuntimeError on version mismatch</span>
             <span class="n">version_consistency_check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bypass_version_check</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">view_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="s2">&quot;jtag&quot;</span><span class="p">,</span> <span class="s2">&quot;debugcore&quot;</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="n">view_name</span><span class="p">)</span><span class="o">.</span><span class="n">add_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;chipscope&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
+
+            <span class="c1"># Add event listeners</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_node_listeners</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">view_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="s2">&quot;jtag&quot;</span><span class="p">,</span> <span class="s2">&quot;debugcore&quot;</span><span class="p">]:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="n">view_name</span><span class="p">)</span><span class="o">.</span><span class="n">add_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;chipscope&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_device_scan</span><span class="p">:</span>
                 <span class="c1"># Ensures we have a set of pre-scanned devices ready to go for first use.</span>
                 <span class="c1"># Downside is this does take up-front time, so it is optional.</span>
                 <span class="c1"># If not done at session creation, it will be done when devices are first accessed with session.devices</span>
-                <span class="c1"># TODO: implement</span>
-                <span class="c1"># _ = self.devices</span>
-                <span class="k">pass</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scan_devices</span><span class="p">()</span>
+
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
             <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
             <span class="k">raise</span> <span class="n">t</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">with_traceback</span><span class="p">(</span><span class="n">tb</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">view_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="s2">&quot;jtag&quot;</span><span class="p">,</span> <span class="s2">&quot;debugcore&quot;</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="n">view_name</span><span class="p">)</span><span class="o">.</span><span class="n">remove_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;chipscope&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">remove_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
+        <span class="c1"># Cleanup registered event listeners</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_node_listeners</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">view_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="s2">&quot;jtag&quot;</span><span class="p">,</span> <span class="s2">&quot;debugcore&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="n">view_name</span><span class="p">)</span><span class="o">.</span><span class="n">remove_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;chipscope&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">remove_node_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_node_listener</span><span class="p">)</span>
 
+        <span class="k">with</span> <span class="n">Session</span><span class="o">.</span><span class="n">_session_lock</span><span class="p">:</span>
+            <span class="c1"># cs_server changes are locked because they use a reference counted</span>
+            <span class="c1"># shared cs_server - this is delicate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_cs_server</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disconnect_hw_server</span><span class="p">()</span>
         <span class="n">Session</span><span class="o">.</span><span class="n">_remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">disconnect_remote</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TCP:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Session.set_param"><a class="viewcode-back" href="../../../session/references.html#chipscopy.Session.set_param">[docs]</a>    <span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Generic parameter get and set for low level chipscope server params&quot;&quot;&quot;</span>
@@ -645,14 +756,24 @@ function OptanonWrapper() { }
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cables_are_initialized</span><span class="p">:</span>
             <span class="n">wait_for_all_cables_ready</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cable_timeout</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cables_are_initialized</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span> <span class="o">=</span> <span class="n">discover_devices</span><span class="p">(</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="n">discover_devices</span><span class="p">(</span>
             <span class="n">hw_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="p">,</span>
             <span class="n">cs_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">,</span>
             <span class="n">disable_core_scan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_disable_core_scan</span><span class="p">,</span>
             <span class="n">cable_ctx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">disable_cache</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_device_with_lock</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QueryList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_devices_with_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_lock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QueryList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_device_with_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_need_to_scan_devices</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">devices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
@@ -661,7 +782,12 @@ function OptanonWrapper() { }
 <span class="sd">        Devices are cached after scanning until an event changes state and</span>
 <span class="sd">        requires a re-scan if caching is enabled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">devices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_devices</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_disable_cache</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_need_to_scan_devices</span><span class="p">:</span>
+            <span class="c1"># Force scan from hardware (slow)</span>
+            <span class="n">devices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_devices</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use the cached device list (fast)</span>
+            <span class="n">devices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_devices_with_lock</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">devices</span>
 
     <span class="nd">@property</span>
@@ -704,6 +830,13 @@ function OptanonWrapper() { }
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">connect_func</span><span class="p">(</span><span class="n">server_url</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ConnectionRefusedError</span><span class="p">:</span>
+            <span class="c1"># Shorten stack dump, by creating new exception.</span>
+            <span class="k">raise</span> <span class="ne">ConnectionRefusedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Connection could not be opened to </span><span class="si">{</span><span class="n">server_name</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="n">server_url</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  Please make sure that </span><span class="si">{</span><span class="n">server_name</span><span class="si">}</span><span class="s2"> is running at the URL provided, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;and firewall is not blocking.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ConnectionError</span><span class="p">:</span>
             <span class="c1"># Shorten stack dump, by creating new exception.</span>
             <span class="k">raise</span> <span class="ne">ConnectionRefusedError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Connection could not be opened to </span><span class="si">{</span><span class="n">server_name</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="n">server_url</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -754,6 +887,7 @@ function OptanonWrapper() { }
 <span class="sd">        initial_device_scan: Do an initial device scan when opening session (lazy initialization otherwise)</span>
 <span class="sd">        disable_cache: Control client caching (experimental)</span>
 <span class="sd">        auto_connect: Automatically connect to server(s) when session is created</span>
+<span class="sd">        cs_server_sharing: Enable reference count to share cs_server connections</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        New session object.</span>
@@ -764,8 +898,9 @@ function OptanonWrapper() { }
     <span class="n">xvc_mm_server_url</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xvc_mm_server_url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">cable_timeout</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cable_timeout&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">initial_device_scan</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;initial_device_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">disable_cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;disable_cache&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">disable_cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;disable_cache&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">auto_connect</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;auto_connect&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">cs_server_sharing</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cs_server_sharing&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># Create session even if there already exists a session with the same cs_server and hw_server</span>
     <span class="c1"># It *should* be safe.</span>
@@ -778,6 +913,7 @@ function OptanonWrapper() { }
         <span class="n">cable_timeout</span><span class="o">=</span><span class="n">cable_timeout</span><span class="p">,</span>
         <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
         <span class="n">initial_device_scan</span><span class="o">=</span><span class="n">initial_device_scan</span><span class="p">,</span>
+        <span class="n">cs_server_sharing</span><span class="o">=</span><span class="n">cs_server_sharing</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">auto_connect</span><span class="p">:</span>
         <span class="n">session</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
@@ -813,7 +949,7 @@ function OptanonWrapper() { }
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>

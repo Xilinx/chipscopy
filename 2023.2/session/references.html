@@ -394,6 +394,7 @@ the cs_server.</p>
 <li><p><strong>initial_device_scan</strong> – Do an initial device scan when opening session (lazy initialization otherwise)</p></li>
 <li><p><strong>disable_cache</strong> – Control client caching (experimental)</p></li>
 <li><p><strong>auto_connect</strong> – Automatically connect to server(s) when session is created</p></li>
+<li><p><strong>cs_server_sharing</strong> – Enable reference count to share cs_server connections</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -421,7 +422,7 @@ the cs_server.</p>
 <h1>chipscopy.api.session<a class="headerlink" href="#chipscopy-api-session" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="chipscopy.api.session.Session">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.session.</span></code><code class="sig-name descname"><span class="pre">Session</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xvc_mm_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass_version_check</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cable_timeout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_device_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">chipscopy.api.session.</span></code><code class="sig-name descname"><span class="pre">Session</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xvc_mm_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass_version_check</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cable_timeout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_device_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_sharing</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Top level object that tracks a connection to a hardware server and optionally, chipscope
 server. To create and destroy a session, use the factory function
@@ -513,7 +514,7 @@ Default is “NONE”</p>
   <div role="contentinfo" class="copyright">
     <p class="footerinfo">
       <span class="lastupdated">
-        Last updated on June 02, 2023.
+        Last updated on September 14, 2023.
       </span>
 
     </p>
