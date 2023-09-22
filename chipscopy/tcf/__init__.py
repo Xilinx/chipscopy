@@ -15,49 +15,70 @@ TCF - Target Communication Framework
 
 import types
 
-from . import compat, protocol, peer, channel
 from .util import task
 
 __all__ = ('connect', 'peers')
 
+try:
+    import pytcf
+    import sys
+    from .native import protocol, services
+    from .services import locator
+    from pprint import pprint
+    sys.modules["chipscopy.tcf.protocol"] = protocol
+    sys.modules["chipscopy.tcf.services"] = services
+    sys.modules["chipscopy.tcf.services.locator"] = locator
 
-def connect(params, wait=True):
-    """Connect to peer. Argument is a string of the form
-    <transport>:<host>:<port>, e.g. "TCP:127.0.0.1:1534".
-    """
-    if isinstance(params, compat.strings):
-        params = _parse_params(params)
-    elif isinstance(params, dict):
-        raise TypeError("Expected string or dict")
-    p = peer.TransientPeer(params)
-    if wait:
-        c = task.Task(_openChannel, p).get()
-    else:
-        c = protocol.invokeAndWait(p.openChannel)
-    return c
+    def connect(params, wait=True):
+        """Connect to peer. Argument is a string of the form
+        <transport>:<host>:<port>, e.g. "TCP:127.0.0.1:1534".
+        """
+        if isinstance(params, compat.strings):
+            params = _parse_params(params)
+        elif isinstance(params, dict):
+            raise TypeError("Expected string or dict")
+        return pytcf.connect_tcf(params[peer.ATTR_ID])
+
+except ModuleNotFoundError:
+    from . import compat, protocol, peer, channel
+
+    def connect(params, wait=True):
+        """Connect to peer. Argument is a string of the form
+        <transport>:<host>:<port>, e.g. "TCP:127.0.0.1:1534".
+        """
+        if isinstance(params, compat.strings):
+            params = _parse_params(params)
+        elif isinstance(params, dict):
+            raise TypeError("Expected string or dict")
+        p = peer.TransientPeer(params)
+        if wait:
+            c = task.Task(_openChannel, p).get()
+        else:
+            c = protocol.invokeAndWait(p.openChannel)
+        return c
 
 
-def peers():
-    "Return list of discovered remote peers"
-    locator = protocol.getLocator()
-    if locator:
-        return protocol.invokeAndWait(locator.getPeers)
+    def peers():
+        "Return list of discovered remote peers"
+        locator = protocol.getLocator()
+        if locator:
+            return protocol.invokeAndWait(locator.getPeers)
 
 
-def _openChannel(p, done=None):
-    assert protocol.isDispatchThread()
-    c = p.openChannel()
-    if done is None:
-        return
+    def _openChannel(p, done=None):
+        assert protocol.isDispatchThread()
+        c = p.openChannel()
+        if done is None:
+            return
 
-    class ChannelListener(channel.ChannelListener):
-        def onChannelOpened(self):
-            c.removeChannelListener(self)
-            done(None, c)
+        class ChannelListener(channel.ChannelListener):
+            def onChannelOpened(self):
+                c.removeChannelListener(self)
+                done(None, c)
 
-        def onChannelClosed(self, error):
-            done(error, None)
-    c.addChannelListener(ChannelListener())
+            def onChannelClosed(self, error):
+                done(error, None)
+        c.addChannelListener(ChannelListener())
 
 
 def process_param_str(params, default_port="3121"):

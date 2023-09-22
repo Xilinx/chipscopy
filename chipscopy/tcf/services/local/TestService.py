@@ -11,9 +11,9 @@
 # *****************************************************************************
 
 from .. import Service, ServiceProvider, add_service_provider
-from . import CommandServer
 from ..test import NAME, TestListener
 from .. import from_xargs
+from . import add_local_service
 from chipscopy.dm.request import CsRequest, DoneRequest
 from chipscopy import dm
 from chipscopy.dm import debugcore
@@ -146,15 +146,5 @@ class TestService(Service):
             protocol.invokeLater(listener.exiting)
 
 
-class TestServiceProvider(ServiceProvider):
-    def get_local_service(self, _channel):
-        _channel.addCommandServer(
-            TestService.service,
-            CommandServer(TestService.service, _channel)
-        )
-        return TestService.service,
-
-
-# creating singleton
-TestService.service = TestService()
-add_service_provider(TestServiceProvider())
+def init():
+    add_local_service(TestService())

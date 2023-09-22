@@ -685,6 +685,9 @@ class AxisIlaCoreClient(CorePropertyClient):
     def is_compatible(node: dm.Node) -> bool:
         return node.type and node.type == "ila"
 
+    def post_init(self):
+        pass
+
     def get_service_proxy(self):
         return self.manager.channel.getRemoteService(NAME)
 

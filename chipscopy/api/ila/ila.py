@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import enum
+import functools
 import json
 import sys
 from io import TextIOBase
@@ -61,6 +62,16 @@ from chipscopy.api.ila.ila_waveform import (
 from chipscopy.api._detail.debug_core import DebugCore
 from chipscopy import CoreType
 from chipscopy.utils import Enum2StrEncoder, deprecated_api
+
+
+def ensure_ila_init(method):
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        self._initialize()
+        result = method(self, *args, **kwargs)
+        return result
+
+    return wrapper
 
 
 @dataclass(frozen=True)
@@ -116,25 +127,82 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
     __next_ila_number = 1  # simple incrementing number tracking - hw_ila_1, hw_ila_2, etc
 
     def __init__(self, tcf_ila: TCF_AxisIlaCoreClient, device, ltx: Ltx):
-
         DebugCore.__init__(self, core_type=CoreType.AXIS_ILA, core_tcf_node=tcf_ila)
-        init_vals = ILA._init(tcf_ila, self.core_info, ltx)
+        ltx_core = ltx.get_core(CoreType.AXIS_ILA, self.core_info.uuid) if ltx else None
+        if ltx and not ltx_core:
+            raise IndexError(
+                f"Unable to find ILA core with uuid:{self.core_info.uuid} in LTX file."
+            )
 
-        self.static_info: ILAStaticInfo = init_vals["static_info"]
-        self.status: ILAStatus = init_vals["status"]
-        self.control: ILAControl = init_vals["control"]
-        self.name: str = init_vals["name"]
-        self.ports: [ILAPort] = init_vals["ports"]
-        self.probes: {str, ILAProbe} = init_vals["probes"]
-        self.probe_values: {str, ILAProbeValues} = init_vals["probe_values"]
-        self.waveform: Optional[ILAWaveform] = None
-        self._probe_to_port_seqs: {str, [ILABitRange]} = init_vals["probe_to_port_seqs"]
+        self.name = ltx_core.cell_name if ltx_core else f"hw_ila_{ILA.__next_ila_number}"
+        ILA.__next_ila_number += 1
         self._device = device
-        self._downstreams_refs: [LtxStreamRef] = ltx.get_downstream_refs(self.name) if ltx else []
+        self.waveform = None
+        # Data members to be initialized later.
+        self._static_info: ILAStaticInfo = None
+        self._status: ILAStatus = None
+        self._control: ILAControl = None
+        self._ports: [ILAPort] = None
+        self._probes: {str, ILAProbe} = None
+        self._probe_values: {str, ILAProbeValues} = None
+        self._probe_to_port_seqs: {str, [ILABitRange]} = None
+        self._downstreams_refs: [LtxStreamRef] = None
         self._tsm_state_names: Dict[int, str] = {}
 
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "uuid": self.core_info.uuid}
+        self._initialize_complete = False
+
+    def _initialize(self):
+        if self._initialize_complete:
+            return
+
+        # Initialize ILA service, for this ILA, in the cs_server
+        self.core_tcf_node.initialize()
+        init_vals = ILA._init(self.core_tcf_node, self.core_info, self._device.ltx)
+
+        self._static_info: ILAStaticInfo = init_vals["static_info"]
+        self._status: ILAStatus = init_vals["status"]
+        self._control: ILAControl = init_vals["control"]
+        self._ports: [ILAPort] = init_vals["ports"]
+        self._probes: {str, ILAProbe} = init_vals["probes"]
+        self._probe_values: {str, ILAProbeValues} = init_vals["probe_values"]
+        self._probe_to_port_seqs: {str, [ILABitRange]} = init_vals["probe_to_port_seqs"]
+        self._downstreams_refs: [LtxStreamRef] = (
+            self._device.ltx.get_downstream_refs(self.name) if self._device.ltx else []
+        )
+        self._tsm_state_names: Dict[int, str] = {}
+        self._initialize_complete = True
+
+    @property
+    def static_info(self) -> ILAStaticInfo:
+        self._initialize()
+        return self._static_info
+
+    @property
+    def status(self) -> ILAStatus:
+        self._initialize()
+        return self._status
+
+    @property
+    def control(self) -> ILAControl:
+        self._initialize()
+        return self._control
+
+    @property
+    def ports(self) -> [ILAPort]:
+        self._initialize()
+        return self._ports
+
+    @property
+    def probes(self) -> {str, ILAProbe}:
+        self._initialize()
+        return self._probes
+
+    @property
+    def probe_values(self) -> {str, ILAProbeValues}:
+        self._initialize()
+        return self._probe_values
 
     def __str__(self) -> str:
         """Returns instance name"""
@@ -164,10 +232,12 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         json_dict = json.dumps(self.to_dict(), cls=Enum2StrEncoder, indent=4)
         return json_dict
 
+    @ensure_ila_init
     def refresh_status(self) -> None:
         """Read dynamic status and store in attribute 'ila.status'."""
-        self.status = tcf_refresh_status(self.core_tcf_node, self._tsm_state_names)
+        self._status = tcf_refresh_status(self.core_tcf_node, self._tsm_state_names)
 
+    @ensure_ila_init
     def run_trigger_immediately(
         self,
         trigger_position: int = 0,
@@ -198,6 +268,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         )
         """"""
 
+    @ensure_ila_init
     def run_basic_trigger(
         self,
         trigger_position: int = ILA_TRIGGER_POSITION_HALF,
@@ -232,6 +303,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             trig_out,
         )
 
+    @ensure_ila_init
     def run_advanced_trigger(
         self,
         trigger_state_machine: Union[TextIOBase, str],
@@ -362,7 +434,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             capture_condition, trig_in, trig_out, trigger_condition, t_pos, window_count, w_size
         )
 
-        self.control = control
+        self._control = control
         # Set probe trigger values.
         self.core_tcf_node.reset_probe(reset_trigger_values=True, reset_capture_values=True)
         tcf_probe_values = probe_values_to_dict(self.probe_values)
@@ -384,6 +456,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         # NYI feature
         pass
 
+    @ensure_ila_init
     def upload(self) -> bool:
         """
         Upload waveform. If the ILA has not triggered yet, it will return with value *False*.
@@ -401,6 +474,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             self.waveform = ILAWaveform(**wave)
         return uploaded
 
+    @ensure_ila_init
     def wait_till_done(self, max_wait_minutes: float = None) -> ILAStatus:
         """
         Wait until all data has been captured, or until timeout.
@@ -413,6 +487,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         """
         return self.monitor_status(max_wait_minutes)
 
+    @ensure_ila_init
     def monitor_status(
         self, max_wait_minutes: float = None, progress=None, done: request.DoneFutureCallback = None
     ) -> ILAStatus or request.CsFutureRequestSync:
@@ -491,7 +566,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
 
         def final(future):  # called on main thread
             if future._result:
-                self.status = future._result
+                self._status = future._result
 
         def status_process(props: {}) -> ILAStatus:
             return tcf_props_to_status(props, self._tsm_state_names)
@@ -504,6 +579,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         future = self.core_tcf_node.future(done=done, final=final, progress=progress)
         return future.monitor_status(status_process, max_wait_minutes=max_wait_minutes)
 
+    @ensure_ila_init
     def reset_probes(
         self, reset_trigger_values: bool = True, reset_capture_values: bool = True
     ) -> None:
@@ -521,6 +597,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             for values in self.probe_values.values():
                 values.capture_value = []
 
+    @ensure_ila_init
     def set_probe_trigger_value(self, name: str, trigger_value: []) -> None:
         """For basic trigger mode, set probe compare value(s).
 
@@ -565,6 +642,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         """
         self._set_probe_value(name, trigger_value, is_trigger=True)
 
+    @ensure_ila_init
     def set_probe_capture_value(self, name: str, capture_value: []) -> None:
         """For basic capture mode, set probe compare value to filter samples.
 
@@ -579,6 +657,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             )
         self._set_probe_value(name, capture_value, is_trigger=False)
 
+    @ensure_ila_init
     def get_probe_trigger_value(self, name: str) -> []:
         """Get basic trigger mode compare value(s) for a probe.
 
@@ -593,6 +672,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             raise KeyError(f"Probe {name} is not a defined trigger probe.")
         return values.trigger_value
 
+    @ensure_ila_init
     def get_probe_capture_value(self, name: str) -> []:
         """Get basic capture mode compare value for a probe.
 
@@ -620,8 +700,6 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
 
     @staticmethod
     def _init(tcf_ila: TCF_AxisIlaCoreClient, core_info: CoreInfo, ltx: Optional[Ltx]):
-        ila_name = f"hw_ila_{ILA.__next_ila_number}"
-        ILA.__next_ila_number += 1
         props = tcf_ila.get_property_group(["static_info", "status", "control"])
         post_process_status(props, None)
 
@@ -633,7 +711,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         if ltx:
             verify_ports(ltx, core_info.uuid, ports)
 
-        probes, probe_to_port_seqs, cell_name, enum_defs = create_probes_from_ports_and_ltx(
+        probes, probe_to_port_seqs, enum_defs = create_probes_from_ports_and_ltx(
             tcf_ila, ports, ltx, core_info.uuid
         )
         probe_values = {
@@ -646,20 +724,18 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             )
             for probe in probes.values()
         }
-        if cell_name:
-            ila_name = cell_name
         return {
             "core_info": core_info,
             "static_info": static_info,
             "status": status,
             "control": control,
-            "name": ila_name,
             "ports": ports,
             "probes": probes,
             "probe_to_port_seqs": probe_to_port_seqs,
             "probe_values": probe_values,
         }
 
+    @ensure_ila_init
     def get_probe_enum(self, name: str) -> Optional[enum.EnumMeta]:
         """Get enum class, which defines valid enum values for the probe.
 
@@ -675,6 +751,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             raise KeyError(f"Probe {name} is not a defined probe.")
         return values.enum_def
 
+    @ensure_ila_init
     def set_probe_enum(
         self, name: str, enum_def: enum.EnumMeta, display_as_enum: bool = True
     ) -> None:

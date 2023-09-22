@@ -71,3 +71,7 @@ class SysMonCoreClient(CoreClient):
     def configure_temp_and_vccint(self, done: DoneHWCommand = None):  # pragma: no cover
         service, done_cb = self.make_done(done)
         return self.add_pending(service.configure_temp_and_vccint(self.ctx, done_cb))
+
+    def refresh_property(self, names: List[str], done: DoneHWCommand = None):
+        service, done_cb = self.make_done(done)
+        return self.add_pending(service.refresh_property(self.ctx, names, done_cb))

@@ -14,7 +14,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2023.1.dev1677697072"
+version = "2023.2.dev1694723382"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -26,25 +26,33 @@ include = ["LICENSE", "epl-v20.html"]
 
 [tool.poetry.dependencies]
 python = "^3.8.3"
-more-itertools = "^8.2.0"
-typing_extensions = "^3.7.4"
-loguru = "^0.5.0"
-importlib_metadata = "^4.4"
-rich = "^9.12.4"
-Click = ">7, <9"
-kaleido = { version = "^0.0.2", optional = true }
-plotly = { version = "^4.9.0", optional = true }
-notebook = { version = "^6.0.3", optional = true }
-ipywidgets = { version = "^7.5.1", optional = true }
-pandas = { version = "^1.2.3", optional = true }
-matplotlib = { version = "^3.4.0", optional = true }
-PyQt5 = { version = "^5.15.4", optional = true }
-antlr4-python3-runtime = "^4.10"
+more-itertools = "^10.1"
+typing_extensions = "^4.7"
+loguru = "^0.7"
+importlib_metadata = "^6.8"
+rich = "^13.5"
+Click = "^8.1"
+antlr4-python3-runtime = "==4.10"
+kaleido = { version = "0.2.1", optional = true }
+plotly = { version = "^5.16", optional = true }
+notebook = { version = "^7.0", optional = true }
+ipywidgets = { version = "^8.1", optional = true }
+pandas = { version = "^1.5", optional = true }
+matplotlib = { version = "^3.7", optional = true }
+PyQt5 = { version = "^5.15", optional = true }
+pytcf = { version = "^0.0.7", optional = true }
 
 [tool.poetry.group.test.dependencies]
-pytest = "^6.2.1"
-coverage = "^5.1"
-pytest-mock = "^3.5.1"
+pytest = "^7.4"
+coverage = "^7.3"
+pytest-mock = "^3.11"
+pyboardbarn = "^5.0.3"
+colorama = "^0.4"
+
+[tool.poetry.group.artifactory]
+optional = true
+
+[tool.poetry.group.artifactory.dependencies]
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "3.5.4"
@@ -55,11 +63,11 @@ sphinx-markdown-tables = "^0.0.15"
 rst2pdf = "^0.99"
 
 [tool.poetry.group.linter.dependencies]
-black = "^22.6.0"
+black = "^23.7"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^2.7.1"
-jupytext = "^1.6.0"
+pre-commit = "^3.4"
+jupytext = "^1.15"
 
 [tool.poetry.scripts]
 chipscopy-get-examples = "chipscopy._cli.example_delivery:main"
@@ -71,18 +79,27 @@ csutil = "chipscopy._cli._chipscopy:main"
 [tool.poetry.extras]
 core-addons = ["plotly", "kaleido", "matplotlib", "PyQt5", "pandas"]
 jupyter = ["notebook", "ipywidgets"]
+pytcf = ["pytcf"]
+
+[[tool.poetry.source]]
+name = "artifactory"
+url = "https://artifactory.xilinx.com/artifactory/api/pypi/pypi/simple"
+default = false
+secondary = false
 
 [tool.pytest.ini_options]
 addopts = "--strict-markers --verbose"
 markers = [
     "xvc_suite: Use for tests that need the XVC server setup to run",
-    "board_suite: Use for tests that need a board to run"
+    "board_suite: Use for tests that need a board to run",
+    "tcf_record_suite: Tests that record hardware interactions to a file",
+    "tcf_playback_suite: Tests that playback tcf recordings from existing recording files"
 ]
 testpaths = "tests"
 
 [tool.black]
 line-length = 100
-target-version = ['py37']
+target-version = ['py39']
 extend-exclude = '''chipscopy/tcf/.*$|docs/.*$|internal-examples/.*$|examples/.*$|tests/.*$'''
 
 [build-system]

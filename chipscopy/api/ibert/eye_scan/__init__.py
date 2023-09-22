@@ -46,12 +46,17 @@ from chipscopy.api.ibert.aliases import (
     EYE_SCAN_UT,
     EYE_SCAN_VERT_RANGE,
     MB_ELF_VERSION,
+    EYE_SCAN_HORZ_STEP,
+    EYE_SCAN_VERT_STEP,
+    EYE_SCAN_MAX_HORZ_RANGE,
+    EYE_SCAN_MIN_HORZ_RANGE,
+    EYE_SCAN_MAX_VERT_RANGE,
+    EYE_SCAN_MIN_VERT_RANGE,
 )
 from chipscopy.api.ibert.rx import RX
 from chipscopy.api.ibert.eye_scan.params import EyeScanParam
 from chipscopy.api.ibert.eye_scan.plotter import EyeScanPlot
 from chipscopy.utils.printer import printer, PercentProgressBar
-
 
 if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.dm import Node
@@ -109,6 +114,31 @@ class ScanData:
 
 
 @dataclass
+class MetricData:
+    """
+    Class for storing scan metric data
+    """
+
+    open_area: int
+    """open area in the eye scan"""
+
+    open_percentage: float
+    """open area percentage of the eye scan"""
+
+    horizontal_opening: int
+    """zero offset horizontal opening of the eye scan"""
+
+    horizontal_percentage: float
+    """zero offset horizontal opening percent of the eye scan"""
+
+    vertical_opening: int
+    """zero offset vertical opening of the eye scan"""
+
+    vertical_percentage: float
+    """zero offset horizontal opening percent of the eye scan"""
+
+
+@dataclass
 class EyeScan:
     """
     Class for interacting with eye scans.
@@ -131,6 +161,9 @@ class EyeScan:
     progress_callback: Callable[[float], None] = None
     """Callback function called when eye scan update is received"""
 
+    error: str = ""
+    """String detailing reason for scan abort"""
+
     filter_by: Dict[str, Any] = field(default_factory=dict)
 
     status: str = EYE_SCAN_NOT_STARTED
@@ -148,14 +181,20 @@ class EyeScan:
     elf_version: str = None
     """ELF version read from the MicroBlaze"""
 
-    data_points_read: int = -1
+    data_points_read: int = 0
     """Number of data points scanned by the MicroBlaze"""
 
-    data_points_expected: int = -1
+    data_points_expected: int = 0
     """Total number of data points expected to be scanned by the MicroBlaze"""
+
+    open_data_points: int = 0
+    """Number of data points scanned by the MicroBlaze"""
 
     scan_data: ScanData = None
     """Scan data stored in an instance of the :py:class:`ScanData` class"""
+
+    metric_data: MetricData = None
+    """metric data stored in an instance of :py:class:`MetricData` class"""
 
     plot: EyeScanPlot = None
     """`EyeScanPlot` instance for interacting with the plot"""
@@ -198,8 +237,10 @@ class EyeScan:
         self.start_time = None
         self.elf_version = None
         self.scan_data = None
-        self.data_points_read = -1
-        self.data_points_expected = -1
+        self.metric_data = None
+        self.open_data_points = 0
+        self.data_points_read = 0
+        self.data_points_expected = 0
 
         self._scan_done_event.clear()
 
@@ -220,6 +261,74 @@ class EyeScan:
         self.rx = None
         self.name = ""
         self._clear_out_old_data()
+
+    def _calculate_vertical_horizontal_opening(self, plot_params):
+        horizontal_middle = 0
+        max_horizontal = plot_params[EYE_SCAN_MAX_HORZ_RANGE]
+        min_horizontal = plot_params[EYE_SCAN_MIN_HORZ_RANGE]
+        horizontal_step = plot_params[EYE_SCAN_HORZ_STEP]
+        if max_horizontal != -min_horizontal:
+            middle = ((max_horizontal - min_horizontal) + 1) / 2
+            horizontal_middle = min_horizontal + middle - (min_horizontal % horizontal_step)
+
+        vertical_middle = 0
+        max_vertical = plot_params[EYE_SCAN_MAX_VERT_RANGE]
+        min_vertical = plot_params[EYE_SCAN_MIN_VERT_RANGE]
+        vertical_step = plot_params[EYE_SCAN_VERT_STEP]
+        if max_vertical != -min_vertical:
+            middle = ((max_vertical - min_vertical) + 1) / 2
+            vertical_middle = min_vertical + middle - (min_vertical % vertical_step)
+
+        zero_offset_horz_min = 1000
+        zero_offset_horz_max = -1000
+        zero_offset_vert_min = 1000
+        zero_offset_vert_max = -1000
+        zero_offset_vertical_count = 0
+        zero_offset_horizontal_count = 0
+
+        for _, data in self.scan_data.processed.scan_points.items():
+            if data.errors == 0:
+                if data.x == horizontal_middle:
+                    zero_offset_vertical_count += 1
+                    if data.y < zero_offset_vert_min:
+                        zero_offset_vert_min = data.y
+                    if data.y > zero_offset_vert_max:
+                        zero_offset_vert_max = data.y
+
+                if data.y == vertical_middle:
+                    zero_offset_horizontal_count += 1
+                    if data.x < zero_offset_horz_min:
+                        zero_offset_horz_min = data.x
+                    if data.x > zero_offset_horz_max:
+                        zero_offset_horz_max = data.x
+
+        zero_offset_vert_opening = zero_offset_vert_max - zero_offset_vert_min
+        zero_offset_horz_opening = zero_offset_horz_max - zero_offset_horz_min
+
+        if zero_offset_vert_opening < 0:
+            zero_offset_vert_opening = 0
+
+        if zero_offset_horz_opening < 0:
+            zero_offset_horz_opening = 0
+
+        if zero_offset_vert_max >= 0 >= zero_offset_horz_min:
+            zero_offset_vert_opening += 1
+
+        if zero_offset_horz_max >= 0 >= zero_offset_horz_min:
+            zero_offset_horz_opening += 1
+
+        self.metric_data.vertical_opening = zero_offset_vert_opening
+        self.metric_data.horizontal_opening = zero_offset_horz_opening
+
+        num_of_columns = (max_horizontal - min_horizontal) / horizontal_step + 1
+        self.metric_data.horizontal_percentage = round(
+            float((zero_offset_horizontal_count * 100) / num_of_columns), 2
+        )
+
+        num_of_rows = (max_vertical - min_vertical) / vertical_step + 1
+        self.metric_data.vertical_percentage = round(
+            float((zero_offset_vertical_count * 100) / num_of_rows), 2
+        )
 
     def start(self, *, show_progress_bar: bool = True):
         """
@@ -324,6 +433,17 @@ class EyeScan:
 
             if EYE_SCAN_2D_PLOT in scan_report:
                 ber_floor_value = scan_report[EYE_SCAN_2D_PLOT][EYE_SCAN_2D_PLOT_BER_FLOOR_VALUE]
+                plot_params = scan_report[EYE_SCAN_SCAN_PARAMETERS]
+
+                if self.metric_data is None:
+                    self.metric_data = MetricData(
+                        open_area=0,
+                        open_percentage=0,
+                        vertical_opening=0,
+                        vertical_percentage=0,
+                        horizontal_opening=0,
+                        horizontal_percentage=0,
+                    )
 
                 scan_points: Dict[Tuple[int, int], ScanPoint] = dict()
                 for key, data in scan_report[EYE_SCAN_2D_PLOT][EYE_SCAN_2D_PLOT_DATA].items():
@@ -343,13 +463,27 @@ class EyeScan:
                         # Combine errors if new error != 0 and old error == 0
                         if errors != 0 and scan_point.errors == 0:
                             scan_point.errors = errors
+                            self.open_data_points -= 1
+                            self.metric_data.open_area -= (
+                                plot_params[EYE_SCAN_HORZ_STEP] * plot_params[EYE_SCAN_VERT_STEP]
+                            )
 
                     else:
                         scan_points[data_point] = ScanPoint(x, y, ber, errors, samples)
+                        if errors == 0:
+                            self.open_data_points += 1
+                            self.metric_data.open_area += (
+                                plot_params[EYE_SCAN_HORZ_STEP] * plot_params[EYE_SCAN_VERT_STEP]
+                            )
 
                 self.scan_data.processed = Plot2DData(
                     scan_points=scan_points, ber_floor_value=ber_floor_value
                 )
+
+                self.metric_data.open_percentage = round(
+                    float((self.open_data_points * 100) / len(scan_points)), 2
+                )
+                self._calculate_vertical_horizontal_opening(plot_params)
 
             if EYE_SCAN_PROGRESS in scan_report:
                 self.progress = round(float(scan_report[EYE_SCAN_PROGRESS]), 2)
@@ -370,11 +504,8 @@ class EyeScan:
                     self.plot = EyeScanPlot(self)
                 else:
                     assert self.status == EYE_SCAN_ABORTED
-                    printer(
-                        f"Reason for aborting {self.name} - "
-                        f"{scan_report.get('Error', 'Not available')}",
-                        level="info",
-                    )
+                    self.error = scan_report.get("Error", "Not available")
+                    printer(f"Reason for aborting {self.name} - {self.error}", level="info")
 
                 # If user has registered done callback function call it.
                 if callable(self.done_callback):

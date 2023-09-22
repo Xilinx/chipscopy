@@ -509,7 +509,6 @@ def connect_servers(cs_url: str, hw_url: str = "", silent: bool = False) -> (Ser
 
 
 def find_mila_cores(cs_url: str, hw_url: str = "", silent: bool = False) -> MILACoreClient:
-
     server_info, parent_node = connect_servers(cs_url, hw_url, silent)
     cs_view = get_cs_view(server_info)
 
@@ -520,7 +519,6 @@ def find_mila_cores(cs_url: str, hw_url: str = "", silent: bool = False) -> MILA
 
 
 def get_mila_by_index(cs_url: str, hw_url: str, idx: int) -> MILACoreClient:
-
     server_info, parent_node = connect_servers(cs_url, hw_url, True)
 
     mila = server_info.cs_target(

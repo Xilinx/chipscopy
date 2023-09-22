@@ -606,7 +606,6 @@ class PerfTGController:
         self._clear_instruction_memory()
 
     def block_reset(self):
-
         if self.vio is not None:
             self.vio.write_probes(
                 {

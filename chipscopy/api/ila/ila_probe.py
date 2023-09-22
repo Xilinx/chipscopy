@@ -382,7 +382,7 @@ def verify_probe_value(value_list: [], is_trigger: bool, probe: ILAProbe, enum_d
 def create_probes_from_ports_and_ltx(
     tcf_ila: TCF_AxisIlaCoreClient, ports: [ILAPort], ltx: Ltx, uuid: str
 ) -> ({}, {}, str, {}):
-    """Returns:  probes, map_to_port_seqs, cell_name, probe enum defs"""
+    """Returns:  probes, map_to_port_seqs, probe enum defs"""
 
     def process_one_tcf_probe(attrs: {str, Any}) -> {}:
         res = {
@@ -434,13 +434,11 @@ def create_probes_from_ports_and_ltx(
                 res[ltx_p.name] = ltx_p.enum_def
         return res
 
-    cell_name = ""
     tcf_ila.undefine_probe([])
     ltx_core = ltx.get_core(CoreType.AXIS_ILA, uuid) if ltx else None
     if ltx and not ltx_core:
         raise IndexError(f"Unable to find ILA core with uuid:{uuid} in LTX file.")
     if ltx_core:
-        cell_name = ltx_core.cell_name
         probe_defs = ltx_probes_to_tcf_pdefs(ltx_core)
         tcf_ila.define_probe(probe_defs)
     else:
@@ -456,7 +454,7 @@ def create_probes_from_ports_and_ltx(
         attrs["map"]: process_one_tcf_probe_mapping(attrs) for p_name, attrs in tcf_probes.items()
     }
     probes = {p_name: ILAProbe(**probe) for p_name, probe in probe_dicts.items()}
-    return probes, map_to_port_seqs, cell_name, enum_defs
+    return probes, map_to_port_seqs, enum_defs
 
 
 def verify_probe_enum_def(probe: ILAProbe, enum_def: enum.EnumMeta):

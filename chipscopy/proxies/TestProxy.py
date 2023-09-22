@@ -10,10 +10,15 @@
 # *     Xilinx
 # *****************************************************************************
 
-from .. import test
+from chipscopy.tcf.services import Service, DoneHWCommand, Token
+
+NAME = "Test"
 
 
-class TestProxy(test.TestService):
+class TestProxy(Service):
+    def getName(self):
+        return NAME
+
     def add_manager(self, manager_name, done):
         return self.send_xicom_command("addManager", (manager_name,), done)
 

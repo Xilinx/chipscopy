@@ -183,7 +183,6 @@ class DDRMCClient(CorePropertyClient):
 
 
 def find_ddrmc(cs_url: str, hw_url: str = "", ddrmc_index=0) -> DDRMCClient:
-
     if hw_url != "":
         server = connect_xicom(cs_url)
         server.connect_remote(hw_url)

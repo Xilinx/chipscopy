@@ -1320,7 +1320,6 @@ def serializedATN():
 
 
 class ILATsmParser(Parser):
-
     grammarFileName = "ILATsm.g4"
 
     atn = ATNDeserializer().deserialize(serializedATN())
@@ -1456,7 +1455,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def ila_tsm(self):
-
         localctx = ILATsmParser.Ila_tsmContext(self, self._ctx, self.state)
         self.enterRule(localctx, 0, self.RULE_ila_tsm)
         self._la = 0  # Token type
@@ -1540,7 +1538,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def state_block(self):
-
         localctx = ILATsmParser.State_blockContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_state_block)
         try:
@@ -1628,7 +1625,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def if_condition(self):
-
         localctx = ILATsmParser.If_conditionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 4, self.RULE_if_condition)
         try:
@@ -1746,7 +1742,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def actions(self):
-
         localctx = ILATsmParser.ActionsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 6, self.RULE_actions)
         self._la = 0  # Token type
@@ -1808,7 +1803,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def full_condition(self):
-
         localctx = ILATsmParser.Full_conditionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 8, self.RULE_full_condition)
         try:
@@ -2011,7 +2005,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def probe_match(self):
-
         localctx = ILATsmParser.Probe_matchContext(self, self._ctx, self.state)
         self.enterRule(localctx, 12, self.RULE_probe_match)
         try:
@@ -2079,7 +2072,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def counter_match(self):
-
         localctx = ILATsmParser.Counter_matchContext(self, self._ctx, self.state)
         self.enterRule(localctx, 14, self.RULE_counter_match)
         try:
@@ -2228,7 +2220,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def action(self):
-
         localctx = ILATsmParser.ActionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 16, self.RULE_action)
         try:
@@ -2366,7 +2357,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def probe_number(self):
-
         localctx = ILATsmParser.Probe_numberContext(self, self._ctx, self.state)
         self.enterRule(localctx, 18, self.RULE_probe_number)
         try:
@@ -2458,7 +2448,6 @@ class ILATsmParser(Parser):
                 return visitor.visitChildren(self)
 
     def number(self):
-
         localctx = ILATsmParser.NumberContext(self, self._ctx, self.state)
         self.enterRule(localctx, 20, self.RULE_number)
         try:

@@ -32,104 +32,19 @@ class JtagCableProxy(Service):
         return JTAG_CABLE_SERVICE
 
     def getServerDescriptions(self, done):
-        done = self._makeCallback(done)
-        service = self
-
-        class GetServerDescriptionsCommand(Command):
-            def __init__(self):
-                super(GetServerDescriptionsCommand, self).__init__(
-                    service.channel, service, "getServerDescriptions", None
-                )
-
-            def done(self, error, args):
-                argResult = None
-                if not error:
-                    assert len(args) == 2
-                    error = self.toError(args[0])
-                    argResult = args[1]
-                done.doneHW(self.token, error, argResult)
-
-        return GetServerDescriptionsCommand().token
+        return self.send_xicom_command("getServerDescriptions", (), done)
 
     def getOpenServers(self, done):
-        done = self._makeCallback(done)
-        service = self
-
-        class GetOpenServersCommand(Command):
-            def __init__(self):
-                super(GetOpenServersCommand, self).__init__(
-                    service.channel, service, "getOpenServers", None
-                )
-
-            def done(self, error, args):
-                argResult = None
-                if not error:
-                    assert len(args) == 2
-                    error = self.toError(args[0])
-                    argResult = args[1]
-                done.doneHW(self.token, error, argResult)
-
-        return GetOpenServersCommand().token
+        return self.send_xicom_command("getOpenServers", (), done)
 
     def getServerContext(self, server_id, done):
-        done = self._makeCallback(done)
-        service = self
-
-        class GetServerContextCommand(Command):
-            def __init__(self):
-                super(GetServerContextCommand, self).__init__(
-                    service.channel, service, "getServerContext", (server_id,)
-                )
-
-            def done(self, error, args):
-                argResult = None
-                if not error:
-                    assert len(args) == 2
-                    error = self.toError(args[0])
-                    argResult = args[1]
-                done.doneHW(self.token, error, argResult)
-
-        return GetServerContextCommand().token
+        return self.send_xicom_command("getServerContext", (server_id,), done)
 
     def getPortDescriptions(self, server_id, done):
-        done = self._makeCallback(done)
-        service = self
-
-        class GetPortDescriptionsCommand(Command):
-            def __init__(self):
-                super(GetPortDescriptionsCommand, self).__init__(
-                    service.channel, service, "getPortDescriptions", (server_id,)
-                )
-
-            def done(self, error, args):
-                argResult = None
-                if not error:
-                    assert len(args) == 2
-                    error = self.toError(args[0])
-                    argResult = args[1]
-                done.doneHW(self.token, error, argResult)
-
-        return GetPortDescriptionsCommand().token
+        return self.send_xicom_command("getPortDescriptions", (server_id,), done)
 
     def getContext(self, port_id, done):
-        done = self._makeCallback(done)
-        service = self
-
-        class GetPortContextCommand(Command):
-            def __init__(self):
-                super(GetPortContextCommand, self).__init__(
-                    service.channel, service, "getContext", (port_id,)
-                )
-
-            def done(self, error, args):
-                argResult = None
-                if not error:
-                    assert len(args) == 2
-                    error = self.toError(args[0])
-                    argResult = args[1]
-                done.doneHW(self.token, error, argResult)
-
-        return GetPortContextCommand().token
+        return self.send_xicom_command("getContext", (port_id,), done)
 
     def openServer(self, server_id, params, done):
         return self.send_xicom_command("openServer", (server_id, params), done)

@@ -20,6 +20,7 @@ from dataclasses import dataclass, InitVar
 from chipscopy.utils import printer
 from chipscopy.client import ServerInfo
 from chipscopy.vivado_version import __vivado_version__
+import re
 
 
 class ServerVersionInfo:
@@ -99,10 +100,44 @@ class VersionDetails:
         return f"{self.year}.{self.major}.{self.minor}"
 
     def __post_init__(self, version: str):
+        # expected string format: YYYY.MM.mm
+        #                         |||| - YEAR code (ideally 4 digits but not enforced) must be decimal digits
+        #                             . - delimiter (strictly enforced)
+        #                              MM - Major code (ideally one or more decimal digits) but KSB breaks this
+        #                                . - delimiter if minor is present it must be delimited by a '.'
+        #                                 mm - minor (ideally one or more decimal digits but may contain _PATCH(s) as
+        #                                      they are applied
         split_data = version.split(".")
+        if len(split_data) not in [2, 3]:
+            raise TypeError(
+                f"invalid version string: {version}, 2 or 3 dot delimited version specifiers expected"
+            )
+
+        # YEAR
         self.year = int(split_data[0])
-        self.major = int(split_data[1])
-        self.minor = 0 if len(split_data) == 2 else split_data[2]
+
+        # Major
+        # KSB branch hw_server identifies itself this way: '2023.2_ksb_rc2' special handling to extract the version
+        # for this style of version string .* - covers zero non-digit characters following the match group
+        match = re.match(
+            r"(\d+).*", split_data[1]
+        )  # match grouping of digits immediately following the '.' delim
+        if match:
+            self.major = int(match.groups()[0])
+        else:
+            raise TypeError(f"invalid version string: {version} - Major decode error")
+
+        # Minor
+        if len(split_data) == 3:
+            match = re.match(
+                r"(\d+).*", split_data[2]
+            )  # match grouping of digits immediately following the '.' delim
+            if match:
+                self.minor = int(match.groups()[0])
+            else:
+                self.minor = 0
+        else:
+            self.minor = 0
 
 
 def version_consistency_check(

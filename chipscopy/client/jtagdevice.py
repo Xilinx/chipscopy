@@ -368,7 +368,6 @@ class JtagDevice(JtagNode):
 
         # add pending to indicate that this node is being changed
         self.add_pending(proc.config_begin(self.ctx, {}, config_started))
-        send_data()
 
     def reset(self):
         """

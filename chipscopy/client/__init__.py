@@ -54,16 +54,28 @@ def _setup_channel_listener(params, chan: channel):
     chan.addChannelListener(DisconnectListener())
 
 
-def connect_channel(params, done: request.DoneCallback = None):
-    if not protocol.getEventQueue():
-        protocol.startEventQueue()
-    wait = ~protocol.isDispatchThread() and not done
-    p = peer.TransientPeer(parse_params(process_param_str(params)))
-    if wait:
-        c = sync_call(_openChannel, p)
-    else:
-        c = protocol.invokeAndWait(_openChannel, p, done)
-    return c
+try:
+    import pytcf
+    from chipscopy.tcf.native.ChannelPyTcf import ChannelPyTcf
+
+    def connect_channel(params, wait=True):
+        if not protocol.getEventQueue():
+            protocol.startEventQueue()
+        params = parse_params(process_param_str(params))
+        return pytcf.connect_tcf(params[peer.ATTR_ID])
+
+except ModuleNotFoundError:
+
+    def connect_channel(params, done: request.DoneCallback = None):
+        if not protocol.getEventQueue():
+            protocol.startEventQueue()
+        wait = ~protocol.isDispatchThread() and not done
+        p = peer.TransientPeer(parse_params(process_param_str(params)))
+        if wait:
+            c = sync_call(_openChannel, p)
+        else:
+            c = protocol.invokeAndWait(_openChannel, p, done)
+        return c
 
 
 def connect(url: str, done: request.DoneCallback = None) -> ServerInfo:

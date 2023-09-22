@@ -1,5 +1,9 @@
 # ChipScoPy Release Notes
 
+## 2023.2.pre #1 - Sep 22, 2023
+- Compatibility with 2023.2 hw_server and cs_server
+- Enhanced device event tracking
+
 ## 2023.1.pre #2 - Feb 21, 2023
 - Fixed issues detecting DPC change when reprogramming
 - Removed arm-dap from fpga device list (correctly reported in jtag device list)

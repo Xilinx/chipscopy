@@ -156,6 +156,10 @@ class DefaultCoreService(services.Service):
         cs_req, property_group_names = self._get_args(req, 2, "commit_property_group")
         cs_req.commit_property_group(property_group_names)
 
+    def refreshPropertyCmd(self, req: local.CommandRequest):
+        cs_req, property_names = self._get_args(req, 2, "_refresh_property")
+        cs_req._refresh_property(property_names)
+
     def refreshPropertyGroupCmd(self, req: local.CommandRequest):
         cs_req, groups = self._get_args(req, 2, "refresh_property_group")
         cs_req.refresh_property_group(groups)

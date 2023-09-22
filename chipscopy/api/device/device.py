@@ -23,8 +23,8 @@ from typing import Optional, Union, Dict, List, Set, Any, NewType, Literal
 from struct import pack, unpack
 
 from chipscopy.api import DMNodeListener
-from chipscopy.api._detail.ltx import parse_ltx_files
-from chipscopy.api._detail.trace import Trace
+from chipscopy.api._detail.ltx import parse_ltx_files  # noqa
+from chipscopy.api._detail.trace import Trace  # noqa
 from chipscopy.api.containers import QueryList
 from chipscopy.api.ddr.ddr import DDR
 from chipscopy.api.device.device_spec import DeviceSpec
@@ -55,11 +55,22 @@ from chipscopy.api.device.device_scanner import (
     scan_all_views,
 )
 from chipscopy.api.device.device_util import copy_node_props
+from chipscopy.utils.logger import log
 
 
 class FeatureNotAvailableError(Exception):
     def __init__(self):
         super().__init__("Feature not available on this architecture")
+
+
+class DeviceException(Exception):
+    pass
+
+
+class DeviceState(Enum):
+    VALID = 0
+    NEEDS_REFRESH = 1
+    INVALID = 2
 
 
 class DeviceFamily(Enum):
@@ -111,6 +122,9 @@ class Device:
         disable_core_scan: bool,
         disable_cache: bool,
     ):
+        self.state = DeviceState.NEEDS_REFRESH
+        self.cached_props = {}
+
         self.hw_server = hw_server
         self.cs_server = cs_server
 
@@ -124,13 +138,15 @@ class Device:
         self.jtag_index = self._device_spec.jtag_index
 
         self.disable_core_scan = disable_core_scan
-        self._disable_cache = disable_cache
+        self.disable_cache = disable_cache
 
         self.ltx = None
         self.ltx_sources = []
         self.cores_to_scan = {}  # set during discover_and_setup_cores
         self.programming_error: Optional[str] = None  # Keep error for query after programming
         self.programming_done: bool = False
+
+        self.refresh()
 
         # The following filter_by becomes a dictionary with architecture, jtag_index, context, etc.
         # This is used when asking for a device by filter from the device list like:
@@ -152,50 +168,77 @@ class Device:
         else:
             raise AttributeError(f"No property {str(item)}")
 
-    def node_callback(self, action: DMNodeListener.NodeAction, node: Node, props: Optional[Set]):
-        def owns_context(self, node_ctx: str):
-            """Returns true if the node_ctx is managed by this device"""
-            if node_ctx in [self.jtag_node, self.device_node]:
-                return True
-            else:
-                return False
+    def _raise_if_state_invalid(self):
+        if self.state == DeviceState.INVALID:
+            raise DeviceException(f"Device {str(self)} is invalid - session rescan required")
 
-        pass
-        # TODO: Implement for dynamic node tracking
-        # if action in [
-        #     DMNodeListener.NodeAction.NODE_CHANGED,
-        #     DMNodeListener.NodeAction.NODE_REMOVED,
-        # ]:
-        #     # Device properties are cached until an event indicates something
-        #     # changed that needs properties to be reread from hardware.
-        #     cache_clear_contexts = set()
-        #     if self.device_node:
-        #         cache_clear_contexts.add(self.device_node.ctx)
-        #     if self.jtag_node:
-        #         cache_clear_contexts.add(self.jtag_node.ctx)
-        #     if self.debugcore_node:
-        #         cache_clear_contexts.add(self.debugcore_node.ctx)
-        #     if self.chipscope_node:
-        #         cache_clear_contexts.add(self.chipscope_node.ctx)
-        #     if node.ctx in cache_clear_contexts:
-        #         # Mark the properties as invalid if any hardware node changed that could affect the values.
-        #         # This will force a re-read next time the properties are accessed through to_dict() for instance.
-        #         # self._props_are_valid = False
-        #         # print("****** node_callback:", action, node, node.ctx)
-        #         pass
-        # elif action == DMNodeListener.NodeAction.NODE_ADDED:
-        #     # print("****** node_callback:", action, node, node.ctx)
-        #     pass
+    def refresh(self):
+        # Refresh device properties from hardware
+        self._raise_if_state_invalid()
+        self.cached_props = self.scan_props()
+        if not self.disable_cache:
+            self.state = DeviceState.VALID
+
+    def node_callback(self, action: DMNodeListener.NodeAction, node: Node, props: Optional[Set]):
+        # Called from session when a TCF node event happens
+        # TODO: TypeError: 'ParodyLogger' object is not callable
+        # log.client.trace(f"node_callback: action={action}, node={node.ctx}")
+
+        if not node or action == DMNodeListener.NodeAction.NODE_ADDED:
+            # Maybe in the future we will track if a child node was added to anything in the
+            #     Device tree... For now just ignore.
+            return
+
+        # Top level device contexts that can represent the device - track for device removal
+        root_device_contexts = {self._device_spec.device_ctx, self._device_spec.jtag_device_ctx}
+
+        # Expanded set of device contexts that are important to track for node changes
+        all_device_contexts = {
+            self._device_spec.device_ctx,
+            self._device_spec.jtag_device_ctx,
+            self._device_spec.debugcore_dap_ctx,
+            self._device_spec.debugcore_dpc_ctx,
+            self._device_spec.memory_dap_ctx,
+            self._device_spec.memory_dpc_ctx,
+            self._device_spec.chipscope_dap_ctx,
+            self._device_spec.chipscope_dpc_ctx,
+        }
+        if action == DMNodeListener.NodeAction.NODE_REMOVED and node.ctx in root_device_contexts:
+            # Removed a node that is the anchor for this device... Invalidate the device so any subsequent
+            #     user API calls return an invalid device message
+
+            # TODO: TypeError: 'ParodyLogger' object is not callable
+            # log.client.warn(f"DEVICE {str(self)} marked invalid -- rescan required!")
+            self.state = DeviceState.INVALID
+            device_node = self._device_spec.get_device_node()
+            if device_node:
+                # Remove any cached information for the invalid device
+                device_node.device_wrapper = None
+        elif action == DMNodeListener.NodeAction.NODE_CHANGED and node.ctx in all_device_contexts:
+            # One of our watched nodes changed - need to re-scan properties from hardware on next call
+
+            # TODO: TypeError: 'ParodyLogger' object is not callable
+            # log.client.debug(
+            #     f"NODE_CHANGED on device {str(self)}, Node: {node.ctx} - setting NEEDS_REFRESH"
+            # )
+            self.state = DeviceState.NEEDS_REFRESH
 
     def scan_props(self) -> Dict[str, Any]:
+        """
+        Scan device properties from hardware.
+
+        Returns: Dict of properties
+
+        """
+        self._raise_if_state_invalid()
         props = {}
         if self.hw_server and self.jtag_node:
             node = self.jtag_node
             props["jtag"] = copy_node_props(node, node.props)
         props["is_valid"] = self.is_valid
         props["context"] = self.context
-        props["is_programmed"] = self.is_programmed
-        props["is_programmable"] = self.is_programmable
+        props["is_programmed"] = self.scan_is_programmed()
+        props["is_programmable"] = self.scan_is_programmable()
         props["part"] = self.part_name
         props["family"] = self.family_name
         props["dna"] = self.dna
@@ -206,11 +249,12 @@ class Device:
         props = dict(sorted(props.items()))  # noqa
         return props
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Any]:
         """Returns a dictionary representation of the device data"""
-        # TODO: Cache results to make this faster
-        props = self.scan_props()
-        return props
+        self._raise_if_state_invalid()
+        if self.state == DeviceState.NEEDS_REFRESH:
+            self.refresh()
+        return self.cached_props
 
     def to_json(self) -> str:
         """Returns a json representation of the device data"""
@@ -227,12 +271,12 @@ class Device:
         """
         return self._device_spec.device_ctx
 
-    @property
-    def is_programmed(self) -> bool:
+    def scan_is_programmed(self) -> bool:
         """Returns True if this Device is programmed, False otherwise."""
         # TODO: Queries hardware for jtag program status. This could be slow -
-        # is there a way to collect this once, then track by subsequent events pushed from
-        # the hw_server if we detect DONE went low?
+        #       is there a way to collect this once, then track by subsequent events pushed from
+        #       the hw_server if we detect DONE went low?
+        self._raise_if_state_invalid()
         is_programmed_ = False
         try:
             node = self.jtag_node
@@ -255,12 +299,23 @@ class Device:
         return is_programmed_
 
     @property
-    def is_programmable(self) -> bool:
+    def is_programmed(self) -> bool:
+        """Returns True if this Device is programmed, False otherwise."""
+        d = self.to_dict()
+        return d.get("is_programmed", False)
+
+    def scan_is_programmable(self) -> bool:
         """Returns True if this Device is programmable, False otherwise"""
         is_programmable_ = False
         node = self.jtag_node
         if node:
             return node.props.get("is_programmable", False)
+
+    @property
+    def is_programmable(self) -> bool:
+        """Returns True if this Device is programmable, False otherwise"""
+        d = self.to_dict()
+        return d.get("is_programmable", False)
 
     @property
     def is_valid(self) -> bool:
@@ -294,6 +349,7 @@ class Device:
         """Returns:
         list of detected IBERT cores in the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(IBERTCoreClient)
 
     @property
@@ -301,6 +357,7 @@ class Device:
         """Returns:
         list of detected VIO cores in the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(AxisVIOCoreClient)
 
     @property
@@ -308,6 +365,7 @@ class Device:
         """Returns:
         list of detected ILA cores in the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(AxisIlaCoreClient)
 
     @property
@@ -315,6 +373,7 @@ class Device:
         """Returns:
         list of detected Trace cores in the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(AxisTraceClient)
 
     @property
@@ -322,6 +381,7 @@ class Device:
         """Returns:
         list of detected PCIe cores in the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(AxisPCIeCoreClient)
 
     @property
@@ -329,6 +389,7 @@ class Device:
         """Returns:
         List with NOC roots for the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(NoCPerfMonCoreClient)
 
     @property
@@ -336,6 +397,7 @@ class Device:
         """Returns:
         list of detected DDRMC cores in the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(DDRMCClient)
 
     @property
@@ -343,6 +405,7 @@ class Device:
         """Returns:
         list of detected HBM cores in the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(HBMClient)
 
     @property
@@ -350,6 +413,7 @@ class Device:
         """Returns:
         List with one SysMon core for the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(SysMonCoreClient)
 
     @staticmethod
@@ -481,6 +545,7 @@ class Device:
         # Selectively disable scanning of cores depending on what comes in
         # This is second priority to the disable_core_scan in __init__.
         self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
+        self._raise_if_state_invalid()
         self.cores_to_scan = {}
         if self.disable_core_scan:
             for core_name in Device._CORE_TYPE_TO_CLASS_MAP.keys():
@@ -531,6 +596,7 @@ class Device:
         """Returns:
         list of supported memory targets"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         valid_memory_targets = (
             r"(Versal .*)|(DPC)|(APU)|(RPU)|(PPU)|(PSM)|(Cortex.*)|(MicroBlaze.*)"
         )
@@ -566,6 +632,7 @@ class Device:
         """Returns:
         the memory access for the device"""
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         target_nodes = self._device_spec.get_all_memory_nodes()
         node_list = QueryList()
         for node in target_nodes:
@@ -580,6 +647,7 @@ class Device:
         target every time. Inner loops should just call the find_memory_target once.
         """
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         node = self._device_spec.search_memory_node_deep(target, default_target=self.default_target)
         if not node:
             raise (ValueError(f"Could not find memory node for target {target}"))
@@ -618,6 +686,7 @@ class Device:
             byte_size (int): Number of bytes to read. Default is the size of the *data* buffer.
             show_progress_bar (bool): Show if True.
         """
+        self._raise_if_state_invalid()
         node = self.debugcore_node
         if not show_progress_bar:
             node.read_bytes(address, data, offset, byte_size)
@@ -668,6 +737,7 @@ class Device:
             byte_size (int): Number of bytes to write. Default is the size of the *data* buffer.
             show_progress_bar (bool): Show if True.
         """
+        self._raise_if_state_invalid()
         node = self.debugcore_node
         if not show_progress_bar:
             node.write_bytes(address, data, offset, byte_size)
@@ -771,6 +841,7 @@ class Device:
             memory_target: Optional name of memory target such as APU, RPU, DPC
         """
         self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
         try:
             mem = self.memory.get(name=memory_target)
         except ValueError:
@@ -780,8 +851,10 @@ class Device:
     def reset(self):
         """Reset the device to a non-programmed state."""
         self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
+        self._raise_if_state_invalid()
         jtag_programming_node = self.jtag_node
         assert jtag_programming_node is not None
+        self.state = DeviceState.NEEDS_REFRESH
         jtag_programming_node.future().reset()
         time.sleep(0.5)
 
@@ -806,7 +879,9 @@ class Device:
             done: Optional async future callback
         """
         self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
+        self._raise_if_state_invalid()
         program_future = request.CsFutureSync(done=done, progress=progress)
+        self.state = DeviceState.NEEDS_REFRESH
 
         if isinstance(programming_file, str):
             programming_file = Path(programming_file)
@@ -895,17 +970,29 @@ def discover_devices(
     cs_server: ServerInfo = None,
     disable_core_scan: bool = False,
     cable_ctx: Optional[str] = None,
-    disable_cache: bool = True,
+    disable_cache: bool = False,
 ) -> QueryList[Device]:
-
+    log.client.debug(
+        f"discover_devices: hw_server={hw_server}, cs_server={cs_server}, disable_core_scan={disable_core_scan}, cable_ctx={cable_ctx}",
+        disable_cache={disable_cache},
+    )
     include_dna = True
     devices: QueryList[Device] = QueryList()
+    idx = 0
     for key, device_record_list in scan_all_views(hw_server, cs_server, include_dna).items():
         device_spec = DeviceSpec.create_from_device_records(
             hw_server, cs_server, device_record_list
         )
+        if not device_spec.is_valid:
+            # This can happen when a chipscope server is serving multiple sessions.
+            # The cs_server reports back connection information for the
+            # other sessions which should be ignored.
+            log.client.debug(f"discover_devices: No device_node for dna key: {key} --> ignored.\n")
+            continue
+
         if cable_ctx is None or device_spec.jtag_cable_ctx == cable_ctx:
             device_node = device_spec.get_device_node()
+            assert device_node is not None
             if device_node.device_wrapper is None:
                 device_node.device_wrapper = Device(
                     hw_server=hw_server,
@@ -914,5 +1001,14 @@ def discover_devices(
                     disable_core_scan=disable_core_scan,
                     disable_cache=disable_cache,
                 )
+                log.client.debug(
+                    f"discover_devices: created new device: {device_node.device_wrapper}"
+                )
+            else:
+                log.client.debug(
+                    f"discover_devices: reusing device wrapper: {device_node.device_wrapper}"
+                )
             devices.append(device_node.device_wrapper)
+            log.client.info(f"discover_devices: {idx}: {device_node.device_wrapper}")
+            idx += 1
     return devices

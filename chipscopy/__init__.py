@@ -31,7 +31,9 @@ __copyright__ = "Copyright (C) 2022-2023, Advanced Micro Devices, Inc."
 __email__ = "support@xilinx.com"
 try:
     __version__ = importlib_metadata.version(__package__)
-except importlib_metadata.PackageNotFoundError:  # for frozen app support, enter correct version here
+except (
+    importlib_metadata.PackageNotFoundError
+):  # for frozen app support, enter correct version here
     __version__ = "XXXXXXX"
 
 
@@ -41,7 +43,7 @@ def get_examples_dir_or_die():
 
     # First priority - locally installed examples with the default directory name
     # Case for most users that installed examples.
-    examples_dir = os.path.realpath(os.getcwd() + "./chipscopy-examples")
+    examples_dir = os.path.join(os.getcwd(), "chipscopy-examples")
     if os.path.isdir(examples_dir):
         return examples_dir
 
@@ -53,12 +55,15 @@ def get_examples_dir_or_die():
         examples_dir = os.path.realpath(
             os.path.dirname(inspect.getfile(inspect.currentframe())) + "/examples"
         )
-    else:
-        # Likely in a jupyter environment - examples will likely be in the same dir as the cwd
-        examples_dir = os.path.dirname(os.path.realpath(os.getcwd() + "./examples"))
-    if not os.path.isdir(examples_dir):
-        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), examples_dir)
-    return examples_dir
+        if os.path.isdir(examples_dir):
+            return examples_dir
+
+    # Jupyter doesn't work with currentframe above, just try examples as a last resort
+    examples_dir = os.path.join(os.getcwd(), "examples")
+    if os.path.isdir(examples_dir):
+        return examples_dir
+
+    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), examples_dir)
 
 
 def _get_design_files_in_dir(p: Path) -> namedtuple:

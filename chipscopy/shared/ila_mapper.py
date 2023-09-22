@@ -92,7 +92,7 @@ class Match:
             return
         # Have a "1=" one bit value, which can be flipped.
         self.op = "=="
-        self.value = "1" if self.value == "0" else "0"
+        self.value = negate_bit_value(self.value)
         # Mark name, for debug printout
         self.name = "~" + self.name
 
@@ -590,3 +590,19 @@ def port_map_str_to_port_seqs(
     items = map_str.lower().split()
     map_seqs = [_parse_map_item(item) for item in items]
     return map_seqs
+
+
+def negate_bit_value(bit_ch: str) -> str:
+    negate_dict = {
+        "0": "1",
+        "1": "0",
+        "X": "X",
+        "R": "L",
+        "F": "S",
+        "T": "N",
+        "B": "N",
+        "N": "T",
+        "L": "R",
+        "S": "F",
+    }
+    return negate_dict.get(bit_ch.upper(), "X")

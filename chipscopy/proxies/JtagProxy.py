@@ -279,26 +279,23 @@ class ChannelEventListener(channel.EventListener):
     def __init__(self, service, listener):
         self.service = service
         self.listener = listener
+        self._event_handlers = {
+            "contextAdded": self._context_added,
+            "contextChanged": self._context_changed,
+            "contextRemoved": self._context_removed,
+        }
 
-    def event(self, name, data):
-        try:
-            args = channel.fromJSONSequence(data)
-            if name == "contextAdded":
-                assert len(args) == 1
-                self.listener.contextAdded(_toContextArray(self.service, args[0]))
-            elif name == "contextChanged":
-                assert len(args) == 1
-                self.listener.contextChanged(_toContextArray(self.service, args[0]))
-            elif name == "contextRemoved":
-                assert len(args) == 1
-                self.listener.contextRemoved(args[0])
-            else:
-                raise IOError("Memory service: unknown event: " + name)
-        except Exception as x:
-            import sys
+    def _context_added(self, args):
+        assert len(args) == 1
+        self.listener.contextAdded(_toContextArray(self.service, args[0]))
 
-            x.tb = sys.exc_info()[2]
-            self.service.channel.terminate(x)
+    def _context_changed(self, args):
+        assert len(args) == 1
+        self.listener.contextChanged(_toContextArray(self.service, args[0]))
+
+    def _context_removed(self, args):
+        assert len(args) == 1
+        self.listener.contextRemoved(args[0])
 
 
 def _toContextArray(svc, o):

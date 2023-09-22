@@ -54,7 +54,8 @@ class DebugCorePollScheduler(object):
                     for event_listener in poll["event_listeners"]:
                         event_listener(poll, props)
 
-        self.serv.add_listener(DebugCorePollingListener())
+        self._dcp_listener = DebugCorePollingListener()
+        self.serv.add_listener(self._dcp_listener)
 
     def _add_poll(self, poll):
         poll_id = poll.get("ID")
@@ -252,3 +253,9 @@ class DebugCorePollScheduler(object):
             return t
 
         return self.serv.retain_poll(poll_ctx, done_retain)
+
+    def cleanup(self):
+        if protocol.isDispatchThread():
+            self.serv.remove_listener(self._dcp_listener)
+        else:
+            protocol.invokeAndWait(self.serv.remove_listener, self._dcp_listener)
