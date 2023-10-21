@@ -17,7 +17,6 @@ import inspect
 from abc import abstractmethod
 from typing import List, Tuple
 
-from chipscopy.tcf.services import from_xargs
 from .server_info import ServerInfo
 from .view_info import ViewInfo
 from chipscopy import dm
@@ -106,7 +105,6 @@ class CoreClient(dm.Node):
         def done_core_command(token, error, results):
             self.remove_pending(token)
             if done:
-                # results = from_xargs(results)
                 if isinstance(results, list) and len(results) == 1:
                     results = results[0]
                 if restore_tuple and isinstance(results, list):

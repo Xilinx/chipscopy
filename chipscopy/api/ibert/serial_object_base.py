@@ -72,17 +72,26 @@ class IBERTWatchlist(Watchlist["IBERTPropertyCommands"]):
 
         sanitized_data = PropertyCommands.sanitize_input(property_names, list)
 
-        self.core_tcf_node.add_to_property_watchlist(sanitized_data, self.parent.endpoint_name)
-
-        if not self._tcf_event_listener_registered:
-            self.parent.endpoint_tcf_node.add_listener(self._mandatory_event_listener)
-            self._tcf_event_listener_registered = True
-
         watch_id = self._get_uuid()
-        self._listeners[watch_id].extend(listeners)
+        with self._lock:
+            if not self._tcf_event_listener_registered:
+                # NOTE - Imp to use the "endpoint_tcf_node" and not the "core_tcf_node"
+                # cs_server will send updates via the node that is the property endpoint
+                self.parent.endpoint_tcf_node.add_listener(self._mandatory_event_listener)
+                self._tcf_event_listener_registered = True
 
-        for property_name in sanitized_data:
-            self._watch_ids_for_property[property_name].add(watch_id)
+            self._listeners[watch_id].extend(listeners)
+
+            for property_name in sanitized_data:
+                self._watch_ids_for_property[property_name].add(watch_id)
+
+        try:
+            self.core_tcf_node.add_to_property_watchlist(sanitized_data, self.parent.endpoint_name)
+        except Exception:
+            with self._lock:
+                for property_name in sanitized_data:
+                    self._watch_ids_for_property[property_name].remove(watch_id)
+                del self._listeners[watch_id]
 
     def remove(self, property_names: Union[str, List[str]]):
         """

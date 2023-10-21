@@ -61,11 +61,15 @@ TX_RESET: Final[str] = "Reset"
 TX_PRE_CURSOR: Final[str] = "Pre Cursor"
 TX_POST_CURSOR: Final[str] = "Post Cursor"
 TX_DIFFERENTIAL_SWING: Final[str] = "Differential Control"
+TX_USRCLK_FREQ: Final[str] = "TX USRCLK Frequency"
+TX_PHYCLK_FREQ: Final[str] = "TX PHYCLK Frequency"
+TX_POLARITY: Final[str] = "TX Polarity"
 
 # ----------------------------------------------------------------
 # Applicable to RX only
 # ----------------------------------------------------------------
 RX_BER: Final[str] = "BER"
+RX_BER_RESET: Final[str] = "RX BER Reset"
 RX_RESET: Final[str] = "Reset"
 RX_STATUS: Final[str] = "Status"
 RX_YK_SCAN: Final[str] = "YK scan"
@@ -74,9 +78,13 @@ RX_LOOPBACK: Final[str] = "Loopback"
 RX_LINE_RATE: Final[str] = "Line Rate"
 RX_SUPPORTED_SCANS: Final[str] = "Supported scans"
 RX_RECEIVED_BIT_COUNT: Final[str] = "Received Bit Count"
+RX_NORMALIZED_RECEIVED_BIT_COUNT: Final[str] = "Received Bit Count (Normalized)"
 RX_PATTERN_CHECKER_ERROR_COUNT: Final[str] = "Pattern Checker Error Count"
 RX_TERMINATION_VOLTAGE: Final[str] = "Termination Voltage"
 RX_COMMON_MODE: Final[str] = "Common Mode"
+RX_USRCLK_FREQ: Final[str] = "RX USRCLK Frequency"
+RX_PHYCLK_FREQ: Final[str] = "RX PHYCLK Frequency"
+RX_POLARITY: Final[str] = "RX Polarity"
 
 # ----------------------
 # Microblaze
@@ -104,7 +112,7 @@ EYE_SCAN_HORZ_RANGE: Final[str] = "Horizontal Range"
 """Alias for horizontal range eye scan parameter"""
 EYE_SCAN_VERT_RANGE: Final[str] = "Vertical Range"
 """Alias for horizontal range eye scan parameter"""
-EYE_SCAN_TARGET_BER: Final[str] = "Target BER"
+EYE_SCAN_TARGET_BER: Final[str] = "Dwell BER"
 """Alias for target BER eye scan parameter"""
 EYE_SCAN_DWELL_TIME: Final[str] = "Dwell Time"
 """Alias for dwell time eye scan parameter"""
@@ -129,6 +137,10 @@ EYE_SCAN_SCAN_PARAMETERS: Final[str] = "Scan Parameters"
 EYE_SCAN_2D_PLOT_BER_FLOOR_VALUE: Final[str] = "BER Floor Value"
 EYE_SCAN_TOTAL_NO_OF_DATA_POINTS_READ: Final[str] = "Total #Data Points Read"
 EYE_SCAN_TOTAL_NO_OF_DATA_POINTS_EXPECTED: Final[str] = "Total #Data Points Expected"
+EYE_SCAN_MAX_HORZ_RANGE: Final[str] = "Maximum Horizontal Range"
+EYE_SCAN_MAX_VERT_RANGE: Final[str] = "Maximum Vertical Range"
+EYE_SCAN_MIN_HORZ_RANGE: Final[str] = "Minimum Horizontal Range"
+EYE_SCAN_MIN_VERT_RANGE: Final[str] = "Minimum Vertical Range"
 
 # ----------------------------------------------------------------
 # PLL related

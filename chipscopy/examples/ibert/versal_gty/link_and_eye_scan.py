@@ -1,11 +1,11 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
-#       format_name: light
-#       format_version: '1.5'
+#       format_name: percent
+#       format_version: '1.3'
 #       jupytext_version: 1.10.1
 #   kernelspec:
 #     display_name: Python 3
@@ -13,15 +13,16 @@
 #     name: python3
 # ---
 
-# + [markdown] papermill={"duration": 0.006301, "end_time": "2023-06-07T20:45:59.413034", "exception": false, "start_time": "2023-06-07T20:45:59.406733", "status": "completed"} tags=[]
+# %% [markdown]
 # <link rel="preconnect" href="https://fonts.gstatic.com">
 # <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 #
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (c) 2021-2022 Xilinx, Inc.<br>
-# Copyright (c) 2022-2023 Advanced Micro Devices, Inc.<br><br>
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
@@ -33,13 +34,13 @@
 # </p>
 #
 
-# + [markdown] papermill={"duration": 0.004897, "end_time": "2023-06-07T20:45:59.423517", "exception": false, "start_time": "2023-06-07T20:45:59.418620", "status": "completed"} tags=[]
+# %% [markdown]
 # # IBERT link and eye scan example
 #
 #
 # <img src="../../img/api_overview.png" width="500" align="left">
 
-# + [markdown] papermill={"duration": 0.004707, "end_time": "2023-06-07T20:45:59.433232", "exception": false, "start_time": "2023-06-07T20:45:59.428525", "status": "completed"} tags=[]
+# %% [markdown]
 # ## Description
 # This example shows how to interact with the IBERT (Integrated Bit Error Ratio Tester) debug core service via ChipScoPy APIs.
 # - Program the ChipScoPy CED design onto the XCVC1902 device on a VCK190 board
@@ -59,14 +60,14 @@
 # - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 # - Optional - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/) (For the sweep example only).
 
-# + [markdown] papermill={"duration": 0.00499, "end_time": "2023-06-07T20:45:59.443220", "exception": false, "start_time": "2023-06-07T20:45:59.438230", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
 #
 # After this step,
 # - Required functions and classes are imported
 # - Paths to server(s) and files are set correctly
 
-# + jupyter={"outputs_hidden": false} papermill={"duration": 0.339263, "end_time": "2023-06-07T20:45:59.787611", "exception": false, "start_time": "2023-06-07T20:45:59.448348", "status": "completed"} tags=[]
+# %% jupyter={"outputs_hidden": false}
 import os
 from more_itertools import one
 from itertools import product
@@ -89,22 +90,25 @@ from chipscopy.api.ibert.aliases import (
 from chipscopy.api.ibert import create_eye_scans, create_links
 
 
-# + papermill={"duration": 0.012661, "end_time": "2023-06-07T20:45:59.806227", "exception": false, "start_time": "2023-06-07T20:45:59.793566", "status": "completed"} tags=[]
+# %%
 # Make sure to start the hw_server and cs_server prior to running.
 # Specify locations of the running hw_server and cs_server below.
 # The default is localhost - but can be other locations on the network.
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
 
+# specify hw and if programming is desired
+HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
+PROG_DEVICE = os.getenv("PROG_DEVICE", True)
+
 # The get_design_files() function tries to find the PDI and LTX files. In non-standard
 # configurations, you can put the path for PROGRAMMING_FILE and PROBES_FILE below.
-design_files = get_design_files("vck190/production/chipscopy_ced")
-
+design_files = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced")
 PDI_FILE = design_files.programming_file
 
 print(f"PROGRAMMING_FILE: {PDI_FILE}")
 
-# + [markdown] papermill={"duration": 0.004867, "end_time": "2023-06-07T20:45:59.816031", "exception": false, "start_time": "2023-06-07T20:45:59.811164", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
@@ -112,22 +116,25 @@ print(f"PROGRAMMING_FILE: {PDI_FILE}")
 # - Session is initialized and connected to server(s)
 # - Versions are detected and reported to stdout
 
-# + jupyter={"outputs_hidden": false} papermill={"duration": 0.996812, "end_time": "2023-06-07T20:46:00.817830", "exception": false, "start_time": "2023-06-07T20:45:59.821018", "status": "completed"} tags=[]
+# %% jupyter={"outputs_hidden": false}
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
 report_versions(session)
 
-# + [markdown] papermill={"duration": 0.005212, "end_time": "2023-06-07T20:46:00.829441", "exception": false, "start_time": "2023-06-07T20:46:00.824229", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 3 - Program the device with the example design
 #
 # After this step,
 # - Device is programmed with the example programming file
 
-# + jupyter={"outputs_hidden": false} papermill={"duration": 6.530379, "end_time": "2023-06-07T20:46:07.365047", "exception": false, "start_time": "2023-06-07T20:46:00.834668", "status": "completed"} tags=[]
+# %% jupyter={"outputs_hidden": false}
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
-device.program(PDI_FILE)
+if PROG_DEVICE:
+    device.program(PDI_FILE)
+else:
+    print("skipping programming")
 
-# + [markdown] papermill={"duration": 0.007113, "end_time": "2023-06-07T20:46:07.379026", "exception": false, "start_time": "2023-06-07T20:46:07.371913", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 4 - Discover and setup the IBERT core
 #
 # Debug core discovery initializes the chipscope server debug cores.
@@ -137,7 +144,7 @@ device.program(PDI_FILE)
 # - The cs_server is initialized and ready for use
 # - The first ibert found is used
 
-# + jupyter={"outputs_hidden": false} papermill={"duration": 2.17366, "end_time": "2023-06-07T20:46:09.558342", "exception": false, "start_time": "2023-06-07T20:46:07.384682", "status": "completed"} tags=[]
+# %% jupyter={"outputs_hidden": false}
 device.discover_and_setup_cores(ibert_scan=True)
 print("--> Debug core discovery done")
 
@@ -154,12 +161,12 @@ if len(ibert.gt_groups) == 0:
 
 print(f"GT Groups available - {[gt_group_obj.name for gt_group_obj in ibert.gt_groups]}")
 
-# + [markdown] papermill={"duration": 0.005344, "end_time": "2023-06-07T20:46:09.570202", "exception": false, "start_time": "2023-06-07T20:46:09.564858", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 5 - Print the hierarchy of the IBERT core
 #
 # We also ensure that all the quads instantiated by the ChipScoPy CED design are found by the APIs
 
-# + jupyter={"outputs_hidden": false} papermill={"duration": 21.55884, "end_time": "2023-06-07T20:46:31.135397", "exception": false, "start_time": "2023-06-07T20:46:09.576557", "status": "completed"} tags=[]
+# %% jupyter={"outputs_hidden": false}
 report_hierarchy(ibert)
 
 assert len(ibert.gt_groups) == 4
@@ -169,14 +176,14 @@ q204 = one(ibert.gt_groups.filter_by(name="Quad_204"))
 q201 = one(ibert.gt_groups.filter_by(name="Quad_201"))
 q105 = one(ibert.gt_groups.filter_by(name="Quad_105"))
 
-# + [markdown] papermill={"duration": 0.006204, "end_time": "2023-06-07T20:46:31.148215", "exception": false, "start_time": "2023-06-07T20:46:31.142011", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 6 - Create links between following TXs and RXs
 # - Quad 205 CH0 TX to Quad 205 CH0 RX
 # - Quad 204 CH1 TX to Quad 204 CH1 RX
 # - Quad 201 CH2 TX to Quad 201 CH2 RX
 # - Quad 105 CH3 TX to Quad 105 CH3 RX
 
-# + papermill={"duration": 0.01468, "end_time": "2023-06-07T20:46:31.169105", "exception": false, "start_time": "2023-06-07T20:46:31.154425", "status": "completed"} tags=[]
+# %%
 links = create_links(
     txs=[q205.gts[0].tx, q204.gts[1].tx, q201.gts[2].tx, q105.gts[3].tx],
     rxs=[q205.gts[0].rx, q204.gts[1].rx, q201.gts[2].rx, q105.gts[3].rx],
@@ -184,14 +191,14 @@ links = create_links(
 
 print("--> Done creating links")
 
-# + [markdown] papermill={"duration": 0.00546, "end_time": "2023-06-07T20:46:31.180443", "exception": false, "start_time": "2023-06-07T20:46:31.174983", "status": "completed"} raw_mimetype="text/markdown" tags=[]
+# %% [markdown] raw_mimetype="text/markdown"
 # ## 7 - Print the valid values for pattern and loopback, set the pattern for the TXs and RXs to "PRBS 31" and set loopback to "Near-End PMA"
 #
 # In order to lock the internal pattern checker, TX and RX patterns need to match. We also need to have some kind of loopback, internal/external.
 #
 # We are assuming that no external cable loopback is present and hence making use of internal loopback.
 
-# + papermill={"duration": 7.9692, "end_time": "2023-06-07T20:46:39.155168", "exception": false, "start_time": "2023-06-07T20:46:31.185968", "status": "completed"} raw_mimetype="text/x-python" tags=[]
+# %% raw_mimetype="text/x-python"
 for link in links:
     print(f"\n----- {link.name} -----")
     _, tx_pattern_report = link.tx.property.report(link.tx.property_for_alias[PATTERN]).popitem()
@@ -221,12 +228,12 @@ for link in links:
     assert link.status != "No link"
     print(f"--> {link} is linked as expected")
 
-# + [markdown] papermill={"duration": 0.006308, "end_time": "2023-06-07T20:46:39.169121", "exception": false, "start_time": "2023-06-07T20:46:39.162813", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 8 - Create eye scan objects for all the links, set the scan params and start the scan
 #
 # The eye scans will be run in parallel
 
-# + papermill={"duration": 7.645677, "end_time": "2023-06-07T20:46:46.821265", "exception": false, "start_time": "2023-06-07T20:46:39.175588", "status": "completed"} tags=[]
+# %%
 eye_scans = create_eye_scans(target_objs=[link for link in links])
 for eye_scan in eye_scans:
     eye_scan.params[EYE_SCAN_HORZ_STEP].value = 10
@@ -239,16 +246,16 @@ for eye_scan in eye_scans:
     print(f"Started eye scan {eye_scan}")
 
 
-# + [markdown] papermill={"duration": 0.006358, "end_time": "2023-06-07T20:46:46.834882", "exception": false, "start_time": "2023-06-07T20:46:46.828524", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 9 - Wait for all the eye scans to get done
 
-# + papermill={"duration": 0.828215, "end_time": "2023-06-07T20:46:47.669455", "exception": false, "start_time": "2023-06-07T20:46:46.841240", "status": "completed"} tags=[]
+# %%
 eye_scans[0].wait_till_done()
 eye_scans[1].wait_till_done()
 eye_scans[2].wait_till_done()
 eye_scans[3].wait_till_done()
 
-# + [markdown] papermill={"duration": 0.007018, "end_time": "2023-06-07T20:46:47.683833", "exception": false, "start_time": "2023-06-07T20:46:47.676815", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 10 - View Eye Scan Plot.
 #
 # This requires Plotly to be installed. See how to install it [here](https://pages.gitenterprise.xilinx.com/chipscope/chipscopy/2020.2/ibert/scan.html#scan-plots)
@@ -256,13 +263,13 @@ eye_scans[3].wait_till_done()
 # NOTE - The plot may not display if this notebook is run in Jupyter Lab. For details, see [link](https://plotly.com/python/getting-started/#jupyterlab-support-python-35)
 
 
-# + papermill={"duration": 1.085739, "end_time": "2023-06-07T20:46:48.776330", "exception": false, "start_time": "2023-06-07T20:46:47.690591", "status": "completed"} tags=[]
+# %%
 eye_scans[0].plot.show()
 eye_scans[1].plot.show()
 eye_scans[2].plot.show()
 eye_scans[3].plot.show()
 
-# + [markdown] papermill={"duration": 0.010248, "end_time": "2023-06-07T20:46:48.805763", "exception": false, "start_time": "2023-06-07T20:46:48.795515", "status": "completed"} tags=[]
+# %% [markdown]
 # # IBERT Sweep Example
 #
 # This step begins the sweep example, in which for a single link we iterate through valid property values for our desired TX/RX properties, creating an eye scan for each combination of values and allowing us to identify the property values corresponding to the best eye scan. 
@@ -273,12 +280,12 @@ eye_scans[3].plot.show()
 #
 # Finally, for the purposes of this example, we will arbitrarily be using the Quad 205 CH0 TX to Quad 205 CH0 RX link.
 
-# + [markdown] papermill={"duration": 0.010373, "end_time": "2023-06-07T20:46:48.826592", "exception": false, "start_time": "2023-06-07T20:46:48.816219", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 11 - Cache Properties for Sweep.
 #
 # As performing a sweep will continuously modify our RX and TX properties, we must begin our sweep by storing the current values in order to restore them after we are done.
 
-# + papermill={"duration": 1.336688, "end_time": "2023-06-07T20:46:50.173677", "exception": false, "start_time": "2023-06-07T20:46:48.836989", "status": "completed"} tags=[]
+# %%
 link = links[0]
 
 #Disabling internal loopback for the reasons outlined above
@@ -300,11 +307,11 @@ print(f"--> Original value of TX Post Cursor - {orig_postcursor}")
 print(f"--> Original value of TX Diff Swing - {orig_diffswing}")
 print(f"--> Original value of RX Termination Voltage - {orig_termvolt}")
 
-# + [markdown] papermill={"duration": 0.011344, "end_time": "2023-06-07T20:46:50.201046", "exception": false, "start_time": "2023-06-07T20:46:50.189702", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 12 - Find Properties for Sweep.
 # In this step, we find all possible values of the properties we wish to sweep over. For the purposes of this example, only two possible values from each property are used.
 
-# + papermill={"duration": 0.15844, "end_time": "2023-06-07T20:46:50.370231", "exception": false, "start_time": "2023-06-07T20:46:50.211791", "status": "completed"} tags=[]
+# %%
 _, tx_precursor_report = link.tx.property.report(link.tx.property_for_alias[TX_PRE_CURSOR]).popitem()
 _, tx_postcursor_report = link.tx.property.report(link.tx.property_for_alias[TX_POST_CURSOR]).popitem()
 _, tx_diffswing_report = link.tx.property.report(link.tx.property_for_alias[TX_DIFFERENTIAL_SWING]).popitem()
@@ -322,13 +329,13 @@ selected_diffswing = tx_diffswing_report['Valid values'][0:2]
 selected_termvolt = rx_termvolt_report['Valid values'][0:2]
 
 
-# + [markdown] papermill={"duration": 0.009756, "end_time": "2023-06-07T20:46:50.390070", "exception": false, "start_time": "2023-06-07T20:46:50.380314", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 13 - Perform the Sweep.
 # Iteration over combinations of property values is performed using the itertools product method, imported in the first cell of this example notebook.
 #
 # This step displays the resulting eye scans, completing the sweep.
 
-# + papermill={"duration": 58.889641, "end_time": "2023-06-07T20:47:49.289032", "exception": false, "start_time": "2023-06-07T20:46:50.399391", "status": "completed"} tags=[]
+# %%
 combinations = list(product(selected_precurs, 
                 selected_postcurs, selected_diffswing, 
                     selected_termvolt))
@@ -367,13 +374,13 @@ for (precurs, poscurs, difswing, tervolt) in combinations:
 
 
 
-# + [markdown] papermill={"duration": 0.011881, "end_time": "2023-06-07T20:47:49.314198", "exception": false, "start_time": "2023-06-07T20:47:49.302317", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 14 - Find the Sweep's Best Eye Scan.
 # Using the eye scans that we have created with the sweep, we can deduce which eye scan and its corresponding properties are the most desirable based on many different, often arbitrary metrics. In this example, we will use the proportion of 0 Bit Error Rate within each eye scan. Other ways of identifying eye-scan quality could include calculating the largest width of the dark blue area, or even simply eye-balling the area of the graph. 
 #
 # In this cell, we calculate our metric using the eye scan's raw data, sorting the resulting eye scans in descending order and printing them out.
 
-# + papermill={"duration": 1.191387, "end_time": "2023-06-07T20:47:50.517377", "exception": false, "start_time": "2023-06-07T20:47:49.325990", "status": "completed"} tags=[]
+# %%
 for scan in eye_scans:
     scan.append(sum([1 for i in scan[0].scan_data.raw.error_count if i == 0])/len(scan[0].scan_data.raw.error_count))
 
@@ -383,11 +390,11 @@ for scan in eye_scans:
     scan[1] += f", Zero Error Rate: {scan[2]}"
     scan[0].plot.show(title=scan[1])
 
-# + [markdown] papermill={"duration": 0.031337, "end_time": "2023-06-07T20:47:50.574369", "exception": false, "start_time": "2023-06-07T20:47:50.543032", "status": "completed"} tags=[]
+# %% [markdown]
 # ## 15 - Restore Original Property Values.
 # After completing the sweep, we must finally restore each property to their original values, which we had cached in step 11.
 
-# + papermill={"duration": 1.957213, "end_time": "2023-06-07T20:47:52.553725", "exception": false, "start_time": "2023-06-07T20:47:50.596512", "status": "completed"} tags=[]
+# %%
 props = {
     link.tx.property_for_alias[TX_PRE_CURSOR]: orig_precursor,
     link.tx.property_for_alias[TX_POST_CURSOR]: orig_postcursor,

@@ -26,7 +26,6 @@ else:
 
 
 class ILATsmVisitor(ParseTreeVisitor):
-
     # Visit a parse tree produced by ILATsmParser#ila_tsm.
     def visitIla_tsm(self, ctx: ILATsmParser.Ila_tsmContext):
         return self.visitChildren(ctx)

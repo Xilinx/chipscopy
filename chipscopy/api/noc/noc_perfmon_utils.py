@@ -275,6 +275,7 @@ class DDRMC(NoCElement):
             )
 
         if tcf_node_type == ddrmc_main_typedef:
+            total_ops = 0
             for ch in range(0, 2):
                 flags = 0
                 for m_index, metric in DDRMC.dc_metrics_map.items():
@@ -291,6 +292,7 @@ class DDRMC(NoCElement):
                         flags |= 1 << m_index  # overflow
                     self.samples[disagg_metric][-1] = data
                     self.samples[agg_metric][-1] += data
+                    total_ops += data
                     # need to trim here or we can get a dim mismatch when plotting happens
                     # unique issue for ddmrc, since it's two nodes with polls coming in at different rates
                     if len(self.samples[disagg_metric]) > MAX_SAMPLES:
@@ -299,6 +301,12 @@ class DDRMC(NoCElement):
                         if len(self.samples[agg_metric]) > MAX_SAMPLES:
                             self.samples[agg_metric].pop(0)
                 self.samples[f"dc{ch}_flags"].append(flags)
+            for m_index, metric in DDRMC.dc_metrics_map.items():
+                agg_metric = f"agg_{metric}"
+                # disagg_metric = f"dc{ch}_{metric}"
+                # converting this to float now, it's a 100
+                if total_ops > 0:
+                    self.samples[agg_metric][-1] = (self.samples[agg_metric][-1] * 100) / total_ops
 
         # timestamp handling
         # the way the polls are created the NA reports AFTER the main, so when this event is received, update plots
@@ -592,12 +600,11 @@ class PerfTGController:
                 self.tg_rst_probe = probe
 
     def start(self):
-        print("PerfTG start")
         self.device.memory_write(self.tg_start, [0x1])
         # CR-1062874
         # Second write of the ctrl reg is required for the start command to be effective.
-        # sleep(0.5)
-        # self.device.memory_write(self.tg_start, [0x1])
+        sleep(0.5)
+        self.device.memory_write(self.tg_start, [0x1])
 
     def stop(self):
         # this doesn't seem to be doing much
@@ -607,7 +614,6 @@ class PerfTGController:
         self._clear_instruction_memory()
 
     def block_reset(self):
-
         if self.vio is not None:
             self.vio.write_probes(
                 {

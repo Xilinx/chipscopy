@@ -312,19 +312,5 @@ class ChannelEventListener(EventListener):
         props = args[1]
         self.listener.poll_event(poll_id, props)
 
-    def event(self, name, data):
-        try:
-            args = fromJSONSequence(data)
-            try:
-                handler = self._event_handlers[name]
-                handler(args)
-            except KeyError:
-                raise IOError("DebugCorePolling service: unknown event: " + name)
-        except Exception as x:
-            import sys
-
-            x.tb = sys.exc_info()[2]
-            self.service.channel.terminate(x)
-
 
 DebugCorePollingService = DebugCorePollingProxy

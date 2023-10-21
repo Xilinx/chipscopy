@@ -54,3 +54,6 @@ class SysMonProxy(CorePropertyProxy, SysMonService):
 
     def configure_temp_and_vccint(self, node_id: str, done: DoneHWCommand):  # pragma: no cover
         return self.send_xicom_command("configureTempAndVCCINT", (node_id,), done)
+
+    def refresh_property(self, node_id: str, prop_names: List[str], done: DoneHWCommand):
+        return self.send_command("refreshProperty", (node_id, prop_names), done)

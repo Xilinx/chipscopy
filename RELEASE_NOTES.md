@@ -1,21 +1,33 @@
 # ChipScoPy Release Notes
 
+## 2023.2 - Oct 20, 2023
+
+### Minor Release
+
+- VHK158 Preliminary Support
+  - HBM2E Evaluation Platform support with ChipScoPy
+  - Known issue: DDR 2D Eye Scan is not working on this platform
+  - Known issue: Sysmon examples are not working on this platform
+- SysMon support for synchronous communication
+- Enhanced device event tracking 
+- Added support for decoupling CPM5 captive GTYP, associated example notebook included in release
+  - Note: vpk120 only at this time
+
 ## 2023.1 - June 8, 2023
 
-### Minor release
+### Major Release
 
 - NoC Perfmon features:
-    - fixes for SSI devices and HBM
-    - New basic noc perfmon example (other examples are now deprecated and will be removed in the next release)
+  - fixes for SSI devices and HBM
+  - new basic noc perfmon example (other examples are now deprecated and will be removed in a future release)
 - Device chain detection improvements
 - Changed copyright from Xilinx to AMD
 - Fixed missing docs on github for older 2021.2 release
-- Clean up and overhaul of device scan algorithm to enable non-dpc communication (CR-1151331, CR-1151160)
-
+- Clean up and overhaul of device scan algorithm to enable non-dpc communications (CR-1151331, CR-1151160)
 
 ## 2022.2 - December 5, 2022
 
-### Minor release
+### Minor Release
 
 - ILA: Reorganized waveform functions export_waveform(), get_data(), get_probe_data()
 - ILA: Advanced trigger state machine support

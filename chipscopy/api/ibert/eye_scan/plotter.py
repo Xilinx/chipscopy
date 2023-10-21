@@ -88,17 +88,36 @@ class EyeScanPlot:
         self.fig: go.Figure = None
         """Plotly `Figure` object"""
 
+        # -------------------------------------------------------
+        # Below data is used for generating the eye scan plot
+        # -------------------------------------------------------
         self._x: List[float] = list()
         self._y: List[int] = list()
         self._z: List[List[float]] = list()
 
+        self._max_ber: float = -1234.0
+        self._min_ber: float = -1234.0
+        # Used for generating the plot legend
+        self._z_to_ber: List[List[str]] = list()
+
+        self._color_bar_number_of_ticks: int = 0
+        self._color_bar_tick_text = list()
+        self._color_bar_tick_values = list()
+        # -------------------------------------------------------
+
     def _clear_out_data(self):
         self._x, self._y, self._z = list(), list(), list()
 
-    def _generate(self, *, title=""):
-        if title == "":
-            title = f"{self.eye_scan.rx.handle} ({self.eye_scan.name})"
+        self._max_ber: float = -1234.0
+        self._min_ber: float = -1234.0
+        # Used for generating the plot legend
+        self._z_to_ber: List[List[str]] = list()
 
+        self._color_bar_number_of_ticks: int = 0
+        self._color_bar_tick_text = list()
+        self._color_bar_tick_values = list()
+
+    def _compute_plot_data(self):
         self._clear_out_data()
 
         if self.eye_scan.scan_data.processed is None:
@@ -115,9 +134,6 @@ class EyeScanPlot:
         self._x = sorted(xs)
         self._y = sorted(ys)
 
-        # This will be needed later on to generate the legend
-        min_ber, max_ber, plot_z_to_ber = -1234, -1234, list()
-
         for y in self._y:
             row_vals = list()
             z_hovertext_row = list()
@@ -129,15 +145,15 @@ class EyeScanPlot:
                 row_vals.append(val)
 
             curr_min = min(row_vals)
-            if min_ber == -1234 or curr_min < min_ber:
-                min_ber = curr_min
+            if self._min_ber == -1234 or curr_min < self._min_ber:
+                self._min_ber = curr_min
 
             curr_max = max(row_vals)
-            if max_ber == -1234 or curr_max > max_ber:
-                max_ber = curr_max
+            if self._max_ber == -1234 or curr_max > self._max_ber:
+                self._max_ber = curr_max
 
             self._z.append(row_vals)
-            plot_z_to_ber.append(z_hovertext_row)
+            self._z_to_ber.append(z_hovertext_row)
 
         extracted_data = re.match(
             r"^(.*) UI to (.*) UI$", self.eye_scan.scan_data.all_params[EYE_SCAN_HORZ_RANGE]
@@ -155,20 +171,16 @@ class EyeScanPlot:
             )
 
         # Generate BER to z mapping for colorbar a.k.a legend
-        colorbar_number_of_ticks: int = math.floor(min_ber)
+        self._color_bar_number_of_ticks: int = math.floor(self._min_ber)
 
-        incr_factor = (max_ber - min_ber) / (colorbar_number_of_ticks - 1)
+        self._color_bar_tick_text = list()
+        self._color_bar_tick_values = list()
+        for i in range(-1, math.floor(self._min_ber) - 1, -1):
+            self._color_bar_tick_text.append(format(pow(10, i), ".0e"))
+            self._color_bar_tick_values.append(i)
 
-        color_bar_tick_text = list()
-        color_bar_tick_values = list()
-        # for x_factor in range(colorbar_number_of_ticks):
-        #     val = min_ber + (x_factor * incr_factor)
-        #     color_bar_tick_values.append(val)
-        #     tick_text = format(pow(base, val) if base != 0 else exp(val), ".2e")
-        #     color_bar_tick_text.append(tick_text)
-        for i in range(-1, math.floor(min_ber) - 1, -1):
-            color_bar_tick_text.append(format(pow(10, i), ".0e"))
-            color_bar_tick_values.append(i)
+    def _generate_plot_instance(self, *, title: str = ""):
+        check_for_plotly()
 
         contour = go.Contour(
             x=self._x,
@@ -176,16 +188,16 @@ class EyeScanPlot:
             z=self._z,
             line=dict(smoothing=0.85, width=0),
             colorbar=dict(
-                nticks=abs(math.floor(min_ber)),
+                nticks=abs(self._color_bar_number_of_ticks),
                 ticks="outside",
                 tickmode="array",
-                tickvals=color_bar_tick_values,
-                ticktext=color_bar_tick_text,
+                tickvals=self._color_bar_tick_values,
+                ticktext=self._color_bar_tick_text,
                 title=dict(text="BER"),
             ),
-            contours=dict(start=-1, end=math.floor(min_ber), size=0.5),
+            contours=dict(start=-1, end=self._color_bar_number_of_ticks, size=0.5),
             colorscale="portland",
-            hovertext=plot_z_to_ber,
+            hovertext=self._z_to_ber,
             hoverinfo="x+y+text",
         )
 
@@ -195,6 +207,8 @@ class EyeScanPlot:
 
         self.fig = go.Figure(layout=layout, data=contour)
 
+        if title == "":
+            title = f"{self.eye_scan.rx.handle} ({self.eye_scan.name})"
         self.fig.update_layout(title=dict(text=title))
 
     def show(self, display_type: str = "automatic", *, title: str = ""):
@@ -206,9 +220,8 @@ class EyeScanPlot:
             title: title to display in plot
 
         """
-        check_for_plotly()
-
-        self._generate(title=title)
+        self._compute_plot_data()
+        self._generate_plot_instance(title=title)
 
         if display_type == "automatic":
             if is_running_notebook():
@@ -243,7 +256,6 @@ class EyeScanPlot:
             Path of the saved plot
 
         """
-        check_for_plotly()
 
         output_path = Path(path)
 
@@ -252,7 +264,9 @@ class EyeScanPlot:
 
         output_path = output_path.joinpath(f"{file_name}.{file_format}")
 
-        self._generate()
+        self._compute_plot_data()
+        if self.fig is None:
+            self._generate_plot_instance()
         self.fig.write_image(str(output_path.resolve()), height=1080, width=1920, scale=1)
 
         printer(f"Saved eye scan plot to {str(output_path.resolve())}", level="info")

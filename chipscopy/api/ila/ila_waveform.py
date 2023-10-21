@@ -845,7 +845,6 @@ def export_compressed_waveform(
     compression: int,
     compresslevel: int,
 ) -> None:
-
     waveform_dict = {
         "version": 1,
         "gap_index": waveform.gap_index,

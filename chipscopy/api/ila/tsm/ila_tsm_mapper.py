@@ -282,7 +282,6 @@ def init_fsm_tc_props(tsm_data: ILATsmData) -> Dict[str, str]:
 def map_tsm_to_props(
     tsm_data: ILATsmData, has_basic_capture_control: bool, error_listener: ILATsmErrorListener
 ) -> Dict[str, str]:
-
     props = init_fsm_tc_props(tsm_data)
     mu_tc_props = map_tsm_mu_tc_to_props(tsm_data, has_basic_capture_control, error_listener)
     props.update(mu_tc_props)

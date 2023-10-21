@@ -216,19 +216,5 @@ class ChannelEventListener(EventListener):
         for node_id in args[0]:
             self.listener.node_removed(node_id)
 
-    def event(self, name, data):
-        try:
-            args = fromJSONSequence(data)
-            try:
-                handler = self._event_handlers[name]
-                handler(args)
-            except KeyError:
-                raise IOError("ChipScope service: unknown event: " + name)
-        except Exception as x:
-            import sys
-
-            x.tb = sys.exc_info()[2]
-            self.service.channel.terminate(x)
-
 
 ChipScopeService = ChipScopeProxy

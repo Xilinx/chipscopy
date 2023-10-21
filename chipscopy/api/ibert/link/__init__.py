@@ -175,6 +175,10 @@ class Link:
         _, prop_value = self.rx.property.refresh(
             self.rx.property_for_alias[RX_RECEIVED_BIT_COUNT]
         ).popitem()
+        try:
+            prop_value = int(prop_value, 16)
+        except:
+            pass
         return prop_value
 
     @property
@@ -188,6 +192,10 @@ class Link:
         _, prop_value = self.rx.property.refresh(
             self.rx.property_for_alias[RX_PATTERN_CHECKER_ERROR_COUNT]
         ).popitem()
+        try:
+            prop_value = int(prop_value, 16)
+        except:
+            pass
         return prop_value
 
     def generate_report(self):

@@ -66,7 +66,13 @@ CORE_INFO_MEMBERS = dataclass_fields(CoreInfo)
 def get_core_info(tcf_node: dm.Node) -> Optional[CoreInfo]:
     if set(CORE_INFO_MEMBERS).issubset(tcf_node.props):
         # Only fabric cores have core info information.
-        return CoreInfo(**filter_props(tcf_node.props, CORE_INFO_MEMBERS))
+        # Convert UUID to a hex string.
+        ci = filter_props(tcf_node.props, CORE_INFO_MEMBERS)
+        if isinstance(ci["uuid"], bytearray):
+            uuid = ci["uuid"].copy()
+            uuid.reverse()
+            ci["uuid"] = uuid.hex().upper()
+        return CoreInfo(**ci)
 
     return None
 

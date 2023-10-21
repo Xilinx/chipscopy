@@ -126,7 +126,6 @@ class CsRequest(object):
         return self.__call__
 
     def __call__(self, *args, **kwargs):
-
         self.run_args = (args, kwargs)
         self.node = None
         self.request_queue = None

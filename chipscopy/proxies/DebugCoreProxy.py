@@ -189,29 +189,26 @@ class ChannelEventListener(channel.EventListener):
     def __init__(self, service, listener):
         self.service = service
         self.listener = listener
+        self._event_handlers = {
+            "nodeAdded": self._node_added,
+            "nodeChanged": self._node_changed,
+            "nodeRemoved": self._node_removed,
+        }
 
-    def event(self, name, data):
-        try:
-            args = channel.fromJSONSequence(data)
-            if name == "nodeAdded":
-                args = from_xargs(args)
-                assert len(args) >= 2
-                self.listener.node_added(args[0], args[1])
-            elif name == "nodeChanged":
-                args = from_xargs(args)
-                assert len(args) >= 2
-                self.listener.node_changed(args[0], args[1])
-            elif name == "nodeRemoved":
-                args = from_xargs(args)
-                assert len(args) == 1
-                self.listener.node_removed(args[0])
-            else:
-                raise IOError("Memory service: unknown event: " + name)
-        except Exception as x:
-            import sys
+    def _node_added(self, args):
+        args = from_xargs(args)
+        assert len(args) >= 2
+        self.listener.node_added(args[0], args[1])
 
-            x.tb = sys.exc_info()[2]
-            self.service.channel.terminate(x)
+    def _node_changed(self, args):
+        args = from_xargs(args)
+        assert len(args) >= 2
+        self.listener.node_changed(args[0], args[1])
+
+    def _node_removed(self, args):
+        args = from_xargs(args)
+        assert len(args) == 1
+        self.listener.node_removed(args[0])
 
 
 DebugCoreService = DebugCoreProxy

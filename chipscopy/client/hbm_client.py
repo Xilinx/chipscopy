@@ -90,7 +90,6 @@ class HBMClient(CorePropertyClient):
 
 
 def get_hbm(server: ServerInfo, hbm_index=0) -> HBMClient:
-
     cs_view = get_cs_view(server)
     dpc = None
     for node in cs_view.get_children():
@@ -105,7 +104,6 @@ def get_hbm(server: ServerInfo, hbm_index=0) -> HBMClient:
 
 
 def get_hbm_mc(server: ServerInfo, hbm_stack: HBMClient, mc_index=0) -> HBMMCClient:
-
     # Find HBM MC under specific HBM Stack with a given MC index
     hbm_mc = server.cs_target(parent=hbm_stack, type="hbm_mc", index=mc_index, cls=HBMMCClient)
 

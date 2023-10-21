@@ -109,13 +109,26 @@ class EventListener(object):
     """
     svc_name = "<unknown>"
 
+    def __init__(self):
+        self._event_handlers = []
+
     def event(self, name, data):
         """
         Called when service event message is received
         @param name - event name
         @param data - event arguments encoded as bytearray
         """
-        pass
+        try:
+            args = fromJSONSequence(data)
+            try:
+                handler = self._event_handlers[name]
+                handler(args)
+            except KeyError:
+                raise IOError("ChipScope service: unknown event: " + name)
+        except Exception as x:
+            import sys
+
+            x.tb = sys.exc_info()[2]
 
 
 class CommandServer(object):

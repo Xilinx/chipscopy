@@ -21,15 +21,10 @@ from chipscopy.tcf import protocol, peer
 from chipscopy.client.util import config  # noqa: F401
 
 # noinspection PyUnresolvedReferences
-from chipscopy.tcf.services.remote import (  # noqa: F401
-    XicomEverestProxy,
-    svfProxy,
-    LocatorProxy,
-    MemoryProxy,
-)
+from chipscopy.tcf.services.remote import XicomEverestProxy, svfProxy, LocatorProxy  # noqa: F401
 
 # noinspection PyUnresolvedReferences
-from chipscopy.proxies import DebugCoreProxy, DebugCorePollingProxy  # noqa: F401
+from chipscopy.proxies import DebugCoreProxy, DebugCorePollingProxy, MemoryProxy  # noqa: F401
 
 try:
     import readline

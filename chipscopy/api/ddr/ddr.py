@@ -71,6 +71,9 @@ class DDR(DebugCore["DDRMCClient"]):
         if arch_type:
             if arch_type == "gen5":
                 self.is_gen5 = True
+                self.crypto_en = False
+                self.crypto_type = "N/A"
+                self.__get_crypto_status()
         self.eye_scan_data = []
         self.filter_by = {"name": self.name, "mc_index": self.mc_index, "mc_loc": self.mc_loc}
 
@@ -213,6 +216,19 @@ class DDR(DebugCore["DDRMCClient"]):
 
         return results
 
+    def __get_crypto_status(self):
+        # Only care if it is Gen5 and User enabled
+        if not self.is_enabled:
+            return
+
+        props = ["crypto_en", "crypto_status"]
+        results = self.ddr_node.get_property(props)
+
+        if results["crypto_en"]:
+            self.crypto_en = True
+
+        self.crypto_type = results["crypto_status"]
+
     def __get_configuration(self) -> OrderedDict:
         configs = OrderedDict()
         is_lrdimm = False
@@ -278,15 +294,21 @@ class DDR(DebugCore["DDRMCClient"]):
         freq_one = "Unknown"
         results = self.ddr_node.get_property("dual_freq_en")
         dual_freq = results["dual_freq_en"]
-        results = self.ddr_node.get_property("f0_period")
-        period = results["f0_period"]
+        if self.is_gen5:
+            f0_ck_name = "f0_ck_period"
+            f1_ck_name = "f1_ck_period"
+        else:
+            f0_ck_name = "f0_period"
+            f1_ck_name = "f1_period"
+        results = self.ddr_node.get_property(f0_ck_name)
+        period = results[f0_ck_name]
         if (period != "0") and (period != ""):
             freq0 = int(1000000 / float(period) + 0.5)
             freq_zero = str(freq0) + " MHz"
         configs["Memory Frequency 0"] = freq_zero
         if int(dual_freq) > 0:
-            results = self.ddr_node.get_property("f1_period")
-            period = results["f1_period"]
+            results = self.ddr_node.get_property(f1_ck_name)
+            period = results[f1_ck_name]
             if (period != "0") and (period != ""):
                 freq1 = int(1000000 / float(period) + 0.5)
                 freq_one = str(freq1) + " MHz"
@@ -517,11 +539,22 @@ class DDR(DebugCore["DDRMCClient"]):
         printer("-------------------\n")
         printer(" DDRMC Status \n")
         printer("-------------------\n")
+
+        # User enabled status check
+        if not self.is_enabled:
+            printer(self.name, "is not enabled.", "\n")
+            if out_file:
+                sys.stdout = orig_out
+                out_file.close()
+            return
+
         self.refresh_cal_status()
         self.refresh_health_status()
         printer("Calibration Status:  ", self.get_cal_status(), "\n")
         results = self.ddr_node.get_property("health_status")
         printer("Overall Health:  ", results["health_status"], "\n")
+        if self.is_gen5:
+            printer("Crypto Status:  ", self.crypto_type, "\n")
         results = self.ddr_node.get_property("cal_message")
         printer("Message:  ", results["cal_message"], "\n")
 
@@ -1209,7 +1242,7 @@ class DDR(DebugCore["DDRMCClient"]):
         Args:
 
             choice:
-                Choice number valid between 0 to 2 only and corrosponding to following pattern:
+                Choice number valid between 0 and 2 only and corrosponding to following pattern:
                     0) PRBS 23
                     1) PRBS 10
                     2) PRBS 7
@@ -1453,9 +1486,13 @@ class DDR(DebugCore["DDRMCClient"]):
         if isinstance(steps, str):
             printer("ERROR: Please re-enter an integer value for Vref steps.")
             return
-        elif rw_mode and (steps > 51):
-            printer("ERROR: Cannot enter Vref step sizes larger than 51 for Write Margin mode")
-            return
+        elif rw_mode:
+            if not self.is_gen5 and (steps > 51):
+                printer("ERROR: Cannot enter Vref step sizes larger than 51 for Write Margin mode")
+                return
+            elif self.is_gen5 and (steps > 129):
+                printer("ERROR: Cannot enter Vref step sizes larger than 129 for Write Margin mode")
+                return
         elif steps > 1024:
             printer("ERROR: Cannot enter Vref step sizes larger than 1024 for Read Margin mode")
             return
@@ -1485,12 +1522,11 @@ class DDR(DebugCore["DDRMCClient"]):
         scan_mode = engine_data[0]["config.mode"]
         nibble_count = engine_data[0]["config.nibbles"]
         byte_count = engine_data[0]["config.bytes"]
-        data_list.append(engine_data[0])
 
         if "Read" in scan_mode:
             old_key_base = "rdmargin_"
             new_key_base = "read_"
-            for data in engine_data[1:]:
+            for data in engine_data:
                 for nibble in range(int(nibble_count)):
                     for clock in clocks:
                         for edge in edges:
@@ -1517,7 +1553,7 @@ class DDR(DebugCore["DDRMCClient"]):
         else:
             old_key_base = "wrmargin_"
             new_key_base = "write_"
-            for data in engine_data[1:]:
+            for data in engine_data:
                 for byte in range(int(byte_count)):
                     for edge in edges:
                         old_key = old_key_base + edge + "_byte" + str(byte)
@@ -1556,12 +1592,11 @@ class DDR(DebugCore["DDRMCClient"]):
         scan_mode = engine_data[0]["config.mode"]
         bit_count = engine_data[0]["config.bits"]
         byte_count = engine_data[0]["config.bytes"]
-        data_list.append(engine_data[0])
 
         if "Read" in scan_mode:
             old_key_base = "rdmargin_"
             new_key_base = "read_"
-            for data in engine_data[1:]:
+            for data in engine_data:
                 for bit in range(int(bit_count)):
                     for clock in clocks:
                         for edge in edges:
@@ -1577,7 +1612,7 @@ class DDR(DebugCore["DDRMCClient"]):
                 new_data = OrderedDict(sorted(temp_data.items()))
                 data_list.append(new_data)
         else:
-            for data in engine_data[1:]:
+            for data in engine_data:
                 temp_data = {key: val for key, val in data.items() if "rdmargin" not in key}
                 new_data = OrderedDict(sorted(temp_data.items()))
                 data_list.append(new_data)
@@ -1591,34 +1626,68 @@ class DDR(DebugCore["DDRMCClient"]):
         base_name: str,
         margin_title: str,
         def_vref: float,
+        cur_max: List,
         unit_string: str = "",
+        margin_only: bool = False,
     ):
         vrefs = []
         left_margs = []
         right_margs = []
+        total_margs = []
         left_ps = []
         right_ps = []
+        def_window_found = False
+        min_found = False
+        max_found = False
+        def_margin = 0
+        vref_swing = 0.0
         x_min = 0
         x_max = 0
+        y_min = 0.0
+        y_max = 0.0
 
         if not self.is_gen5:
             for data in margin_data:
-                vrefs.append(float(data["config.vrefp"]))
+                cur_vref = float(data["config.vrefp"])
+                vrefs.append(cur_vref)
                 key_name = base_name + "_left"
-                left_margs.append(int(data[key_name]))
+                left_marg = int(data[key_name])
+                left_margs.append(left_marg)
                 key_name += "_ps"
                 left_ps.append(int(data[key_name]))
                 key_name = base_name + "_right"
-                right_margs.append(int(data[key_name]))
+                right_marg = int(data[key_name])
+                right_margs.append(right_marg)
                 key_name += "_ps"
                 right_ps.append(int(data[key_name]))
+                total_margin = left_marg + right_marg
+                total_margs.append(total_margin)
+                if not def_window_found:
+                    if cur_vref == def_vref:
+                        def_margin = total_margin
+                        def_window_found = True
+                if cur_vref < def_vref:
+                    if total_margin == 0:
+                        if min_found:
+                            min_found = False
+                if not min_found:
+                    if total_margin > 0:
+                        y_min = cur_vref
+                        y_max = cur_vref
+                        min_found = True
+                elif not max_found:
+                    if total_margin == 0:
+                        max_found = True
+                    else:
+                        y_max = cur_vref
         else:
             ps_factors = self.ddr_node.get_margin_ps_factors()
             ps_factor = ps_factors[0]
 
             if "wrmargin" in base_name:
                 for data in margin_data:
-                    vrefs.append(float(data["config.vrefp"]))
+                    cur_vref = float(data["config.vrefp"])
+                    vrefs.append(cur_vref)
                     key_name = base_name + "left_lsb_" + unit_string
                     tap_val = int(data[key_name])
                     key_name = base_name + "left_msb_" + unit_string
@@ -1635,9 +1704,30 @@ class DDR(DebugCore["DDRMCClient"]):
                     right_margs.append(right_marg)
                     ps_val = int(round(right_marg * ps_factor))
                     right_ps.append(ps_val)
+                    total_margin = left_marg + right_marg
+                    total_margs.append(total_margin)
+                    if not def_window_found:
+                        if cur_vref == def_vref:
+                            def_margin = total_margin
+                            def_window_found = True
+                    if cur_vref < def_vref:
+                        if total_margin == 0:
+                            if min_found:
+                                min_found = False
+                    if not min_found:
+                        if total_margin > 0:
+                            y_min = cur_vref
+                            y_max = cur_vref
+                            min_found = True
+                    elif not max_found:
+                        if total_margin == 0:
+                            max_found = True
+                        else:
+                            y_max = cur_vref
             else:
                 for data in margin_data:
-                    vrefs.append(float(data["config.vrefp"]))
+                    cur_vref = float(data["config.vrefp"])
+                    vrefs.append(cur_vref)
                     key_name = base_name + "_left"
                     left_marg = int(data[key_name])
                     left_margs.append(left_marg)
@@ -1648,9 +1738,46 @@ class DDR(DebugCore["DDRMCClient"]):
                     right_margs.append(right_marg)
                     ps_val = int(round(right_marg * ps_factor))
                     right_ps.append(ps_val)
+                    total_margin = left_marg + right_marg
+                    total_margs.append(total_margin)
+                    if not def_window_found:
+                        if cur_vref == def_vref:
+                            def_margin = total_margin
+                            def_window_found = True
+                    if cur_vref < def_vref:
+                        if total_margin == 0:
+                            if min_found:
+                                min_found = False
+                    if not min_found:
+                        if total_margin > 0:
+                            y_min = cur_vref
+                            y_max = cur_vref
+                            min_found = True
+                    elif not max_found:
+                        if total_margin == 0:
+                            max_found = True
+                        else:
+                            y_max = cur_vref
 
         x_min = max(left_ps)
         x_max = max(right_ps)
+        max_marg = max(total_margs)
+        max_marg_idx = total_margs.index(max_marg)
+        max_marg_vref = vrefs[max_marg_idx]
+        if not def_window_found:
+            def_window = []
+            init_list = []
+            scan_data = self.eye_scan_data
+            init_list.append(scan_data[0])
+            self.__draw_eye_scan_graph(
+                init_list, base_name, "", def_vref, def_window, unit_string, margin_only=True
+            )
+            def_margin = def_window[0][0]
+        vref_swing = round((y_max - y_min), 3)
+        cur_max.append((max_marg, max_marg_vref, def_margin, def_vref, vref_swing, y_min, y_max))
+
+        if margin_only:
+            return
 
         data_defs = {
             "VRef": vrefs,
@@ -1800,6 +1927,8 @@ class DDR(DebugCore["DDRMCClient"]):
             save_eye_scan_data()
             load_eye_scan_data()
             display_eye_scan()
+            check_eye_scan_window()
+            check_eye_scan_height()
 
         Args:
             done: Optional command callback that will be invoked when the scan is finished
@@ -1849,9 +1978,9 @@ class DDR(DebugCore["DDRMCClient"]):
 
         percent_min = self.get_eye_scan_vref_percentage(vref_min)
         percent_max = self.get_eye_scan_vref_percentage(vref_max)
-        printer("Min VRef is set at: ", percent_min, "%, value ", vref_min)
-        printer("Max VRef is set at: ", percent_max, "%, value ", vref_max)
-        printer("Number of VRef steps is set at: ", vref_steps)
+        printer("Min VRef is set at:", percent_min, "%, encoded value", vref_min)
+        printer("Max VRef is set at:", percent_max, "%, encoded value", vref_max)
+        printer("Number of VRef steps is set at:", vref_steps)
 
         vref_incr_size = int((vref_max - vref_min) / (vref_steps - 1))
         max_step_size = vref_max - vref_min + 1
@@ -1911,10 +2040,14 @@ class DDR(DebugCore["DDRMCClient"]):
         return scan_future if done else scan_future.result
 
     def display_eye_scan(
-        self, unit_index: int = 0, return_as_list: bool = False, display_type: str = "dynamic"
+        self,
+        unit_index: int = 0,
+        return_as_list: bool = False,
+        display_type: str = "dynamic",
+        get_margin_only: bool = False,
     ):
         """
-        Assemble and display 2D eye scan drawing in chart format. By default it tries to process and
+        Assemble and display 2D eye scan drawing in chart format. By default, it tries to process and
         draw from the scan data found in the most recent 2D eye scan run. Users have the option to
         load scan data first prior to using this function in order to display specific set of scan
         data, see load_eye_scan_data().
@@ -1934,12 +2067,25 @@ class DDR(DebugCore["DDRMCClient"]):
                 will be returned. If set to dynamic, a dynamic, interactive javascript view will be
                 returned.
 
+            get_margin_only: Optional argument, default to False. If set to True, this API call
+                will process scan data only, per the specified unit_index, find its widest margin
+                windows and return the values and along with their VRef points as a list of tuples.
+                No graphing results will be given.
+
         Returns:
-            A list of Figure object from Plotly, if return_as_list is specified as True,
-            None is return otherwise by default.
+            A list of Figure objects from Plotly, if return_as_list is specified as True,
+            None is return otherwise by default, but graphs will be displayed in a browser.
+
+            If optional argument get_margin_only is set to True. A list, which contains tuples as
+            (int, float) representing the widest window margin found and along with their VRef points
+            after a scan is returned.
+
+            For Read Margin, two data results are displayed or returned. (First data for Rising
+            Clock edge, and the second for Falling Clock edge) For Write Margin, only one data
+            result will be displayed or returned.
 
         """
-        if not _plotting_pkgs_available:
+        if (not get_margin_only) and (not _plotting_pkgs_available):
             raise ImportError(
                 f"Plotting packages not installed! Please run ",
                 "'pip install chipscopy[plotly,pandas]'",
@@ -1968,6 +2114,7 @@ class DDR(DebugCore["DDRMCClient"]):
 
         figure_list = []
         data_list = self.eye_scan_data
+        mc_id = data_list[0]["config.mc_id"]
         scan_mode = data_list[0]["config.mode"]
         unit_mode = data_list[0]["config.unit"]
         rank_num = data_list[0]["config.rank"]
@@ -1982,6 +2129,8 @@ class DDR(DebugCore["DDRMCClient"]):
         unit_val = "{:02d}".format(unit_index)
         data_list = data_list[1:]
         unit_str = ""
+        max_window = []  # list of tuple (int, float)
+        window_results = []  # list of tuple (int, float)
 
         # Some logical data check first on user inputs
         if unit_mode == "bit":
@@ -2023,8 +2172,7 @@ class DDR(DebugCore["DDRMCClient"]):
                 return
             unit_str = unit_mode + str(unit_index)
 
-        mc_name = "MC" + str(self.mc_index)
-        mc_name += "(" + self.mc_loc + ")"
+        mc_name = mc_id
 
         if "Read" in scan_mode:
             clocks = ["rise_", "fall_"]
@@ -2044,21 +2192,74 @@ class DDR(DebugCore["DDRMCClient"]):
                 )
                 margin_mode += mc_name + " - "
                 margin_mode += mem_type + " - Rank" + str(rank_num)
-                fig = self.__draw_eye_scan_graph(data_list, name_base, margin_mode, df_vref)
-                figure_list.append(fig)
+                if not get_margin_only:
+                    fig = self.__draw_eye_scan_graph(
+                        data_list, name_base, margin_mode, df_vref, max_window
+                    )
+                    figure_list.append(fig)
+                    printer(
+                        "Margin window found:",
+                        clock_defs[clock],
+                        max_window[0][0],
+                        "fine taps at VRef %:",
+                        max_window[0][1],
+                    )
+                else:
+                    self.__draw_eye_scan_graph(
+                        data_list, name_base, margin_mode, df_vref, max_window, margin_only=True
+                    )
+                    window_results.append(max_window[0])
+                max_window.clear()
+
         else:
             margin_mode = scan_mode + " - " + unit_mode.capitalize() + str(unit_index) + "<br>"
             margin_mode += mc_name + " - "
             margin_mode += mem_type + " - Rank" + str(rank_num)
             if not self.is_gen5:
                 name_base = "write_" + unit_val
-                fig = self.__draw_eye_scan_graph(data_list, name_base, margin_mode, df_vref)
+                if not get_margin_only:
+                    fig = self.__draw_eye_scan_graph(
+                        data_list, name_base, margin_mode, df_vref, max_window
+                    )
+                    printer(
+                        "Margin window found:",
+                        max_window[0][0],
+                        "fine taps at VRef %:",
+                        max_window[0][1],
+                    )
+                    figure_list.append(fig)
+                else:
+                    self.__draw_eye_scan_graph(
+                        data_list, name_base, margin_mode, df_vref, max_window, margin_only=True
+                    )
+                    window_results.append(max_window[0])
             else:
                 name_base = "wrmargin_"
-                fig = self.__draw_eye_scan_graph(
-                    data_list, name_base, margin_mode, df_vref, unit_str
-                )
-            figure_list.append(fig)
+                if not get_margin_only:
+                    fig = self.__draw_eye_scan_graph(
+                        data_list, name_base, margin_mode, df_vref, max_window, unit_str
+                    )
+                    printer(
+                        "Margin window found:",
+                        max_window[0][0],
+                        "fine taps at VRef %:",
+                        max_window[0][1],
+                    )
+                    figure_list.append(fig)
+                else:
+                    self.__draw_eye_scan_graph(
+                        data_list,
+                        name_base,
+                        margin_mode,
+                        df_vref,
+                        max_window,
+                        unit_str,
+                        margin_only=True,
+                    )
+                    window_results.append(max_window[0])
+
+        if get_margin_only:
+            return window_results
 
         if not return_as_list:
             for fig in figure_list:
@@ -2076,6 +2277,81 @@ class DDR(DebugCore["DDRMCClient"]):
                     raise ValueError("display_type argument must be static or dynamic")
         else:
             return figure_list
+
+    def check_eye_scan_height(self, unit_index: int = 0):
+        """
+        Calculate and obtain the VRef swing/height found from a margin scan by a specified unit index.
+        The height is defined by having the lowest point of VRef that a non-zero margin window starts, and ends
+        with the highest VRef point found in the same fashion. By default, it tries to process from the scan
+        data found in the most recent 2D eye scan run. Users have the option to load scan data first prior to
+        using this function, in order to process specific set of scan data, see load_eye_scan_data().
+
+        Args:
+            unit_index: Specify the index from a set of scan data users intend to display, based on
+                unit mode found in the scan settings (bit, nibble, byte)
+
+        Returns:
+            A list, which contains lists of floating point values representing the VRef percentage values
+            in the following item order: [VRef swing, minimum VRef, maximum VRef]
+            For Read Margin, two sets of data list are being returned. (First item from the list is for Rising
+            Clock edge, and the second is for Falling Clock edge) For Write Margin, only one set of data list
+            will be returned.
+        """
+        vref_results = []  # List of list [float, float, float]
+
+        window_results = self.display_eye_scan(unit_index, get_margin_only=True)
+
+        for window in window_results:
+            vref_results.append([window[4], window[5], window[6]])
+
+        return vref_results
+
+    def check_eye_scan_window(self, unit_index: int = 0, default_vref: bool = False):
+        """
+        Calculate and obtain the widest 2D eye scan margin window by a specified unit index. This function
+        also checks the margin window found at default VRef setting determined by the memory controller.
+        By default, it tries to process from the scan data found in the most recent 2D eye scan run. Users
+        have the option to load scan data first prior to using this function, in order to process specific
+        set of scan data, see load_eye_scan_data().
+
+        Args:
+            unit_index: Specify the index from a set of scan data users intend to display, based on
+                unit mode found in the scan settings (bit, nibble, byte)
+
+            default_vref: Optional argument, default to False, which means the function will check and report
+                the widest margin window found and along with its corrosponding vref value at the earliest point.
+                If set to True, the function will report margin window found at its default VRef point instead.
+
+        Returns:
+            A list, which contains tuples of (int, float) will be returned. The first integer item from the
+            tuples represents the window margin found after a scan, and the second item indicates the VRef
+            setting value in floating point.
+
+            For Read Margin, two data results are being returned. (First tuple of data is for Rising
+            Clock edge, and the second is for Falling Clock edge) For Write Margin, only one tuple
+            result will be returned.
+
+        """
+        checked_results = []  # List of tuples (int, float)
+        return_idx0 = 0
+        return_idx1 = 1
+
+        window_results = self.display_eye_scan(unit_index, get_margin_only=True)
+
+        if default_vref:
+            return_idx0 += 2
+            return_idx1 += 2
+
+        # Read Modes
+        if len(window_results) > 1:
+            for window in window_results:
+                checked_results.append((window[return_idx0], window[return_idx1]))
+        else:
+            # Write Modes
+            window = window_results[0]
+            checked_results.append((window[return_idx0], window[return_idx1]))
+
+        return checked_results
 
     def __str__(self):
         return self.name

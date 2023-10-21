@@ -33,6 +33,8 @@ class Sysmon(DebugCore["SysMonCoreClient"]):
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name}
 
+        self.schedule = None
+
     def __str__(self):
         return self.name
 
@@ -61,8 +63,9 @@ class Sysmon(DebugCore["SysMonCoreClient"]):
             Returns a dict where the keys are the root IDs and the values are the named sensors.
 
         """
-        sensors = self.core_tcf_node.refresh_measurement_schedule(done)
-        return sensors
+        schedule = self.core_tcf_node.refresh_measurement_schedule(done)
+        self.schedule = schedule
+        return schedule
 
     def get_measurements(self, done: DoneHWCommand = None) -> List[object]:
         """
@@ -117,3 +120,95 @@ class Sysmon(DebugCore["SysMonCoreClient"]):
             done: Optional command callback that will be invoked when the response is received.
         """
         self.core_tcf_node.stream_sensor_data(interval, done)
+
+    def read_sensor(self, sensor: str) -> float:
+        """
+        Read single sensor value from hw
+        Args:
+            sensor:  the name of the sensor to read
+
+        Returns:
+            refreshed value of specific sensor (float) or None if sensor isn't detected in design
+
+        """
+
+        if self.schedule is None:
+            print(
+                f"warning: read_sensor(): measurement schedule is empty or has not been refreshed"
+            )
+            return None
+
+        if sensor not in self.schedule.values():
+            print(
+                f"warning: read_sensor(): requested sensor {sensor} is not in the measurement schedule"
+            )
+            return None
+
+        supply_idx = None
+        for idx, s in self.schedule.items():
+            if sensor == s:
+                supply_idx = idx
+                break
+
+        supply_name = f"supply{supply_idx}"
+        # greedy
+        current_value = self.core_tcf_node.refresh_property(supply_name)
+        return current_value[supply_name]
+
+    def read_sensors(self, sensors: List[str]) -> Dict[str, float]:
+        """
+        Read a list of sensor values from hw
+        Args:
+            sensors:  list of the names of the sensors to read
+
+        Returns:
+            refreshed values of specific sensors (float)
+            if the sensor isn't sequenced in the design then a warning msg is printed and the sensor is dropped from
+            the list
+        """
+        props_to_refresh = []
+        out_data = {}
+        supply_x_map = {}
+        if self.schedule is None:
+            print(
+                f"warning: read_sensors(): measurement schedule is empty or has not been refreshed"
+            )
+            return None
+
+        for sensor in sensors:
+            if sensor not in self.schedule.values():
+                print(
+                    f"warning: read_sensors(): requested sensor {sensor} is not in the measurement schedule"
+                )
+                continue
+
+            supply_idx = None
+            for idx, s in self.schedule.items():
+                if sensor == s:
+                    supply_idx = idx
+                    break
+
+            out_data[sensor] = None
+            supply_name = f"supply{supply_idx}"
+            supply_x_map[supply_name] = sensor
+            props_to_refresh.append(supply_name)
+
+        current_sensor_values = self.core_tcf_node.refresh_property(props_to_refresh)
+        for supply_name, value in current_sensor_values.items():
+            out_data[supply_x_map[supply_name]] = value
+
+        return out_data
+
+    def read_temp(self) -> Dict[str, float]:
+        """
+        Read temp values from hw
+        Args:
+            None
+
+        Returns:
+            refreshed value of device_temp, max, and min in Celsius
+        """
+        temp_dict = self.core_tcf_node.refresh_property(
+            ["device_temp", "device_temp_max_max", "device_temp_min_min"]
+        )
+        return temp_dict

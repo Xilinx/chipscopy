@@ -1,27 +1,13 @@
-# ---
-# jupyter:
-#   jupytext:
-#     cell_metadata_filter: -all
-#     formats: ipynb,py
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.10.1
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
-
+# %% [markdown]
 # <link rel="preconnect" href="https://fonts.gstatic.com">
 # <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 #
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (c) 2021-2022 Xilinx, Inc.<br>
-# Copyright (c) 2022-2023 Advanced Micro Devices, Inc.<br><br>
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
@@ -33,29 +19,33 @@
 # </p>
 #
 
+# %% [markdown]
 # # ChipScoPy SPTG Perfmon Example
 #
 #
 # <img src="../img/api_overview.png" width="500" align="left">
 
+# %% [markdown]
 # ## Description
 # This example demonstrates how to configure a Versal for taking NoC performance measurements.
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2022.2 installed and running
-# - Xilinx cs_server 2022.2 installed and running
+# - Xilinx hw_server 2023.2 installed and running
+# - Xilinx cs_server 2023.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2022.2 installed
+# - ChipScoPy 2023.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
+# %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
 #
 # After this step,
 # - Required functions and classes are imported
 # - Paths to server(s) and files are set correctly
 
+# %%
 import os
 from time import sleep
 import matplotlib  # for nbconvert'd script
@@ -69,16 +59,18 @@ from chipscopy.api.noc.plotting_utils import MeasurementPlot
 from chipscopy import create_session, report_versions
 from chipscopy import get_design_files
 
-# +
-# Make sure to start the hw_server and cs_server prior to running.
+# %%
 # Specify locations of the running hw_server and cs_server below.
-# The default is localhost - but can be other locations on the network.
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
 
+# specify hw and if programming is desired
+HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
+PROG_DEVICE = os.getenv("PROG_DEVICE", 'True').lower() in ('true', '1', 't')
+
 # The get_design_files() function tries to find the PDI and LTX files. In non-standard
 # configurations, you can put the path for PROGRAMMING_FILE and PROBES_FILE below.
-design_files = get_design_files("vck190/production/chipscopy_ced")
+design_files = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced")
 
 PROGRAMMING_FILE = design_files.programming_file
 PROBES_FILE = design_files.probes_file
@@ -87,8 +79,8 @@ print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
-# -
 
+# %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
@@ -96,17 +88,24 @@ print(f"PROBES_FILE:{PROBES_FILE}")
 # - Session is initialized and connected to server(s)
 # - Versions are detected and reported to stdout
 
+# %%
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
 report_versions(session)
 
+# %% [markdown]
 # ## 3 - Program the device with the example design
 #
 # After this step,
 # - Device is programmed with the example programming file
 
+# %%
 versal_device = session.devices.filter_by(family="versal").get()
-versal_device.program(PROGRAMMING_FILE)
+if PROG_DEVICE:
+    versal_device.program(PROGRAMMING_FILE)
+else:
+    print("skipping programming")
 
+# %% [markdown]
 # ## 4 - Discover Debug Cores
 #
 # Debug core discovery initializes the chipscope server debug cores. This brings debug cores in the chipscope server online.
@@ -115,14 +114,16 @@ versal_device.program(PROGRAMMING_FILE)
 #
 # - The cs_server is initialized and ready for use
 
+# %%
 versal_device.discover_and_setup_cores(noc_scan=True, ltx_file=PROBES_FILE)
 print(f"Debug cores setup and ready for use.")
 
+# %% [markdown]
 # ## 5 - Setup NoC core
 #
 # Ensure scan nodes are enabled in the design.
 
-# +
+# %%
 # We begin by enumerating the debug cores (hard and soft) present in the design.
 # Then we ask the design for the supported timebases. And, finally:
 # The NoC is scanned to determine the activated elements.
@@ -138,8 +139,8 @@ print("...", end="")
 # this will setup the nodes on the server side and return the nodes successfully enumerated
 enable_list = noc.enumerate_noc_elements(scan_nodes)
 print("complete!")
-# -
 
+# %%
 supported_periods = noc.get_supported_sampling_periods(
     100/3, 100/3, {'DDRMC_X0Y0': 800.0}
 )
@@ -150,7 +151,7 @@ for domain, periods in supported_periods.items():
         print(f"    {p:.0f}ms", end="")
     print()
 
-# +
+# %%
 # Select Timebase and Nodes to Monitor
 #
 # For the two clock domains we must select a sampling period from the hardware supported values. The debug cable used will dictate how much bandwidth is available, so high frequency sampling may not actually produce data at the specified rate. Recommendation is ~500ms for jtag.
@@ -179,7 +180,7 @@ print(f"Sampling period selection:")
 for domain, freq in sampling_intervals.items():
     print(f"  {domain}: {freq:.0f}ms")
 
-# +
+# %%
 # Configure Monitors
 #
 # As a precaution, it's a good idea to validate the desired nodes are enabled for the design.
@@ -206,14 +207,14 @@ extended_monitor_config = {"NOC_NMU512_X0Y0": {"tslide": 0x3}}  # or None
 noc.configure_monitors(
     enable_list, sampling_intervals, (TC_BEW | TC_BER), num_samples, None, extended_monitor_config
 )
-# -
 
 
+# %% [markdown]
 # ## 6 - Traffic Generator Configuration
 #
 # Release the traffic generator from reset.
 
-# +
+# %%
 vio_cores = versal_device.vio_cores
 for index, vio_core in enumerate(vio_cores):
     print(f"\nVIO Core Index {index}")
@@ -235,13 +236,13 @@ tg_vio.write_probes(
 
 first_tg_ba = 0x201_8000_0000
 tg = PerfTGController(first_tg_ba, versal_device, vio=tg_vio)
-# -
 
+# %% [markdown]
 # ## 7 - Create plotter and listener
 #
 # Attach both to running view
 
-# +
+# %%
 record_to_file = False  # True | False
 node_listener = NoCPerfMonNodeListener(
     sampling_intervals,
@@ -258,13 +259,14 @@ node_listener.link_plotter(plotter)
 # Build Plotting Graphs
 matplotlib.use("Qt5Agg")
 plotter.build_graphs()
-# -
 
+# %% [markdown]
 # ## 8 - Main Event Loop
 #
 # This loop runs until you close the plotter.
 # If you are using a finite amount of measurement samples, you can uncomment the if --> break statement to automatically return from execution of this cell upon completion of the burst.
 
+# %%
 # Run Main Event Loop
 loop_count = 0
 while True:
@@ -278,7 +280,7 @@ while True:
     # if all([x <= 0 for x in node_listener.num_samples.values()]):
     #     break
 
-# +
+# %%
 # Reset Traffic Generator
 # This allows for a hard block-level reset of the traffic generator.
 

@@ -122,6 +122,17 @@ class DeviceSpec:
             d.is_valid = True
         return d
 
+    def to_dict(self):
+        fields = [field.name for field in dataclasses.fields(self)]
+        retval = {}
+        for f in fields:
+            if f == "hw_server" or f == "cs_server":
+                server = getattr(self, f)
+                retval[f] = server.props.get("url", "")
+            else:
+                retval[f] = getattr(self, f)
+        return retval
+
     def get_dna(self) -> Optional[int]:
         node = self.get_jtag_node()
         if node:
@@ -140,7 +151,13 @@ class DeviceSpec:
             node = self.get_debugcore_node(target=None, default_target="DAP")
             if node:
                 try:
-                    arch_name, _ = node.props.get("Name", "").split()
+                    # In case of XVC cable, the jtag node does not exist. The
+                    # dpc_driver_name is something we can use to identify xvc
+                    dpc_driver_name = node.props.get("DpcDriverName", "")
+                    if dpc_driver_name:
+                        arch_name = "xvc"
+                    else:
+                        arch_name, _ = node.props.get("Name", "").split()
                 except ValueError:
                     if node.props.get("Name", "").startswith("XVC"):
                         arch_name = "xvc"
@@ -163,7 +180,7 @@ class DeviceSpec:
         return part_name
 
     def to_json(self) -> str:
-        raw_json = json.dumps(dataclasses.asdict(self), indent=4, default=lambda o: str(o))
+        raw_json = json.dumps(self.to_dict(), indent=4, default=lambda o: str(o))
         return raw_json
 
     def handle_node_update(self):

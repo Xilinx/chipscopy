@@ -183,7 +183,6 @@ class PCIe(DebugCore["AxisPCIeCoreClient"]):
         prev = 0
         end = -1
         while start != -1:
-
             end = brace_locations[start]
             items = trace[prev:start].split(",")
             for item in items:

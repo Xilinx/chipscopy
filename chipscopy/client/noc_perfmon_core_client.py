@@ -96,7 +96,6 @@ class NoCPerfMonCoreClient(CoreClient):
         done: DoneHWCommand = None,
         extended_monitor_config: dict = None,
     ):
-
         """
         This method configures and enables the performance monitoring on the parameter set of elements. Upon completion
         of the configuration, data will start to be emitted asynchronously from ChipScope Server back to the requesting
