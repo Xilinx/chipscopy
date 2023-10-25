@@ -7,7 +7,6 @@
 - VHK158 Preliminary Support
   - HBM2E Evaluation Platform support with ChipScoPy
   - Known issue: DDR 2D Eye Scan is not working on this platform
-  - Known issue: Sysmon examples are not working on this platform
 - SysMon support for synchronous communication
 - Enhanced device event tracking 
 - Added support for decoupling CPM5 captive GTYP, associated example notebook included in release

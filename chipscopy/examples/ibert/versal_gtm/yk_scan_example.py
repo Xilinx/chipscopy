@@ -6,12 +6,14 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.10.1
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
+
+# %%
 import os
 # %% [markdown]
 # <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -46,10 +48,10 @@ import os
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VPK120
-# - Xilinx hw_server 2022.2 installed and running
-# - Xilinx cs_server 2022.2 installed and running
+# - Xilinx hw_server 2023.2 installed and running
+# - Xilinx cs_server 2023.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2022.2 installed
+# - ChipScoPy 2023.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 # - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/)
