@@ -16,15 +16,15 @@ ChipScoPy communicates with Versal devices. It does not work with older devices 
 
 -------------------------------------------------------------------------------
 
-[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2023.1/overview.html)
+[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2023.2/overview.html)
 
 -------------------------------------------------------------------------------
 
-[System Requirements](https://xilinx.github.io/chipscopy/2023.1/system_requirements.html)
+[System Requirements](https://xilinx.github.io/chipscopy/2023.2/system_requirements.html)
 
 -------------------------------------------------------------------------------
 
-[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2023.1/chipscopy_installation.html)
+[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2023.2/chipscopy_installation.html)
 
 -------------------------------------------------------------------------------
 
