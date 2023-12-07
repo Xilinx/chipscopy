@@ -14,7 +14,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2023.2.1698639225"
+version = "2023.2.1701469928"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -33,7 +33,10 @@ importlib_metadata = "^6.8"
 rich = "^13.5"
 Click = "^8.1"
 antlr4-python3-runtime = "==4.10"
-kaleido = { version = "0.2.1", optional = true }
+kaleido = [
+    { platform = "win32", version = "==0.1.0.post1", optional = true },
+    { platform = "linux", version = "==0.1.0", optional = true }
+]
 plotly = { version = "^5.16", optional = true }
 notebook = { version = "^7.0", optional = true }
 ipywidgets = { version = "^8.1", optional = true }
