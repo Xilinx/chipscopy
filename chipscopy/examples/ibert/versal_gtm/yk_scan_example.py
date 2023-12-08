@@ -6,15 +6,13 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.15.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
 
-# %%
-import os
 # %% [markdown]
 # <link rel="preconnect" href="https://fonts.gstatic.com">
 # <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
@@ -47,7 +45,7 @@ import os
 # - Run and plot YK scans
 #
 # ## Requirements
-# - Local or remote Xilinx Versal board, such as a VPK120
+# - Local or remote Xilinx Versal board, VPK120 or VHK158 (only)
 # - Xilinx hw_server 2023.2 installed and running
 # - Xilinx cs_server 2023.2 installed and running
 # - Python 3.8 or greater installed
@@ -66,7 +64,7 @@ import os
 # * Paths to server(s) and files are set correctly
 
 # %%
-import time
+import os
 from more_itertools import one
 import matplotlib.pyplot as plt
 
@@ -87,7 +85,7 @@ CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
 
 # specify hw and if programming is desired
-HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
+HW_PLATFORM = os.getenv("HW_PLATFORM", "vpk120")
 PROG_DEVICE = os.getenv("PROG_DEVICE", 'True').lower() in ('true', '1', 't')
 
 # The get_design_files() function tries to find the PDI and LTX files. In non-standard
@@ -124,12 +122,12 @@ else:
 # - The first ibert found is used
 
 # %%
-# # Set any params as neded
+# # Set any params as needed
 # params_to_set = {"IBERT.internal_mode": True}
 # session.set_param(params_to_set)
 device = session.devices.filter_by(family="versal").get()
 
-# Use the first available device and setup its debug cores
+# Use the first available device and set up its debug cores
 
 print(f"Discovering debug cores...")
 device.discover_and_setup_cores(ibert_scan=True)
@@ -163,7 +161,7 @@ gt_group = ibert_gtm.gt_groups.filter_by(name="Quad_204")[0]
 # This method will be called each time the yk scan updates, allowing it to update its graphs in real time. 
 
 # %%
-# %matplotlib notebook
+# %matplotlib widget
 
 def yk_scan_updates(obj):
     global count, figure, ax, ax2, ax3
@@ -213,7 +211,7 @@ yk.updates_callback = yk_scan_updates
 # Note: Depending on the hardware setup and external loopback connection, the plot might look different.
 
 # %%
-# %matplotlib notebook
+# %matplotlib widget
 
 #This sets up the subplots necessary for the 
 figure, (ax, ax2, ax3) = plt.subplots(3, constrained_layout = True, num="YK Scan")
