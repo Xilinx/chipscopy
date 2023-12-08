@@ -1,9 +1,17 @@
 # ChipScoPy Release Notes
 
-## 2023.2 - Oct 20, 2023
+## 2023.2 - Dec 8, 2023
+
+### Bugfix Release
+
+- Fixed jupyter notebook hangs on windows during eye scan plots by reverting Kaleido to previous version 0.1.0.post1
+
+
+## 2023.2 - Oct 24, 2023
 
 ### Minor Release
 
+- 2023.2.1698639225
 - VHK158 Preliminary Support
   - HBM2E Evaluation Platform support with ChipScoPy
   - Known issue: DDR 2D Eye Scan is not working on this platform
@@ -16,6 +24,7 @@
 
 ### Major Release
 
+- 2023.1.1686244797
 - NoC Perfmon features:
   - fixes for SSI devices and HBM
   - new basic noc perfmon example (other examples are now deprecated and will be removed in a future release)
@@ -28,6 +37,7 @@
 
 ### Minor Release
 
+- 2022.2.1670292617
 - ILA: Reorganized waveform functions export_waveform(), get_data(), get_probe_data()
 - ILA: Advanced trigger state machine support
 - Fixed device program progress callback
@@ -38,6 +48,7 @@
 
 ###  Major release
 
+- 2022.1.1654632407
 - New VIO example
 - Renamed chipscopy cli to "csutil"
 - Updated 3rd party library dependency versions
@@ -61,6 +72,7 @@
 
 ### Minor release
 
+- 2021.2.1639266951
 - Compatibility with 2021.2 hw_server & cs_server versions
 - ChipScoPy example design moving to a CED (https://github.com/Xilinx/XilinxCEDStore)
 - Enum support for ILA Probes
@@ -70,6 +82,8 @@
   
 
 ## 2021.1 - April 26, 2021
+
+- 2021.1.1637713037
 
 ### What's New
 
@@ -89,6 +103,7 @@ ChipScoPy is a Xilinx Python API to communicate with Xilinx devices and debug co
 - NOC Performance Monitor
 
 ### Limitations and Known Issues
+
 - ChipScoPy is not an interactive replacement for XSDB or Vivado Lab. It is a Python library.
 - The ChipScoPy API version should match the hw_server and cs_server major/minor version.
 - Only Xilinx Versal debug feature support is available in 2021.1. 
@@ -103,7 +118,8 @@ Using this API assumes you are comfortable scripting with Python 3, including do
 
 ## License
 
-Copyright 2021 Xilinx, Inc.
+Copyright (C) 2021-2022, Xilinx, Inc.
+Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

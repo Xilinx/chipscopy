@@ -93,6 +93,7 @@ print(f"PROBES_FILE:{PROBES_FILE}")
 
 # %%
 # Which DDRMC target (0..3) for given ACAP
+# This default value will be readjusted to make sure it points to the first enabled DDRMC
 DDR_INDEX = 0
 # Which Rank of the memory interface
 RANK = 0
@@ -152,27 +153,29 @@ print(f"Debug cores setup and ready for use.")
 ddr_list = device.ddrs
 print(f"{len(ddr_list)} integrated DDRMC cores exist on this device.")
 
-ddr_index = 0
-ddr_inst = None
+enabled_found = False
 for ddr in ddr_list:
     if ddr.is_enabled:
-        print(f" DDRMC instance {ddr_index} is enabled")
-        if ddr_inst is None:
-            ddr_inst = ddr
+        print(f" DDRMC instance {ddr.mc_index} is enabled")
+        if not enabled_found:
+            DDR_INDEX = int(ddr.mc_index)
+            enabled_found = True
     else:
-        print(f" DDRMC instance {ddr_index} is disabled")
-    ddr_index += 1
+        print(f" DDRMC instance {ddr.mc_index} is disabled")
 
 # %% [markdown]
 # ## 6- Select a target DDR by index and display calibration status
 
 # %%
-try:
-    ddr = ddr_inst
-    props = ddr.ddr_node.get_property(["cal_status"])
-    print(f"Calibration status of DDRMC instance {DDR_INDEX} is {props['cal_status']}")
-except:
+ddr = ddr_list[DDR_INDEX]
+props = ddr.ddr_node.get_property(["cal_status"])
+cal_status = props['cal_status']
+print(f"Calibration status of DDRMC instance {DDR_INDEX} is {cal_status}")
+if cal_status != "PASS":
     print(f"The DDR controller at index {DDR_INDEX} is not in use")
+    # End the HW session early to prevent erroneous exercise of disabled DDRMC
+    delete_session(session)
+    exit()
 
 # %%
 ## Initialize and activate the Margin Check feature in the DDRMC
@@ -243,7 +246,7 @@ ddr.run_eye_scan()
 # - The default is "dynamic".
 
 # %%
-ddr.display_eye_scan(DISPLAY_INDEX, display_type="static")
+ddr.display_eye_scan(DISPLAY_INDEX)
 
 # %% [markdown]
 # Optionally you can return figures as a list for later operations.
@@ -261,14 +264,12 @@ figs = ddr.display_eye_scan(DISPLAY_INDEX + 1, return_as_list=True)
 from IPython.display import Image, display
 
 for fig in figs:
-    # To display interactive images, uncomment the following line:
-    # fig.show()
+    fig.show()
 
-    # To display a static png image:
-    image_bytes = fig.to_image(format="png")
-    ipython_image = Image(image_bytes)
-    display(ipython_image)
-
+    # To display a static png image, uncomment below
+    # image_bytes = fig.to_image(format="png")
+    # ipython_image = Image(image_bytes)
+    # display(ipython_image)
 
 # %% [markdown]
 # ## 12 - Save the Eye Scan data from latest run
