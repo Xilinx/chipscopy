@@ -10,6 +10,8 @@ Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
 ChipScoPy communicates with Versal devices. It does not work with older devices such as Ultrascale+ and 7-Series devices.
 
+**We recommend using Python 3.8, 3.9, 3.10, or 3.11 with ChipScoPy.**
+
 -------------------------------------------------------------------------------
 
 ![](https://raw.githubusercontent.com/Xilinx/chipscopy/master/docs/images/chipscopy_overview.png)

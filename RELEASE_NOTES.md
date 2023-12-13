@@ -4,7 +4,9 @@
 
 ### Bugfix Release
 
+- 2023.2.1702018464
 - Fixed jupyter notebook hangs on windows during eye scan plots by reverting Kaleido to previous version 0.1.0.post1
+- We recommend using Python 3.8, 3.9, 3.10, or 3.11 with ChipScoPy
 
 
 ## 2023.2 - Oct 24, 2023
