@@ -50,13 +50,7 @@ ipympl = { version = "^0.9.3", optional = true }
 pytest = "^7.4"
 coverage = "^7.3"
 pytest-mock = "^3.11"
-pyboardbarn = "^5.0.3"
 colorama = "^0.4"
-
-[tool.poetry.group.artifactory]
-optional = true
-
-[tool.poetry.group.artifactory.dependencies]
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "3.5.4"
@@ -84,12 +78,6 @@ csutil = "chipscopy._cli._chipscopy:main"
 core-addons = ["plotly", "kaleido", "matplotlib", "PyQt5", "pandas", "ipympl"]
 jupyter = ["notebook", "ipywidgets"]
 pytcf = ["pytcf"]
-
-[[tool.poetry.source]]
-name = "artifactory"
-url = "https://artifactory.xilinx.com/artifactory/api/pypi/pypi/simple"
-default = false
-secondary = false
 
 [tool.pytest.ini_options]
 addopts = "--strict-markers --verbose"
