@@ -1,5 +1,12 @@
 # ChipScoPy Release Notes
 
+## 2023.2 - Mar 18, 2024
+
+### Bugfix Release
+
+- 2023.2.1710645976
+- Updated VHK158 design
+
 ## 2023.2 - Dec 8, 2023
 
 ### Bugfix Release
