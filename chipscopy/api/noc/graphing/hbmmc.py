@@ -16,6 +16,10 @@ import re
 from datetime import datetime
 
 from chipscopy.api.noc.noc_perfmon_utils import NoCElement, get_noc_typedef_from_name, MAX_SAMPLES
+from chipscopy.utils.logger import log
+
+# %%
+DOMAIN = "noc_perfmon"
 
 pc_map = {"PC0": 0, "PC1": 1}
 
@@ -62,8 +66,8 @@ class HBMMC(NoCElement):
         # 'hbmmc_mc_pm_mrs_cnt',
         # 'hbmmc_mc_pm_interval_time'
     ]
-    na_count = 2  # number of NoC Agent sub-blocks per HBMMC instance
-    pc_count = 2  # number of psuedo channels per HBMMC instance
+    na_count = 2  # number of NoC Agent sub-blocks per HBMMC instance - AKA PSEUDO-CHANNEL
+    port_count = 2  # number of psuedo channels per HBMMC instance
     pc_regexes = {
         "PC0": re.compile(".*pc0.*", re.IGNORECASE),
         "PC1": re.compile(".*pc1.*", re.IGNORECASE),
@@ -146,18 +150,22 @@ class HBMMC(NoCElement):
             self.samples[f"{reg}"].append(tcf_node.props[f"{reg}"])
 
         # bandwidth
-        rf = read_bytes_per_s = [0] * HBMMC.pc_count
-        wf = write_bytes_per_s = [0] * HBMMC.pc_count
+        rf = [0] * HBMMC.na_count
+        read_bytes_per_s = [0] * HBMMC.na_count
+        wf = [0] * HBMMC.na_count
+        write_bytes_per_s = [0] * HBMMC.na_count
 
-        for na_idx in range(0, HBMMC.na_count):
-            for pc_idx in range(0, HBMMC.pc_count):
-                rf[pc_idx] += tcf_node.props[
-                    f"na{na_idx}.hbmmc_na{na_idx}_na_pm_read_data_p{pc_idx}"
+        for na_idx in range(
+            0, HBMMC.na_count
+        ):  # there are two noc agents per HBM MC and this is synonomous with the terminology pseudo-channel
+            for port_idx in range(0, HBMMC.port_count):
+                rf[na_idx] += tcf_node.props[
+                    f"na{na_idx}.hbmmc_na{na_idx}_na_pm_read_data_p{port_idx}"
                 ]
-                wf[pc_idx] += tcf_node.props[
-                    f"na{na_idx}.hbmmc_na{na_idx}_na_pm_write_data_p{pc_idx}"
+                wf[na_idx] += tcf_node.props[
+                    f"na{na_idx}.hbmmc_na{na_idx}_na_pm_write_data_p{port_idx}"
                 ]
-        for pc_idx in range(0, HBMMC.pc_count):
+        for pc_idx in range(0, HBMMC.na_count):
             # TODO remove wompus constant
             rf[pc_idx] = rf[pc_idx] * 128 / 8
             read_bytes_per_s[pc_idx] = rf[pc_idx] / (self.sampling_period_ms / 1000)
@@ -173,6 +181,15 @@ class HBMMC(NoCElement):
         # timestamp handling
         time_delta = raw_trace_data["ts"].strftime("%M:%S.") + str(
             int(raw_trace_data["ts"].microsecond / 1000)
+        )
+
+        rcmds = [tcf_node.props["hbmmc_mc_pm_read_pc0"], tcf_node.props["hbmmc_mc_pm_read_pc1"]]
+        wcmds = [tcf_node.props["hbmmc_mc_pm_write_pc0"], tcf_node.props["hbmmc_mc_pm_write_pc1"]]
+        # record bw
+        log[DOMAIN].info(
+            f"{self.name}: rb[pc0, pc1]: {rf}, wb[pc0, pc1]: {wf}, "
+            + f"rbw[pc0, pc1]: {read_bytes_per_s}, wbw[pc0, pc1]: {write_bytes_per_s}, "
+            + f"rcmd[pc0, pc1]: {rcmds}, wcmds[pc0, pc1]: {wcmds}"
         )
         self.samples["ts"].append(time_delta)
         self.trim_and_log(raw_trace_data)

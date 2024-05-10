@@ -1,5 +1,11 @@
 # ChipScoPy Release Notes
 
+## 2023.2 - May 10, 2024
+
+### Bugfix Release
+- 2023.2.1715225694
+- Versal HBM noc perfmon bugfix: corrected B/W computation for pseudo channels
+
 ## 2023.2 - Mar 18, 2024
 
 ### Bugfix Release
