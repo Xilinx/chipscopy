@@ -41,26 +41,34 @@ class JtagRegister(object):
     def __init__(self, node: "JtagDevice", reg_ctx: str, definition: Dict):
         self.reg_ctx = reg_ctx
         self.definition = definition
-        self.data = None
-        self.fields = {}
+        self.data = []
+        self.fields = [{}]
         self.node = node
 
-    def update(self, done: request.DoneCallback = None):
+    def update(self, slr_index: int = 0, done: request.DoneCallback = None):
         proc = self.node.manager.channel.getRemoteService(XicomService)
         done = request._make_callback(done)
 
         def done_update(token, error, results):
             if not error:
-                self.data = results
-                self.parse_fields()
+                slr = token.slr_index
+                if slr < len(self.data):
+                    self.data[slr] = results
+                else:
+                    self.data.insert(slr, results)
+                self.parse_fields(slr)
             if done:
                 done.done_request(token, error, results)
 
-        return proc.jtag_reg_get(self.node.ctx, self.reg_ctx, done_update)
+        return proc.jtag_reg_get(self.node.ctx, self.reg_ctx, slr_index, done_update)
 
     @property
     def is_static(self):
         return self.definition.get("is_static", False)
+
+    @property
+    def supports_slrs(self):
+        return self.definition.get("supports_slrs", False)
 
     def __str__(self):
         return f"{self.reg_ctx}({self.definition['length']} bits)"
@@ -69,28 +77,49 @@ class JtagRegister(object):
         return self.__str__()
 
     def __getitem__(self, item):
-        return self.fields[item]["value"]
+        return self.fields[0][item]["value"]
 
     def __getattr__(self, item):
-        field = self.fields.get(item)
+        field = self.fields[0].get(item)
         return field["value"] if field else None
 
-    def parse_fields(self):
-        self.fields = {}
+    def parse_fields(self, slr_index: int = 0):
+        if slr_index < len(self.fields):
+            self.fields[slr_index] = {}
+        else:
+            self.fields.insert(slr_index, {})
         fields = self.definition.get("fields")
+        field_counts = {}
+
         if fields:
+            # CR-1187372 - identify any duplicate field names that will need bit ranges in name
+            for field in fields:
+                if field.get("bits"):
+                    field_name = field["name"]
+                    field_counts[field_name] = field_counts.get(field_name, 0) + 1
+
+            # Second pass - process fields and handle duplicates
             for field in fields:
                 bits = field.get("bits")
                 if bits:
-                    data_field = {"name": field["name"]}
+                    data_field = {}
                     if len(bits) > 1:
+                        bit_range = f"{bits[0]}_{bits[-1]}"
                         data_field["bit_range"] = f"{bits[0]}:{bits[-1]}"
                     else:
+                        bit_range = f"{bits[0]}"
                         data_field["bit_range"] = f"{bits[0]}"
-                    if self.data:
+
+                    field_name = field["name"]
+                    # Adjust field name to include bit range for duplicates
+                    if field_counts[field_name] > 1:
+                        field_name = f"{field_name}_{bit_range}"
+
+                    data_field["name"] = field_name
+                    if self.data[slr_index]:
                         value = 0
                         for b in bits:
-                            bit = (self.data[int(b / 8)] >> (b % 8)) & 1
+                            bit = (self.data[slr_index][int(b / 8)] >> (b % 8)) & 1
                             value = (value << 1) | bit
                         data_field["value"] = value
                     enums = field.get("enums")
@@ -99,20 +128,20 @@ class JtagRegister(object):
                         for e in enums:
                             data_enums[e["value"]] = e
                         data_field["enums"] = data_enums
-                    self.fields[field["name"]] = data_field
+                    self.fields[slr_index][field["name"]] = data_field
 
-    def print_reg(self):
+    def print_reg(self, slr_index: int = 0):
         hex_str = ""
         if self.data:
-            hex_str = "0x" + self.data[::-1].hex()
+            hex_str = "0x" + self.data[slr_index][::-1].hex()
         print(f"{self.definition['name']} = {hex_str}")
 
-    def print_fields(self):
-        self.print_reg()
+    def print_fields(self, slr_index: int = 0):
+        self.print_reg(slr_index)
         max_name_len = 0
-        for field in self.fields.values():
+        for field in self.fields[slr_index].values():
             max_name_len = max(max_name_len, len(field["name"]) + len(field["bit_range"]) + 12)
-        for field in self.fields.values():
+        for field in self.fields[slr_index].values():
             label = f"{field['name']} (Bits [{field['bit_range']}])"
             value = field["value"]
             if "enums" in field and value in field["enums"]:
@@ -273,16 +302,30 @@ class JtagDevice(JtagNode):
                 done.done_request(ret_token, error, self["regs"])
                 done = None
 
+        def update_reg(reg: JtagRegister = None):
+            nonlocal ret_token
+            if reg:
+                """
+                If register supported for secondary SLRs and current device is a multi-SLR device,
+                then update register for all SLRs
+                """
+                if reg.supports_slrs and self["reg.slr_count"] > 1:
+                    for slr in range(self["reg.slr_count"]):
+                        ret_token = self.add_pending(reg.update(slr_index=slr, done=done_update))
+                        ret_token.slr_index = slr
+                else:
+                    ret_token = self.add_pending(reg.update(done=done_update))
+                    ret_token.slr_index = 0
+
         # Start updates for all registers that don't have data already or aren't static
         if reg_names:
             for name in reg_names:
                 reg = self["regs"].get(name)
-                if reg:
-                    ret_token = self.add_pending(reg.update(done_update))
+                update_reg(reg)
         else:
             for reg in self["regs"].values():
                 if force or (not reg.data or not reg.is_static):
-                    ret_token = self.add_pending(reg.update(done_update))
+                    update_reg(reg)
 
         if not ret_token:
             invokeLater(done_update, None, Exception("No registers to update"), None)
@@ -388,19 +431,28 @@ class JtagDevice(JtagNode):
         # add pending to indicate that this node is being changed
         self.add_pending(proc.config_reset(self.ctx, {}, done_reset))
 
-    def status(self, reg_name: str = "jtag_status", done: request.DoneCallback = None):
+    def status(
+        self, reg_name: str = "jtag_status", slr_index: int = 0, done: request.DoneCallback = None
+    ):
         """
         Updates and prints the given register.
 
         :param reg_name: Name of the register
+        :param slr_index: Zero-based Index of SLR
         :param done: Done callback
         :return: Token of request
         """
+        if not slr_index < self["reg.slr_count"]:
+            raise ValueError(
+                f"Specified SLR index - {slr_index} is out of range. "
+                f'Number of SLRs in current device = {self["reg.slr_count"]}.'
+            )
+
         done = request._make_callback(done)
 
         def done_update(token, error, result):
             if not error:
-                self.regs[reg_name].print_fields()
+                self.regs[reg_name].print_fields(slr_index)
             if done:
                 done.done_request(token, error, self.regs[reg_name])
 

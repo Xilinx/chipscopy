@@ -15,7 +15,7 @@
 
 import re
 from inspect import getattr_static
-from typing import TypeVar, Sequence, Any
+from typing import TypeVar, Sequence, Any, Callable
 from collections import UserDict, UserList
 
 # This along with the Generic[T] base class for QueryList is needed to allow type hints such as
@@ -35,13 +35,25 @@ class QueryList(UserList, Sequence[T]):
     custom match function takes priority when matching over the optional filter_by attribute.
     """
 
-    def __init__(self, initlist=None):
-        self.custom_match_function = None
+    def __init__(self, initlist=None, *, custom_match_function: Callable = None):
+        self.custom_match_function = custom_match_function
+        self.iter_index = 0
         super().__init__(initlist=initlist)
 
     def __str__(self):
         s = ",\n    ".join([f"'{str(item)}'" for item in self])
         return f"[\n    {s}\n]"
+
+    def __iter__(self):
+        self.iter_index = 0
+        return self
+
+    def __next__(self):
+        if self.iter_index >= len(self):
+            raise StopIteration
+        item = self.at(self.iter_index)
+        self.iter_index += 1
+        return item
 
     def set_custom_match_function(self, match_function):
         """Sets an optional custom match function for the QueryList. If a custom match function is set,

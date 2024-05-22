@@ -137,16 +137,19 @@ class XicomProxy(Service):
         """
         return self.send_xicom_command("jtagRegDef", (reg_ctx,), done)
 
-    def jtag_reg_get(self, ctx: str, reg_ctx: str, done: DoneHWCommand = None) -> Token:
+    def jtag_reg_get(
+        self, ctx: str, reg_ctx: str, slr_index: int, done: DoneHWCommand = None
+    ) -> Token:
         """
         Retrieves the current value for a given register
 
         :param ctx: Context ID of device
         :param reg_ctx: JTAG register context ID
+        :param slr_index: Index of SLR
         :param done: Callback with the result and any error
         :return: Token of command sent
         """
-        return self.send_xicom_command("jtagRegGet", (ctx, reg_ctx), done)
+        return self.send_xicom_command("jtagRegGet", (ctx, reg_ctx, slr_index), done)
 
     def readback_config(
         self, ctx: str, props: Dict[str, Any] = None, done: DoneHWCommand = None

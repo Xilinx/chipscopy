@@ -141,9 +141,7 @@ enable_list = noc.enumerate_noc_elements(scan_nodes)
 print("complete!")
 
 # %%
-supported_periods = noc.get_supported_sampling_periods(
-    100/3, 100/3, {'DDRMC_X0Y0': 800.0}
-)
+supported_periods = noc.get_supported_sampling_periods(100/3, {'DDRMC_X0Y0': 800.0})
 print("Supported sampling periods:")
 for domain, periods in supported_periods.items():
     print(f"  {domain}:")
@@ -208,7 +206,6 @@ noc.configure_monitors(
     enable_list, sampling_intervals, (TC_BEW | TC_BER), num_samples, None, extended_monitor_config
 )
 
-
 # %% [markdown]
 # ## 6 - Traffic Generator Configuration
 #
@@ -235,6 +232,9 @@ tg_vio.write_probes(
 )  # clear nrst on trigger and tg
 
 first_tg_ba = 0x201_8000_0000
+#    This class is designed to aid in controlling and using the Performance AXI Traffic Generator LogicCore IP for
+#    Versal series ACAP devices from AMD. It supports no other architectures or Traffic Generator IPs. There are several
+#    others in the default catalog.
 tg = PerfTGController(first_tg_ba, versal_device, vio=tg_vio)
 
 # %% [markdown]

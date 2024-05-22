@@ -155,7 +155,6 @@ class NoCPerfMonCoreClient(CoreClient):
     def get_supported_sampling_periods(
         self,
         ref_clk_freq_mhz: float = None,
-        pl_alt_ref_clk_freq_mhz: float = None,
         ddrmc_freq_mhz: dict = {},
         done: DoneHWCommand = None,
     ) -> dict:
@@ -169,7 +168,6 @@ class NoCPerfMonCoreClient(CoreClient):
             periods measured in milliseconds (float).
             :param ddrmc_freq_mhz:
             :param done:
-            :param pl_alt_ref_clk_freq_mhz:
             :param ref_clk_freq_mhz:
 
 
@@ -177,8 +175,6 @@ class NoCPerfMonCoreClient(CoreClient):
         params = {"node_id": self.ctx}
         if ref_clk_freq_mhz is not None:
             params.update({"ref_clk_freq_mhz": ref_clk_freq_mhz})
-        if pl_alt_ref_clk_freq_mhz is not None:
-            params.update({"pl_alt_ref_clk_freq_mhz": pl_alt_ref_clk_freq_mhz})
         params.update(ddrmc_freq_mhz)
         service, done_cb = self.make_done(done)
         return self.add_pending(service.get_supported_sampling_periods(params, done_cb))

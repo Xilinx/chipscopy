@@ -5,8 +5,8 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.<br>
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -53,7 +53,7 @@ import os
 import time
 from chipscopy import get_design_files
 from chipscopy import __version__, dm
-from chipscopy import create_session, report_versions
+from chipscopy import create_session, report_versions, delete_session
 
 # %%
 # Specify locations of the running hw_server and cs_server below.
@@ -135,11 +135,11 @@ for sensor in schedule.values():
     print(f"  {sensor}")
 print()
 
-
 # %% [markdown]
 # ## 6 - Refresh values from hardware
 #
 # Perform individual sensor read
+
 # %%
 sensor_to_read = 'VCCAUX'
 current_value = sysmon.read_sensor(sensor_to_read)
@@ -168,3 +168,7 @@ for x in range(5):
 
 
 print("Measurement done.")
+
+# %%
+## When done with testing, close the connection
+delete_session(session)

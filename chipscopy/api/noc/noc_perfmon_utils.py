@@ -27,6 +27,7 @@ from chipscopy.dm.harden.noc_perfmon.noc_types import (
     noc_node_types,
     ddrmc_main_typedef,
     hbmmc_typedef,
+    ddrmc_crypto_typedef,
 )
 from chipscopy.utils.logger import log
 
@@ -44,10 +45,11 @@ ch_map = {"r": 0, "w": 1}
 def get_noc_typedef_from_name(name) -> str:
     nmu_re = re.compile(".*NMU.*", flags=re.IGNORECASE)
     nsu_re = re.compile(".*NSU.*", flags=re.IGNORECASE)
-    ddrmc_noc_re = re.compile(".*DDRMC_NOC.*", flags=re.IGNORECASE)
+    ddrmc_noc_re = re.compile(".*DDRMC\d*_NOC.*", flags=re.IGNORECASE)
     ddrmc_main_re = re.compile(".*DDRMC_MAIN.*", flags=re.IGNORECASE)
-    ddrmc_re = re.compile(".*DDRMC_X.*", flags=re.IGNORECASE)
+    ddrmc_re = re.compile(".*DDRMC\d*_(S\d+)?X.*", flags=re.IGNORECASE)
     hbmmc_re = re.compile(".*HBM_MC_X.*", flags=re.IGNORECASE)
+    ddrmc_crypto_re = re.compile(".*DDRMC_CRYPTO.*", flags=re.IGNORECASE)
 
     if nmu_re.match(name):
         return noc_nmu_typedef
@@ -59,9 +61,26 @@ def get_noc_typedef_from_name(name) -> str:
         return ddrmc_main_typedef
     elif hbmmc_re.match(name):
         return hbmmc_typedef
+    elif ddrmc_crypto_re.match(name):
+        return ddrmc_crypto_typedef
     else:
         # log[DOMAIN].error(f'unknown type for name: {name}')
         return ""
+
+
+def decode_ddrmc_gen(name):
+    ddrmc5_re = re.compile(".*DDRMC5_X.*", flags=re.IGNORECASE)
+    if ddrmc5_re.match(name):
+        return 5
+    else:
+        return 4
+
+
+def get_nsu_count_per_ddrmc(ddrmc_gen):
+    if ddrmc_gen == 5:
+        return 2
+    else:
+        return 4
 
 
 # %%
@@ -151,7 +170,6 @@ class NoCElement(ABC):
         self.raw_trace_data = raw_trace_data
 
 
-# %%
 class DDRMC(NoCElement):
     dc_metrics_map = {
         0: "activates",
@@ -172,6 +190,7 @@ class DDRMC(NoCElement):
         :param alt_name:
         """
         super().__init__(*args)
+        self.num_nsu = get_nsu_count_per_ddrmc(decode_ddrmc_gen(self.name))
         # add DC aggregate, NSU agg, and NSU port metrics
         for ch in range(0, 2):
             for metric in DDRMC.dc_metrics_map.values():
@@ -180,7 +199,7 @@ class DDRMC(NoCElement):
                     self.samples.update({f"agg_{metric}": [0] * MAX_SAMPLES})
             self.samples.update({f"dc{ch}_flags": [0] * MAX_SAMPLES})
 
-        for nsu in range(0, 4):
+        for nsu in range(0, self.num_nsu):
             self.samples.update({f"nsu{nsu}_write_bandwidth": [0] * MAX_SAMPLES})
             self.samples.update({f"nsu{nsu}_read_bandwidth": [0] * MAX_SAMPLES})
             self.samples.update({f"nsu{nsu}_write_latency": [0] * MAX_SAMPLES})
@@ -224,17 +243,37 @@ class DDRMC(NoCElement):
                 raw_trace_data[ch]["burst_count"] = []
                 raw_trace_data[ch]["byte_count"] = []
                 raw_trace_data[ch]["flags"] = []
-                for nsu in range(0, 4):
-                    lacc = tcf_node[f"nsu{nsu}_perf_mon_{mon}_0"]
-                    raw_trace_data[ch]["lacc"].append(lacc & 0x7FFFFFFF)
-                    raw_trace_data[ch]["burst_count"].append(tcf_node[f"nsu{nsu}_perf_mon_{mon}_1"])
-                    raw_trace_data[ch]["byte_count"].append(tcf_node[f"nsu{nsu}_perf_mon_{mon}_2"])
-                    raw_trace_data[ch]["flags"].append((lacc & 0x80000000) >> 31)
+
+                for nsu in range(0, self.num_nsu):
+                    if decode_ddrmc_gen(self.name) == 5:
+                        lacc = tcf_node[f"nsu{nsu}_perf_mon_{mon}_0"]
+                        lacc += (tcf_node[f"nsu{nsu}_perf_mon_{mon}_1"] & 0xFFFF) << 32
+                        raw_trace_data[ch]["lacc"].append(lacc)
+                        bc = tcf_node[f"nsu{nsu}_perf_mon_{mon}_2"]
+                        bc += (tcf_node[f"nsu{nsu}_perf_mon_{mon}_3"] & 0xFFFF) << 32
+                        raw_trace_data[ch]["burst_count"].append(bc)
+                        hfc = tcf_node[f"nsu{nsu}_perf_mon_{mon}_4"]
+                        hfc += (tcf_node[f"nsu{nsu}_perf_mon_{mon}_5"] & 0xFFFF) << 32
+                        raw_trace_data[ch]["byte_count"].append(hfc)
+                        raw_trace_data[ch]["flags"].append((lacc & 0x80000000) >> 31)
+                    else:
+                        lacc = tcf_node[f"nsu{nsu}_perf_mon_{mon}_0"]
+                        raw_trace_data[ch]["lacc"].append(lacc & 0x7FFFFFFF)
+                        raw_trace_data[ch]["burst_count"].append(
+                            tcf_node[f"nsu{nsu}_perf_mon_{mon}_1"]
+                        )
+                        raw_trace_data[ch]["byte_count"].append(
+                            tcf_node[f"nsu{nsu}_perf_mon_{mon}_2"]
+                        )
+                        raw_trace_data[ch]["flags"].append((lacc & 0x80000000) >> 31)
+
+                    if lacc == None:  # why does this logic control exist?
+                        continue
 
             # bandwidth
             rf = 0
             wf = 0
-            for nsu in range(0, 4):
+            for nsu in range(0, self.num_nsu):
                 rf += raw_trace_data["r"]["burst_count"][nsu]
                 wf += raw_trace_data["w"]["burst_count"][nsu]
             read_bytes = rf * 128 / 8
@@ -246,7 +285,7 @@ class DDRMC(NoCElement):
             flags = []
             for ch in ["r", "w"]:
                 flag = 0
-                for nsu in range(0, 4):
+                for nsu in range(0, self.num_nsu):
                     flag += raw_trace_data[ch]["flags"][nsu]
                 if flag != 0:
                     flags.append(f"{ch}_overflow")
@@ -257,7 +296,7 @@ class DDRMC(NoCElement):
             for ch in ["r", "w"]:
                 agg_lat = 0
                 agg_burst = 0
-                for nsu in range(0, 4):
+                for nsu in range(0, self.num_nsu):
                     agg_lat += raw_trace_data[ch]["lacc"][nsu]
                     agg_burst += raw_trace_data[ch]["burst_count"][nsu]
                 if agg_burst == 0:
@@ -276,6 +315,7 @@ class DDRMC(NoCElement):
 
         if tcf_node_type == ddrmc_main_typedef:
             total_ops = 0
+            disagg_data = {}
             for ch in range(0, 2):
                 flags = 0
                 for m_index, metric in DDRMC.dc_metrics_map.items():
@@ -286,6 +326,7 @@ class DDRMC(NoCElement):
                         self.samples[agg_metric].append(0)
                     data = tcf_node[f"dc{ch}_perf_mon_{m_index}"]
                     raw_trace_data[disagg_metric] = data
+                    disagg_data[disagg_metric] = data
                     overflow = data & 0x80000000 == 0x80000000
                     data &= 0x7FFF_FFFF
                     if overflow:
@@ -307,6 +348,8 @@ class DDRMC(NoCElement):
                 # converting this to float now, it's a 100
                 if total_ops > 0:
                     self.samples[agg_metric][-1] = (self.samples[agg_metric][-1] * 100) / total_ops
+
+            log[DOMAIN].info(disagg_data)
 
         # timestamp handling
         # the way the polls are created the NA reports AFTER the main, so when this event is received, update plots
@@ -475,6 +518,14 @@ class NoCPerfMonNodeListener(NodeListener):
                 self.noc_elements[elem.lower()] = node
                 self.noc_elements[alt_name.lower()] = node
                 self.unique_elements[elem.lower()] = node
+                # TODO iff gen5
+                # TODO node names are lacking the '5' fixup
+                crypto_name = "ddrmc_crypto_" + elem.split("_")[-1]
+                crypto_node = DDRMCCrypto(
+                    crypto_name.lower(), sampling_period_ms[elem], record_to_file
+                )
+                self.noc_elements[crypto_name.lower()] = crypto_node
+                # self.unique_elements[elem.lower()] = node
             elif node_type in [hbmmc_typedef]:
                 from chipscopy.api.noc.graphing.hbmmc import HBMMC
 
@@ -515,6 +566,14 @@ class NoCPerfMonNodeListener(NodeListener):
 
 
 class PerfTGController:
+    """
+    This class is designed to aid in controlling and using the Performance AXI Traffic Generator LogicCore IP for
+    Versal series ACAP devices from AMD. It supports no other architectures or Traffic Generator IPs. There are several
+    others in the default catalog.
+
+
+    """
+
     def __init__(self, base_address, device, vio=None):
         self.base_address = base_address
         self.device = device
@@ -648,3 +707,59 @@ class PerfTGController:
     def _soft_reset(self):
         self.device.memory_write(self.ctrl, [0x0])
         self.device.memory_write(self.ctrl, [0x1])
+
+
+class DDRMCCrypto:
+    def __init__(self, name, num_samples, record_to_file):
+        self.name = name
+        self.node_type = get_noc_typedef_from_name(self.name)
+        self.num_samples = num_samples
+        self.record_to_file = record_to_file
+
+    def update_node(self, tcf_node, updated_keys):
+        self.aes_xts_enc = tcf_node["reg_crypto_perf_mon_cnt0"]
+        self.aes_xts_dec = tcf_node["reg_crypto_perf_mon_cnt1"]
+        self.gcm_enc = tcf_node["reg_crypto_perf_mon_cnt2"]
+        self.gcm_dec = tcf_node["reg_crypto_perf_mon_cnt3"]
+        self.pwr_cache_rd_hit = tcf_node["reg_crypto_perf_mon_pwr0"]
+        self.pwr_cache_rd_miss = tcf_node["reg_crypto_perf_mon_pwr1"]
+        self.pwr_cache_wr_hit = tcf_node["reg_crypto_perf_mon_pwr2"]
+        self.pwr_cache_wr_miss = tcf_node["reg_crypto_perf_mon_pwr3"]
+        self.pwr_cache_evict = tcf_node["reg_crypto_perf_mon_pwr4"]
+        self.mc_rd_hit = tcf_node["reg_crypto_perf_mon_mc0"]
+        self.mc_rd_miss = tcf_node["reg_crypto_perf_mon_mc1"]
+        self.mc_wr_hit = tcf_node["reg_crypto_perf_mon_mc2"]
+        self.mc_wr_miss = tcf_node["reg_crypto_perf_mon_mc3"]
+        self.mc_evict = tcf_node["reg_crypto_perf_mon_mc4"]
+
+        raw_trace_data = {
+            "type": self.node_type,
+            "name": self.name,
+            "ts": datetime.now(),
+            "aes_xts_enc": tcf_node["reg_crypto_perf_mon_cnt0"],
+            "aes_xts_dec": tcf_node["reg_crypto_perf_mon_cnt1"],
+            "gcm_enc": tcf_node["reg_crypto_perf_mon_cnt2"],
+            "gcm_dec": tcf_node["reg_crypto_perf_mon_cnt3"],
+            "pwr_cache_rd_hit": tcf_node["reg_crypto_perf_mon_pwr0"],
+            "pwr_cache_rd_miss": tcf_node["reg_crypto_perf_mon_pwr1"],
+            "pwr_cache_wr_hit": tcf_node["reg_crypto_perf_mon_pwr2"],
+            "pwr_cache_wr_miss": tcf_node["reg_crypto_perf_mon_pwr3"],
+            "pwr_cache_evict": tcf_node["reg_crypto_perf_mon_pwr4"],
+            "mc_rd_hit": tcf_node["reg_crypto_perf_mon_mc0"],
+            "mc_rd_miss": tcf_node["reg_crypto_perf_mon_mc1"],
+            "mc_wr_hit": tcf_node["reg_crypto_perf_mon_mc2"],
+            "mc_wr_miss": tcf_node["reg_crypto_perf_mon_mc3"],
+            "mc_evict": tcf_node["reg_crypto_perf_mon_mc4"],
+        }
+
+        # log_str = f"{self.name} - aes_xts_enc: {raw_trace_data['aes_xts_enc']}"
+        log[DOMAIN].info(str(self))
+        # self.samples["ts"].append(time_delta)
+        # self.trim_and_log(raw_trace_data)
+
+    def __str__(self):
+        ret_str = (
+            f"{self.name}: aes_xts_enc: {self.aes_xts_enc}, aes_xts_dec: {self.aes_xts_dec} "
+            f"gcm_enc {self.gcm_enc}, gcm_dec: {self.gcm_dec}"
+        )
+        return ret_str

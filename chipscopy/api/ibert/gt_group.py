@@ -18,8 +18,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Union, Any
 
 from chipscopy.api.containers import QueryList
-from chipscopy.api.ibert.aliases import CHILDREN, GT_KEY, PLL_KEY, TYPE
+from chipscopy.api.ibert.aliases import CHILDREN, GT_KEY, GT_COMMON_KEY, PLL_KEY, TYPE
 from chipscopy.api.ibert.gt import GT
+from chipscopy.api.ibert.gt_common import GTCOMMON
 from chipscopy.api.ibert.pll import PLL
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from typing_extensions import final
@@ -46,10 +47,22 @@ class GTGroup(SerialObjectBase["IBERT", Union[GT, PLL]]):
         return self._children.filter_by(type=GT_KEY)
 
     @property
+    def gtcommons(self) -> QueryList[GT]:
+        """GTs in this GT Group"""
+        self.setup()
+        return self._children.filter_by(type=GT_COMMON_KEY)
+
+    @property
     def plls(self) -> QueryList[PLL]:
         """PLL(s) in this GT Group"""
         self.setup()
-        return self._children.filter_by(type=PLL_KEY)
+        all_gt_group_plls = self._children.filter_by(type=PLL_KEY)
+        for child in self.children:
+            child.setup()
+            all_gt_group_plls.extend(child.children.filter_by(type=PLL_KEY))
+        if len(all_gt_group_plls) == 1:
+            return all_gt_group_plls[0]
+        return all_gt_group_plls
 
     def reset(self):
         """
@@ -77,6 +90,8 @@ class GTGroup(SerialObjectBase["IBERT", Union[GT, PLL]]):
             obj: Union[GT, PLL]
             if child_info[TYPE] == GT_KEY:
                 obj = GT(child_info, self, self.core_tcf_node)
+            elif child_info[TYPE] == GT_COMMON_KEY:
+                obj = GTCOMMON(child_info, self, self.core_tcf_node)
             elif child_info[TYPE].startswith(PLL_KEY):
                 obj = PLL(child_info, self, self.core_tcf_node)
             else:

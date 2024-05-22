@@ -126,12 +126,13 @@ class XicomService(Service):
         """
         raise NotImplementedError("Abstract method")
 
-    def jtag_reg_get(self, ctx: str, reg_ctx: str, done: DoneHWCommand = None) -> services.TokenType:
+    def jtag_reg_get(self, ctx: str, reg_ctx: str, slr_index: int, done: DoneHWCommand = None) -> services.TokenType:
         """
         Retrieves the current value for a given register
 
         :param ctx: Context ID of device
         :param reg_ctx: JTAG register context ID
+        :param slr_index: SLR index
         :param done: Callback with the result and any error
         :return: Token of command sent
         """

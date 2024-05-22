@@ -85,7 +85,7 @@ class DeviceFamily(Enum):
             return DeviceFamily.VERSAL
         elif family_name.startswith("xvc"):
             return DeviceFamily.XVC
-        elif family_name.endswith("uplus"):
+        elif family_name.endswith("uplus") or family_name.endswith("u"):
             return DeviceFamily.UPLUS
         else:
             return DeviceFamily.GENERIC
@@ -288,7 +288,7 @@ class Device:
                     config_status = node.props.get("regs").get("config_status")
                     if jtag_status:
                         node.update_regs(reg_names=("jtag_status",), force=True, done=None)
-                        done_reg = jtag_status.fields["DONE"]
+                        done_reg = jtag_status.fields[0]["DONE"]
                         is_programmed_ = done_reg["value"] == 1
                     elif config_status:
                         node.update_regs(reg_names=("config_status",), force=True, done=None)
@@ -348,7 +348,7 @@ class Device:
     def ibert_cores(self) -> QueryList[IBERT]:
         """Returns:
         list of detected IBERT cores in the device"""
-        self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
         self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(IBERTCoreClient)
 
@@ -584,7 +584,7 @@ class Device:
         # Set up all debug cores in hw_server for the given hub addresses
         # Do this by default unless the user has explicitly told us not to with
         # "disable_core_scan" as an argument.
-        if not self.disable_core_scan:
+        if not self.disable_core_scan or self.device_family == DeviceFamily.UPLUS:
             if not self.cs_server:
                 raise RuntimeError("No chipscope server connection. Could not get chipscope view")
             self.chipscope_node.setup_cores(debug_hub_addrs=hub_address_list)
@@ -786,9 +786,20 @@ class Device:
         return plm_log_bytearray
 
     @staticmethod
-    def _read_plm_log(mem: Memory) -> str:
+    def _slave_slr_map(slr_index: int, address: int, length: int):
+        if address < 0xF0000000 or address >= 0xF8000000 or (address + length) >= 0xF8000000:
+            raise ValueError(
+                f"Address - {address} is out of range. " f"Valid range is 0xF0000000-0xF7ffffff."
+            )
+        if slr_index > 0:
+            address += 0x108000000 + ((slr_index - 1) * 0x8000000) - 0xF0000000
+        return address
+
+    @staticmethod
+    def _read_plm_log(mem: Memory, slr_index: int = 0) -> str:
         # Given a memory target, read the PLM log data and return as a big string
-        rtca_data = mem.memory_read(address=0xF2014000, num=0x20, size="w")
+        rtca_address = Device._slave_slr_map(slr_index, 0xF2014000, 1024)
+        rtca_data = mem.memory_read(address=rtca_address, num=0x20, size="w")
         header = rtca_data[0]
         plm_wrapped_addr = 0
         plm_wrapped_len = 0
@@ -796,7 +807,7 @@ class Device:
         if header == 0x41435452:
             # use_rtca = True
             use_defaults = False
-            plm_addr = rtca_data[4] | (rtca_data[5] << 32)  # 64-bit address
+            plm_addr = Device._slave_slr_map(slr_index, rtca_data[4] | (rtca_data[5] << 32), 1024)
             if (
                 rtca_data[4] == 0xDEADBEEF
                 or rtca_data[5] == 0xDEADBEEF
@@ -819,8 +830,10 @@ class Device:
             plm_len = 0
 
         if use_defaults:
-            plm_addr = 0xF2019000
             plm_len = 1024
+            plm_addr = 0xF2019000
+            if slr_index > 0:
+                plm_addr = Device._slave_slr_map(slr_index, plm_addr, plm_len)
 
         # plm_log_bytearray = bytearray(b'@' * (plm_len + plm_wrapped_len))
         plm_data = mem.memory_read(address=plm_addr, num=plm_len, size="w")
@@ -833,12 +846,13 @@ class Device:
         plm_log_str = plm_log_bytearray.decode("utf-8")
         return plm_log_str
 
-    def get_program_log(self, memory_target="APU") -> str:
+    def get_program_log(self, memory_target="APU", slr_index: int = 0) -> str:
         """
         Returns: Programming log read from hardware (None=Use default transport)
 
         Args:
             memory_target: Optional name of memory target such as APU, RPU, DPC
+            slr_index: Optional SLR index for multi-SLR devices
         """
         self._raise_if_family_not(DeviceFamily.VERSAL)
         self._raise_if_state_invalid()
@@ -846,7 +860,13 @@ class Device:
             mem = self.memory.get(name=memory_target)
         except ValueError:
             raise ValueError(f"Memory target {memory_target} not available")
-        return Device._read_plm_log(mem)
+        if not slr_index < self.jtag_node["reg.slr_count"]:
+            raise ValueError(
+                f"Specified SLR index - {slr_index} is out of range. "
+                f'Number of SLRs in current device = {self.jtag_node["reg.slr_count"]}.'
+            )
+
+        return Device._read_plm_log(mem, slr_index)
 
     def reset(self):
         """Reset the device to a non-programmed state."""

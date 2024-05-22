@@ -5,8 +5,8 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022, Xilinx, Inc.<br>
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -193,7 +193,7 @@ from time import sleep
 import chipscopy
 from chipscopy import get_design_files
 from chipscopy import get_examples_dir_or_die, null_callback
-from chipscopy import create_session, report_versions
+from chipscopy import create_session, report_versions, delete_session
 from chipscopy.api.ila import ILAStatus, ILAState
 
 # %%
@@ -219,7 +219,6 @@ print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
-
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
@@ -275,7 +274,6 @@ vio_cores = device.vio_cores
 for index, vio_core in enumerate(vio_cores):
     print(f"{index} - {vio_core.core_info.uuid}   {vio_core.name}")
 
-
 # %% [markdown]
 # ## 5 - VIO Control and ILA Capture
 #
@@ -300,7 +298,6 @@ vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 
 print(f"Using ILA: {ila.core_info.uuid}  {ila.name}")
 print(f"Using VIO: {vio.core_info.uuid}  {vio.name}")
-
 
 # %% [markdown]
 # ## 6 - Configure the counter using VIO output probes
@@ -456,3 +453,5 @@ for trigger, sample_index, window_index, window_sample_index, value in zip(*samp
     )
 
 # %%
+## When done with testing, close the connection
+delete_session(session)

@@ -1,18 +1,22 @@
-# %%
-# Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# %% [markdown]
+# <link rel="preconnect" href="https://fonts.gstatic.com">
+# <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# ### License
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
+# Copyright (C) 2021-2022, Xilinx, Inc.<br>
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# <br><br>
+# Licensed under the Apache License, Version 2.0 (the "License");<br>
+# you may not use this file except in compliance with the License.<br><br>
+# You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
+# Unless required by applicable law or agreed to in writing, software<br>
+# distributed under the License is distributed on an "AS IS" BASIS,<br>
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>
+# See the License for the specific language governing permissions and<br>
+# limitations under the License.<br>
+# </p>
 
 # %% [markdown]
 # ILA Advanced Trigger Example
@@ -44,7 +48,13 @@
 import os
 from enum import Enum
 import chipscopy
-from chipscopy import create_session, get_design_files, null_callback, report_versions
+from chipscopy import (
+    create_session,
+    get_design_files,
+    null_callback,
+    report_versions,
+    delete_session,
+)
 from chipscopy.api.ila import ILAStatus, ILAWaveform
 from io import StringIO
 from pprint import pformat
@@ -140,7 +150,6 @@ print("\nILA Name:", my_ila.name)
 print("\nILA Core Info", my_ila.core_info)
 print("\nILA Static Info", my_ila.static_info)
 
-
 # %% [markdown]
 # ## Step 7 -  Trigger Immediately using Advanced Trigger Mode
 #
@@ -203,7 +212,6 @@ def print_probe_values(waveform: ILAWaveform, probe_names: [str]):
         )
 
 print_probe_values(my_ila.waveform, [counter_probe_name])
-
 
 # %% [markdown]
 # ## Step 10 - Check if TSM is Valid
@@ -322,3 +330,5 @@ if not my_ila.waveform:
 print_probe_values(my_ila.waveform, [counter_probe_name])
 
 # %%
+## When done with testing, close the connection
+delete_session(session)

@@ -56,6 +56,8 @@ def _create_server_report(server_version: ServerVersionInfo):
     if server_version.server_type == "cs_server":
         report.add_row("Package", f"{server_version.package}")
         report.add_row("Artifact type", f"{server_version.artifact}")
+        if server_version.pytcf_version:
+            report.add_row("PyTCF Version", f"{server_version.pytcf_version}")
     return report
 
 
@@ -75,6 +77,14 @@ def report_versions(session: Optional["Session"] = None):
     chipscopy_report.add_column("Attribute", justify="right")
     chipscopy_report.add_column("Value", justify="left")
     chipscopy_report.add_row("Build", chipscopy.__version__)
+    try:
+        from importlib.metadata import version
+
+        pytcf_version = version("pytcf")
+    except Exception:
+        pass
+    else:
+        chipscopy_report.add_row("PyTCF Version", pytcf_version)
     # Need to handle case like "dev1668723891"
     version_number_with_chars = chipscopy.__version__.split(".")[-1]
     version_number = int("".join(filter(str.isdigit, version_number_with_chars)))

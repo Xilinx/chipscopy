@@ -5,8 +5,8 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.<br>
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -47,7 +47,7 @@
 # %%
 import os
 from chipscopy import get_design_files
-from chipscopy import create_session, report_versions
+from chipscopy import create_session, report_versions, delete_session
 
 # %%
 # Make sure to start the hw_server prior to running.
@@ -63,7 +63,6 @@ PROGRAMMING_FILE = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced").p
 
 print(f"HW_URL: {HW_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
-
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server
@@ -90,3 +89,6 @@ report_versions(session)
 device = session.devices.filter_by(family="versal").get()
 device.program(PROGRAMMING_FILE)
 
+# %%
+## When done with testing, close the connection
+delete_session(session)

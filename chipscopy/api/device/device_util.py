@@ -47,8 +47,11 @@ def copy_node_props(node: Node, props: dict) -> dict:
         elif type(v) == JtagRegister:
             try:
                 node.update_regs(reg_names=(f"{k}",), force=True, done=None)
-                int_val = int.from_bytes(v.data, byteorder="little", signed=False)
-                transformed_props[str(k)] = int_val
+                list_val = [
+                    int.from_bytes(reg_data, byteorder="little", signed=False)
+                    for reg_data in v.data
+                ]
+                transformed_props[str(k)] = list_val
             except Exception:  # noqa
                 pass
         elif type(v) == dict:
@@ -165,7 +168,7 @@ def get_node_dna(node: Node) -> Optional[int]:
                 try:
                     node.update_regs(reg_names=("dna",), force=True, done=None)
                     jtag_register = node.props["regs"]["dna"]
-                    bytearray_data = jtag_register.data
+                    bytearray_data = jtag_register.data[0]
                     dna_128 = int.from_bytes(bytearray_data, byteorder="little", signed=False)
                 except Exception:  # noqa
                     dna_128 = None

@@ -18,11 +18,13 @@ noc_nsu_typedef = "noc_nsu"
 ddrmc_noc_typedef = "ddrmc_noc"
 ddrmc_main_typedef = "ddrmc_main"
 hbmmc_typedef = "hbmmc"
+ddrmc_crypto_typedef = "ddrmc_crypto"
 noc_node_types = [
     noc_nmu_typedef,
     noc_nsu_typedef,
     ddrmc_noc_typedef,
     ddrmc_main_typedef,
     hbmmc_typedef,
+    ddrmc_crypto_typedef,
 ]
 noc_bw_lat_types = [noc_nmu_typedef, noc_nsu_typedef, ddrmc_noc_typedef]

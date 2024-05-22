@@ -141,7 +141,7 @@ print("complete!")
 
 # %%
 supported_periods = noc.get_supported_sampling_periods(
-    100/3, 100/3, {'DDRMC_X0Y0': 800.0}
+    100/3, {'DDRMC_X0Y0': 800.0}
 )
 print("Supported sampling periods:")
 for domain, periods in supported_periods.items():
@@ -206,7 +206,6 @@ extended_monitor_config = {"NOC_NMU512_X0Y0": {"tslide": 0x3}}  # or None
 noc.configure_monitors(
     enable_list, sampling_intervals, (TC_BEW | TC_BER), num_samples, None, extended_monitor_config
 )
-
 
 # %% [markdown]
 # ## 7 - Create plotter and listener

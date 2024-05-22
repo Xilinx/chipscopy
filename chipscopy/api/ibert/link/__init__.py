@@ -216,14 +216,14 @@ class Link:
         report.add_row("", "")
 
         if self.rx is not None:
-            values = self.rx.property.get(list(self.rx.property_for_alias.values()))
+            values = self.rx.property.refresh(list(self.rx.property_for_alias.values()))
             for alias, prop in self.rx.property_for_alias.items():
                 report.add_row(f"RX {alias}", f"{values[prop]}")
 
         report.add_row("", "")
 
         if self.tx is not None:
-            values = self.tx.property.get(list(self.tx.property_for_alias.values()))
+            values = self.tx.property.refresh(list(self.tx.property_for_alias.values()))
             for alias, prop in self.tx.property_for_alias.items():
                 report.add_row(f"TX {alias}", f"{values[prop]}")
 
