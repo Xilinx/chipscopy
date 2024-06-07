@@ -1,44 +1,35 @@
-# %% [markdown]
-# <link rel="preconnect" href="https://fonts.gstatic.com">
-# <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
-#
 # ### License
-#
-# <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
-# <br><br>
-# Licensed under the Apache License, Version 2.0 (the "License");<br>
-# you may not use this file except in compliance with the License.<br><br>
+# <br>
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# <p>
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# <p>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
-# Unless required by applicable law or agreed to in writing, software<br>
-# distributed under the License is distributed on an "AS IS" BASIS,<br>
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>
-# See the License for the specific language governing permissions and<br>
-# limitations under the License.<br>
-# </p>
-#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, 
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-# %% [markdown]
 # # ChipScoPy DDR 2D Eye Margin Scan Example
 #
 #
 # <img src="../img/api_overview.png" width="500" align="left">
 
-# %% [markdown]
 # ## Description
 # This demo shows how to exercise and run Versal DDRMC 2D Margin Scan features
 #
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2023.2 installed and running
-# - Xilinx cs_server 2023.2 installed and running
+# - Xilinx hw_server 2024.1 installed and running
+# - Xilinx cs_server 2024.1 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2023.2 installed
-# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons]`
+# - ChipScoPy 2024.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons,jupyter]`
 
-# %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
 #
 # After this step,
@@ -46,7 +37,6 @@
 # - URL paths are set correctly
 # - File paths to example files are set correctly
 
-# %%
 import sys
 import os
 import pprint
@@ -54,7 +44,7 @@ from chipscopy import create_session, delete_session, report_versions
 from chipscopy import get_design_files
 from ddr_scan_util import convert_vref_pct_to_code
 
-# %%
+# +
 # Make sure to start the hw_server and cs_server prior to running.
 # Specify locations of the running hw_server and cs_server below.
 # The default is localhost - but can be other locations on the network.
@@ -76,8 +66,8 @@ print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
+# -
 
-# %%
 # Which DDRMC target (0..3) for given ACAP
 # This default value will be readjusted to make sure it points to the first enabled DDRMC
 DDR_INDEX = 0
@@ -96,7 +86,6 @@ STEPS = 15
 # Which nibble (read mode) or byte lane (write) to display
 DISPLAY_INDEX = 1
 
-# %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
@@ -104,22 +93,18 @@ DISPLAY_INDEX = 1
 # - Session is initialized and connected to server(s)
 # - Versions are detected and reported to stdout
 
-# %%
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
 report_versions(session)
 
-# %% [markdown]
 # ## 3 - Program the device with the example design
 #
 # After this step,
 # - Device is programmed with the example programming file
 
-# %%
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
 device.program(PROGRAMMING_FILE)
 
-# %% [markdown]
 # ## 4 - Discover Debug Cores
 #
 # Debug core discovery initializes the chipscope server debug cores. This brings debug cores in the chipscope server online.
@@ -128,14 +113,12 @@ device.program(PROGRAMMING_FILE)
 #
 # - The cs_server is initialized and ready for use
 
-# %%
 device.discover_and_setup_cores(ltx_file=PROBES_FILE)
 print(f"Debug cores setup and ready for use.")
 
-# %% [markdown]
 # ## 5 - Get a list of the integrated DDR Memory Controllers
 
-# %%
+# +
 ddr_list = device.ddrs
 print(f"{len(ddr_list)} integrated DDRMC cores exist on this device.")
 
@@ -148,11 +131,10 @@ for ddr in ddr_list:
             enabled_found = True
     else:
         print(f" DDRMC instance {ddr.mc_index} is disabled")
+# -
 
-# %% [markdown]
 # ## 6- Select a target DDR by index and display calibration status
 
-# %%
 ddr = ddr_list[DDR_INDEX]
 props = ddr.ddr_node.get_property(["cal_status"])
 cal_status = props['cal_status']
@@ -163,7 +145,6 @@ if cal_status != "PASS":
     delete_session(session)
     exit()
 
-# %%
 ## Initialize and activate the Margin Check feature in the DDRMC
 ddr.ddr_node.set_property({"mgchk_enable": 1})
 ddr.ddr_node.commit_property_group([])
@@ -171,10 +152,8 @@ ddr.ddr_node.set_property({"mgchk_enable": 0})
 ddr.ddr_node.commit_property_group([])
 print("Initialization complete.")
 
-# %% [markdown]
 # ## 7 - Setting the 2D eye scan read or write mode
 
-# %%
 if MARGIN_MODE == "READ":
     print("Setting 2D eye for READ margin")
     ddr.set_eye_scan_read_mode()
@@ -186,10 +165,8 @@ else:
         f" ERROR: MARGIN_MODE is set to {MARGIN_MODE} which is an illegal value, only READ or WRITE is allowed"
     )
 
-# %% [markdown]
 # ## 8 - Setting the 2D eye scan data pattern mode
 
-# %%
 if DATA_PATTERN == "SIMPLE":
     print("Setting 2D eye for SIMPLE data pattern")
     ddr.set_eye_scan_simple_pattern()
@@ -201,10 +178,9 @@ else:
         f" ERROR: DATA_PATTERN is set to {DATA_PATTERN} which is an illegal value, only SIMPLE or COMPLEX is allowed"
     )
 
-# %% [markdown]
 # ## 9 - Setting the Vref sample min/max range
 
-# %%
+# +
 print("Vref Min setting...")
 vref_min_code = convert_vref_pct_to_code(ddr, MARGIN_MODE, VREF_PCT_MIN)
 print("Vref Max setting...")
@@ -214,14 +190,12 @@ ddr.set_eye_scan_vref_min(vref_min_code)
 ddr.set_eye_scan_vref_max(vref_max_code)
 ddr.set_eye_scan_vref_steps(STEPS)
 print(f"Dividing the Vref range into {STEPS} steps")
+# -
 
-# %% [markdown]
 # ## 10 - Run 2D Margin Scan after settings
 
-# %%
 ddr.run_eye_scan()
 
-# %% [markdown]
 # ## 11 - Display Scan Plots by a given Unit(nibble/byte) index
 #
 # You can display static or dynamic plots. The display_type controls the display output.
@@ -229,22 +203,18 @@ ddr.run_eye_scan()
 # - "dynamic" is an interactive javascript plot.
 # - The default is "dynamic".
 
-# %%
 ddr.display_eye_scan(DISPLAY_INDEX, display_type="static")
 
-# %% [markdown]
 # Optionally you can return figures as a list for later operations.
 
-# %%
 figs = ddr.display_eye_scan(DISPLAY_INDEX + 1, return_as_list=True)
 
-# %% [markdown]
 # The following loop demonstrates how you can display the graphs from a list created previously.
 # It is easy to display interactive or static images.
 #
 # Here we get the list of figures and output them to png format.
 
-# %%
+# +
 from IPython.display import Image, display
 
 for fig in figs:
@@ -255,33 +225,27 @@ for fig in figs:
     image_bytes = fig.to_image(format="png")
     ipython_image = Image(image_bytes)
     display(ipython_image)
+# -
 
-# %% [markdown]
 # ## 12 - Save the Eye Scan data from latest run
 
-# %%
 ddr.save_eye_scan_data("myoutput.csv")
 
-# %% [markdown]
 # ## 13 - Load Eye Scan data from a given data file
 
-# %%
 ddr.load_eye_scan_data("myoutput.csv")
 
-# %% [markdown]
 # ## 14 - Review overall Scan status and Control group detail from latest run
 
-# %%
 props = ddr.ddr_node.get_property_group(["eye_scan_stat", "eye_scan_ctrl"])
 print(pprint.pformat(props, indent=2))
 
-# %% [markdown]
 # ## 15 - (Optional) Report Full DDR config and calibration/margin Info
 
-# %%
+# +
 # (uncomment to see report)
 # ddr.report()
+# -
 
-# %%
 ## When done with testing, close the connection
 delete_session(session)

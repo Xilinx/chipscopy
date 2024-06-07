@@ -1,28 +1,20 @@
-# %% [markdown]
-# <link rel="preconnect" href="https://fonts.gstatic.com">
-# <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
-#
 # ### License
-#
-# <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (C) 2022, Xilinx, Inc.<br>
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# <br>
 # Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
-# <br><br>
-# Licensed under the Apache License, Version 2.0 (the "License");<br>
-# you may not use this file except in compliance with the License.<br><br>
+# <p>
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# <p>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
-# Unless required by applicable law or agreed to in writing, software<br>
-# distributed under the License is distributed on an "AS IS" BASIS,<br>
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>
-# See the License for the specific language governing permissions and<br>
-# limitations under the License.<br>
-# </p>
-#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, 
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-# %% [markdown]
 # # IBERT yk scan example
 
-# %% [markdown]
 # ## Description
 # This example shows how to interact with the IBERT (Integrated Bit Error Ratio Tester) debug core service via ChipScoPy APIs.
 # - Program the ChipScoPy CED design onto the XCVP1202 device on a VPK120 board
@@ -31,16 +23,15 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, VPK120 or VHK158 (only)
-# - Xilinx hw_server 2023.2 installed and running
-# - Xilinx cs_server 2023.2 installed and running
+# - Xilinx hw_server 2024.1 installed and running
+# - Xilinx cs_server 2024.1 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2023.2 installed
+# - ChipScoPy 2024.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 # - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/)
 # - This example assumes that the device has already been programmed with the example design (ie the debug cores have already been initialized)
 
-# %% [markdown]
 # ## 1 - Initialization: Imports
 #
 # After this step,
@@ -48,7 +39,7 @@
 # * Required functions and classes are imported
 # * Paths to server(s) and files are set correctly
 
-# %%
+# +
 import os
 from more_itertools import one
 import matplotlib.pyplot as plt
@@ -61,8 +52,8 @@ from chipscopy import (
     delete_session,
 )
 from chipscopy.api.ibert import create_yk_scans
+# -
 
-# %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
@@ -70,7 +61,7 @@ from chipscopy.api.ibert import create_yk_scans
 # - Session is initialized and connected to server(s)
 # - Versions are detected and reported to stdout
 
-# %%
+# +
 # Specify locations of the running hw_server and cs_server below.
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
@@ -88,13 +79,12 @@ print(f"PROGRAMMING_FILE: {PDI_FILE}")
 
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
 report_versions(session)
+# -
 
-# %% [markdown]
 # ## 3 - Program the device with the example design
 # After this step,
 # * Device is programmed with the example programming file
 
-# %%
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
 if PROG_DEVICE:
@@ -102,7 +92,6 @@ if PROG_DEVICE:
 else:
     print("skipping programming")
 
-# %% [markdown]
 # ## 4 - Discover and setup the IBERT core
 #
 # Debug core discovery initializes the chipscope server debug cores.
@@ -112,7 +101,7 @@ else:
 # - The cs_server is initialized and ready for use
 # - The first ibert found is used
 
-# %%
+# +
 # # Set any params as needed
 # params_to_set = {"IBERT.internal_mode": True}
 # session.set_param(params_to_set)
@@ -126,12 +115,12 @@ device.discover_and_setup_cores(ibert_scan=True)
 if len(device.ibert_cores) == 0:
     print("No IBERT core found! Exiting...")
     exit()
+# -
 
-# %% [markdown]
 # ## 5 - Print the hierarchy of the IBERT core
 # We also ensure that all the quads instantiated by the ChipScoPy CED design are found by the APIs
 
-# %%
+# +
 # Use the first available IBERT core from the device
 print(f"--> Found {[f'{ibert.name} ({ibert.handle})' for ibert in device.ibert_cores]}\n")
 
@@ -146,12 +135,13 @@ print(f"--> Enabled GT Groups - {ibert_gtm.gt_groups}")
 gt_group = ibert_gtm.gt_groups.filter_by(name="Quad_204")[0]
 
 
-# %% [markdown]
+# -
+
 # ## 6 - Define YK Scan Update Method
 #
 # This method will be called each time the yk scan updates, allowing it to update its graphs in real time. 
 
-# %%
+# +
 # %matplotlib widget
 
 def yk_scan_updates(obj):
@@ -182,18 +172,18 @@ def yk_scan_updates(obj):
 
 
     figure.canvas.draw_idle()
+# -
 
-# %% [markdown]
 # ## 7 - Create YK Scan
 #
 # This step initializes the YK scan, setting its update method to the method we defined in the last step. 
 
-# %%
+# +
 yk = create_yk_scans(target_objs=gt_group.gts[0].rx)[0]
 
 yk.updates_callback = yk_scan_updates
+# -
 
-# %% [markdown]
 # ## 8 - Run YK Scan
 #
 # Initialize the plots and start the YK Scan to begin updating the plots. 
@@ -201,7 +191,7 @@ yk.updates_callback = yk_scan_updates
 # ![yk_scan_example.png](./yk_scan_example.png)
 # Note: Depending on the hardware setup and external loopback connection, the plot might look different.
 
-# %%
+# +
 # %matplotlib widget
 
 #This sets up the subplots necessary for the 
@@ -228,14 +218,12 @@ ax3.set_ylim(-10,100)
 ax3.set_title("Signal-to-Noise Ratio")
 
 yk.start()
+# -
 
-# %% [markdown]
 # ## 9 - Stop YK Scan
 # Stops the YK scan from running.
 
-# %%
 yk.stop()
 
-# %%
 ## When done with testing, close the connection
 delete_session(session)
