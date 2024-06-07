@@ -35,6 +35,7 @@ class ServerVersionInfo:
     server_type: str
     package: Optional[str] = None
     artifact: Optional[str] = None
+    pytcf_version: Optional[str] = None
 
     def __init__(self, server: ServerInfo, server_type: str):
         self.server_type = server_type
@@ -62,6 +63,8 @@ class ServerVersionInfo:
             self.timestamp = version_dict["timestamp"]
             self.package = version_dict["package_version"]
             self.artifact = version_dict["artifact_type"]
+            if "pytcf_version" in version_dict.keys():
+                self.pytcf_version = version_dict["pytcf_version"]
         else:
             raise (ValueError("Invalid server_type - must be hw_server or cs_server"))
 
@@ -75,6 +78,8 @@ class ServerVersionInfo:
         if self.server_type == "cs_server":
             retval += f"\tPackage      : {self.package}\n"
             retval += f"\tArtifact Type: {self.artifact}"
+            if self.pytcf_version:
+                retval += f"\n\tPyTCF Version: {self.pytcf_version}"
 
         return retval
 

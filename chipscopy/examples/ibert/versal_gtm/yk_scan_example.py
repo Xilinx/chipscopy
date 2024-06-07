@@ -1,18 +1,3 @@
-# ---
-# jupyter:
-#   jupytext:
-#     formats: ipynb,py:percent
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.15.1
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
-
 # %% [markdown]
 # <link rel="preconnect" href="https://fonts.gstatic.com">
 # <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
@@ -20,8 +5,8 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022, Xilinx, Inc.<br>
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -68,7 +53,13 @@ import os
 from more_itertools import one
 import matplotlib.pyplot as plt
 
-from chipscopy import create_session, report_versions, report_hierarchy, get_design_files
+from chipscopy import (
+    create_session,
+    report_versions,
+    report_hierarchy,
+    get_design_files,
+    delete_session,
+)
 from chipscopy.api.ibert import create_yk_scans
 
 # %% [markdown]
@@ -244,3 +235,7 @@ yk.start()
 
 # %%
 yk.stop()
+
+# %%
+## When done with testing, close the connection
+delete_session(session)

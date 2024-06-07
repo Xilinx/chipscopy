@@ -52,7 +52,7 @@ class YKScanManager:
     def create_yk_scans(*, target_objs: Union[RX, List[RX]]) -> QueryList[YKScan]:
         """
         Create an instance of :py:class:`YKScan` and attach it to the ``yk_scan`` attribute
-        of the ``target_obj``(s)
+        of the ``target_obj``
 
         Args:
             target_objs: The object to use for attaching the YK scan instance.

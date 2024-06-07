@@ -20,10 +20,24 @@ from chipscopy.proxies import DebugCoreProxy as dc_service
 from chipscopy.utils.logger import log
 from . import CsManager, Node, add_manager, get_manager, _managers, remove_manager
 from .poll import DebugCorePollScheduler
+from typing import Type, Callable, NewType, Any
 
 MANAGER_TYPE = "debugcore"
 
 csm_pattern = re.compile(r".+\." + MANAGER_TYPE)
+
+node_promoters = []
+
+"""
+The node promoter callbacks are used to promote and add or reorganize a node in the node tree.
+:return: True if an action was taken and node was added to the tree.
+"""
+
+nodePromoterCallback = NewType("nodePromoterCallback", Callable[[str, str, Any, Any], int])
+
+
+def register_node_promoter(node_promoter: nodePromoterCallback):
+    node_promoters.append(node_promoter)
 
 
 def get_managers():
@@ -78,11 +92,12 @@ class DebugNodeListener(dc_service.DebugNodeListener):
         parent_ctx = props.get("ParentID")
         if not parent_ctx:
             parent_ctx = ""
-        node = self.manager.add_node(node_ctx, parent_ctx)
-        node.update(props)
-        additional_props = props.get("additional_props")
-        if additional_props and type(additional_props) == dict:
-            node.update(additional_props)
+        if not self.manager.promote_node(node_ctx, parent_ctx, props):
+            node = self.manager.add_node(node_ctx, parent_ctx)  # creates tree
+            node.update(props)
+            additional_props = props.get("additional_props")
+            if additional_props and type(additional_props) == dict:
+                node.update(additional_props)
 
     def node_changed(self, node_ctx, props):
         if id_domain_enable("dm", "DEBUG"):
@@ -90,18 +105,21 @@ class DebugNodeListener(dc_service.DebugNodeListener):
         parent_ctx = props.get("ParentID")
         if not parent_ctx:
             parent_ctx = ""
-        node = self.manager.add_node(node_ctx, parent_ctx)
-        node.update(props)
-        additional_props = props.get("additional_props")
-        if additional_props and type(additional_props) == dict:
-            node.update(additional_props)
+        if not self.manager.promote_node(node_ctx, parent_ctx, props):
+            node = self.manager.add_node(node_ctx, parent_ctx)
+            node.update(props)
+            additional_props = props.get("additional_props")
+            if additional_props and type(additional_props) == dict:
+                node.update(additional_props)
 
     def node_removed(self, node_ctx):
         log.dm.debug(f"{self.manager.name}: Removing Node {node_ctx}")
         try:
             node = self.manager[node_ctx]
-            # node.invalidate()
-            self.manager.remove_node(node.ctx)
+
+            if not self.manager.promote_node(node.ctx, node.parent_ctx, None):
+                # node.invalidate()
+                self.manager.remove_node(node.ctx)
         except KeyError:
             pass
 
@@ -118,7 +136,7 @@ class DebugCoreManager(CsManager):
             self.dc.add_listener(DebugNodeListener(self))
 
     def update_nodes(self):
-        self._update_children(self)
+        self._update_children("")
         self._update_polls()
 
     def _update_polls(self):
@@ -128,7 +146,7 @@ class DebugCoreManager(CsManager):
         if self.poll_scheduler:
             self.add_pending(self.poll_scheduler.update_polls(done=done_poll_update))
 
-    def _update_children(self, parent):
+    def _update_children(self, parent_ctx: str):
         cs_manager = self
 
         def done_get_children(token, error, results):
@@ -136,25 +154,37 @@ class DebugCoreManager(CsManager):
                 children = results
                 if isinstance(children, str):
                     children = [children]
-                cs_manager.set_children(parent, children)
+                cs_manager.set_children(parent_ctx, children)
 
                 for ctx in children:
-                    node = cs_manager.add_node(ctx, parent.ctx)
-                    cs_manager._update_static_info(node)
-                    cs_manager._update_children(node)
+                    cs_manager._update_static_info(ctx, parent_ctx)
+                    cs_manager._update_children(ctx)
             cs_manager.remove_pending(token)
 
         if self.dc:
-            self.add_pending(self.dc.get_children(parent.ctx, done_get_children))
+            self.add_pending(self.dc.get_children(parent_ctx, done_get_children))
 
-    def _update_static_info(self, node: Node):
+    def _update_static_info(self, ctx: str, parent_ctx: str):
+        cs_manager = self
+
         def done_get_context(token, error, props):
             if not error:
-                node.update(props)
-            node.remove_pending(token)
+                if not cs_manager.promote_node(ctx, parent_ctx, props):
+                    node = cs_manager.add_node(ctx, parent_ctx)
+                    node.update(props)
+                    additional_props = props.get("additional_props")
+                    if additional_props and type(additional_props) == dict:
+                        node.update(additional_props)
+            cs_manager.remove_pending(token)
 
         if self.dc:
-            node.add_pending(self.dc.get_context(node.ctx, done_get_context))
+            cs_manager.add_pending(self.dc.get_context(ctx, done_get_context))
+
+    def promote_node(self, ctx: str, patern_ctx: str, props):
+        results = []
+        for node_promoter in node_promoters:
+            results.append(node_promoter(ctx, patern_ctx, self, props))
+        return True if True in results else False
 
 
 class ChannelOpenListener(protocol.ChannelOpenListener):

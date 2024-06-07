@@ -14,7 +14,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2023.2.1715225694"
+version = "2024.1.1717698244"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -25,7 +25,8 @@ readme = "README.md"
 include = ["LICENSE", "epl-v20.html"]
 
 [tool.poetry.dependencies]
-python = "^3.8.3"
+python = ">=3.8.3, <4.0"
+requests = ">=2.0.0"
 more-itertools = "^10.1"
 typing_extensions = "^4.7"
 loguru = "^0.7"
@@ -40,17 +41,17 @@ kaleido = [
 plotly = { version = "^5.16", optional = true }
 notebook = { version = "^7.0", optional = true }
 ipywidgets = { version = "^8.1", optional = true }
-pandas = { version = "^1.5", optional = true }
+pandas = { version = ">=1.5", optional = true }
 matplotlib = { version = "^3.7", optional = true }
 PyQt5 = { version = "^5.15", optional = true }
-pytcf = { version = "^0.0.7", optional = true }
+pytcf = { version = "^0.0.8", optional = true }
 ipympl = { version = "^0.9.3", optional = true }
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4"
 coverage = "^7.3"
 pytest-mock = "^3.11"
-pyboardbarn = "^5.0.3"
+pyboardbarn = "^5.0.4"
 colorama = "^0.4"
 
 [tool.poetry.group.artifactory]
@@ -59,11 +60,11 @@ optional = true
 [tool.poetry.group.artifactory.dependencies]
 
 [tool.poetry.group.docs.dependencies]
-Sphinx = "3.5.4"
-sphinx-rtd-theme = "^0.5.2"
+Sphinx = "==6.2.1"
+sphinx-rtd-theme = ">=1.3.0"
 sphinx-autodoc-typehints = "^1.10.3"
-recommonmark = "^0.6.0"
-sphinx-markdown-tables = "^0.0.15"
+recommonmark = ">=0.6.0"
+sphinx-markdown-tables = "==0.0.17"
 rst2pdf = "^0.99"
 
 [tool.poetry.group.linter.dependencies]
@@ -88,8 +89,7 @@ pytcf = ["pytcf"]
 [[tool.poetry.source]]
 name = "artifactory"
 url = "https://artifactory.xilinx.com/artifactory/api/pypi/pypi/simple"
-default = false
-secondary = false
+priority = "supplemental"
 
 [tool.pytest.ini_options]
 addopts = "--strict-markers --verbose"

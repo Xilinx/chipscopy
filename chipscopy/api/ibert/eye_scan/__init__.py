@@ -392,7 +392,7 @@ class EyeScan:
 
             # Not expected to change after scan start
             if (
-                self.data_points_expected == -1
+                self.data_points_expected == 0
                 and EYE_SCAN_TOTAL_NO_OF_DATA_POINTS_EXPECTED in scan_report
             ):
                 self.data_points_expected = int(

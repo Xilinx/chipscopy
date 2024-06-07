@@ -1,5 +1,10 @@
 # ChipScoPy Release Notes
 
+## 2024.1 - May 22, 2024
+
+- 2024.1.dev1715183651
+- Pre-release version for testing and verification
+
 ## 2023.2 - May 10, 2024
 
 ### Bugfix Release

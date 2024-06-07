@@ -119,7 +119,7 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
 
         self.watchlist = IBERTWatchlist(self)
         self.endpoint_name: Final[str] = property_endpoint.name
-        self.endpoint_tcf_node = self.core_tcf_node.get_child_with_name(self.endpoint_name)
+        self.endpoint_tcf_node = self.core_tcf_node.get_node_with_name(self.endpoint_name)
 
     """
     NOTE - The 'endpoint_tcf_node' is different from 'core_tcf_node'.
@@ -265,19 +265,25 @@ class SerialObjectBase(Generic[parent_type, child_type]):
         self._property_endpoint: Type[SerialObjectBase]
         if obj_info[PROPERTY_ENDPOINT]:
             self._property_endpoint = self
+            self._property: IBERTPropertyCommands = IBERTPropertyCommands(
+                parent=self,
+                property_endpoint=self._property_endpoint,
+            )
         else:
-            if self.parent._property_endpoint is None:
-                raise ValueError(
-                    f"Property endpoint for {self.parent.handle} is None! "
-                    f"Cannot determine property endpoint for {self.handle}"
+            try:
+                if self.parent._property_endpoint is None:
+                    raise ValueError(
+                        f"Property endpoint for {self.parent.handle} is None! "
+                        f"Cannot determine property endpoint for {self.handle}"
+                    )
+
+                self._property_endpoint = self.parent._property_endpoint
+                self._property: IBERTPropertyCommands = IBERTPropertyCommands(
+                    parent=self,
+                    property_endpoint=self._property_endpoint,
                 )
-
-            self._property_endpoint = self.parent._property_endpoint
-
-        self._property: IBERTPropertyCommands = IBERTPropertyCommands(
-            parent=self,
-            property_endpoint=self._property_endpoint,
-        )
+            except AttributeError:
+                self._property_endpoint = None
 
         self.filter_by = {}
 

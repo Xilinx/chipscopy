@@ -90,15 +90,6 @@ For more details about using Set-ExecutionPolicy to relax script blocking in Pow
 https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies
 
 ---
-**Q: What does *"TCF channel terminated ConnectionRefusedError: [Errno 111] Connection refused"* mean ?**
-
-**A:** This exception indicates a problem connecting to the hw_server or cs_server process.
-
-- Make sure you have the version matched hw_server and cs_server running prior to using ChipScoPy.
-- Check the hw_server and cs_server processes to ensure they did not unexpectedly terminate.
-- Sometimes firewall services trap and prevent network communication to the servers. Turn off any firewall service and try to connect again.
-
----
 **Q: What is the ChipScoPy source code copyright and license?**
 
 **A:** 

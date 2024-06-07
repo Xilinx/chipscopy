@@ -1,17 +1,3 @@
-# ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.10.1
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
-
 # %% [markdown]
 # <link rel="preconnect" href="https://fonts.gstatic.com">
 # <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
@@ -200,7 +186,6 @@ else:
         f" ERROR: MARGIN_MODE is set to {MARGIN_MODE} which is an illegal value, only READ or WRITE is allowed"
     )
 
-
 # %% [markdown]
 # ## 8 - Setting the 2D eye scan data pattern mode
 
@@ -230,7 +215,6 @@ ddr.set_eye_scan_vref_max(vref_max_code)
 ddr.set_eye_scan_vref_steps(STEPS)
 print(f"Dividing the Vref range into {STEPS} steps")
 
-
 # %% [markdown]
 # ## 10 - Run 2D Margin Scan after settings
 
@@ -246,7 +230,7 @@ ddr.run_eye_scan()
 # - The default is "dynamic".
 
 # %%
-ddr.display_eye_scan(DISPLAY_INDEX)
+ddr.display_eye_scan(DISPLAY_INDEX, display_type="static")
 
 # %% [markdown]
 # Optionally you can return figures as a list for later operations.
@@ -264,12 +248,13 @@ figs = ddr.display_eye_scan(DISPLAY_INDEX + 1, return_as_list=True)
 from IPython.display import Image, display
 
 for fig in figs:
-    fig.show()
+    # To display interactive images, uncomment the following line:
+    # fig.show()
 
-    # To display a static png image, uncomment below
-    # image_bytes = fig.to_image(format="png")
-    # ipython_image = Image(image_bytes)
-    # display(ipython_image)
+    # To display a static png image:
+    image_bytes = fig.to_image(format="png")
+    ipython_image = Image(image_bytes)
+    display(ipython_image)
 
 # %% [markdown]
 # ## 12 - Save the Eye Scan data from latest run

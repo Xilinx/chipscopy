@@ -217,6 +217,8 @@ class VIO(DebugCore["AxisVIOCoreClient"]):
         """Read VIO port values from hardware. Gets the current values from
         hardware for selected input_ports and output_ports.
 
+        NOTE: Reading values will cause IP to reset activity tracking for the vio core
+
         Args:
             port_names: **(optional)** List of port names (see
                 ``vio_port_names``). The default is all ports.
@@ -352,6 +354,8 @@ class VIO(DebugCore["AxisVIOCoreClient"]):
         Activity is returned as a string of characters representing activity
         for each bit.
 
+        NOTE: Reading activity will cause IP to reset activity tracking for the vio core
+
         ::
 
             'R' = rising edge detected
@@ -377,6 +381,8 @@ class VIO(DebugCore["AxisVIOCoreClient"]):
         """Read probe values from hardware. Reading probes has a side effect of
         clearing activity. If you need both values and activity, call read_probes().
 
+        NOTE: Reading values will cause IP to reset activity tracking for the vio core
+
         Args:
             probe_names: Optional list of probe names (see ``vio_probe_names``). Empty returns all probe values.
 
@@ -395,6 +401,8 @@ class VIO(DebugCore["AxisVIOCoreClient"]):
         """Read probe values from hardware. Gets the current integer and activity values from
         hardware for selected probes. Output probes to not support activity and will return
         'X' for all activity values.
+
+        NOTE: Reading values will cause IP to reset activity tracking for the vio core
 
         Args:
             probe_names: Optional list of probe names (see ``vio_probe_names``). Empty returns all probe values.

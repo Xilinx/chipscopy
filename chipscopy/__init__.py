@@ -27,7 +27,7 @@ from chipscopy.dm.request import null_callback
 from chipscopy.api.report import report_versions, report_devices, report_hierarchy
 
 __author__ = "Advanced Micro Devices, Inc."
-__copyright__ = "Copyright (C) 2022-2023, Advanced Micro Devices, Inc."
+__copyright__ = "Copyright (C) 2022-2024, Advanced Micro Devices, Inc."
 __email__ = "support@xilinx.com"
 try:
     __version__ = importlib_metadata.version(__package__)

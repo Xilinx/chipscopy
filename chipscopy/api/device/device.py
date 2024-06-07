@@ -85,7 +85,7 @@ class DeviceFamily(Enum):
             return DeviceFamily.VERSAL
         elif family_name.startswith("xvc"):
             return DeviceFamily.XVC
-        elif family_name.endswith("uplus"):
+        elif family_name.endswith("uplus") or family_name.endswith("u"):
             return DeviceFamily.UPLUS
         else:
             return DeviceFamily.GENERIC
@@ -172,10 +172,10 @@ class Device:
         if self.state == DeviceState.INVALID:
             raise DeviceException(f"Device {str(self)} is invalid - session rescan required")
 
-    def refresh(self):
+    def refresh(self, *, force_update=True):
         # Refresh device properties from hardware
         self._raise_if_state_invalid()
-        self.cached_props = self.scan_props()
+        self.cached_props = self.scan_props(force_update=force_update)
         if not self.disable_cache:
             self.state = DeviceState.VALID
 
@@ -223,7 +223,7 @@ class Device:
             # )
             self.state = DeviceState.NEEDS_REFRESH
 
-    def scan_props(self) -> Dict[str, Any]:
+    def scan_props(self, *, force_update=True) -> Dict[str, Any]:
         """
         Scan device properties from hardware.
 
@@ -234,10 +234,10 @@ class Device:
         props = {}
         if self.hw_server and self.jtag_node:
             node = self.jtag_node
-            props["jtag"] = copy_node_props(node, node.props)
+            props["jtag"] = copy_node_props(node, node.props, force_update=force_update)
         props["is_valid"] = self.is_valid
         props["context"] = self.context
-        props["is_programmed"] = self.scan_is_programmed()
+        props["is_programmed"] = self.scan_is_programmed(force_update=force_update)
         props["is_programmable"] = self.scan_is_programmable()
         props["part"] = self.part_name
         props["family"] = self.family_name
@@ -271,7 +271,7 @@ class Device:
         """
         return self._device_spec.device_ctx
 
-    def scan_is_programmed(self) -> bool:
+    def scan_is_programmed(self, *, force_update=True) -> bool:
         """Returns True if this Device is programmed, False otherwise."""
         # TODO: Queries hardware for jtag program status. This could be slow -
         #       is there a way to collect this once, then track by subsequent events pushed from
@@ -287,11 +287,13 @@ class Device:
                     jtag_status = node.props.get("regs").get("jtag_status")
                     config_status = node.props.get("regs").get("config_status")
                     if jtag_status:
-                        node.update_regs(reg_names=("jtag_status",), force=True, done=None)
-                        done_reg = jtag_status.fields["DONE"]
+                        if force_update:
+                            node.update_regs(reg_names=("jtag_status",), force=True, done=None)
+                        done_reg = jtag_status.fields[0]["DONE"]
                         is_programmed_ = done_reg["value"] == 1
                     elif config_status:
-                        node.update_regs(reg_names=("config_status",), force=True, done=None)
+                        if force_update:
+                            node.update_regs(reg_names=("config_status",), force=True, done=None)
                         done_reg = config_status.fields["DONE_PIN"]
                         is_programmed_ = done_reg["value"] == 1
         except Exception:  # noqa
@@ -348,7 +350,7 @@ class Device:
     def ibert_cores(self) -> QueryList[IBERT]:
         """Returns:
         list of detected IBERT cores in the device"""
-        self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
         self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(IBERTCoreClient)
 
@@ -584,10 +586,15 @@ class Device:
         # Set up all debug cores in hw_server for the given hub addresses
         # Do this by default unless the user has explicitly told us not to with
         # "disable_core_scan" as an argument.
-        if not self.disable_core_scan:
+        if not self.disable_core_scan or self.device_family == DeviceFamily.UPLUS:
             if not self.cs_server:
                 raise RuntimeError("No chipscope server connection. Could not get chipscope view")
-            self.chipscope_node.setup_cores(debug_hub_addrs=hub_address_list)
+            cs_node = self.chipscope_node
+            if cs_node:
+                cs_node.setup_cores(debug_hub_addrs=hub_address_list)
+            else:
+                # print(self._device_spec.to_json())
+                raise RuntimeError("chipscope_node not available")
 
     # MEMORY
 
@@ -786,9 +793,20 @@ class Device:
         return plm_log_bytearray
 
     @staticmethod
-    def _read_plm_log(mem: Memory) -> str:
+    def _slave_slr_map(slr_index: int, address: int, length: int):
+        if address < 0xF0000000 or address >= 0xF8000000 or (address + length) >= 0xF8000000:
+            raise ValueError(
+                f"Address - {address} is out of range. " f"Valid range is 0xF0000000-0xF7ffffff."
+            )
+        if slr_index > 0:
+            address += 0x108000000 + ((slr_index - 1) * 0x8000000) - 0xF0000000
+        return address
+
+    @staticmethod
+    def _read_plm_log(mem: Memory, slr_index: int = 0) -> str:
         # Given a memory target, read the PLM log data and return as a big string
-        rtca_data = mem.memory_read(address=0xF2014000, num=0x20, size="w")
+        rtca_address = Device._slave_slr_map(slr_index, 0xF2014000, 1024)
+        rtca_data = mem.memory_read(address=rtca_address, num=0x20, size="w")
         header = rtca_data[0]
         plm_wrapped_addr = 0
         plm_wrapped_len = 0
@@ -796,7 +814,7 @@ class Device:
         if header == 0x41435452:
             # use_rtca = True
             use_defaults = False
-            plm_addr = rtca_data[4] | (rtca_data[5] << 32)  # 64-bit address
+            plm_addr = Device._slave_slr_map(slr_index, rtca_data[4] | (rtca_data[5] << 32), 1024)
             if (
                 rtca_data[4] == 0xDEADBEEF
                 or rtca_data[5] == 0xDEADBEEF
@@ -819,8 +837,10 @@ class Device:
             plm_len = 0
 
         if use_defaults:
-            plm_addr = 0xF2019000
             plm_len = 1024
+            plm_addr = 0xF2019000
+            if slr_index > 0:
+                plm_addr = Device._slave_slr_map(slr_index, plm_addr, plm_len)
 
         # plm_log_bytearray = bytearray(b'@' * (plm_len + plm_wrapped_len))
         plm_data = mem.memory_read(address=plm_addr, num=plm_len, size="w")
@@ -833,12 +853,13 @@ class Device:
         plm_log_str = plm_log_bytearray.decode("utf-8")
         return plm_log_str
 
-    def get_program_log(self, memory_target="APU") -> str:
+    def get_program_log(self, memory_target="APU", slr_index: int = 0) -> str:
         """
         Returns: Programming log read from hardware (None=Use default transport)
 
         Args:
             memory_target: Optional name of memory target such as APU, RPU, DPC
+            slr_index: Optional SLR index for multi-SLR devices
         """
         self._raise_if_family_not(DeviceFamily.VERSAL)
         self._raise_if_state_invalid()
@@ -846,7 +867,13 @@ class Device:
             mem = self.memory.get(name=memory_target)
         except ValueError:
             raise ValueError(f"Memory target {memory_target} not available")
-        return Device._read_plm_log(mem)
+        if not slr_index < self.jtag_node["reg.slr_count"]:
+            raise ValueError(
+                f"Specified SLR index - {slr_index} is out of range. "
+                f'Number of SLRs in current device = {self.jtag_node["reg.slr_count"]}.'
+            )
+
+        return Device._read_plm_log(mem, slr_index)
 
     def reset(self):
         """Reset the device to a non-programmed state."""
@@ -857,6 +884,7 @@ class Device:
         self.state = DeviceState.NEEDS_REFRESH
         jtag_programming_node.future().reset()
         time.sleep(0.5)
+        self.refresh()
 
     def program(
         self,
@@ -910,6 +938,12 @@ class Device:
                     completed=future.progress * 100, status=PercentProgressBar.Status.IN_PROGRESS
                 )
 
+        def pre_done_programming(future):
+            # refresh jtag node properties after program (1190699)
+            jtag_programming_node.future().update_regs(
+                reg_names=[], force=True, done=done_programming
+            )
+
         def done_programming(future):
             if show_progress_bar:
                 if future.error is not None:
@@ -924,7 +958,8 @@ class Device:
                         if self.cs_server:
                             self.cs_server.get_view("chipscope").run_events()
                         time.sleep(0.5)
-
+                    # refresh device jtag node properties after program (1190699)
+                    self.refresh(force_update=False)
                     progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
 
             self.programming_error = future.error
@@ -944,7 +979,7 @@ class Device:
             jtag_programming_node.future().reset()
 
         jtag_programming_node.future(
-            progress=progress_update, done=done_programming, final=finalize_program
+            progress=progress_update, done=pre_done_programming, final=finalize_program
         ).config(str(programming_file.resolve()))
 
         return program_future if done else program_future.result

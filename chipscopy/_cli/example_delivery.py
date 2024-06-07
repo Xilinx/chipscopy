@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 import shutil
 import os
 import argparse
+import requests
 import sys
-from distutils.dir_util import mkpath, copy_tree
-from distutils.file_util import copy_file
+import zipfile
 from pathlib import Path
 from shutil import move
 import chipscopy
@@ -35,10 +35,10 @@ def _copy_and_move_files(files_to_copy, files_to_move):
     # copy files and folders
     for src, dst in files_to_copy.items():
         if os.path.isfile(src):
-            mkpath(os.path.dirname(dst))
-            copy_file(src, dst)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copy2(src, dst)
         else:
-            copy_tree(src, dst)
+            shutil.copytree(src, dst, dirs_exist_ok=True)
     # and move files previously downloaded
     for src, dst in files_to_move.items():
         shutil.move(src, dst)
@@ -119,6 +119,43 @@ def find_examples(example_dir=SOURCE_EXAMPLE_DIR, full_path=False):
     return examples_list
 
 
+def download_examples(dst_fullpath):
+    """Download examples to target destination path.
+
+    Parameters
+    ----------
+        dst_fullpath: str
+            The destination path to download to
+    """
+    os.makedirs(dst_fullpath)
+    # Get chipscopy version
+    chipscopy_version = chipscopy.__version__
+    # Download appropriate zip to dest dir
+    # Example Github link:
+    # https://github.com/Xilinx/chipscopy/releases/download/2023.2.1710645976/chipscopy_examples_2023.2.1710645976.zip
+    examples_link = f"https://github.com/Xilinx/chipscopy/releases/download/{chipscopy_version}/chipscopy_examples_{chipscopy_version}.zip"
+    print(f"Downloading examples from {examples_link}...")
+    r = requests.get(examples_link, stream=True)
+    # For error handling
+    try:
+        r.raise_for_status()
+    except Exception as e:
+        print(
+            f"Failed to download examples from {examples_link}, the examples can be downloaded directly from Github:\n{e}"
+        )
+        return
+    dst_zip = Path(dst_fullpath) / "examples_temp.zip"
+    with open(dst_zip, "wb") as file_out:
+        file_out.write(r.content)
+    # Unzip to dest dir
+    with zipfile.ZipFile(dst_zip, mode="r") as archive:
+        archive.extractall(dst_fullpath)
+    # delete zip
+    dst_zip.unlink()
+
+    print(f"Installed examples to {dst_fullpath}.")
+
+
 class _GetExamplesParser(argparse.ArgumentParser):  # pragma: no cover
     @property
     def epilog(self):
@@ -152,6 +189,11 @@ def _get_examples_parser():  # pragma: no cover
         "Default is '{}'".format(TARGET_EXAMPLE_DIR),
     )
     parser.add_argument(
+        "--download",
+        action="store_true",
+        help="Download examples from Github instead of using the local copy.",
+    )
+    parser.add_argument(
         "-y", "--assume_yes", action="store_true", help='Skip Interactive Prompts - assume "Yes"'
     )
     return parser
@@ -165,11 +207,8 @@ def main():  # pragma: no cover
         if examples_list:
             print("Available examples:\n- {}".format("\n- ".join(examples_list)))
         else:
-            print("No examples available")
+            print("No examples available locally.  The examples can be found on Github.")
             sys.exit(2)
-    if not examples_list:
-        print("No examples available, nothing can be delivered")
-        sys.exit(2)
     if args.path:
         delivery_path = args.path
     else:
@@ -177,9 +216,15 @@ def main():  # pragma: no cover
     yes = ["yes", "ye", "y"]
     no = ["no", "n"]
     nb_str = "\n- ".join([os.path.basename(nb) for nb in examples_list])
-    print(
-        f"The following examples  will be delivered to {os.path.abspath(delivery_path)}: \n- {nb_str}"
-    )
+    if args.download:
+        print("Requested downloading examples from Github.")
+        examples_list = []
+    elif not examples_list:
+        print("No examples available locally, they will be downloaded from Github.")
+    else:
+        print(
+            f"The following examples will be delivered to {os.path.abspath(delivery_path)}: \n- {nb_str}"
+        )
     if not args.assume_yes:
         choice = input("Do you want to proceed? [Y/n] ").lower()
         while True:
@@ -208,6 +253,7 @@ def main():  # pragma: no cover
         )
         sys.exit(3)
 
+    # If the delivery path exists and force is used, rename the current folder as a backup.
     if os.path.exists(delivery_path):
         if args.force:
             import datetime
@@ -225,9 +271,14 @@ def main():  # pragma: no cover
             )
             sys.exit(1)
     try:
-        for example_name in examples_list:
-            print(f"Delivering example '{os.path.basename(example_name)}'...")
-            deliver_examples(SOURCE_EXAMPLE_DIR, delivery_path, example_name)
+        # If the examples folder exists in the chipscopy package, copy the examples from there.
+        # Otherwise, download the examples package from github if available.
+        if examples_list:
+            for example_name in examples_list:
+                print(f"Delivering example '{os.path.basename(example_name)}'...")
+                deliver_examples(SOURCE_EXAMPLE_DIR, delivery_path, example_name)
+        else:
+            download_examples(delivery_path)
     except (Exception, KeyboardInterrupt) as e:
         raise e
     finally:

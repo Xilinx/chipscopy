@@ -32,6 +32,8 @@ NAME_PREFIX_KEY: Final[str] = "Name prefix"
 # -------------------------------------------------------------------
 GT_KEY: Final[str] = "GT"
 """GT"""
+GT_COMMON_KEY: Final[str] = "GT_COMMON"
+"""GT"""
 TX_KEY: Final[str] = "TX"
 """TX"""
 RX_KEY: Final[str] = "RX"
@@ -62,8 +64,10 @@ TX_PRE_CURSOR: Final[str] = "Pre Cursor"
 TX_POST_CURSOR: Final[str] = "Post Cursor"
 TX_DIFFERENTIAL_SWING: Final[str] = "Differential Control"
 TX_USRCLK_FREQ: Final[str] = "TX USRCLK Frequency"
+TX_USRCLK2_FREQ: Final[str] = "TX USRCLK2 Frequency"
 TX_PHYCLK_FREQ: Final[str] = "TX PHYCLK Frequency"
 TX_POLARITY: Final[str] = "TX Polarity"
+TX_INJECT_ERROR: Final[str] = "Inject Error"
 
 # ----------------------------------------------------------------
 # Applicable to RX only
@@ -83,6 +87,7 @@ RX_PATTERN_CHECKER_ERROR_COUNT: Final[str] = "Pattern Checker Error Count"
 RX_TERMINATION_VOLTAGE: Final[str] = "Termination Voltage"
 RX_COMMON_MODE: Final[str] = "Common Mode"
 RX_USRCLK_FREQ: Final[str] = "RX USRCLK Frequency"
+RX_USRCLK2_FREQ: Final[str] = "RX USRCLK2 Frequency"
 RX_PHYCLK_FREQ: Final[str] = "RX PHYCLK Frequency"
 RX_POLARITY: Final[str] = "RX Polarity"
 

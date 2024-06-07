@@ -15,16 +15,16 @@
 
 from typing import TYPE_CHECKING, Dict, Union, Any
 
-from chipscopy.api.ibert.aliases import CHILDREN, RX_KEY, TX_KEY, TYPE, PLL_SOURCE
+from chipscopy.api.ibert.aliases import CHILDREN, RX_KEY, TX_KEY, TYPE, PLL_SOURCE, PLL_KEY
 from chipscopy.api.ibert.rx import RX
 from chipscopy.api.ibert.serial_object_base import SerialObjectBase
 from chipscopy.api.ibert.tx import TX
+from chipscopy.api.ibert.pll import PLL
 from more_itertools import one
 from typing_extensions import final
 
 if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.gt_group import GTGroup  # noqa
-    from chipscopy.api.ibert.pll import PLL
 
 
 @final
@@ -35,7 +35,7 @@ class GT(SerialObjectBase["GTGroup", Union[TX, RX]]):
         # This is used by the filter_by method in QueryList
         self.filter_by = {"name": self.name, "type": self.type, "handle": self.handle}
 
-        self.pll: PLL = None
+        self.pll: list[PLL] = []
         "PLL driving this GT"
 
         self.rx: RX = None
@@ -65,11 +65,15 @@ class GT(SerialObjectBase["GTGroup", Union[TX, RX]]):
 
         if PLL_SOURCE not in self._property_for_alias:
             return
-        _, pll_name_for_this_gt = self._property.get(self._property_for_alias[PLL_SOURCE]).popitem()
-        for pll in self.parent.plls:
-            if pll.name == pll_name_for_this_gt:
-                self.pll = pll
-                break
+        _, pll_names_for_this_gt = self._property.refresh(
+            self._property_for_alias[PLL_SOURCE]
+        ).popitem()
+        if pll_names_for_this_gt:
+            for pll in self.parent.plls:
+                if pll.name == pll_names_for_this_gt:
+                    self.pll.append(pll)
+        else:
+            print("No PLL defined for this GT")
 
     def setup(self):
         if self.setup_done:
@@ -89,6 +93,8 @@ class GT(SerialObjectBase["GTGroup", Union[TX, RX]]):
                 obj = RX(child_obj_info, self, self.core_tcf_node)
             elif child_obj_info[TYPE] == TX_KEY:
                 obj = TX(child_obj_info, self, self.core_tcf_node)
+            elif child_obj_info[TYPE].startswith(PLL_KEY):
+                obj = PLL(child_obj_info, self, self.core_tcf_node)
             else:
                 continue
 

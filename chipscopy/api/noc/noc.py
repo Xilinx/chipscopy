@@ -160,7 +160,6 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
     def get_supported_sampling_periods(
         self,
         ref_clk_feq_mhz=33.3333,
-        pl_alt_ref_clk_freq_mhz=33.3333,
         ddrmc_freq_mhz={"ddrmc_main_0": 800.0},
         done: DoneHWCommand = None,
     ) -> Dict[str, List[float]]:
@@ -172,7 +171,6 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
             done: Optional command callback that will be invoked when the response is received.
             ddrmc_freq_mhz (dict[str,float]): dictionary of DDRMC instance names as the keys and the value is the MC clock in MHz float.
             ref_clk_feq_mhz (float): ref_clk input frequency in MHz, value can be attained from .csa or .hwh files. Default is 33.333MHz
-            pl_alt_ref_clk_freq_mhz (float): pl_alt_ref_clk input frequency in MHz, value can be attained from .csa or .hwh files. Default is 33.333MHz
 
         Returns:
             Dictionary with two top level keys ``NoC``, ``NPI``, and memory subsystem components whose values are lists
@@ -180,7 +178,7 @@ class NocPerfmon(DebugCore["NoCPerfMonCoreClient"]):
 
         """
         sampling_dict = self.core_tcf_node.get_supported_sampling_periods(
-            ref_clk_feq_mhz, pl_alt_ref_clk_freq_mhz, ddrmc_freq_mhz, done
+            ref_clk_feq_mhz, ddrmc_freq_mhz, done
         )
         return sampling_dict
 

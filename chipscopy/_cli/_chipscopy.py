@@ -296,9 +296,15 @@ class TreePrinter(NodeVisitorBase):
             reg_names_to_refresh = tuple(regs.keys())
             node.update_regs(reg_names=reg_names_to_refresh, force=True, done=None)
             for reg_key, reg_val in regs.items():
-                bytearray_data = reg_val.data
-                int_value = int.from_bytes(bytearray_data, byteorder="little", signed=False)
-                print(f"{prop_prefix}    regs.{reg_key:}: {hex(int_value)}")
+                reg_data_len = len(reg_val.data)
+                for index in range(0, reg_data_len):
+                    int_value = int.from_bytes(
+                        reg_val.data[index], byteorder="little", signed=False
+                    )
+                    if reg_data_len == 1:
+                        print(f"{prop_prefix}    regs.{reg_key:}: {hex(int_value)}")
+                    else:
+                        print(f"{prop_prefix}    regs.{reg_key:}.slr{index}: {hex(int_value)}")
 
     def _print_node(self, node, prefix):
         name = node.props.get("Name")
@@ -405,9 +411,13 @@ def _print_info(*, host: str, view_name: str, view: ViewInfo, node: Node):
         reg_names_to_refresh = tuple(regs.keys())
         node.update_regs(reg_names=reg_names_to_refresh, force=True, done=None)
         for reg_key, reg_val in regs.items():
-            bytearray_data = reg_val.data
-            int_value = int.from_bytes(bytearray_data, byteorder="little", signed=False)
-            print(f"regs.{reg_key:}: {hex(int_value)}")
+            reg_data_len = len(reg_val.data)
+            for index in range(0, reg_data_len):
+                int_value = int.from_bytes(reg_val.data[index], byteorder="little", signed=False)
+                if reg_data_len == 1:
+                    print(f"regs.{reg_key:}: {hex(int_value)}")
+                else:
+                    print(f"regs.{reg_key:}.slr{index}: {hex(int_value)}")
 
 
 def info(match_string):

@@ -47,6 +47,30 @@ class IBERTCoreClient(CoreClient):
 
         done()
 
+    def get_child_node_with_name(self, name: str, children: [str]):
+        """
+        Iterate through the children of this IBERT and return Node with matching name.
+        """
+        for child_ctx in children:
+            child_node = self.manager.get_node(child_ctx)
+            if "Name" in child_node.props and name == child_node.props["Name"]:
+                return child_node
+            else:
+                found_node = self.get_child_node_with_name(name, child_node.children)
+                if found_node:
+                    return found_node
+
+    def get_node_with_name(self, name: str, done: DoneCallback):
+        """
+        Iterate through the node tree under this IBERT and return Node with matching name.
+        """
+        node = self.get_child_node_with_name(name, self.children)
+
+        if node:
+            done(result=node)
+            return
+        done()
+
     def get_service_proxy(self):
         return self.manager.channel.getRemoteService("IBERT")
 

@@ -1,4 +1,7 @@
 # *****************************************************************************
+# * Modifications Copyright (C) 2024 Advanced Micro Devices, Inc.
+# * All rights reserved.
+# *
 # * Copyright (c) 2011, 2013, 2016 Wind River Systems, Inc. and others.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
@@ -212,6 +215,19 @@ def chomp_seq(s):
     return s
 
 
+def process_old_tcf_commands(j):
+    j, key, k = j.partition(b'":(')
+    if k and len(k):
+        width, _, k = k.partition(b')')
+        width = int(width.decode('ascii'))
+        offending_data = k[0:width]
+        remaining_data = k[width:]
+        offending_data.reverse()
+        hex_byte_array = bytearray(''.join('{:02x}'.format(x) for x in offending_data).encode('utf-8'))
+        j = j + b'":"' + hex_byte_array + b'"' + process_old_tcf_commands(remaining_data)
+    return j
+
+
 def fromJSONSequence(s):
     objects = []
     #chomp_seq(s)
@@ -226,7 +242,14 @@ def fromJSONSequence(s):
             j = chomp_seq(j)
             # NOTE - This decode and load will fail if an empty list is passed from Vivado
             #  This is a known issue. Solution - Don't send an empty list using the XHWPropertyMap
-            objects.append(json.loads(j.decode('utf-8')))
+            try:
+                objects.append(json.loads(j.decode('utf-8')))
+            except UnicodeDecodeError as e:
+                # Check if old TCF service with no argument support is being handled
+                # bytes sent over TCF with binary encoding needs to be first preprocessed
+                # to fix all non utf-8 compliant parts
+                j = process_old_tcf_commands(j)
+                objects.append(json.loads(j.decode('utf-8')))
         else:
             objects.append(None)
     return objects

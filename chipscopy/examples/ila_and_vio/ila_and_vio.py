@@ -5,8 +5,8 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022, Xilinx, Inc.<br>
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -51,7 +51,7 @@
 import sys
 import os
 from chipscopy import get_design_files
-from chipscopy import create_session, report_versions
+from chipscopy import create_session, report_versions, delete_session
 
 # %%
 # Make sure to start the hw_server and cs_server prior to running.
@@ -76,7 +76,6 @@ print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
 
-
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
@@ -99,7 +98,6 @@ report_versions(session)
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
 device.program(PROGRAMMING_FILE)
-
 
 # %% [markdown]
 # ## 4 - Discover Debug Cores
@@ -127,7 +125,6 @@ vio_cores = device.vio_cores
 for index, vio_core in enumerate(vio_cores):
     print(f"{index} - {vio_core.core_info.uuid}   {vio_core.name}")
 
-
 # %% [markdown]
 # ## 5 - VIO Control and ILA Capture
 #
@@ -152,7 +149,6 @@ vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 
 print(f"Using ILA: {ila.core_info.uuid}  {ila.name}")
 print(f"Using VIO: {vio.core_info.uuid}  {vio.name}")
-
 
 # %% [markdown]
 # ### 5a - Configure the counter using VIO output probes
@@ -290,3 +286,5 @@ if upload_successful:
     ila.waveform.export_waveform("VCD", sys.stdout)
 
 # %%
+## When done with testing, close the connection
+delete_session(session)

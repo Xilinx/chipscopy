@@ -5,8 +5,8 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022, Xilinx, Inc.<br>
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -50,7 +50,7 @@
 # %%
 import os
 from chipscopy import get_design_files
-from chipscopy import create_session, report_versions
+from chipscopy import create_session, report_versions, delete_session
 
 # %%
 # Make sure to start the hw_server and cs_server prior to running.
@@ -74,7 +74,6 @@ print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
-
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
@@ -102,7 +101,6 @@ if PROG_DEVICE:
 else:
     print("skipping programming")
 
-
 # %% [markdown]
 # ## 4 - Discover Debug Cores
 #
@@ -122,7 +120,6 @@ print(f"Debug cores setup and ready for use.")
 #
 # The following cells demonstrate how to perform various operations with the VIO core.
 # These are meant to be useful code snippets that can be copy/pasted for your own application.
-
 
 # %%
 # Enumerate all VIO cores in the device.
@@ -207,7 +204,6 @@ value = port_info["probe_in0"]["value"]
 activity = port_info["probe_in0"]["activity"]
 print(f"Counter Value: {value}, Activity: {activity}")
 
-
 # %%
 # Reading probe values
 
@@ -218,7 +214,6 @@ print(f"Counter Value: {value}, Activity: {activity}")
 vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 vio.reset_vio()
 print(f"VIO core {vio} reset to initial values.")
-
 
 # %%
 # You can access low level VIO properties as a dictionary or in json. 
@@ -238,3 +233,7 @@ pp.pprint(vio_dict)
 vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 vio_json = vio.to_json()
 print(vio_json)
+
+# %%
+## When done with testing, close the connection
+delete_session(session)

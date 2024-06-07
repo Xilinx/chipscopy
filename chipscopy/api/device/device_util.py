@@ -39,20 +39,24 @@ def get_node_hier_name(view: ViewInfo, node: Node) -> str:
     return name
 
 
-def copy_node_props(node: Node, props: dict) -> dict:
+def copy_node_props(node: Node, props: dict, *, force_update=True) -> dict:
     transformed_props = {}
     for k, v in props.items():
         if type(v) == int or type(v) == str or type(v) == bool:
             transformed_props[str(k)] = v
         elif type(v) == JtagRegister:
             try:
-                node.update_regs(reg_names=(f"{k}",), force=True, done=None)
-                int_val = int.from_bytes(v.data, byteorder="little", signed=False)
-                transformed_props[str(k)] = int_val
+                if force_update:
+                    node.update_regs(reg_names=(f"{k}",), force=True, done=None)
+                list_val = [
+                    int.from_bytes(reg_data, byteorder="little", signed=False)
+                    for reg_data in v.data
+                ]
+                transformed_props[str(k)] = list_val
             except Exception:  # noqa
                 pass
         elif type(v) == dict:
-            transformed_props[str(k)] = copy_node_props(node, v)
+            transformed_props[str(k)] = copy_node_props(node, v, force_update=force_update)
         elif type(v) == bytearray:
             int_val = int.from_bytes(v, byteorder="little", signed=False)
             transformed_props[str(k)] = int_val
@@ -165,7 +169,7 @@ def get_node_dna(node: Node) -> Optional[int]:
                 try:
                     node.update_regs(reg_names=("dna",), force=True, done=None)
                     jtag_register = node.props["regs"]["dna"]
-                    bytearray_data = jtag_register.data
+                    bytearray_data = jtag_register.data[0]
                     dna_128 = int.from_bytes(bytearray_data, byteorder="little", signed=False)
                 except Exception:  # noqa
                     dna_128 = None
