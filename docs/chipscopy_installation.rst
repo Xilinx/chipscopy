@@ -78,7 +78,7 @@ Assuming a Vivado Python install location:
 
 Assuming a Vivado Python install location:
 
-    `C:\Xilinx\Vivado\|vivado_v|\tps\win64\python-3.8.3`
+    `C:\\Xilinx\\Vivado\\|vivado_v|\\tps\\win64\\python-3.8.3`
 
 
 .. code-block:: shell
