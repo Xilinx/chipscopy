@@ -1,5 +1,18 @@
 # ChipScoPy Release Notes
 
+## 2024.1 - June 12, 2024
+
+- 2024.1.1717799899
+- hw_server and cs_server compatibility updates
+- Fixed device status register not updating after program
+- Fixed duplicate field names in JTAG register
+- Fixed examples not closing session
+- Fixed some incorrect versions and links in examples
+- Fixed procedure for computing bandwidth on PCs and ports in HBM
+- Add link check before eye scan in cpm_decoupling example
+- Improvements to documentation template
+
+
 ## 2024.1 - May 22, 2024
 
 - 2024.1.dev1715183651
