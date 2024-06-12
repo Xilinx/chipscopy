@@ -62,28 +62,30 @@ Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python
 
 **Linux:**
 
+Assuming a Vivado Python install location:
+
+    `/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3`
 
 .. code-block:: shell
 
-   /path_to_xilinx_tools/Vivado/|vivado_v|/tps/lnx64/python-<ver>
-   e.g.:
-   /opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3
+    To use this Python, set your path and loader path by (bash syntax):
 
-   To use this Python, set your path and loader path by (bash syntax):
-   export PATH=$PATH:/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3/bin
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3/lib
+        export PATH=$PATH:/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3/bin
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3/lib
 
 
 **Windows**
 
+Assuming a Vivado Python install location:
+
+    `C:\Xilinx\Vivado\|vivado_v|\tps\win64\python-3.8.3`
+
+
 .. code-block:: shell
 
-   <drive_spec>:\path_to_xilinx_tools\Vivado\|vivado_v|\tps\win64\python-<ver>
-   e.g.:
-   C:\Xilinx\Vivado\|vivado_v|\tps\win64\python-3.8.3
+    To use this Python, add this to your user or system-wide %PATH% environment variable
 
-   To use this Python, add this to your user or system-wide %PATH% environment variable
-   C:\Xilinx\Vivado\|vivado_v|\tps\win64\python-3.8.3\bin
+    C:\Xilinx\Vivado\|vivado_v|\tps\win64\python-3.8.3
 
 
 Step 2: Set up Virtual Environment
