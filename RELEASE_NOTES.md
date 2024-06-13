@@ -152,7 +152,8 @@ Using this API assumes you are comfortable scripting with Python 3, including do
 ## License
 
 Copyright (C) 2021-2022, Xilinx, Inc.
-Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+
+Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
