@@ -33,24 +33,23 @@ def get_request_queue(cs_manager, queue_group):
 
 
 class DoneRequest(object):
-    def done_request(self, token, error, result):
+    def done_request(self, token: Any, error: str or Exception, result: Any):
         pass
 
-    def __call__(self, token, error, results):
-        self.done_request(token, error, results)
+    def __call__(self, token: Any, error: str or Exception, result: Any):
+        self.done_request(token, error, result)
 
 
 class ProgressRequest(object):
-    def done_progress(self, token, error, result):
+    def progress_request(self, percentage: float):
         pass
 
-    def __call__(self, token, error, results):
-        self.done_progress(token, error, results)
+    def __call__(self, percentage: float):
+        self.progress_request(percentage=percentage)
 
 
 DoneCallback = NewType("DoneCallback", DoneRequest or Callable[[Any, str or Exception, Any], None])
 ProgressCallback = NewType("ProgressCallback", ProgressRequest or Callable[[float], None])
-# Token = NewType("Token", token)
 
 
 class GenericCallback(object):
@@ -234,11 +233,11 @@ class CsRequest(object):
             self.done(self, error, result)
         self.called = False
 
-    def progress_update(self, token=None, error=None, result=None):
+    def progress_update(self, result=None):
         log.request.info(f"Progress Update {self} {result}")
         self.run_func = self.default_run_func
         if self.progress:
-            self.progress(self, error, result)
+            self.progress(result)
 
     def default_run_func(self, done=None, progress_update=None):
         self.result = self.cs_manager[self.node_id]
@@ -324,8 +323,14 @@ def null_callback(future):
 
 class CsFuture(object):
     def __init__(self, done=None, progress=None, final=None):
-        self._done_callback = CsFuture._wrap_callback(done)
-        self._progress_callback = CsFuture._wrap_callback(progress)
+        # key off the done callback to determine if this is the new style
+        # future-based callback usage, or the old style with 3 args.
+        if CsFuture._is_legacy_done_callback(done):
+            self._done_callback = CsFuture._wrap_done_callback(done)
+            self._progress_callback = CsFuture._wrap_progress_callback(progress)
+        else:
+            self._done_callback = done
+            self._progress_callback = progress
         self.is_done = False
         self._result = None
         self._error = None
@@ -338,21 +343,36 @@ class CsFuture(object):
         self._error = None
 
     @staticmethod
-    def _wrap_callback(done):
+    def _is_legacy_done_callback(callback):
+        if inspect.isfunction(callback) or inspect.ismethod(callback):
+            sig = inspect.signature(callback)
+            if len(sig.parameters) == 1:
+                return False
+        return True
+
+    @staticmethod
+    def _wrap_done_callback(done):
         if not done:
             return done
 
-        if inspect.isfunction(done) or inspect.ismethod(done):
-            sig = inspect.signature(done)
-            if len(sig.parameters) == 1:
-                return done
-
-        # done = _make_callback(done)
-
-        def done_oldcallback(future: CsFuture):
+        # else, return a wrapper which calls the future constituents using the
+        # old 'token: Any, error: str or Exception, result: Any' callback paradigm.
+        def done_old_callback(future: CsFuture):
             done(future, future._error, future._result)
 
-        return done_oldcallback
+        return done_old_callback
+
+    @staticmethod
+    def _wrap_progress_callback(progress):
+        if not progress:
+            return progress
+
+        # else, return a wrapper which calls the future constituents using
+        # the old 'progress: float' callback paradigm.
+        def progress_old_callback(future: CsFuture):
+            progress(future.progress)
+
+        return progress_old_callback
 
     def _sanitize_error(self):
         if isinstance(self._error, str):
@@ -442,12 +462,14 @@ class CsFutureSync(CsFuture):
 
     @property
     def result(self):
-        self.cond.wait(self.timeout)
+        if not protocol.isDispatchThread():
+            self.cond.wait(self.timeout)
         return super().result
 
     @property
     def error(self):
-        self.cond.wait(self.timeout)
+        if not protocol.isDispatchThread():
+            self.cond.wait(self.timeout)
         return super().error
 
     def run(self, func, *args, **kwargs):
@@ -596,7 +618,10 @@ class CsFutureRequest(CsFuture):
             done = args[-1]
             args = args[:-1]
         if done:
-            self._done_callback = CsFuture._wrap_callback(done)
+            if CsFuture._is_legacy_done_callback(done):
+                self._done_callback = CsFuture._wrap_done_callback(done)
+            else:
+                self._done_callback = done
 
         if has_done:
             kwargs["done"] = self.done_run
@@ -634,6 +659,8 @@ class CsFutureRequest(CsFuture):
         self._result = result
         self._invoke_done()
 
+    # NOTE: this should be cleaned up to remove 'token' and 'error' args, and the
+    #       'results' arg shouldn't be optional -- why fire the callback with no info?
     def progress_update(self, token=None, error=None, result=None):
         if not self._error:
             self._error = error

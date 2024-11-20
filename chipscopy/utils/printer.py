@@ -149,8 +149,7 @@ class PercentProgressBar:
             PercentProgressBar.Status.DONE.value,
             PercentProgressBar.Status.ABORTED.value,
         }:
-            if self.progress_meter.finished:
-                self.progress_meter.stop()
+            self.progress_meter.stop()
 
 
 if __name__ == "__main__":

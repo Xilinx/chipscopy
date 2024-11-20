@@ -70,6 +70,7 @@ class JtagContext(object):
             "ParentID": "",
             "Name": "",
             "idCode": 0,
+            "idCode2": 0,
             "irLen": 0,
             "isTap": False,
             "isMux": False,

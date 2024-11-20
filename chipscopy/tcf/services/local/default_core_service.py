@@ -34,18 +34,17 @@ class CsRequestDone(request.DoneRequest):
 
 
 class CsRequestProgressUpdate(request.ProgressRequest):
-    def __init__(self, req, service_name: str, name: str = ""):
+    def __init__(self, req, name: str = ""):
         self._name = name
 
         self.req = req
-        self.service_name = service_name
 
-    def done_progress(self, token, error, result):
-        self.req.sendXicomProgress(result)
+    def progress_request(self, percentage):
+        self.req.sendXicomProgress(percentage)
 
 
 class DefaultCoreService(services.Service):
-    """Abstract class for property based debug cores including harden blocks."""
+    """Abstract class for property based debug cores including hard blocks."""
 
     def getName(self):
         raise NotImplementedError("Abstract method")
@@ -73,8 +72,8 @@ class DefaultCoreService(services.Service):
             CsRequestDone(req, self.getName(), function_name),
             # Note - Only if the core supports progress_update callbacks create
             #  a CsRequestProgressUpdate object. The "run" func in request.py makes use of
-            #  this to decide whether or not to pass this argument to the function being called
-            CsRequestProgressUpdate(req, self.getName(), function_name)
+            #  this to decide whether to pass this argument to the function being called
+            CsRequestProgressUpdate(req, self.getName())
             if self._progress_update_supported
             else None,
         )

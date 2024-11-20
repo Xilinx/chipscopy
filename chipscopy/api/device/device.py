@@ -15,6 +15,7 @@
 #
 import json
 import re
+import sys
 import time
 from collections import defaultdict, deque
 from enum import Enum
@@ -27,6 +28,7 @@ from chipscopy.api._detail.ltx import parse_ltx_files  # noqa
 from chipscopy.api._detail.trace import Trace  # noqa
 from chipscopy.api.containers import QueryList
 from chipscopy.api.ddr.ddr import DDR
+from chipscopy.api.device.client_program_log import ClientProgramLogStrategy
 from chipscopy.api.device.device_spec import DeviceSpec
 from chipscopy.api.hbm.hbm import HBM
 from chipscopy.api.ibert import IBERT
@@ -144,7 +146,6 @@ class Device:
         self.ltx_sources = []
         self.cores_to_scan = {}  # set during discover_and_setup_cores
         self.programming_error: Optional[str] = None  # Keep error for query after programming
-        self.programming_done: bool = False
 
         self.refresh()
 
@@ -605,7 +606,7 @@ class Device:
         self._raise_if_family_not(DeviceFamily.VERSAL)
         self._raise_if_state_invalid()
         valid_memory_targets = (
-            r"(Versal .*)|(DPC)|(APU)|(RPU)|(PPU)|(PSM)|(Cortex.*)|(MicroBlaze.*)"
+            r"(Versal .*)|(DPC)|(APU)|(RPU)|(PPU)|(PSM)|(Cortex.*)|(MicroBlaze.*)|(RISC-V.*)"
         )
         memory_view = self.hw_server.get_view("memory")
         memory_node_list = []
@@ -623,7 +624,7 @@ class Device:
             if MemoryNode.is_compatible(node):
                 memory_node = memory_view.get_node(node.ctx, MemoryNode)
                 memory_node_list.append(memory_node)
-                nodes_to_travel.extendleft(memory_view.get_children(memory_node))
+            nodes_to_travel.extendleft(memory_view.get_children(node))
 
         # Now the memory_node_list has all memory nodes.
         # Make the list of what we found and return it
@@ -777,83 +778,23 @@ class Device:
         bar.update(status=PercentProgressBar.Status.DONE)
 
     # PROGRAMMING
+    def get_plm_log(self, memory_target="Versal.+", slr_index: int = 0) -> str:
+        """
+        Returns: Raw log read from hardware
 
-    @staticmethod
-    def _plm2bytearray(raw_plm_data: List[int]) -> bytearray:
-        # Memory returns a list of 32-bit ints - convert them to a linear byte array for easier string manipulation
-        plm_log_bytearray = bytearray()
-        plm_data_tuples = [unpack("cccc", pack("I", w)) for w in raw_plm_data]
-        for tup in plm_data_tuples:
-            try:
-                for c in tup:
-                    plm_log_bytearray.append(ord(c.decode("utf-8")))
-            except UnicodeDecodeError:
-                # bytearray index out of range happens at end of useful log data
-                break
-        return plm_log_bytearray
+        Args:
+            memory_target: Optional name of memory target such as APU, RPU, DPC
+            slr_index: Optional SLR index for multi-SLR devices
+        """
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
+        try:
+            mem = self.memory.get(name=memory_target)
+        except ValueError:
+            raise ValueError(f"Memory target {memory_target} not available")
+        return mem.plm_log(slr_index=slr_index)
 
-    @staticmethod
-    def _slave_slr_map(slr_index: int, address: int, length: int):
-        if address < 0xF0000000 or address >= 0xF8000000 or (address + length) >= 0xF8000000:
-            raise ValueError(
-                f"Address - {address} is out of range. " f"Valid range is 0xF0000000-0xF7ffffff."
-            )
-        if slr_index > 0:
-            address += 0x108000000 + ((slr_index - 1) * 0x8000000) - 0xF0000000
-        return address
-
-    @staticmethod
-    def _read_plm_log(mem: Memory, slr_index: int = 0) -> str:
-        # Given a memory target, read the PLM log data and return as a big string
-        rtca_address = Device._slave_slr_map(slr_index, 0xF2014000, 1024)
-        rtca_data = mem.memory_read(address=rtca_address, num=0x20, size="w")
-        header = rtca_data[0]
-        plm_wrapped_addr = 0
-        plm_wrapped_len = 0
-
-        if header == 0x41435452:
-            # use_rtca = True
-            use_defaults = False
-            plm_addr = Device._slave_slr_map(slr_index, rtca_data[4] | (rtca_data[5] << 32), 1024)
-            if (
-                rtca_data[4] == 0xDEADBEEF
-                or rtca_data[5] == 0xDEADBEEF
-                or rtca_data[7] == 0xDEADBEEF
-            ):
-                use_defaults = True
-
-            plm_offset = rtca_data[7]
-            plm_len = (plm_offset & 0x7FFFFFFF) - 1
-            if plm_offset & 0x80000000:
-                plm_wrapped_addr = plm_addr
-                plm_wrapped_len = plm_len - 1
-                plm_addr = plm_addr + plm_len + 1
-                plm_size = rtca_data[6]
-                plm_len = plm_size - plm_len - 1
-        else:
-            # use_rtca = False
-            use_defaults = True
-            plm_addr = 0
-            plm_len = 0
-
-        if use_defaults:
-            plm_len = 1024
-            plm_addr = 0xF2019000
-            if slr_index > 0:
-                plm_addr = Device._slave_slr_map(slr_index, plm_addr, plm_len)
-
-        # plm_log_bytearray = bytearray(b'@' * (plm_len + plm_wrapped_len))
-        plm_data = mem.memory_read(address=plm_addr, num=plm_len, size="w")
-        plm_log_bytearray = Device._plm2bytearray(plm_data)
-
-        if plm_wrapped_addr:
-            plm_data = mem.memory_read(address=plm_wrapped_addr, num=plm_wrapped_len, size="w")
-            plm_log_bytearray += Device._plm2bytearray(plm_data)
-
-        plm_log_str = plm_log_bytearray.decode("utf-8")
-        return plm_log_str
-
-    def get_program_log(self, memory_target="APU", slr_index: int = 0) -> str:
+    def get_program_log(self, memory_target="Versal.+") -> str:
         """
         Returns: Programming log read from hardware (None=Use default transport)
 
@@ -867,13 +808,26 @@ class Device:
             mem = self.memory.get(name=memory_target)
         except ValueError:
             raise ValueError(f"Memory target {memory_target} not available")
-        if not slr_index < self.jtag_node["reg.slr_count"]:
-            raise ValueError(
-                f"Specified SLR index - {slr_index} is out of range. "
-                f'Number of SLRs in current device = {self.jtag_node["reg.slr_count"]}.'
-            )
+        report_generator = ClientProgramLogStrategy(
+            regs=self.jtag_node.props.get("regs", {}), plm_log_fn=lambda x: mem.plm_log(slr_index=x)
+        )
+        return report_generator.generate_program_log()
 
-        return Device._read_plm_log(mem, slr_index)
+    def write_program_log(self, outfile: Union[str, Path], *, memory_target="Versal.+"):
+        """
+        Write an enhanced program log to a file.
+        """
+        if isinstance(outfile, str):
+            outfile = Path(outfile)
+        try:
+            report_str = self.get_program_log(memory_target=memory_target)
+            if outfile is None:
+                sys.stdout.write(report_str)
+            else:
+                with outfile.open("w") as file:
+                    file.write(report_str)
+        except Exception as e:
+            raise IOError(f"Failed to write report to {outfile}: {str(e)}")
 
     def reset(self):
         """Reset the device to a non-programmed state."""
@@ -906,6 +860,7 @@ class Device:
             progress: Optional progress callback
             done: Optional async future callback
         """
+        self.programming_error = None
         self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
         self._raise_if_state_invalid()
         program_future = request.CsFutureSync(done=done, progress=progress)
@@ -940,13 +895,18 @@ class Device:
 
         def pre_done_programming(future):
             # refresh jtag node properties after program (1190699)
+            if future.error:
+                self.programming_error = future.error
             jtag_programming_node.future().update_regs(
                 reg_names=[], force=True, done=done_programming
             )
 
         def done_programming(future):
+            if not self.programming_error:
+                self.programming_error = future.error
+
             if show_progress_bar:
-                if future.error is not None:
+                if self.programming_error is not None:
                     progress_.update(status=PercentProgressBar.Status.ABORTED)
                 else:
                     for i in range(delay_after_program):
@@ -962,10 +922,8 @@ class Device:
                     self.refresh(force_update=False)
                     progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
 
-            self.programming_error = future.error
-            self.programming_done = True
-            if future.error:
-                program_future.set_exception(future.error)
+            if self.programming_error is not None:
+                program_future.set_exception(self.programming_error)
             else:
                 program_future.set_result(None)
 

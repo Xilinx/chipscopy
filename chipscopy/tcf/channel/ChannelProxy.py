@@ -1,6 +1,6 @@
 # *****************************************************************************
-# * Modifications Copyright (C) 2024 Advanced Micro Devices, Inc.
-# * All rights reserved.
+# * Modifications Copyright (C) 2021-2022, Xilinx, Inc., All rights reserved.
+# * Modifications Copyright (C) 2022-2024, Advanced Micro Devices, Inc., All rights reserved..
 # *
 # * Copyright (c) 2011, 2013 Wind River Systems, Inc. and others.
 # * All rights reserved. This program and the accompanying materials

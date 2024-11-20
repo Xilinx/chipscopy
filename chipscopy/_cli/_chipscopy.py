@@ -1,4 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
 # Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +19,8 @@ from collections import deque
 import argparse
 import sys
 import os
-from typing import Tuple, Dict
+from pathlib import Path
+from typing import Tuple, Dict, Union
 
 from more_itertools import one
 
@@ -73,7 +75,7 @@ class NodeVisitorBase:
         visitor_method = getattr(self, method, self._visit_default)
         upgraded_node = self._view.get_node(node.ctx, cls)
         assert upgraded_node is not None
-        return visitor_method(upgraded_node, is_last_sibling)
+        return visitor_method(upgraded_node, is_last_sibling)  # noqa
 
     def _visit_default(self, node, is_last_sibling):
         children = list(self._view.get_children(node))
@@ -102,17 +104,11 @@ def display_banner():
     print()
 
 
-def report(devices, servers):
-    with create_session(
-        hw_server_url=_hw_url, cs_server_url=_cs_url, bypass_version_check=_bypass_version_check
-    ) as session:
-        if devices:
-            report_devices(session)
-        elif servers:
-            report_versions(session)
-        else:
-            report_versions(session)
-            report_devices(session)
+def report(session: Session, *, devices: bool = True, servers: bool = True):
+    if servers:
+        report_versions(session)
+    if devices:
+        report_devices(session)
 
 
 def _get_node_path(host: str, view: ViewInfo, view_name: str, node: Node) -> str:
@@ -159,17 +155,20 @@ def _get_all_nodes(session: Session) -> Dict[Tuple[str, str], Tuple[int, str, Vi
 
 
 def program(
-    file,
-    dna,
-    cable_context,
-    context,
-    part,
-    family,
-    jtag_index,
-    device_index,
-    skip_reset,
-    list_,
-    program_log,
+    session: Session,
+    *,
+    file: Union[str, Path] = "",
+    dna: str = "",
+    cable_context: str = "",
+    context: str = "",
+    part: str = "",
+    family: str = "",
+    jtag_index: str = "",
+    device_index: str = "",
+    skip_reset: bool = False,
+    list_: bool = False,
+    program_log: bool = False,
+    force_reset: bool = False,
 ):
     def print_device(device_):
         d = device_.to_dict()
@@ -182,70 +181,73 @@ def program(
             print(f"  {key}:{val}", end="")
         print()
 
-    with create_session(
-        hw_server_url=_hw_url, cs_server_url=_cs_url, bypass_version_check=_bypass_version_check
-    ) as session:
-        all_devices = session.devices
+    all_devices = session.devices
 
-        args = {}
+    args = {}
 
-        if dna:
-            args["dna"] = int(dna, 0)
-        if context:
-            args["context"] = context
-        if cable_context:
-            args["cable_context"] = cable_context
-        if context:
-            args["context"] = context
-        if part:
-            args["part"] = part
-        if family:
-            args["family"] = family
-        if jtag_index:
-            args["jtag_index"] = int(jtag_index)
+    if dna:
+        args["dna"] = int(dna, 0)
+    if context:
+        args["context"] = context
+    if cable_context:
+        args["cable_context"] = cable_context
+    if context:
+        args["context"] = context
+    if part:
+        args["part"] = part
+    if family:
+        args["family"] = family
+    if jtag_index:
+        args["jtag_index"] = int(jtag_index)
 
-        if list_:
-            if len(args) > 0:
-                raise ValueError("--list is not allowed with other options")
-            for idx, device in enumerate(all_devices):
-                print(f"DEVICE #{idx}:", end="")
-                print_device(device)
-            return
-
-        if len(all_devices) == 0:
-            raise IndexError("No devices in device list")
-
-        if not file and not program_log:
-            raise RuntimeError("No progamming file specified.")
-
-        if device_index:
-            device_index = int(device_index)
-            if len(args) > 0:
-                raise ValueError("Device index is not allowed with other options")
-            if len(all_devices) <= device_index:
-                raise ValueError("Device index out of range")
-            device = all_devices[device_index]
-        else:
-            if len(args) > 0:
-                device = all_devices.get(**args)
-            elif len(all_devices) == 2 and all_devices[0].to_dict().get("part") == "arm_dap":
-                # Ok to ignore arm_dap on same versal
-                device = all_devices[1]
-            else:
-                if len(all_devices) > 1:
-                    raise ValueError("Multiple devices match selection")
-                device = one(all_devices)
-
-        if file:
-            print("Programming:", end="")
+    if list_:
+        if len(args) > 0:
+            raise ValueError("--list is not allowed with other options")
+        for idx, device in enumerate(all_devices):
+            print(f"DEVICE #{idx}:", end="")
             print_device(device)
-            device.program(file, skip_reset=skip_reset)
-            print()
+        return
 
-        if program_log:
-            print()
-            print(device.get_program_log())
-            print()
+    if len(all_devices) == 0:
+        raise IndexError("No devices in device list")
+
+    if not file and not program_log and not force_reset:
+        raise RuntimeError("No programming file specified.")
+
+    if device_index:
+        device_index = int(device_index)
+        if len(args) > 0:
+            raise ValueError("Device index is not allowed with other options")
+        if len(all_devices) <= device_index:
+            raise ValueError("Device index out of range")
+        device = all_devices[device_index]
+    else:
+        if len(args) > 0:
+            device = all_devices.get(**args)
+        elif len(all_devices) == 2 and all_devices[0].to_dict().get("part") == "arm_dap":
+            # Ok to ignore arm_dap on same versal
+            device = all_devices[1]
+        else:
+            if len(all_devices) > 1:
+                raise ValueError("Multiple devices match selection")
+            device = one(all_devices)
+
+    if force_reset:
+        print("Resetting Device", end="")
+        print_device(device)
+        device.reset()
+        print()
+
+    if file:
+        print("Programming:", end="")
+        print_device(device)
+        device.program(file, skip_reset=skip_reset)
+        print()
+
+    if program_log:
+        print()
+        print(device.get_program_log())
+        print()
 
 
 class TreePrinter(NodeVisitorBase):
@@ -284,7 +286,7 @@ class TreePrinter(NodeVisitorBase):
         self._indent_prefix = list()
         self.walk()
 
-    def _print_node_properties(self, node, node_str, prefix):
+    def _print_node_properties(self, node: Node, node_str: str, prefix: str):
         props_dict = node.props
         prop_prefix = " " * len(prefix)
         for key, val in props_dict.items():
@@ -306,14 +308,21 @@ class TreePrinter(NodeVisitorBase):
                     else:
                         print(f"{prop_prefix}    regs.{reg_key:}.slr{index}: {hex(int_value)}")
 
-    def _print_node(self, node, prefix):
+    def _print_node(self, node: Node, prefix: str):
         name = node.props.get("Name")
         cls = node.props.get("node_cls")
         # Example: <class \'chipscopy.client.jtagdevice.JtagCable\'>
         match = re.fullmatch("^<class \\'(.+)\\'>$", str(cls))
         full_class_name = match.group(1)
         class_name = full_class_name.split(".")[-1]
-        (index, _, _, _) = self._all_nodes[(self._view_name, node.ctx)]
+
+        found_val = self._all_nodes.get((self._view_name, node.ctx))
+
+        try:
+            # index:int, ctx:str, view:ViewInfo, node:Node
+            (index, _, _, _) = self._all_nodes[(self._view_name, node.ctx)]
+        except KeyError as ex:
+            index = "?"
         node_str = f"{prefix}{index}- {name} ({class_name})"
         if self._show_context:
             indent_character_count = 50 - len(node_str)
@@ -326,17 +335,17 @@ class TreePrinter(NodeVisitorBase):
         if self._print_properties:
             self._print_node_properties(node, node_str, prefix)
 
-    def _visit_JtagCable(self, node, is_last_sibling):
+    def _visit_JtagCable(self, node: Node, is_last_sibling: bool):
         # Tracking JtagCable and JtagDevice so we can keep running jtag_index per device in the chain
         self._jtag_index = 0
         self._visit_default(node, is_last_sibling)
 
-    def _visit_JtagDevice(self, node, is_last_sibling):
+    def _visit_JtagDevice(self, node: Node, is_last_sibling: bool):
         # Tracking JtagCable and JtagDevice so we can keep running jtag_index per device in the chain
         self._jtag_index += 1
         self._visit_default(node, is_last_sibling)
 
-    def _visit_default(self, node, is_last_sibling):
+    def _visit_default(self, node: Node, is_last_sibling: bool):
         if is_last_sibling:
             glyph = self._tree_glyphs["last"]
         else:
@@ -355,39 +364,35 @@ class TreePrinter(NodeVisitorBase):
         self._indent_prefix.pop()
 
 
-def tree(view, show_context, glyph_type, print_properties):
-    if view:
+def tree(
+    session: Session, *, view=None, show_context=True, glyph_type="std", print_properties=False
+):
+    if isinstance(view, str):
         views = [view]
+    elif isinstance(view, list):
+        views = view
     else:
         views = ["jtag", "memory", "debugcore", "chipscope"]
-    with create_session(
-        hw_server_url=_hw_url,
-        cs_server_url=_cs_url,
-        initial_device_scan=False,
-        bypass_version_check=_bypass_version_check,
-    ) as session:
-        for view in views:
-            tree_printer = TreePrinter(session, view, print_properties)
-            tree_printer.print(show_context=show_context, glyph_type=glyph_type)
-            print()
+
+    for view in views:
+        tree_printer = TreePrinter(session, view, print_properties)
+        tree_printer.print(show_context=show_context, glyph_type=glyph_type)
+        print()
 
 
-def ls(is_long):
-    with create_session(
-        hw_server_url=_hw_url,
-        cs_server_url=_cs_url,
-        initial_device_scan=False,
-        bypass_version_check=_bypass_version_check,
-    ) as session:
-        all_nodes = _get_all_nodes(session)
-        for (view_name, ctx), (index, host, view, node) in all_nodes.items():
-            print(f"{index}- ", end="")
-            if is_long:
-                path = _get_node_path(host, view, view_name, node)
-                print(f"{path}", end="")
-            else:
-                print(f"{node.props.get('Name')}", end="")
+def ls(session: Session, *, is_long: bool = False, show_context: bool = False):
+    all_nodes = _get_all_nodes(session)
+    for (view_name, ctx), (index, host, view, node) in all_nodes.items():
+        print(f"{index}  ", end="")
+        if is_long:
+            path = _get_node_path(host, view, view_name, node)
+            print(f"{path}", end="")
+        else:
+            print(f"{node.props.get('Name')}", end="")
 
+        if show_context:
+            print(f"    {node.ctx}")
+        else:
             print()
 
 
@@ -420,23 +425,17 @@ def _print_info(*, host: str, view_name: str, view: ViewInfo, node: Node):
                     print(f"regs.{reg_key:}.slr{index}: {hex(int_value)}")
 
 
-def info(match_string):
-    with create_session(
-        hw_server_url=_hw_url,
-        cs_server_url=_cs_url,
-        initial_device_scan=False,
-        bypass_version_check=_bypass_version_check,
-    ) as session:
-        all_nodes = _get_all_nodes(session)
-        try:
-            match_string_int_value = int(match_string)
-        except ValueError:
-            match_string_int_value = -1
+def info(session: Session, *, match_string: str):
+    all_nodes = _get_all_nodes(session)
+    try:
+        match_string_int_value = int(match_string)
+    except ValueError:
+        match_string_int_value = -1
 
-        for (view_name, ctx), (index, host, view, node) in all_nodes.items():
-            if node.ctx == match_string or index == match_string_int_value:
-                _print_info(host=host, view_name=view_name, view=view, node=node)
-                break
+    for (view_name, ctx), (index, host, view, node) in all_nodes.items():
+        if node.ctx == match_string or index == match_string_int_value:
+            _print_info(host=host, view_name=view_name, view=view, node=node)
+            break
 
 
 def parse_args(cmdline_args):
@@ -460,6 +459,9 @@ def parse_args(cmdline_args):
     info_parser.add_argument("context", type=str)
 
     ls_parser = subparsers.add_parser("ls", help="ls help", parents=[base_parser])
+    ls_parser.add_argument(
+        "--show-context", required=False, action="store_true", help="Print additional node context"
+    )
     ls_parser.add_argument(
         "--long",
         "-l",
@@ -488,6 +490,7 @@ def parse_args(cmdline_args):
     program_parser.add_argument(
         "--program-log", action="store_true", help="download programming log"
     )
+    program_parser.add_argument("--force-reset", action="store_true", help="reset device")
 
     tree_parser = subparsers.add_parser("tree", help="tree help", parents=[base_parser])
     tree_parser.add_argument(
@@ -531,36 +534,63 @@ def parse_args(cmdline_args):
         _cs_url = args.cs_url
 
     if args.subcommand == "report":
-        report(devices=args.devices, servers=args.servers)
+        with create_session(
+            hw_server_url=_hw_url, cs_server_url=_cs_url, bypass_version_check=_bypass_version_check
+        ) as session:
+            report(session=session, devices=args.devices, servers=args.servers)
 
     elif args.subcommand == "info":
-        info(args.context)
+        with create_session(
+            hw_server_url=_hw_url,
+            cs_server_url=_cs_url,
+            initial_device_scan=False,
+            bypass_version_check=_bypass_version_check,
+        ) as session:
+            info(session=session, match_string=args.context)
 
     elif args.subcommand == "ls":
-        ls(args.long)
+        with create_session(
+            hw_server_url=_hw_url,
+            cs_server_url=_cs_url,
+            initial_device_scan=False,
+            bypass_version_check=_bypass_version_check,
+        ) as session:
+            ls(session=session, is_long=args.long, show_context=args.show_context)
 
     elif args.subcommand == "program":
-        program(
-            args.file,
-            args.dna,
-            args.cable_context,
-            args.context,
-            args.part,
-            args.family,
-            args.jtag_index,
-            args.device_index,
-            args.skip_reset,
-            args.list_,
-            args.program_log,
-        )
+        with create_session(
+            hw_server_url=_hw_url, cs_server_url=_cs_url, bypass_version_check=_bypass_version_check
+        ) as session:
+            program(
+                session=session,
+                file=args.file,
+                dna=args.dna,
+                cable_context=args.cable_context,
+                context=args.context,
+                part=args.part,
+                family=args.family,
+                jtag_index=args.jtag_index,
+                device_index=args.device_index,
+                skip_reset=args.skip_reset,
+                list_=args.list_,
+                program_log=args.program_log,
+                force_reset=args.force_reset,
+            )
 
     elif args.subcommand == "tree":
-        tree(
-            view=args.view,
-            show_context=args.show_context,
-            glyph_type=args.glyph_type,
-            print_properties=args.properties,
-        )
+        with create_session(
+            hw_server_url=_hw_url,
+            cs_server_url=_cs_url,
+            initial_device_scan=False,
+            bypass_version_check=_bypass_version_check,
+        ) as session:
+            tree(
+                session=session,
+                view=args.view,
+                show_context=args.show_context,
+                glyph_type=args.glyph_type,
+                print_properties=args.properties,
+            )
 
 
 def main():  # pragma: no cover

@@ -1,6 +1,6 @@
 # *****************************************************************************
-# * Modifications Copyright (C) 2024 Advanced Micro Devices, Inc.
-# * All rights reserved.
+# * Modifications Copyright (C) 2021-2022, Xilinx, Inc., All rights reserved.
+# * Modifications Copyright (C) 2022-2024, Advanced Micro Devices, Inc., All rights reserved..
 # *
 # * Copyright (c) 2011, 2013-2014, 2016 Wind River Systems, Inc. and others.
 # * All rights reserved. This program and the accompanying materials
@@ -79,10 +79,10 @@ class EventQueue(object):
             self.__queue.append((r, args, kwargs))
             if self.__is_waiting:
                 self.__is_waiting = False
-                self.__lock.notifyAll()
+                self.__lock.notify_all()
 
     def isDispatchThread(self):
-        return threading.currentThread() is self.__thread
+        return threading.current_thread() is self.__thread
 
     def getCongestion(self):
         with self.__lock:

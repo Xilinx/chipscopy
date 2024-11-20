@@ -25,9 +25,8 @@ _listeners_active = False
 
 
 def _channel_closed(ci: pytcf.ChannelInfo):
-    if hasattr(ci, "outer"):
-        chan = ci.outer
-        for listener in chan.channel_listeners:
+    if hasattr(ci, "channel_listeners"):
+        for listener in ci.channel_listeners:
             listener.onChannelClosed(None)
 
 

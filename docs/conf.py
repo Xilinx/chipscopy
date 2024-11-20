@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,7 +49,9 @@ from chipscopy.vivado_version import __vivado_version__
 author = "Advanced Micro Devices, Inc"
 project = "ChipScoPy"
 project_u = project.replace(" ", "_")
-copyright = "2021-" + datetime.now().strftime("%Y") + ", " + author
+YYYY = datetime.now().strftime("%Y")
+copyright = f"(C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-{YYYY}, Advanced Micro Devices, Inc"
+# copyright = "2021-" + datetime.now().strftime("%Y") + ", " + author)
 # YYYY = First year of copyright
 
 # The short X.Y version
@@ -190,6 +193,7 @@ htmlhelp_basename = "chipscopy"
 # -- Extension configuration -------------------------------------------------
 # At the bottom of conf.py
 
+
 def replace_vivado_version(app: Sphinx, docname: str, source: list):
     doc_str = source[0]
     updated_doc_str = doc_str.replace("|vivado_v|", version)
@@ -197,7 +201,7 @@ def replace_vivado_version(app: Sphinx, docname: str, source: list):
 
 
 def setup(app: Sphinx):
-    app.connect('source-read', replace_vivado_version)
+    app.connect("source-read", replace_vivado_version)
     app.add_config_value(
         "recommonmark_config",
         {
@@ -213,12 +217,15 @@ def setup(app: Sphinx):
 
 # -- Sphinx Warning Silencing  -----------------------------------------------
 
+
 class FilterForForwardReference(pylogging.Filter):
     # Workaround for Forward Reference Warnings
     def filter(self, record: pylogging.LogRecord) -> bool:
         # Fixes WARNING: Cannot resolve forward reference in type annotations of
         #     "chipscopy.api.ibert.link.Link.eye_scan": name 'EyeScan' is not defined
-        return not record.getMessage().startswith("Cannot resolve forward reference in type annotations of")
+        return not record.getMessage().startswith(
+            "Cannot resolve forward reference in type annotations of"
+        )
 
 
 logging.getLogger("sphinx_autodoc_typehints").logger.addFilter(FilterForForwardReference())

@@ -336,8 +336,6 @@ class JtagDevice(JtagNode):
         Configures the device with a given PDI file
         :param filepath: File path of the PDI
         :param props: Configuration properties
-        :param done: DoneRequest callback
-        :param progress: Progress callback
         :return: Token of request
         """
         assert self.request
@@ -375,7 +373,7 @@ class JtagDevice(JtagNode):
             if not err:
                 err = error
                 if err:
-                    config_done(None, err, None)
+                    config_done(token, err, None)
                     return
                 if hasattr(token, "data_size"):
                     total_progress += token.data_size
@@ -401,6 +399,8 @@ class JtagDevice(JtagNode):
                 self.remove_pending(token)
 
             f.close()
+
+            # record the first error -- if an earlier error has occurred don't clobber it
             if not err:
                 err = error
 
@@ -548,7 +548,7 @@ class JtagDevice(JtagNode):
                     self.update(props)
             self.remove_pending(token)
 
-        self.add_pending(jtag_device.get_properties(self.idCode, done_get_properties))
+        self.add_pending(jtag_device.get_properties(self.idCode, self.idCode2, done_get_properties))
 
 
 class JtagCable(JtagNode):

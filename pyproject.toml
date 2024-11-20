@@ -1,4 +1,5 @@
-# Copyright 2021 Xilinx, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2024.1.1717799899"
+version = "2024.2.1732227392"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -33,7 +34,7 @@ loguru = "^0.7"
 importlib_metadata = "^6.8"
 rich = "^13.5"
 Click = "^8.1"
-antlr4-python3-runtime = "==4.10"
+antlr4-python3-runtime = "==4.13.1"
 kaleido = [
     { platform = "win32", version = "==0.1.0.post1", optional = true },
     { platform = "linux", version = "==0.1.0", optional = true }
@@ -44,20 +45,15 @@ ipywidgets = { version = "^8.1", optional = true }
 pandas = { version = ">=1.5", optional = true }
 matplotlib = { version = "^3.7", optional = true }
 PyQt5 = { version = "^5.15", optional = true }
-pytcf = { version = "^0.0.8", optional = true }
+pytcf = { version = "^0.0.10", optional = true }
 ipympl = { version = "^0.9.3", optional = true }
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4"
 coverage = "^7.3"
 pytest-mock = "^3.11"
-pyboardbarn = "^5.0.4"
 colorama = "^0.4"
-
-[tool.poetry.group.artifactory]
-optional = true
-
-[tool.poetry.group.artifactory.dependencies]
+chapsak = "^1.5.0"
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "==6.2.1"

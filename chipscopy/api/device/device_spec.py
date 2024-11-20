@@ -161,7 +161,8 @@ class DeviceSpec:
                 except ValueError:
                     if node.props.get("Name", "").startswith("XVC"):
                         arch_name = "xvc"
-                if arch_name == "Ultrascale":
+                arch_name = arch_name.lower()
+                if arch_name == "ultrascale":
                     arch_name = "uplus"
         return arch_name
 

@@ -139,3 +139,9 @@ Option 2: Install Microsoft Build Tools as described in the error message. This 
 http://visualstudio.microsoft.com/visual-cpp-build-tools/
 
 ---
+
+**Q:** On Windows, how do I fix the path length error  `OSError: [WinError 206] The filename or extension is too long`?
+
+**A:**
+See section `4.1.2. Removing the MAX_PATH Limitation` of the [Python documentation](https://docs.python.org/3/using/windows.html#removing-the-max-path-limitation). It describes how to
+fix the path length issue by changing a registry setting.

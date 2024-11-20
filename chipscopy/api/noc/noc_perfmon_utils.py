@@ -33,6 +33,7 @@ from chipscopy.utils.logger import log
 
 # %%
 DOMAIN = "noc_perfmon"
+log.register_domain(DOMAIN)
 epoch = datetime.utcfromtimestamp(0)  # this is stupid, be best python
 
 # %%
@@ -45,9 +46,9 @@ ch_map = {"r": 0, "w": 1}
 def get_noc_typedef_from_name(name) -> str:
     nmu_re = re.compile(".*NMU.*", flags=re.IGNORECASE)
     nsu_re = re.compile(".*NSU.*", flags=re.IGNORECASE)
-    ddrmc_noc_re = re.compile(".*DDRMC\d*_NOC.*", flags=re.IGNORECASE)
+    ddrmc_noc_re = re.compile(r".*DDRMC\d*_NOC.*", flags=re.IGNORECASE)
     ddrmc_main_re = re.compile(".*DDRMC_MAIN.*", flags=re.IGNORECASE)
-    ddrmc_re = re.compile(".*DDRMC\d*_(S\d+)?X.*", flags=re.IGNORECASE)
+    ddrmc_re = re.compile(r".*DDRMC\d*_(S\d+)?X.*", flags=re.IGNORECASE)
     hbmmc_re = re.compile(".*HBM_MC_X.*", flags=re.IGNORECASE)
     ddrmc_crypto_re = re.compile(".*DDRMC_CRYPTO.*", flags=re.IGNORECASE)
 
@@ -64,7 +65,7 @@ def get_noc_typedef_from_name(name) -> str:
     elif ddrmc_crypto_re.match(name):
         return ddrmc_crypto_typedef
     else:
-        # log[DOMAIN].error(f'unknown type for name: {name}')
+        log[DOMAIN].debug(f"unknown type for name: {name}")
         return ""
 
 

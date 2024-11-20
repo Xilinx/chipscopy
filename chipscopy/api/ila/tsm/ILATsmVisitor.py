@@ -1,7 +1,7 @@
-# Generated from ILATsm.g4 by ANTLR 4.10.1
+# Generated from ILATsm.g4 by ANTLR 4.13.1
 from antlr4 import *
 
-if __name__ is not None and "." in __name__:
+if "." in __name__:
     from .ILATsmParser import ILATsmParser
 else:
     from ILATsmParser import ILATsmParser

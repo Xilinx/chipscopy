@@ -158,3 +158,6 @@ class Memory(SyncNode):
             if (byte_index + 1) % bytes_per_word == 0:
                 word_index += 1
         return result
+
+    def plm_log(self, slr_index: int = 0) -> str:
+        return self.future().read_plm_log(slr_index)

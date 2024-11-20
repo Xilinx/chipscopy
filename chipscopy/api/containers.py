@@ -76,7 +76,7 @@ class QueryList(UserList, Sequence[T]):
         is raised.
 
         Args:
-            \*\*filters:
+            **filters:
 
         Returns:
             The one element matching the filter
@@ -114,7 +114,7 @@ class QueryList(UserList, Sequence[T]):
         against the data in the `filter_by` attribute of the each element in the list.
 
         Args:
-            \*\*filters: attribute=`value` syntax, will try to access this attribute of the object and if there is a
+            **filters: attribute=`value` syntax, will try to access this attribute of the object and if there is a
             match objects with matching values for said attribute shall be returned. Example: family="versal"
 
         Returns:

@@ -72,6 +72,10 @@ def get_core_info(tcf_node: dm.Node) -> Optional[CoreInfo]:
             uuid = ci["uuid"].copy()
             uuid.reverse()
             ci["uuid"] = uuid.hex().upper()
+        # pytcf is returning this as a bytes object rather than byte array
+        elif isinstance(ci["uuid"], bytes):
+            uuid = ci["uuid"]
+            ci["uuid"] = "".join(reversed([f"{x:02X}" for x in uuid]))
         return CoreInfo(**ci)
 
     return None

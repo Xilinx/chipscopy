@@ -120,6 +120,7 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
         self.watchlist = IBERTWatchlist(self)
         self.endpoint_name: Final[str] = property_endpoint.name
         self.endpoint_tcf_node = self.core_tcf_node.get_node_with_name(self.endpoint_name)
+        self.property_report = None
 
     """
     NOTE - The 'endpoint_tcf_node' is different from 'core_tcf_node'.
@@ -182,7 +183,7 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
         Set new values for properties in cs_server
 
         Args:
-            \*\*property_dict:
+            **property_dict:
              Unpacked dict with key as property and value as new property value
 
         """
@@ -214,6 +215,9 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
         sanitized_data = PropertyCommands.sanitize_input(property_names, list)
         return self.core_tcf_node.commit_property(sanitized_data, self.endpoint_name)
 
+    def set_property_report_filter(self, property_names: Union[str, List[str]] = None):
+        self.property_report = property_names
+
     def report(self, property_names: Union[str, List[str]] = None) -> Dict[str, Dict[str, Any]]:
         """
         Generate a report providing detailed information about the properties.
@@ -228,6 +232,8 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
         sanitized_data = []
         if property_names is not None:
             sanitized_data = PropertyCommands.sanitize_input(property_names, list)
+        elif self.property_report is not None:
+            sanitized_data = self.property_report
         return self.core_tcf_node.report_property(sanitized_data, self.endpoint_name)
 
 
@@ -323,6 +329,7 @@ class SerialObjectBase(Generic[parent_type, child_type]):
     @builtins.property
     def property(self) -> IBERTPropertyCommands:
         self.setup()
+        self._property.set_property_report_filter(set(self.property_for_alias.values()))
         return self._property
 
     @builtins.property

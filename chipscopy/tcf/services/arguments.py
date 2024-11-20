@@ -25,7 +25,7 @@ except:
 
     DEFAULT_ARG_VERSION = "arg_3"
 
-    data_count_re = re.compile('\((\d+)\)')
+    data_count_re = re.compile(r'\((\d+)\)')
 
 
     class JsonDataEncoder(object):

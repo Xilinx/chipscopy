@@ -21,6 +21,7 @@ from chipscopy.tcf.services import memory as service
 from chipscopy.proxies.ContextXvcProxy import NAME as ContextXvcService
 from chipscopy.proxies.DebugCoreProxy import DebugCoreService
 from chipscopy.proxies.ProfilerProxy import SERVICE as ProfilerService
+from chipscopy.proxies.XicomProxy import XicomService
 
 
 class Profiler(object):
@@ -230,6 +231,23 @@ class MemoryNode(dm.Node):
                 self.request.set_result(None)
 
         service.read(self.ctx, done_read)
+
+    def read_plm_log(self, slr_index: int = 0):
+        assert request
+        service = self.manager.channel.getRemoteService(XicomService)
+
+        def done_read_plm_log(token, error, results):
+            # check if canceled
+            if not self.request:
+                return
+
+            # check for error or positive result
+            if error:
+                self.request.set_exception(error)
+            else:
+                self.request.set_result(results)
+
+        service.plm_log(self.ctx, {"slr": slr_index}, done_read_plm_log)
 
 
 def open_xvc(cs_manager: dm.CsManager, host: str, port: str, done: request.DoneCallback):

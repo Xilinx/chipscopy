@@ -231,7 +231,7 @@ Mux Local Enable Properties
 +----------------+-------------+-------------------------------------------+
 | Name           | Type        | Description                               |
 +================+=============+===========================================+
-|\*.local_enable | List[|int|] | 8 values. '1' for local input.            |
+|*.local_enable | List[|int|] | 8 values. '1' for local input.            |
 |                |             | '0' choose previous Mux Node lane output. |
 +----------------+-------------+-------------------------------------------+
 
@@ -247,7 +247,7 @@ Mux Local Select Properties
 +----------------+--------------+---------------------------------------------------------------------+
 | Name           | Type         | Description                                                         |
 +================+==============+=====================================================================+
-|\*.local_select | List[|int|]  | 8 values. When local enabled for output lane, selects local inputs. |
+|*.local_select | List[|int|]  | 8 values. When local enabled for output lane, selects local inputs. |
 +----------------+--------------+---------------------------------------------------------------------+
 
 

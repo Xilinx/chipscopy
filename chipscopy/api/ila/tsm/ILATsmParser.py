@@ -1,4 +1,4 @@
-# Generated from ILATsm.g4 by ANTLR 4.10.1
+# Generated from ILATsm.g4 by ANTLR 4.13.1
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
@@ -1426,7 +1426,7 @@ class ILATsmParser(Parser):
 
     def __init__(self, input: TokenStream, output: TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.10.1")
+        self.checkVersion("4.13.1")
         self._interp = ParserATNSimulator(
             self, self.atn, self.decisionsToDFA, self.sharedContextCache
         )
@@ -1469,7 +1469,7 @@ class ILATsmParser(Parser):
                 self.state = 25
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la == ILATsmParser.STATE):
+                if not (_la == 16):
                     break
 
         except RecognitionException as re:
@@ -1756,23 +1756,7 @@ class ILATsmParser(Parser):
                 self.state = 78
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (
-                    (
-                        ((_la) & ~0x3F) == 0
-                        and (
-                            (1 << _la)
-                            & (
-                                (1 << ILATsmParser.CLEAR_FLAG)
-                                | (1 << ILATsmParser.GOTO)
-                                | (1 << ILATsmParser.INCREMENT_COUNTER)
-                                | (1 << ILATsmParser.RESET_COUNTER)
-                                | (1 << ILATsmParser.SET_FLAG)
-                                | (1 << ILATsmParser.TRIGGER)
-                            )
-                        )
-                        != 0
-                    )
-                ):
+                if not ((((_la) & ~0x3F) == 0 and ((1 << _la) & 321664) != 0)):
                     break
 
         except RecognitionException as re:
@@ -2011,7 +1995,7 @@ class ILATsmParser(Parser):
             self.state = 108
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [ILATsmParser.IDENTIFIER]:
+            if token in [27]:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 101
                 self.match(ILATsmParser.IDENTIFIER)
@@ -2020,13 +2004,7 @@ class ILATsmParser(Parser):
                 self.state = 103
                 self.probe_number()
                 pass
-            elif token in [
-                ILATsmParser.INTEGER_VAL,
-                ILATsmParser.HEX_VAL,
-                ILATsmParser.BINARY_VAL,
-                ILATsmParser.ENUM_VAL,
-                ILATsmParser.ENUM_STRING_VAL,
-            ]:
+            elif token in [19, 20, 21, 22, 23]:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 104
                 self.probe_number()
@@ -2078,7 +2056,7 @@ class ILATsmParser(Parser):
             self.state = 117
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [ILATsmParser.COUNTER_NAME]:
+            if token in [25]:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 110
                 self.match(ILATsmParser.COUNTER_NAME)
@@ -2087,7 +2065,7 @@ class ILATsmParser(Parser):
                 self.state = 112
                 self.number()
                 pass
-            elif token in [ILATsmParser.INTEGER_VAL, ILATsmParser.HEX_VAL, ILATsmParser.BINARY_VAL]:
+            elif token in [19, 20, 21]:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 113
                 self.number()
@@ -2226,7 +2204,7 @@ class ILATsmParser(Parser):
             self.state = 136
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [ILATsmParser.CLEAR_FLAG]:
+            if token in [7]:
                 localctx = ILATsmParser.Action_clear_flagContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 119
@@ -2236,7 +2214,7 @@ class ILATsmParser(Parser):
                 self.state = 121
                 self.match(ILATsmParser.T__3)
                 pass
-            elif token in [ILATsmParser.SET_FLAG]:
+            elif token in [15]:
                 localctx = ILATsmParser.Action_set_flagContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
                 self.state = 122
@@ -2246,7 +2224,7 @@ class ILATsmParser(Parser):
                 self.state = 124
                 self.match(ILATsmParser.T__3)
                 pass
-            elif token in [ILATsmParser.INCREMENT_COUNTER]:
+            elif token in [13]:
                 localctx = ILATsmParser.Action_inc_counterContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
                 self.state = 125
@@ -2256,7 +2234,7 @@ class ILATsmParser(Parser):
                 self.state = 127
                 self.match(ILATsmParser.T__3)
                 pass
-            elif token in [ILATsmParser.RESET_COUNTER]:
+            elif token in [14]:
                 localctx = ILATsmParser.Action_reset_counterContext(self, localctx)
                 self.enterOuterAlt(localctx, 4)
                 self.state = 128
@@ -2266,7 +2244,7 @@ class ILATsmParser(Parser):
                 self.state = 130
                 self.match(ILATsmParser.T__3)
                 pass
-            elif token in [ILATsmParser.GOTO]:
+            elif token in [11]:
                 localctx = ILATsmParser.Action_gotoContext(self, localctx)
                 self.enterOuterAlt(localctx, 5)
                 self.state = 131
@@ -2276,7 +2254,7 @@ class ILATsmParser(Parser):
                 self.state = 133
                 self.match(ILATsmParser.T__3)
                 pass
-            elif token in [ILATsmParser.TRIGGER]:
+            elif token in [18]:
                 localctx = ILATsmParser.Action_triggerContext(self, localctx)
                 self.enterOuterAlt(localctx, 6)
                 self.state = 134
@@ -2363,19 +2341,19 @@ class ILATsmParser(Parser):
             self.state = 141
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [ILATsmParser.INTEGER_VAL, ILATsmParser.HEX_VAL, ILATsmParser.BINARY_VAL]:
+            if token in [19, 20, 21]:
                 localctx = ILATsmParser.Probe_valContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 138
                 self.number()
                 pass
-            elif token in [ILATsmParser.ENUM_VAL]:
+            elif token in [22]:
                 localctx = ILATsmParser.Enum_valContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
                 self.state = 139
                 self.match(ILATsmParser.ENUM_VAL)
                 pass
-            elif token in [ILATsmParser.ENUM_STRING_VAL]:
+            elif token in [23]:
                 localctx = ILATsmParser.Enum_string_valContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
                 self.state = 140
@@ -2454,19 +2432,19 @@ class ILATsmParser(Parser):
             self.state = 146
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [ILATsmParser.INTEGER_VAL]:
+            if token in [19]:
                 localctx = ILATsmParser.Int_valContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 143
                 self.match(ILATsmParser.INTEGER_VAL)
                 pass
-            elif token in [ILATsmParser.HEX_VAL]:
+            elif token in [20]:
                 localctx = ILATsmParser.Hex_valContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
                 self.state = 144
                 self.match(ILATsmParser.HEX_VAL)
                 pass
-            elif token in [ILATsmParser.BINARY_VAL]:
+            elif token in [21]:
                 localctx = ILATsmParser.Bin_valContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
                 self.state = 145

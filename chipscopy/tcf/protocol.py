@@ -1,6 +1,6 @@
 # *****************************************************************************
-# * Modifications Copyright (C) 2024 Advanced Micro Devices, Inc.
-# * All rights reserved.
+# * Modifications Copyright (C) 2021-2022, Xilinx, Inc., All rights reserved.
+# * Modifications Copyright (C) 2022-2024, Advanced Micro Devices, Inc., All rights reserved..
 # *
 # * Copyright (c) 2011, 2013, 2016 Wind River Systems, Inc. and others.
 # * All rights reserved. This program and the accompanying materials
@@ -50,9 +50,7 @@ except:
         from .services.local.ZeroCopyService import ZeroCopyService
         _event_queue.invokeLater(LocatorService)
         # start timer dispatcher
-        _timer_dispatcher = threading.Thread(target=_dispatch_timers)
-        _timer_dispatcher.setName("TCF Timer Dispatcher")
-        _timer_dispatcher.setDaemon(True)
+        _timer_dispatcher = threading.Thread(target=_dispatch_timers, name="TCF Timer Dispatcher", daemon=True)
         _timer_dispatcher.start()
 
 

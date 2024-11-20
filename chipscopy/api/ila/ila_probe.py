@@ -36,7 +36,7 @@ class ILAMatchUnitType(enum.Enum):
     SMALL        Not supported.
     MEDIUM       Not supported.
     LARGE        Supports operators: ['==', '!=', '>', '<', '>=', '<=', '||']
-                  and bit values: '01xXrRfFnNbBtTlLsS\_'
+                  and bit values: '01xXrRfFnNbBtTlLsS_'
     ===========  =====================================================================
 
     """

@@ -18,6 +18,7 @@ import sys
 import threading
 import traceback
 import socket
+import time
 from typing import Optional, Dict, Any, List, Union, Callable, Set, Tuple
 
 from chipscopy.api import DMNodeListener
@@ -37,6 +38,7 @@ from chipscopy.api.memory import Memory
 from chipscopy.api.cable import Cable, discover_devices, wait_for_all_cables_ready, discover_cables
 
 DOMAIN_NAME = "client"
+log.register_domain(DOMAIN_NAME)
 
 
 class Session:
@@ -69,6 +71,7 @@ class Session:
         cable_timeout: int,
         disable_cache: bool,
         initial_device_scan: bool,
+        pre_device_scan_delay: int,
         cs_server_sharing: bool,
     ):
         self._cs_server_sharing: bool = cs_server_sharing
@@ -82,6 +85,7 @@ class Session:
         self._disable_cache = disable_cache
         self._register_node_listeners = not self._disable_cache
         self._initial_device_scan = initial_device_scan
+        self._pre_device_scan_delay = pre_device_scan_delay
 
         self.hw_server: Optional[ServerInfo] = None
         self.cs_server: Optional[ServerInfo] = None
@@ -289,6 +293,9 @@ class Session:
                         self.hw_server.get_view(view_name).add_node_listener(self._dm_node_listener)
                 if self.cs_server:
                     self.cs_server.get_view("chipscope").add_node_listener(self._dm_node_listener)
+
+            if self._pre_device_scan_delay:
+                time.sleep(self._pre_device_scan_delay / 1000.0)
 
             if self._initial_device_scan:
                 # Ensures we have a set of pre-scanned devices ready to go for first use.
@@ -543,6 +550,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
         xvc_mm_server_url: Url for the testing xvc memory map server - For special debug core testing use cases
         cable_timeout: Seconds before timing out when detecting devices on a jtag cable
         initial_device_scan: Do an initial device scan when opening session (lazy initialization otherwise)
+        pre_device_scan_delay: Time (in milliseconds) to wait after creating connections to hw_server before scanning for device
         disable_cache: Control client caching (experimental)
         auto_connect: Automatically connect to server(s) when session is created
         cs_server_sharing: Enable reference count to share cs_server connections
@@ -556,6 +564,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
     xvc_mm_server_url = kwargs.get("xvc_mm_server_url", None)
     cable_timeout = kwargs.get("cable_timeout", 4)
     initial_device_scan = kwargs.get("initial_device_scan", True)
+    pre_device_scan_delay = kwargs.get("pre_device_scan_delay", 0)
     disable_cache = kwargs.get("disable_cache", False)
     auto_connect = kwargs.get("auto_connect", True)
     cs_server_sharing = kwargs.get("cs_server_sharing", False)
@@ -571,6 +580,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
         cable_timeout=cable_timeout,
         disable_cache=disable_cache,
         initial_device_scan=initial_device_scan,
+        pre_device_scan_delay=pre_device_scan_delay,
         cs_server_sharing=cs_server_sharing,
     )
     if auto_connect:

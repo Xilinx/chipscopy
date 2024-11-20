@@ -170,3 +170,30 @@ class XicomProxy(Service):
         if not props:
             props = {}
         return self.send_xicom_command("readbackConfig", (ctx, props), done)
+
+    def plm_log(self, ctx: str, props: Dict[str, Any] = None, done: DoneHWCommand = None) -> Token:
+        """
+        Reads plm log of a device.
+
+        :param ctx: Context ID of the device to access
+        :param props: Plm log properties
+        +-------------------+----------------------+------------------------------------------+
+        | Name              | Type                 | Description                              |
+        +===================+======================+==========================================+
+        | skip-rtca         | |bool|               | avoid reading the RTCA and use defaults  |
+        +-------------------+----------------------+------------------------------------------+
+        | slr               | |int|                | slr index to read                        |
+        +-------------------+----------------------+------------------------------------------+
+        | log-addr          | |int|                | address to start reading log (optional)  |
+        +-------------------+----------------------+------------------------------------------+
+        | log-len           | |int|                | length to read log (optional)            |
+        +-------------------+----------------------+------------------------------------------+
+        :param done: Callback with the result and any error
+        :return: Token of command sent
+        """
+        if not props:
+            props = {}
+        return self.send_xicom_command("plmLog", (ctx, props), done)
+
+
+XicomService = XicomProxy

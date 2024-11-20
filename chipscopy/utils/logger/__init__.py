@@ -109,6 +109,22 @@ class CSSLogger:
 
         return self.logger_for_domain[domain]
 
+    def register_domain(self, domain: str):
+        """
+
+        Args:
+            domain: a string (must be unique! to use for logging)
+            No union of list here, just one domain may be registered per call
+
+        Returns: None
+
+            if the domain string already exists, this will raise an error
+            otherwise the new domain will be registered but disabled
+        """
+        if domain in self.logger_for_domain.keys():
+            raise ValueError(f"domain {domain} is already registered")
+        self._get_logger_for_domain(domain)
+
     def is_domain_enabled(self, domain: str, level: str) -> bool:
         level_info = self.logger.level(level)
         return self.domain_enabled.get(domain, False) and level_info.no >= self.current_log_level.no
@@ -119,6 +135,12 @@ class CSSLogger:
 
         for domain in domain_name:
             # Need not check if domain is in domain_logging_status.
+            if domain not in self.domain_enabled.keys():
+                if domain == "":
+                    domain = None
+                raise KeyError(
+                    f"domain '{domain}' not in {list(self.domain_enabled.keys())}, please choose a supported domain"
+                )
             # This is in case the user enables the domain before logging any message.
             self.domain_enabled[domain] = True
 
@@ -131,6 +153,17 @@ class CSSLogger:
                 self.domain_enabled[domain] = False
 
     def change_log_level(self, level: str):
+        try:
+            _ = self.logger._core.levels[level]
+        except KeyError:
+            # levels = [x.name for x in self.logger._core.levels]
+            levels = ", ".join(self.logger._core.levels)
+            if level == "":
+                level = None
+            raise ValueError(
+                f" --- Level '{level}' is not a valid log level, defined log levels: {levels}, please select a valid log level"
+            )
+
         level_info = self.logger.level(level)
 
         if self.default_sink_id is not None:
@@ -158,6 +191,6 @@ class CSSLogger:
         )
 
 
-# NOTE - Server side code should not import this! Only client side code should use this.
+# NOTE - Server side code should not import this module! Only client side code should use this.
 #  Server side code should import from init in server
 log = CSSLogger()

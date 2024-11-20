@@ -4,7 +4,7 @@
 
 ![](https://raw.githubusercontent.com/Xilinx/chipscopy/master/docs/images/chipscopy_logo_head_right_transparent_background.png)
 
-ChipScoPy is an open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware.
+ChipScoPy is an open-source project from AMD that enables high-level control of Versal debug IP running in hardware.
 Using a simple Python API, developers can control and communicate with ChipScope® debug IP such as the Integrated Logic
 Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
@@ -12,35 +12,49 @@ ChipScoPy communicates with Versal devices. It does not work with older devices 
 
 **We recommend using Python 3.8, 3.9, 3.10, or 3.11 with ChipScoPy.**
 
--------------------------------------------------------------------------------
 
 ![](https://raw.githubusercontent.com/Xilinx/chipscopy/master/docs/images/chipscopy_overview.png)
 
--------------------------------------------------------------------------------
+## Quick Links
 
-[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2024.1/overview.html)
+[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2024.2/overview.html)
 
--------------------------------------------------------------------------------
+[System Requirements](https://xilinx.github.io/chipscopy/2024.2/system_requirements.html)
 
-[System Requirements](https://xilinx.github.io/chipscopy/2024.1/system_requirements.html)
-
--------------------------------------------------------------------------------
-
-[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2024.1/chipscopy_installation.html)
-
--------------------------------------------------------------------------------
+[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2024.2/chipscopy_installation.html)
 
 [ChipScoPy Examples](https://github.com/Xilinx/chipscopy/tree/master/chipscopy/examples)
 
--------------------------------------------------------------------------------
-
 [FAQ](https://github.com/Xilinx/chipscopy/blob/master/FAQ.md)
-
--------------------------------------------------------------------------------
 
 [API Documentation](https://xilinx.github.io/chipscopy/)
 
--------------------------------------------------------------------------------
+
+## **ChipScoPy Installation PyPI Package Dependencies**
+
+During ChipScoPy installation, the following packages (and any dependencies) are installed from the Python Package Index (PyPI) using pip.
+
+| Package                                                                     |  License   |
+| :----------------------------------------------                             |  :------:  |
+| [Requests](https://pypi.org/project/requests/)                              | Apache-2.0 |
+| [more-itertools](https://pypi.org/project/more-itertools/)                  |    MIT     |
+| [typing_extensions](https://pypi.org/project/typing-extensions/)            |    PSF     |
+| [loguru](https://pypi.org/project/loguru/)                                  |    MIT     |
+| [importlib_metadata](https://pypi.org/project/importlib-metadata/)          | Apache-2.0 |
+| [rich](https://pypi.org/project/rich/)                                      |    MIT     |
+| [Click](https://pypi.org/project/click/)                                    |    BSD     |
+| [antlr4-python3-runtime](https://pypi.org/project/antlr4-python3-runtime/)  |    BSD     |
+| [kaleido](https://pypi.org/project/kaleido/)                                |    MIT     |
+| [plotly](https://pypi.org/project/plotly/)                                  |    MIT     |
+| [notebook](https://pypi.org/project/notebook/)                              |    BSD     |
+| [ipywidgets](https://pypi.org/project/ipywidgets/)                          |    BSD     |
+| [pandas](https://pypi.org/project/pandas/)                                  |    BSD     |
+| [matplotlib](https://pypi.org/project/matplotlib/)                          |    PSF     |
+| [PyQt5](https://pypi.org/project/PyQt5/)                                    |    GPL     |
+| [ipympl](https://pypi.org/project/ipympl/)                                  |    BSD     |
+
+
+#
 
 Copyright (C) 2021-2022, Xilinx, Inc.
 

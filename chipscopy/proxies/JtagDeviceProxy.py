@@ -41,14 +41,22 @@ class JtagDeviceProxy(Service):
         """
         return self.send_xicom_command("getDevices", (), done)
 
-    def get_properties(self, idcode: int, done: DoneHWCommand = None) -> Token:
+    def get_properties(self, idcode: int, idcode2: int, done: DoneHWCommand = None) -> Token:
         """
         Get properties associated with idcode
         :param idcode: idcode of device
+        :param idcode2: idcode2 of device
         :param done: Done callback
         :return: Token of request
         """
-        return self.send_xicom_command("getProperties", (idcode,), done)
+        return self.send_xicom_command(
+            "getProperties",
+            (
+                idcode,
+                idcode2,
+            ),
+            done,
+        )
 
     def set_properties(self, props: Dict[str, Any], done: DoneHWCommand = None) -> Token:
         """

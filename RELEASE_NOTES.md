@@ -1,5 +1,23 @@
 # ChipScoPy Release Notes
 
+## 2024.2 - Release November 22, 2024
+      
+- 2024.2.1732227392   
+- Add US+ GTY IBERT example design and notebook
+- Enhanced logging to handle additional logging domains
+- Move example designs and jupyter notebooks out of pypi wheel to reduce file size
+- Switch device program log to use hw_server service
+- Add slr_index option to get_plm_log
+- Add --force-reset option to device program
+- Fix problems found in device program done and progress callbacks
+- Add optional delay prior to create_session device scan to help initialization on slower systems
+- Fix comparison case mismatch when jtag arch_name is missing from jtag node properties
+- Upgrade required antlr dependency to 4.13.1 from 4.10
+- Add missing YK Scan documentation
+- Miscellaneous FAQ and documentation updates
+- Host examples on github not pypi
+
+
 ## 2024.1 - June 12, 2024
 
 - 2024.1.1717799899

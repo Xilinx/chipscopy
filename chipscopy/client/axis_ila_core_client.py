@@ -770,7 +770,7 @@ class AxisIlaCoreClient(CorePropertyClient):
         ============== ========== ============================================
         Options        Value Type Description
         ============== ========== ============================================
-        name_prefix    |str|      Default: 'probe\_'.
+        name_prefix    |str|      Default: 'probe_'.
         force          |bool|     Default: False. 'True' value will remove
                                     any previous probes with the same names.
         ============== ========== ============================================

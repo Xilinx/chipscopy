@@ -1,50 +1,62 @@
+# %% [markdown]
+# <link rel="preconnect" href="https://fonts.gstatic.com">
+# <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+#
 # ### License
-# Copyright (C) 2021-2022, Xilinx, Inc.
-# <br>
+#
+# <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
+# Copyright (C) 2021-2022, Xilinx, Inc.<br>
 # Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
-# <p>
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# <p>
+# <br><br>
+# Licensed under the Apache License, Version 2.0 (the "License");<br>
+# you may not use this file except in compliance with the License.<br><br>
 # You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0"?>http://www.apache.org/licenses/LICENSE-2.0</a><br><br>
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, 
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing, software<br>
+# distributed under the License is distributed on an "AS IS" BASIS,<br>
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>
+# See the License for the specific language governing permissions and<br>
+# limitations under the License.<br>
+# </p>
+#
 
+# %% [markdown]
 # # ChipScoPy Memory Read and Write Example
 #
 #
 # <img src="../img/api_overview.png" width="500" align="left">
 
+# %% [markdown]
 # ## Description
 # This demo shows how to read and write memory in the device using the ChipScoPy Python API.
 #
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.1 installed and running
+# - Xilinx hw_server 2024.2 installed and running
 # - Python 3.8 or greater installed
-# - ChipScoPy 2024.1 installed
+# - ChipScoPy 2024.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
+# %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
 #
 # After this step,
 # - Required functions and classes are imported
 # - Paths to server(s) and files are set correctly
 
+# %%
 import os
 from chipscopy import get_design_files
 from chipscopy import create_session, report_versions, delete_session
 
+# %%
 # Make sure to start the hw_server prior to running.
 # Specify location of the running hw_server below.
 # The default is localhost - but can be other locations on the network.
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
 print(f"HW_URL={HW_URL}")
 
+# %% [markdown]
 # ## 2 - Create a session and connect to the hw_server
 #
 # The session is a container that keeps track of devices and debug cores.
@@ -54,20 +66,26 @@ print(f"HW_URL={HW_URL}")
 #
 # *NOTE*: No cs_server is required for this example.
 
+# %%
 session = create_session(hw_server_url=HW_URL)
 report_versions(session)
 
+# %% [markdown]
 # ## Step 3 - Get the device from the session
 
+# %%
 # Typical case - one device on the board - get it.
 versal_device = session.devices.filter_by(family="versal").get()
 print(versal_device)
 
+# %% [markdown]
 # ## Step 4 - Reset the device
 
+# %%
 versal_device.reset()
 print("Reset complete.")
 
+# %% [markdown]
 # ## Step 5 - Write and Read memory
 #
 #
@@ -75,13 +93,16 @@ print("Reset complete.")
 # Memory reads and writes work similar to xsdb mrd and mwr commands.
 #
 
+# %% [markdown]
 # ### Show the list of all memory targets
 #
 # Memory targets in this list can be used for memory_read and memory_write
 # operations.
 
+# %%
 print("\nMemory Targets: ", versal_device.memory_target_names)
 
+# %% [markdown]
 # ### Simple Write and read memory example
 #
 # This is the most basic memory_read and memory_write example using the default
@@ -89,7 +110,7 @@ print("\nMemory Targets: ", versal_device.memory_target_names)
 #
 # Below we write 32-bit values to the specified address and read them back.
 
-# +
+# %%
 addr = 0xF2010000
 values_to_write = [0x10111213, 0x14151617]
 
@@ -103,8 +124,8 @@ read_values = versal_device.memory_read(address=addr, num=len(values_to_write))
 print("Readback result: [{}]".format(", ".join(hex(x) for x in read_values)))
 
 assert read_values == values_to_write
-# -
 
+# %% [markdown]
 # ### Changing Memory Read/Write Word Sizes
 #
 # It is possible to specify the word size when reading and writing.
@@ -116,7 +137,7 @@ assert read_values == values_to_write
 # 'd'=double word
 # ```
 
-# +
+# %%
 addr = 0xF2010000
 values_to_write = [0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17]
 
@@ -136,8 +157,8 @@ print("Reading from address: ", hex(addr))
 read_values = versal_device.memory_read(address=addr, size="h", num=len(values_to_write))
 print("Readback result: [{}]".format(", ".join(hex(x) for x in read_values)))
 assert read_values == values_to_write
-# -
 
+# %% [markdown]
 # ### Selecting different memory targets and improving performance
 #
 # The examples above use the device class for memory_read() and memory_write()
@@ -153,6 +174,7 @@ assert read_values == values_to_write
 # The example below shows how to get a context to repeatedly read and write from
 # different memory targets.
 
+# %%
 addr = 0xF2010000
 dpc = versal_device.memory.get(name="DPC")
 apu = versal_device.memory.get(name="APU")
@@ -171,5 +193,6 @@ for i in range(10):
     print("Readback result: [{}]".format(", ".join(hex(x) for x in read_values)))
     assert read_values == values_to_write
 
+# %%
 ## When done with testing, close the connection
 delete_session(session)
