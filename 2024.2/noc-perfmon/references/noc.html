@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.NOC &mdash; ChipScoPy 2024.2.1731633269 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="PCIe" href="../../pcie.html" />
+    <link rel="prev" title="References" href="../references.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2024.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev_setup.html">Developer Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory.html">Memory</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../noc.html">NocPerfmon</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../noc.html#clock-domains">Clock Domains</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../noc.html#references">References</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../noc.html">NocPerfmon</a> &raquo;</li>
+          <li><a href="../references.html">References</a> &raquo;</li>
+      <li>chipscopy.NOC</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-chipscopy.api.noc.noc">
+<span id="chipscopy-noc"></span><h1>chipscopy.NOC<a class="headerlink" href="#module-chipscopy.api.noc.noc" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.noc.noc.</span></span><span class="sig-name descname"><span class="pre">NocPerfmon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noc_tcf_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon" title="Permalink to this definition">¶</a></dt>
+<dd><p>NocPerfMon is the top level API for accessing NocPerfmon.
+It wraps the old client noc_perfmon_core_client.NoCPerfMonCoreClient(CoreClient) class
+and simplifies the use model by hiding tcf and node lower level details.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.configure_monitors">
+<span class="sig-name descname"><span class="pre">configure_monitors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">monitors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_intervals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traffic_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extended_monitor_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.configure_monitors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.configure_monitors" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method configures and enables the performance monitoring on the parameter set of elements. Upon completion
+of the configuration, data will start to be emitted asynchronously from ChipScope Server back to the requesting
+client. The client must implement an Event Listener to properly receive the data.</p>
+<p>Each element will be configured to monitor both read and write traffic independently. QOS classes of a
+particular direction of traffic will be applied to the monitor responsible for that type of traffic
+<code class="docutils literal notranslate"><span class="pre">read|write</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>monitors</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of NoC elements to enable to stream performance data.
+For Example -
+<code class="docutils literal notranslate"><span class="pre">['NOC_NMU128_X0Y0',</span> <span class="pre">'DDRMC_X0Y0',</span> <span class="pre">...]</span></code></p></li>
+<li><p><strong>sampling_intervals</strong> (<em>dict</em>) – The requested <code class="docutils literal notranslate"><span class="pre">period_ms</span></code> for sampling. The client must ensure this is a supported period.
+<strong>NOTE</strong>: this structure needs to contain information for NPI, NoC and each DDRMC controller clk
+NPI, NoC are sampling periods (ms) (floats) and DDRMC controller clk domain is a tap (int)
+– for reference see the XSA class in the utilities to understand how the ctrl clk works.</p></li>
+<li><p><strong>traffic_class</strong> (<em>PerfMonTrafficQOSClass</em>) – The traffic classes bitwise-or’d that shall be monitored.</p></li>
+<li><p><strong>sample_count</strong> (<em>int</em>) – <em>OPTIONAL</em> The number of intervals or windows to capture. 1 - will configure supporting hardware for
+single shot. 2-int_max will configure all hardware for continuous mode and will stop streaming data when
+the requested number of samples have been sent to the client. -1 is the default and means the streaming
+will run indefinitely.</p></li>
+<li><p><strong>filter_spec</strong> (<em>dict</em><em>[</em><em>int</em><em>]</em>) – <p>Will move! hold off on using this for now.
+<em>OPTIONAL</em> Dictionary defining the AXI filtering to use. If this parameter is not supplied then no
+filtering will occur and all transactions will be counted by the samplers. No validation is done on
+these fields, they will be masked and shifted, as they are received. For convenience any fields not
+specified will retain the default value of zero, except max fields (AxSIZE, AxQoS, AxLEN) which have the
+largest supported values). The supported fields include</p>
+<p><code class="docutils literal notranslate"><span class="pre">AxPROT[3]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxBURST[2]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxSIZE_MIN[3]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxLEN_MIN[8]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxID[16]</span></code>
+<code class="docutils literal notranslate"><span class="pre">TDEST[10]</span></code> (AXIS only), <code class="docutils literal notranslate"><span class="pre">DST_ID[12]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxLOCK[1]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxQoS_MIN[4]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxCACHE[4]</span></code>,
+<code class="docutils literal notranslate"><span class="pre">AxSIZE_MAX[3]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxQoS_MAX[4]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxLEN_MAX[8]</span></code></p>
+</p></li>
+<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p></li>
+<li><p><strong>extended_monitor_config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – Optional argument that is a dictionary of additional monitor configuration. The keys must correspond to
+the monitors. “tslide” is the only supported key at this time. Tslide will change the meaning of the
+latency counters for the specified monitor (read and write channel). The meaning of the counter values
+can be represented by 2^(tslide) clocks. Default tslide is 0, corresponding to 1 clock per count. In
+practice this is a tradeoff between precision and range. When the counters overflow error flags will be
+set in the associated metrics. If overflow is observed, the tslide should be increased to avoid that
+condition. Otherwise there will be a “clipping” in the data. Note, only NMU and NSU’s support the tslide
+extended configuraiton option. DDRMC does not, and will ignore the value, if supplied by the client.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>No data is returned from this call.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.discover_noc_elements">
+<span class="sig-name descname"><span class="pre">discover_noc_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.discover_noc_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.discover_noc_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>WARNING - This function is deprecated and will be removed in the future</p>
+<p>This method dynamically scans the NoC to determine the active nodes in the programmed design. If no
+nodes are programmed or the NPI domain is inaccessible this will return an empty list.</p>
+<p>This list will serve as the set from which elements may be chosen for runtime performance analysis.</p>
+<p>Unrouted, disabled NoC elements cannot be configured for measurement. It may be assumed their counters would
+always produce zero count values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns a list of active NMU, NSU/DDRMC_NOC, and NPS elements. Unrouted, disabled elements are not returned
+and cannot be monitored.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.get_clk_info">
+<span class="sig-name descname"><span class="pre">get_clk_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.get_clk_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.get_clk_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>DEPRECATED will remove in 2022.1</p>
+<p>Reports NPI and NoC clock information from the running design. These are parameters set by the designer in
+Vivado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary with two top level keys <code class="docutils literal notranslate"><span class="pre">NoC</span></code> and <code class="docutils literal notranslate"><span class="pre">NPI</span></code> whose values are dictionaries that
+detail the <code class="docutils literal notranslate"><span class="pre">freq_mhz</span></code>, frequency in MHz (float) and the <code class="docutils literal notranslate"><span class="pre">period_ms</span></code>, period in milliseconds (float).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.get_supported_sampling_periods">
+<span class="sig-name descname"><span class="pre">get_supported_sampling_periods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_clk_feq_mhz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33.3333</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddrmc_freq_mhz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ddrmc_main_0':</span> <span class="pre">800.0}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.get_supported_sampling_periods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.get_supported_sampling_periods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the supported sampling periods (ms) for various clock domains based on input clocks and design parameters.
+This function queries the PLLs of the device to determine actual clock speeds of locked PLLs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p></li>
+<li><p><strong>ddrmc_freq_mhz</strong> (<em>dict</em><em>[</em><em>str</em><em>,</em><em>float</em><em>]</em>) – dictionary of DDRMC instance names as the keys and the value is the MC clock in MHz float.</p></li>
+<li><p><strong>ref_clk_feq_mhz</strong> (<em>float</em>) – ref_clk input frequency in MHz, value can be attained from .csa or .hwh files. Default is 33.333MHz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary with two top level keys <code class="docutils literal notranslate"><span class="pre">NoC</span></code>, <code class="docutils literal notranslate"><span class="pre">NPI</span></code>, and memory subsystem components whose values are lists
+of supported sampling periods measured in milliseconds (float).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.noc.noc.NocPerfmon.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/noc/noc.html#NocPerfmon.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.noc.noc.NocPerfmon.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method collects the clocking information for client use later in the configuration of this service. It
+also refreshes the client’s view of specific properties for the root node <em>ONLY</em>.</p>
+<p>This call must be invoked before clocking information is requested from the device</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>No data is returned directly from this method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../references.html" class="btn btn-neutral float-left" title="References" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../pcie.html" class="btn btn-neutral float-right" title="PCIe" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 21, 2024.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

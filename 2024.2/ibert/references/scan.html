@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.api.ibert.eye_scan &mdash; ChipScoPy 2024.2.1731633269 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="chipscopy.api.ibert.eye_scan.params" href="scan_params.html" />
+    <link rel="prev" title="chipscopy.api.ibert.link.group" href="link_group.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2024.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev_setup.html">Developer Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../ddr.html">DDR</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../ibert.html">IBERT</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../property.html">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#discovering-ibert">Discovering IBERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#hierarchy-of-objects">Hierarchy of objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#reset">Reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#attributes-of-ibert-object">Attributes of IBERT object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#other-serial-objects">Other serial objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#links">Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#scans">Scans</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../ibert.html#appendix-reference">Appendix &amp; Reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../appendix.html">Appendix</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../references.html">References</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="property.html">chipscopy.api._detail.property</a></li>
+<li class="toctree-l4"><a class="reference internal" href="serial_object_base.html">chipscopy.api.ibert.serial_object_base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ibert.html">chipscopy.api.ibert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gt_group.html">chipscopy.api.ibert.gt_group</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gt.html">chipscopy.api.ibert.gt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rx.html">chipscopy.api.ibert.rx</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tx.html">chipscopy.api.ibert.tx</a></li>
+<li class="toctree-l4"><a class="reference internal" href="link.html">chipscopy.api.ibert.link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="link_group.html">chipscopy.api.ibert.link.group</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">chipscopy.api.ibert.eye_scan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scan_params.html">chipscopy.api.ibert.eye_scan.params</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scan_plotter.html">chipscopy.api.ibert.eye_scan.plotter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yk_scan.html">chipscopy.api.ibert.yk_scan</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../ibert.html">IBERT</a> &raquo;</li>
+          <li><a href="../references.html">References</a> &raquo;</li>
+      <li>chipscopy.api.ibert.eye_scan</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="chipscopy-api-ibert-eye-scan">
+<h1>chipscopy.api.ibert.eye_scan<a class="headerlink" href="#chipscopy-api-ibert-eye-scan" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.create_eye_scans">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.</span></span><span class="sig-name descname"><span class="pre">create_eye_scans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_objs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ibert.create_eye_scans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">EyeScan</span></code> and attach it to the <code class="docutils literal notranslate"><span class="pre">eye_scan</span></code> attribute
+of the <code class="docutils literal notranslate"><span class="pre">target_obj</span></code> (s)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target_objs</strong> (<em>Union</em><em>[</em><a class="reference internal" href="rx.html#chipscopy.api.ibert.rx.RX" title="chipscopy.api.ibert.rx.RX"><em>RX</em></a><em>, </em><a class="reference internal" href="link.html#chipscopy.api.ibert.link.Link" title="chipscopy.api.ibert.link.Link"><em>Link</em></a><em>, </em><em>List</em><em>[</em><a class="reference internal" href="rx.html#chipscopy.api.ibert.rx.RX" title="chipscopy.api.ibert.rx.RX"><em>RX</em></a><em>, </em><a class="reference internal" href="link.html#chipscopy.api.ibert.link.Link" title="chipscopy.api.ibert.link.Link"><em>Link</em></a><em>]</em><em>]</em>) – The object to use for attaching the eye scan instance.
+The object <strong>must</strong> be an instance of <code class="docutils literal notranslate"><span class="pre">RX</span></code> or <code class="docutils literal notranslate"><span class="pre">Link</span></code> class.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList">QueryList</a>[<a class="reference internal" href="#chipscopy.api.ibert.eye_scan.EyeScan" title="chipscopy.api.ibert.eye_scan.EyeScan">EyeScan</a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of eye scan object(s) created</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.delete_eye_scans">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.</span></span><span class="sig-name descname"><span class="pre">delete_eye_scans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scans_to_delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ibert.delete_eye_scans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete <code class="xref py py-class docutils literal notranslate"><span class="pre">EyeScan</span></code> object(s) that were created previously</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scans_to_delete</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="#chipscopy.api.ibert.eye_scan.EyeScan" title="chipscopy.api.ibert.eye_scan.EyeScan"><code class="xref py py-class docutils literal notranslate"><span class="pre">EyeScan</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#chipscopy.api.ibert.eye_scan.EyeScan" title="chipscopy.api.ibert.eye_scan.EyeScan"><code class="xref py py-class docutils literal notranslate"><span class="pre">EyeScan</span></code></a>], <a class="reference internal" href="../../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="#chipscopy.api.ibert.eye_scan.EyeScan" title="chipscopy.api.ibert.eye_scan.EyeScan"><code class="xref py py-class docutils literal notranslate"><span class="pre">EyeScan</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – <strong>(Optional)</strong> Eye scan object(s) to delete.</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If no eye scan objects are provided, all available eye scans are deleted.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.get_all_eye_scans">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.</span></span><span class="sig-name descname"><span class="pre">get_all_eye_scans</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.ibert.get_all_eye_scans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all <code class="xref py py-class docutils literal notranslate"><span class="pre">EyeScan</span></code> object(s)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="#chipscopy.api.ibert.eye_scan.EyeScan" title="chipscopy.api.ibert.eye_scan.EyeScan"><code class="xref py py-class docutils literal notranslate"><span class="pre">EyeScan</span></code></a>]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of eye scan object(s)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-chipscopy.api.ibert.eye_scan"></span><dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.</span></span><span class="sig-name descname"><span class="pre">EyeScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_callback=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_callback=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_by=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status='Not</span> <span class="pre">Started'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress=-1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_time=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elf_version=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_points_read=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_points_expected=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">open_data_points=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_handle_from_cs_server=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_scan_done_event=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#EyeScan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for interacting with eye scans.
+<strong>Please do not</strong> create an instance of this class directly. Please use the factory method
+<a class="reference internal" href="#chipscopy.api.ibert.create_eye_scans" title="chipscopy.api.ibert.create_eye_scans"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_eye_scans()</span></code></a> instead.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.data_points_expected">
+<span class="sig-name descname"><span class="pre">data_points_expected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.data_points_expected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of data points expected to be scanned by the MicroBlaze</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.data_points_read">
+<span class="sig-name descname"><span class="pre">data_points_read</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.data_points_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of data points scanned by the MicroBlaze</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.done_callback">
+<span class="sig-name descname"><span class="pre">done_callback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#chipscopy.api.ibert.eye_scan.EyeScan" title="chipscopy.api.ibert.eye_scan.EyeScan"><span class="pre">EyeScan</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.done_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback function called when eye scan has ended</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.elf_version">
+<span class="sig-name descname"><span class="pre">elf_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.elf_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>ELF version read from the MicroBlaze</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>String detailing reason for scan abort</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.filter_by">
+<span class="sig-name descname"><span class="pre">filter_by</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.filter_by" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.generate_report">
+<span class="sig-name descname"><span class="pre">generate_report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#EyeScan.generate_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.generate_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a report for this eye scan object and send it to the “printer” for printing</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.invalidate">
+<span class="sig-name descname"><span class="pre">invalidate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#EyeScan.invalidate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.invalidate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.metric_data">
+<span class="sig-name descname"><span class="pre">metric_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chipscopy.api.ibert.eye_scan.MetricData" title="chipscopy.api.ibert.eye_scan.MetricData"><span class="pre">MetricData</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.metric_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>metric data stored in an instance of <a class="reference internal" href="#chipscopy.api.ibert.eye_scan.MetricData" title="chipscopy.api.ibert.eye_scan.MetricData"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetricData</span></code></a> class</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the eye scan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.open_data_points">
+<span class="sig-name descname"><span class="pre">open_data_points</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.open_data_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of data points scanned by the MicroBlaze</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="scan_params.html#chipscopy.api.ibert.eye_scan.params.EyeScanParam" title="chipscopy.api.ibert.eye_scan.params.EyeScanParam"><span class="pre">EyeScanParam</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing the py:class:<cite>EyeScanParam</cite> instance for every available param</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="scan_plotter.html#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot" title="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot"><span class="pre">EyeScanPlot</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>EyeScanPlot</cite> instance for interacting with the plot</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.progress">
+<span class="sig-name descname"><span class="pre">progress</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1.0</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Progress of the eye scan in %</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.progress_callback">
+<span class="sig-name descname"><span class="pre">progress_callback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.progress_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback function called when eye scan update is received</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.rx">
+<span class="sig-name descname"><span class="pre">rx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="rx.html#chipscopy.api.ibert.rx.RX" title="chipscopy.api.ibert.rx.RX"><span class="pre">RX</span></a></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.rx" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RX</span></code> object attached to this eye scan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.scan_data">
+<span class="sig-name descname"><span class="pre">scan_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chipscopy.api.ibert.eye_scan.ScanData" title="chipscopy.api.ibert.eye_scan.ScanData"><span class="pre">ScanData</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.scan_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan data stored in an instance of the <a class="reference internal" href="#chipscopy.api.ibert.eye_scan.ScanData" title="chipscopy.api.ibert.eye_scan.ScanData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanData</span></code></a> class</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#EyeScan.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send command to cs_server to start the eye scan in the HW.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>show_progress_bar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Set to true to show progress bar on stdout</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.start_time">
+<span class="sig-name descname"><span class="pre">start_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.start_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stamp of when eye scan was started in cs_server</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.status">
+<span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Not</span> <span class="pre">Started'</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status of the eye scan</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#EyeScan.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop eye scan, that is in-progress in the MicroBlaze</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.stop_time">
+<span class="sig-name descname"><span class="pre">stop_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.stop_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stamp of when eye scan was stopped in cs_server</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.EyeScan.wait_till_done">
+<span class="sig-name descname"><span class="pre">wait_till_done</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#EyeScan.wait_till_done"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.EyeScan.wait_till_done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block current thread execution till the eye scan completes OR it is aborted by cs_server/HW.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.MetricData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.</span></span><span class="sig-name descname"><span class="pre">MetricData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">open_area</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">open_percentage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_opening</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_percentage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_opening</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_percentage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#MetricData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.MetricData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for storing scan metric data</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.MetricData.horizontal_opening">
+<span class="sig-name descname"><span class="pre">horizontal_opening</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.MetricData.horizontal_opening" title="Permalink to this definition">¶</a></dt>
+<dd><p>zero offset horizontal opening of the eye scan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.MetricData.horizontal_percentage">
+<span class="sig-name descname"><span class="pre">horizontal_percentage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.MetricData.horizontal_percentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>zero offset horizontal opening percent of the eye scan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.MetricData.open_area">
+<span class="sig-name descname"><span class="pre">open_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.MetricData.open_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>open area in the eye scan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.MetricData.open_percentage">
+<span class="sig-name descname"><span class="pre">open_percentage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.MetricData.open_percentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>open area percentage of the eye scan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.MetricData.vertical_opening">
+<span class="sig-name descname"><span class="pre">vertical_opening</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.MetricData.vertical_opening" title="Permalink to this definition">¶</a></dt>
+<dd><p>zero offset vertical opening of the eye scan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.MetricData.vertical_percentage">
+<span class="sig-name descname"><span class="pre">vertical_percentage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.MetricData.vertical_percentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>zero offset horizontal opening percent of the eye scan</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.Plot2DData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.</span></span><span class="sig-name descname"><span class="pre">Plot2DData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ber_floor_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#Plot2DData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.Plot2DData" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.Plot2DData.ber_floor_value">
+<span class="sig-name descname"><span class="pre">ber_floor_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.Plot2DData.ber_floor_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>This value is used as the <code class="docutils literal notranslate"><span class="pre">ber</span></code> value for any X, Y coordinate whose computed BER was 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.Plot2DData.scan_points">
+<span class="sig-name descname"><span class="pre">scan_points</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#chipscopy.api.ibert.eye_scan.ScanPoint" title="chipscopy.api.ibert.eye_scan.ScanPoint"><span class="pre">ScanPoint</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.Plot2DData.scan_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collection of <a class="reference internal" href="#chipscopy.api.ibert.eye_scan.ScanPoint" title="chipscopy.api.ibert.eye_scan.ScanPoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanPoint</span></code></a> instances to represent the 2D eye scan plot</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.RawData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.</span></span><span class="sig-name descname"><span class="pre">RawData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prescale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_range</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#RawData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.RawData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for storing raw data from the MicroBlaze. The size of all the lists in this class
+will be the same</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.RawData.error_count">
+<span class="sig-name descname"><span class="pre">error_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.RawData.error_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.RawData.horizontal_range">
+<span class="sig-name descname"><span class="pre">horizontal_range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.RawData.horizontal_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.RawData.prescale">
+<span class="sig-name descname"><span class="pre">prescale</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.RawData.prescale" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.RawData.sample_count">
+<span class="sig-name descname"><span class="pre">sample_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.RawData.sample_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.RawData.ut">
+<span class="sig-name descname"><span class="pre">ut</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.RawData.ut" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.RawData.vertical_range">
+<span class="sig-name descname"><span class="pre">vertical_range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.RawData.vertical_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.</span></span><span class="sig-name descname"><span class="pre">ScanData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#ScanData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for storing raw scan data and 2D plot data</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanData.all_params">
+<span class="sig-name descname"><span class="pre">all_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanData.all_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>All parameters the server used to run the scan in the MicroBlaze</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanData.processed">
+<span class="sig-name descname"><span class="pre">processed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chipscopy.api.ibert.eye_scan.Plot2DData" title="chipscopy.api.ibert.eye_scan.Plot2DData"><span class="pre">Plot2DData</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanData.processed" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D plot data. This will only be available if the scan completed successfully</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanData.raw">
+<span class="sig-name descname"><span class="pre">raw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#chipscopy.api.ibert.eye_scan.RawData" title="chipscopy.api.ibert.eye_scan.RawData"><span class="pre">RawData</span></a></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanData.raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raw scan data from the MicroBlaze</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanPoint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.</span></span><span class="sig-name descname"><span class="pre">ScanPoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ber</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan.html#ScanPoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanPoint" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanPoint.ber">
+<span class="sig-name descname"><span class="pre">ber</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanPoint.ber" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanPoint.errors">
+<span class="sig-name descname"><span class="pre">errors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanPoint.errors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanPoint.samples">
+<span class="sig-name descname"><span class="pre">samples</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanPoint.samples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanPoint.x">
+<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanPoint.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.ScanPoint.y">
+<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.ScanPoint.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="link_group.html" class="btn btn-neutral float-left" title="chipscopy.api.ibert.link.group" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scan_params.html" class="btn btn-neutral float-right" title="chipscopy.api.ibert.eye_scan.params" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 21, 2024.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
