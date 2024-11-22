@@ -38,32 +38,42 @@ except (
 
 
 def get_examples_dir_or_die():
-    # Examples are provided for Jupyter and Commandline flows. This returns the
-    # examples directory in both flows.
+    # Check if the environment variable is set
+    env_examples_dir = os.getenv("CHIPSCOPY_EXAMPLES")
+    if env_examples_dir and os.path.isdir(env_examples_dir):
+        return env_examples_dir
 
-    # First priority - locally installed examples with the default directory name
-    # Case for most users that installed examples.
-    examples_dir = os.path.join(os.getcwd(), "chipscopy-examples")
-    if os.path.isdir(examples_dir):
-        return examples_dir
+        # Start from the current working directory
+    current_dir = os.getcwd()
 
-    # If we get here, try to find examples in the site-libraries area or wherever
-    # we are running chipscopy from. This makes life easier for developers working
-    # who want to use examples directly from the chipscopy/examples directory.
-    if os.path.isfile(inspect.getfile(inspect.currentframe())):
-        # __file__ does not work in jupyter flows
-        examples_dir = os.path.realpath(
-            os.path.dirname(inspect.getfile(inspect.currentframe())) + "/examples"
-        )
+    while True:
+        # Check for 'chipscopy-examples' directory
+        examples_dir = os.path.join(current_dir, "chipscopy-examples")
         if os.path.isdir(examples_dir):
             return examples_dir
 
-    # Jupyter doesn't work with currentframe above, just try examples as a last resort
-    examples_dir = os.path.join(os.getcwd(), "examples")
-    if os.path.isdir(examples_dir):
-        return examples_dir
+            # Check for 'examples' directory
+        examples_dir = os.path.join(current_dir, "examples")
+        if os.path.isdir(examples_dir):
+            return examples_dir
 
-    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), examples_dir)
+            # Move up one directory level
+        parent_dir = os.path.dirname(current_dir)
+
+        # If the parent directory is the same as the current directory, we've reached the root
+        if parent_dir == current_dir:
+            break
+
+        current_dir = parent_dir
+
+        # If we reach here, neither directory was found
+    error_message = (
+        "Could not find the 'examples' or 'chipscopy-examples' directory.\n"
+        "Please ensure that one of these directories exists in the current or parent directories.\n"
+        "Alternatively, you can set the 'CHIPSCOPY_EXAMPLES' environment variable to the path of the examples directory.\n"
+        "Example: export CHIPSCOPY_EXAMPLES=/path/to/your/examples"
+    )
+    raise FileNotFoundError(errno.ENOENT, error_message)
 
 
 def _get_design_files_in_dir(p: Path) -> namedtuple:
