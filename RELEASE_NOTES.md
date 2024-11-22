@@ -1,6 +1,8 @@
 # ChipScoPy Release Notes
 
 ## 2024.2 - Release November 22, 2024
+- 2024.2.173228394
+- Fix chipscopy-examples directory not found with jupyter notebooks
       
 - 2024.2.1732227392   
 - Add US+ GTY IBERT example design and notebook
