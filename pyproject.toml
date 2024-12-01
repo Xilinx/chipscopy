@@ -15,7 +15,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2024.2.1732283942"
+version = "2024.2.1733027508"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -47,6 +47,7 @@ matplotlib = { version = "^3.7", optional = true }
 PyQt5 = { version = "^5.15", optional = true }
 pytcf = { version = "^0.0.10", optional = true }
 ipympl = { version = "^0.9.3", optional = true }
+pywinpty = {version = "<=2.0.13", optional = true }
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4"
@@ -79,7 +80,7 @@ csutil = "chipscopy._cli._chipscopy:main"
 
 [tool.poetry.extras]
 core-addons = ["plotly", "kaleido", "matplotlib", "PyQt5", "pandas", "ipympl"]
-jupyter = ["notebook", "ipywidgets"]
+jupyter = ["notebook", "ipywidgets", "pywinpty"]
 pytcf = ["pytcf"]
 
 [[tool.poetry.source]]
