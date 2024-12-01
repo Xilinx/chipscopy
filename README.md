@@ -8,9 +8,10 @@ ChipScoPy is an open-source project from AMD that enables high-level control of 
 Using a simple Python API, developers can control and communicate with ChipScope® debug IP such as the Integrated Logic
 Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
 
-ChipScoPy communicates with Versal devices. It does not work with older devices such as Ultrascale+ and 7-Series devices.
+ChipScoPy supports Versal devices and has limited IBERT GTY support for Ultrascale+ devices. 
+It does not work with older devices such as 7-Series devices.
 
-**We recommend using Python 3.8, 3.9, 3.10, or 3.11 with ChipScoPy.**
+**We recommend using Python 3.8, 3.9, 3.10, 3.11, or 3.12 with ChipScoPy.**
 
 
 ![](https://raw.githubusercontent.com/Xilinx/chipscopy/master/docs/images/chipscopy_overview.png)

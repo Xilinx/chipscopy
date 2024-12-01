@@ -1,10 +1,15 @@
 # ChipScoPy Release Notes
 
-## 2024.2 - Release November 22, 2024
-- 2024.2.173228394
+## 2024.2 - Release 
+
+- 2024.2.1733027508 - December 1, 2024
+- Pin winpty version to continue Python 3.8 support for jupyter notebook
+- Update README with 3.12 support
+
+- 2024.2.1732283942 - November 22, 2024
 - Fix chipscopy-examples directory not found with jupyter notebooks
       
-- 2024.2.1732227392   
+- 2024.2.1732227392 - November 21, 2024
 - Add US+ GTY IBERT example design and notebook
 - Enhanced logging to handle additional logging domains
 - Move example designs and jupyter notebooks out of pypi wheel to reduce file size
