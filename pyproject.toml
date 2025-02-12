@@ -15,7 +15,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2024.2.1733027508"
+version = "2024.2.1739397049"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -47,7 +47,7 @@ matplotlib = { version = "^3.7", optional = true }
 PyQt5 = { version = "^5.15", optional = true }
 pytcf = { version = "^0.0.10", optional = true }
 ipympl = { version = "^0.9.3", optional = true }
-pywinpty = {version = "<=2.0.13", optional = true }
+pywinpty = { version = "<=2.0.13", markers = "sys_platform == 'win32' and python_version < '3.9'", optional = true }
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4"
