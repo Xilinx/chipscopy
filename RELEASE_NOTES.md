@@ -2,6 +2,9 @@
 
 ## 2024.2 - Release 
 
+- 2024.2.1739397049 - February 12, 2024
+- pin winpty only for windows, do not install on linux
+
 - 2024.2.1733027508 - December 1, 2024
 - Pin winpty version to continue Python 3.8 support for jupyter notebook
 - Update README with 3.12 support
