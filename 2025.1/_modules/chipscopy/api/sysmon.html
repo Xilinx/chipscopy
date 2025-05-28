@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.api.sysmon &mdash; ChipScoPy 2025.1.1747162617 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../api.html">chipscopy.api</a> &raquo;</li>
+      <li>chipscopy.api.sysmon</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for chipscopy.api.sysmon</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">chipscopy.api</span> <span class="kn">import</span> <span class="n">CoreType</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api._detail.debug_core</span> <span class="kn">import</span> <span class="n">DebugCore</span>
+<span class="kn">from</span> <span class="nn">chipscopy.tcf.services</span> <span class="kn">import</span> <span class="n">DoneHWCommand</span>
+
+
+<div class="viewcode-block" id="Sysmon"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Sysmon</span><span class="p">(</span><span class="n">DebugCore</span><span class="p">[</span><span class="s2">&quot;SysMonCoreClient&quot;</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sysmon is the top level API for accessing System Monitor in Versal.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sysmon_tcf_node</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Sysmon</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">CoreType</span><span class="o">.</span><span class="n">SYSMON</span><span class="p">,</span> <span class="n">sysmon_tcf_node</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">sysmon_tcf_node</span><span class="o">.</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]</span>
+
+        <span class="c1"># This is used by the filter_by method in QueryList</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="Sysmon.initialize_sensors"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.initialize_sensors">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_sensors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">done</span><span class="p">:</span> <span class="n">DoneHWCommand</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes all of the server side constructs for sysmon, required for most subsequent APIs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            done: Optional command callback that will be invoked when the response is received.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            No data is returned directly from this method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">initialize_sensors</span><span class="p">(</span><span class="n">done</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Sysmon.refresh_measurement_schedule"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.refresh_measurement_schedule">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_measurement_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">done</span><span class="p">:</span> <span class="n">DoneHWCommand</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dynamically scans the SysMon to determine the sensors scheduled into the system, in order.</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            done: Optional command callback that will be invoked when the response is received.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Returns a dict where the keys are the root IDs and the values are the named sensors.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">schedule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_measurement_schedule</span><span class="p">(</span><span class="n">done</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="o">=</span> <span class="n">schedule</span>
+        <span class="k">return</span> <span class="n">schedule</span></div>
+
+<div class="viewcode-block" id="Sysmon.get_measurements"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.get_measurements">[docs]</a>    <span class="k">def</span> <span class="nf">get_measurements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">done</span><span class="p">:</span> <span class="n">DoneHWCommand</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Advanced API</span>
+
+<span class="sd">        Returns the measurement objects</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            done: Optional command callback that will be invoked when the response is received.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Returns a list of measurement configuration objects</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sensors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">get_measurements</span><span class="p">(</span><span class="n">done</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sensors</span></div>
+
+<div class="viewcode-block" id="Sysmon.get_all_sensors"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.get_all_sensors">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_sensors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">done</span><span class="p">:</span> <span class="n">DoneHWCommand</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is identical to ``get_supported_sensors`` in customer releases. For VnC teams this API offers</span>
+<span class="sd">        internal sensors. For information on how to use this API please contact @dkopelov or #chipscope.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            done: Optional command callback that will be invoked when the response is received.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of strings representing all sensors for the connected device.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sensors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">get_all_sensors</span><span class="p">(</span><span class="n">done</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sensors</span></div>
+
+    <span class="k">def</span> <span class="nf">configure_measurement_schedule</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">measurements</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">done</span><span class="p">:</span> <span class="n">DoneHWCommand</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">configure_measurement_schedule</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Sysmon.stream_sensor_data"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.stream_sensor_data">[docs]</a>    <span class="k">def</span> <span class="nf">stream_sensor_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">done</span><span class="p">:</span> <span class="n">DoneHWCommand</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This API configures polling in hw_server to stream the data from the measurement schedule (including device</span>
+<span class="sd">        temps) at the specified ``interval``.</span>
+
+<span class="sd">        To process the incoming data, a `dm.NodeListener` must be declared and registered on this node.</span>
+
+
+<span class="sd">        node_listener = dm.NodeListener(sysmon)</span>
+
+<span class="sd">        session.chipscope_view.add_node_listener(node_listener)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interval: poll period (in ms)</span>
+<span class="sd">            done: Optional command callback that will be invoked when the response is received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">stream_sensor_data</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Sysmon.read_sensor"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_sensor">[docs]</a>    <span class="k">def</span> <span class="nf">read_sensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read single sensor value from hw</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sensor:  the name of the sensor to read</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            refreshed value of specific sensor (float) or None if sensor isn&#39;t detected in design</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;warning: read_sensor(): measurement schedule is empty or has not been refreshed&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">sensor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;warning: read_sensor(): requested sensor </span><span class="si">{</span><span class="n">sensor</span><span class="si">}</span><span class="s2"> is not in the measurement schedule&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">supply_idx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">sensor</span> <span class="o">==</span> <span class="n">s</span><span class="p">:</span>
+                <span class="n">supply_idx</span> <span class="o">=</span> <span class="n">idx</span>
+                <span class="k">break</span>
+
+        <span class="n">supply_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;supply</span><span class="si">{</span><span class="n">supply_idx</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># greedy</span>
+        <span class="n">current_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_property</span><span class="p">(</span><span class="n">supply_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_value</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Sysmon.read_sensors"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_sensors">[docs]</a>    <span class="k">def</span> <span class="nf">read_sensors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read a list of sensor values from hw</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sensors:  list of the names of the sensors to read</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            refreshed values of specific sensors (float)</span>
+<span class="sd">            if the sensor isn&#39;t sequenced in the design then a warning msg is printed and the sensor is dropped from</span>
+<span class="sd">            the list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">props_to_refresh</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">out_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">supply_x_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;warning: read_sensors(): measurement schedule is empty or has not been refreshed&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">sensor</span> <span class="ow">in</span> <span class="n">sensors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sensor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;warning: read_sensors(): requested sensor </span><span class="si">{</span><span class="n">sensor</span><span class="si">}</span><span class="s2"> is not in the measurement schedule&quot;</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">supply_idx</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">sensor</span> <span class="o">==</span> <span class="n">s</span><span class="p">:</span>
+                    <span class="n">supply_idx</span> <span class="o">=</span> <span class="n">idx</span>
+                    <span class="k">break</span>
+
+            <span class="n">out_data</span><span class="p">[</span><span class="n">sensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">supply_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;supply</span><span class="si">{</span><span class="n">supply_idx</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">supply_x_map</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensor</span>
+            <span class="n">props_to_refresh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">supply_name</span><span class="p">)</span>
+
+        <span class="n">current_sensor_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_property</span><span class="p">(</span><span class="n">props_to_refresh</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">supply_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">current_sensor_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out_data</span><span class="p">[</span><span class="n">supply_x_map</span><span class="p">[</span><span class="n">supply_name</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">out_data</span></div>
+
+<div class="viewcode-block" id="Sysmon.read_temp"><a class="viewcode-back" href="../../../sysmon/references/sysmon.html#chipscopy.api.sysmon.Sysmon.read_temp">[docs]</a>    <span class="k">def</span> <span class="nf">read_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read temp values from hw</span>
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            refreshed value of device_temp, max, and min in Celsius</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">temp_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">refresh_property</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;device_temp&quot;</span><span class="p">,</span> <span class="s2">&quot;device_temp_max_max&quot;</span><span class="p">,</span> <span class="s2">&quot;device_temp_min_min&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">temp_dict</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on May 28, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
