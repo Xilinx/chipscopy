@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>YK Scan &mdash; ChipScoPy 2025.1.1747162617 documentation</title>
+  <title>YK Scan &mdash; ChipScoPy 2025.1.1748564032 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -181,7 +181,7 @@ Here’s an example of creating YK scan for</p>
 won’t wait for completion of the scan. This allows you to continue doing other things while the YK scan is
 in progress.</p>
 <p>In order to get YK scan progress update, you can register a callback function with the
-YK scan object before starting a scan. This can be done by setting the <a href="#id1"><span class="problematic" id="id2">``</span></a>update_callback``attribute.</p>
+YK scan object before starting a scan. This can be done by setting the <code class="docutils literal notranslate"><span class="pre">update_callback</span></code> attribute.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scan_progress_event_handler</span><span class="p">(</span><span class="n">progress_percent</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="k">pass</span> <span class="c1"># --&gt; Add your logic here</span>
 
@@ -202,6 +202,26 @@ It is best to keep the logic in the event handlers as minimal as possible.</p>
 <p>YK scan data can be accessed via the <a class="reference internal" href="references/yk_scan.html#chipscopy.api.ibert.yk_scan.YKScan.scan_data" title="chipscopy.api.ibert.yk_scan.YKScan.scan_data"><code class="xref py py-data docutils literal notranslate"><span class="pre">scan_data</span></code></a> attribute which is part of the <code class="xref py py-class docutils literal notranslate"><span class="pre">YKSample</span></code> class.</p>
 <p>This instance stores the normalised slicer data from the MicroBlaze and the processed snr value. These are
 accessible as shown.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-number">Table 13 </span><span class="caption-text">ScanData attributes</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">slicer</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">snr</span></code></p></td>
+<td><p>Access the SNR value being plotted.</p></td>
+</tr>
+</tbody>
+</table>
 <p>Snippet below shows how to access the scan data given an instance of the <code class="xref py py-class docutils literal notranslate"><span class="pre">YKScan</span></code> class</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assumed that we created &quot;YK_scan_0&quot; in a previous step and ran it to completion.</span>
 
@@ -265,7 +285,7 @@ function again.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on May 28, 2025.
+      <span class="lastupdated">Last updated on June 03, 2025.
       </span></p>
   </div>
 

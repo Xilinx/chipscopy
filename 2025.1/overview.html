@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>ChipScoPy Overview &mdash; ChipScoPy 2025.1.1747162617 documentation</title>
+  <title>ChipScoPy Overview &mdash; ChipScoPy 2025.1.1748564032 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -62,7 +62,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">ChipScoPy Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ChipScoPy Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#when-to-use-chipscopy-api-vs-vivado-lab-edition">When to use ChipScoPy API vs. Vivado Lab Edition?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vivado-lab-edition-is-best-for">Vivado Lab Edition is best for:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chipscopy-api-is-best-for">ChipScoPy API is best for:</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chipscopy_installation.html">ChipScoPy Installation</a></li>
 </ul>
@@ -110,7 +117,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
              
   <section id="chipscopy-overview">
 <h1>ChipScoPy Overview<a class="headerlink" href="#chipscopy-overview" title="Permalink to this heading">¶</a></h1>
-<p>ChipScoPy is an open-source Python project that enables communication with and control of Xilinx Versal HW debug
+<p>ChipScoPy is an open-source Python project that enables communication with and control of Xilinx hardware debug
 solutions. Users are able to program designs and begin debugging in a few simple steps. Client Python scripts have
 access to a rich API for hardware interaction. The main features of the ChipScoPy package are:</p>
 <ul class="simple">
@@ -132,6 +139,30 @@ access to a rich API for hardware interaction. The main features of the ChipScoP
 </ul>
 </li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>ChipScoPy ILA and VIO support is not available for UltraScale+ devices.</p>
+</div>
+<section id="when-to-use-chipscopy-api-vs-vivado-lab-edition">
+<h2>When to use ChipScoPy API vs. Vivado Lab Edition?<a class="headerlink" href="#when-to-use-chipscopy-api-vs-vivado-lab-edition" title="Permalink to this heading">¶</a></h2>
+<section id="vivado-lab-edition-is-best-for">
+<h3>Vivado Lab Edition is best for:<a class="headerlink" href="#vivado-lab-edition-is-best-for" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Interactive GUI-based debugging of Versal design running in HW</p></li>
+<li><p>Ultrascale+ debug support</p></li>
+</ul>
+</section>
+<section id="chipscopy-api-is-best-for">
+<h3>ChipScoPy API is best for:<a class="headerlink" href="#chipscopy-api-is-best-for" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Integrating Versal HW test into lab and/or mfg test environments</p></li>
+<li><p>Leveraging third-party and open-source packages</p></li>
+<li><p>A lightweight, user-customizable flow</p></li>
+<li><p>Creating custom demos</p></li>
+<li><p>Integrating into 3rd party EDA and/or T&amp;M applications</p></li>
+</ul>
+</section>
+</section>
 </section>
 
 
@@ -148,7 +179,7 @@ access to a rich API for hardware interaction. The main features of the ChipScoP
 
   <div role="contentinfo">
     <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on May 28, 2025.
+      <span class="lastupdated">Last updated on June 03, 2025.
       </span></p>
   </div>
 

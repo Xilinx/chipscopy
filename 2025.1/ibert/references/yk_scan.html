@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>chipscopy.api.ibert.yk_scan &mdash; ChipScoPy 2025.1.1747162617 documentation</title>
+  <title>chipscopy.api.ibert.yk_scan &mdash; ChipScoPy 2025.1.1748564032 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -261,14 +261,15 @@ The object <strong>must</strong> be an instance of <code class="docutils literal
 <dt class="sig sig-object py" id="chipscopy.api.ibert.yk_scan.YKScan.stop_callback">
 <span class="sig-name descname"><span class="pre">stop_callback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#chipscopy.api.ibert.yk_scan.YKScan" title="chipscopy.api.ibert.yk_scan.YKScan"><span class="pre">YKScan</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.yk_scan.YKScan.stop_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Callback function called when YK scan has stopped.
-Stop call will block if callback is None.
-Callback Arguments:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>This YK Scan object</p></li>
-<li><p>Any error string or exception raised</p></li>
+Stop call will block if callback is None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> (<em>- This YK Scan</em>) – </p></li>
+<li><p><strong>raised</strong> (<em>- Any error string</em><em> or </em><em>exception</em>) – </p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="simple">
 <dt>Callback example:</dt><dd><p>def done_callback(scan: YKScan, error: str or Exception):</p>
 </dd>
@@ -284,14 +285,12 @@ Callback Arguments:</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chipscopy.api.ibert.yk_scan.YKScan.updates_callback">
 <span class="sig-name descname"><span class="pre">updates_callback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#chipscopy.api.ibert.yk_scan.YKScan" title="chipscopy.api.ibert.yk_scan.YKScan"><span class="pre">YKScan</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#chipscopy.api.ibert.yk_scan.YKScan.updates_callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Callback function called when YK scan has new data.
-Callback Arguments:</p>
-<blockquote>
-<div><ul class="simple">
+<dd><p>Callback function called when YK scan has new data.</p>
+<dl class="simple">
+<dt>Callback Arguments:</dt><dd><ul class="simple">
 <li><p>This YK Scan object</p></li>
 </ul>
-</div></blockquote>
-<dl class="simple">
+</dd>
 <dt>Callback example:</dt><dd><p>def update_callback(scan: YKScan):</p>
 </dd>
 </dl>
@@ -315,7 +314,7 @@ Callback Arguments:</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on May 28, 2025.
+      <span class="lastupdated">Last updated on June 03, 2025.
       </span></p>
   </div>
 
