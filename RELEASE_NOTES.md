@@ -1,8 +1,8 @@
 # ChipScoPy Release Notes
 
-## 2025.1 - Major Release
+## 2025.1 - Release
 
-- <<RELEASE_BUILD>> - <<RELEASE_DATE>>
+- 2025.1.1748923355 - June 3, 2025
 - CR-1239400 - Add program set to chipscopy memory example
 - CR-1241135 - Clarify ILA sample data usage
 - CR-1240247 - Report correct bandwidth numbers for DDRMC5E element
