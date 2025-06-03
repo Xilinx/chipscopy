@@ -44,13 +44,13 @@ ch_map = {"r": 0, "w": 1}
 
 # %%
 def get_noc_typedef_from_name(name) -> str:
-    nmu_re = re.compile(".*NMU.*", flags=re.IGNORECASE)
-    nsu_re = re.compile(".*NSU.*", flags=re.IGNORECASE)
-    ddrmc_noc_re = re.compile(r".*DDRMC\d*_NOC.*", flags=re.IGNORECASE)
-    ddrmc_main_re = re.compile(".*DDRMC_MAIN.*", flags=re.IGNORECASE)
-    ddrmc_re = re.compile(r".*DDRMC\d*_(S\d+)?X.*", flags=re.IGNORECASE)
-    hbmmc_re = re.compile(".*HBM_MC_X.*", flags=re.IGNORECASE)
-    ddrmc_crypto_re = re.compile(".*DDRMC_CRYPTO.*", flags=re.IGNORECASE)
+    nmu_re = re.compile(r".*NMU.*", flags=re.IGNORECASE)
+    nsu_re = re.compile(r".*NSU.*", flags=re.IGNORECASE)
+    ddrmc_noc_re = re.compile(r".*DDRMC\d*[a-zA-Z]?_NOC.*", flags=re.IGNORECASE)
+    ddrmc_main_re = re.compile(r".*DDRMC_MAIN.*", flags=re.IGNORECASE)
+    ddrmc_re = re.compile(r".*DDRMC\d*[a-zA-Z]?_(S\d+)?X.*", flags=re.IGNORECASE)
+    hbmmc_re = re.compile(r".*HBM_MC_X.*", flags=re.IGNORECASE)
+    ddrmc_crypto_re = re.compile(r".*DDRMC\d*[a-zA-Z]?_CRYPTO.*", flags=re.IGNORECASE)
 
     if nmu_re.match(name):
         return noc_nmu_typedef
@@ -70,7 +70,7 @@ def get_noc_typedef_from_name(name) -> str:
 
 
 def decode_ddrmc_gen(name):
-    ddrmc5_re = re.compile(".*DDRMC5_X.*", flags=re.IGNORECASE)
+    ddrmc5_re = re.compile(".*DDRMC5[a-zA-Z]?_X.*", flags=re.IGNORECASE)
     if ddrmc5_re.match(name):
         return 5
     else:
@@ -183,6 +183,17 @@ class DDRMC(NoCElement):
         7: "overhead",
         8: "bus_turnarounds",
     }
+    ilecc_metrics_map = {
+        0: "activates",
+        1: "read_cas",
+        2: "ilc_fetch_counts",
+        3: "ilc_evict_counts",
+        4: "ilc_read_hits",
+        5: "ilc_write_hits",
+        6: "ilc_read_misses",
+        7: "ilc_write_misses",
+        8: "ilc_stall_counts",
+    }
 
     def __init__(self, *args):
         """
@@ -193,6 +204,7 @@ class DDRMC(NoCElement):
         super().__init__(*args)
         self.num_nsu = get_nsu_count_per_ddrmc(decode_ddrmc_gen(self.name))
         # add DC aggregate, NSU agg, and NSU port metrics
+
         for ch in range(0, 2):
             for metric in DDRMC.dc_metrics_map.values():
                 self.samples.update({f"dc{ch}_{metric}": [0] * MAX_SAMPLES})
@@ -506,7 +518,9 @@ class NoCPerfMonNodeListener(NodeListener):
                 self.noc_elements[elem.lower()] = storage_node
                 self.unique_elements[elem.lower()] = storage_node
             elif node_type in [ddrmc_main_typedef]:
-                alt_name = "ddrmc_noc_" + elem.split("_")[-1]
+                name_parts = elem.split("_")
+                assert len(name_parts) == 2
+                alt_name = name_parts[0] + "_noc_" + name_parts[1]
                 node = DDRMC(
                     elem.lower(),
                     alt_name.lower(),
@@ -519,14 +533,15 @@ class NoCPerfMonNodeListener(NodeListener):
                 self.noc_elements[elem.lower()] = node
                 self.noc_elements[alt_name.lower()] = node
                 self.unique_elements[elem.lower()] = node
-                # TODO iff gen5
-                # TODO node names are lacking the '5' fixup
-                crypto_name = "ddrmc_crypto_" + elem.split("_")[-1]
-                crypto_node = DDRMCCrypto(
-                    crypto_name.lower(), sampling_period_ms[elem], record_to_file
-                )
-                self.noc_elements[crypto_name.lower()] = crypto_node
-                # self.unique_elements[elem.lower()] = node
+                # iff gen5 - add crypto block
+                if decode_ddrmc_gen(elem) == 5:
+                    name_parts = elem.split("_")  # validate len?
+                    assert len(name_parts) == 2
+                    crypto_name = name_parts[0] + "_crypto_" + name_parts[-1]
+                    crypto_node = DDRMCCrypto(
+                        crypto_name.lower(), sampling_period_ms[elem], record_to_file
+                    )
+                    self.noc_elements[crypto_name.lower()] = crypto_node
             elif node_type in [hbmmc_typedef]:
                 from chipscopy.api.noc.graphing.hbmmc import HBMMC
 
@@ -716,6 +731,16 @@ class DDRMCCrypto:
         self.node_type = get_noc_typedef_from_name(self.name)
         self.num_samples = num_samples
         self.record_to_file = record_to_file
+        self.samples = {
+            "read_bandwidth": [0] * MAX_SAMPLES,
+            "write_bandwidth": [0] * MAX_SAMPLES,
+            "avg_read_latency": [0] * MAX_SAMPLES,
+            "avg_write_latency": [0] * MAX_SAMPLES,
+            "flags": [],
+            "ts": [],
+            "type": self.node_type,
+        }
+        self.raw_trace_data = {}
 
     def update_node(self, tcf_node, updated_keys):
         self.aes_xts_enc = tcf_node["reg_crypto_perf_mon_cnt0"]

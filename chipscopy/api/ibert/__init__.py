@@ -22,6 +22,7 @@ from chipscopy.api.ibert.yk_scan.manager import YKScanManager
 create_links = LinkManager.create_links
 delete_links = LinkManager.delete_links
 get_all_links = LinkManager.all_links
+detect_links = LinkManager.detect_links
 
 create_link_groups = LinkGroupManager.create_link_groups
 delete_link_groups = LinkGroupManager.delete_link_groups

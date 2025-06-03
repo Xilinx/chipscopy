@@ -97,18 +97,25 @@ class ChipScopeProxy(Service):
         return self.send_xicom_command("getContext", (node_id,), done)
 
     def setup_debug_cores(
-        self, node_id: str, debug_hub_addrs: List[int] = None, done: DoneHWCommand = None
+        self,
+        node_id: str,
+        debug_hub_addrs: List[int] = None,
+        debug_hub_ids: List[List[int]] = None,
+        done: DoneHWCommand = None,
     ) -> Token:
         """
         Sets up debug core environment from a given list of DebugHub
         :param node_id: Parent Context node ID
         :param debug_hub_addrs: List of DebugHub addresses
+        :param debug_hub_ids: List of DebugHub Image IDs
         :param done: Callback when command is complete
         :returns: Token of command request
         """
         props = {}
         if debug_hub_addrs:
             props["debug_hub_addrs"] = debug_hub_addrs
+        if debug_hub_ids:
+            props["debug_hub_ids"] = debug_hub_ids
         return self.send_xicom_command("setupDebugCores", (node_id, props), done)
 
     def remove_debug_cores(self, node_id: str, done: DoneHWCommand = None) -> Token:

@@ -37,10 +37,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Xilinx cs_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -220,7 +220,6 @@ print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
 
-
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
@@ -275,7 +274,6 @@ vio_cores = device.vio_cores
 for index, vio_core in enumerate(vio_cores):
     print(f"{index} - {vio_core.core_info.uuid}   {vio_core.name}")
 
-
 # %% [markdown]
 # ## 5 - VIO Control and ILA Capture
 #
@@ -300,7 +298,6 @@ vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 
 print(f"Using ILA: {ila.core_info.uuid}  {ila.name}")
 print(f"Using VIO: {vio.core_info.uuid}  {vio.name}")
-
 
 # %% [markdown]
 # ## 6 - Configure the counter using VIO output probes

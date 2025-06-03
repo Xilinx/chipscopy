@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import ByteString, Dict, Any
+from typing import ByteString, Dict, Any, Tuple, List
 from chipscopy.tcf.services import Service, DoneHWCommand, Token
 
 NAME = "Xicom"
@@ -194,6 +194,68 @@ class XicomProxy(Service):
         if not props:
             props = {}
         return self.send_xicom_command("plmLog", (ctx, props), done)
+
+    def efuse_read(self, ctx: str, slr: int = 0, done: DoneHWCommand = None) -> Token:
+        """
+        Reads back configuration through the SBI that has been previously set up with another PDI.
+
+        :param ctx: Context ID of the device
+        :param slr: SLR index
+        :param done: Callback with the result and any error
+        :return: Token of command sent
+        """
+
+        def done_read(token, error, result):
+            if not error:
+                registers = result[0]
+                data = result[1]
+                result = dict()
+                offset = 0
+                for register in registers:
+                    name, bit_count = register
+                    byte_count = int((bit_count + 7) / 8)
+                    value = data[offset : byte_count + offset]
+                    offset += byte_count
+                    result[name] = value
+            if done:
+                done(token, error, result)
+
+        return self.send_xicom_command("efuseRead", (ctx, slr), done_read)
+
+    def efuse_program(
+        self,
+        ctx: str,
+        slr: int,
+        props: List[Tuple[str, int, ByteString]],
+        done: DoneHWCommand = None,
+    ) -> Token:
+        """
+        Programs efuse register
+
+        :param ctx: Context ID of the device
+        :param slr: SLR index
+        :param props: Property arguments in tuple form (name, bit_count, data_value)
+        :param done: Callback with the result and any error
+        :return: Token of command sent
+        """
+        arg_props = [(name, bit_count) for name, bit_count, _ in props]
+        arg_data = bytearray()
+        for p in props:
+            arg_data.extend(p[2])
+        return self.send_xicom_command("efuseProgram", (ctx, slr, arg_props, arg_data), done)
+
+    def get_crc(self, ctx: str, slr: int, key: ByteString, done: DoneHWCommand = None) -> Token:
+        """
+        Programs efuse register
+
+        :param ctx: Context ID of the device
+        :param slr: SLR index
+        :param key: Key value
+        :param done: Callback with the result and any error
+        :return: Token of command sent
+        """
+        bit_count = len(key) * 8
+        return self.send_xicom_command("getCRC", (ctx, slr, bit_count, key), done)
 
 
 XicomService = XicomProxy

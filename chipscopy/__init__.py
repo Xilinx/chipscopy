@@ -66,7 +66,16 @@ def get_examples_dir_or_die():
 
         current_dir = parent_dir
 
-        # If we reach here, neither directory was found
+    # If we got here, we did not find 'examples' or 'chipscopy-examples'
+    # Pre-2024.2 chipscopy delivered examples in the site-packages area, try that as a fallback.
+    if os.path.isfile(inspect.getfile(inspect.currentframe())):
+        # __file__ does not work in jupyter flows
+        examples_dir = os.path.realpath(
+            os.path.dirname(inspect.getfile(inspect.currentframe())) + "/examples"
+        )
+        if os.path.isdir(examples_dir):
+            return examples_dir
+
     error_message = (
         "Could not find the 'examples' or 'chipscopy-examples' directory.\n"
         "Please ensure that one of these directories exists in the current or parent directories.\n"

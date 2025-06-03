@@ -45,15 +45,9 @@ class QueryList(UserList, Sequence[T]):
         return f"[\n    {s}\n]"
 
     def __iter__(self):
-        self.iter_index = 0
-        return self
-
-    def __next__(self):
-        if self.iter_index >= len(self):
-            raise StopIteration
-        item = self.at(self.iter_index)
-        self.iter_index += 1
-        return item
+        # Returns a generator now - fixes one() in new more-itertools 1.7.0
+        for i in range(len(self)):
+            yield self.at(i)
 
     def set_custom_match_function(self, match_function):
         """Sets an optional custom match function for the QueryList. If a custom match function is set,

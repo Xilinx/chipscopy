@@ -29,14 +29,13 @@
 # ## Description
 # This demo shows how to exercise and run Versal DDRMC 2D Margin Scan features
 #
-#
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Xilinx cs_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
-# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons]`
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed 
+# - ChipScoPy 2025.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons,jupyter]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
@@ -186,7 +185,6 @@ else:
         f" ERROR: MARGIN_MODE is set to {MARGIN_MODE} which is an illegal value, only READ or WRITE is allowed"
     )
 
-
 # %% [markdown]
 # ## 8 - Setting the 2D eye scan data pattern mode
 
@@ -216,7 +214,6 @@ ddr.set_eye_scan_vref_max(vref_max_code)
 ddr.set_eye_scan_vref_steps(STEPS)
 print(f"Dividing the Vref range into {STEPS} steps")
 
-
 # %% [markdown]
 # ## 10 - Run 2D Margin Scan after settings
 
@@ -229,10 +226,21 @@ ddr.run_eye_scan()
 # You can display static or dynamic plots. The display_type controls the display output.
 # - "static" is a simple image that can be saved.
 # - "dynamic" is an interactive javascript plot.
-# - The default is "dynamic".
+# - The default is "dynamic" if nothing is specified.
 
 # %%
-ddr.display_eye_scan(DISPLAY_INDEX, display_type="static")
+"""Display a figure in both Jupyter and command-line environments"""
+display_type = "dynamic"  # Default for terminal
+try:
+    import importlib.util
+    if importlib.util.find_spec("IPython") is not None:
+        from IPython import get_ipython
+        if get_ipython() is not None and hasattr(get_ipython(), 'kernel'):
+            display_type = "static"  # Better for Jupyter notebook
+except (ImportError, AttributeError):
+    pass  # Keep default "dynamic" if IPython not available
+
+ddr.display_eye_scan(DISPLAY_INDEX, display_type=display_type)
 
 # %% [markdown]
 # Optionally you can return figures as a list for later operations.
@@ -257,7 +265,6 @@ for fig in figs:
     image_bytes = fig.to_image(format="png")
     ipython_image = Image(image_bytes)
     display(ipython_image)
-
 
 # %% [markdown]
 # ## 12 - Save the Eye Scan data from latest run

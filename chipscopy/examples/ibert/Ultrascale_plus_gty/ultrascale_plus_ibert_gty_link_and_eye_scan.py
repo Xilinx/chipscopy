@@ -31,10 +31,10 @@
 #
 # ### Requirements
 # - VCU128 Board
-# - Xilinx hw_server 2024.2 installed and running
-# - Xilinx cs_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
 # - Jupyter notebook support installed - Please do so, using the command pip install chipscopy[jupyter]
 # - Plotting support installed - Please do so, using the command pip install chipscopy[core-addons]
 #
@@ -67,7 +67,6 @@ from chipscopy.api.ibert.aliases import (
     RX_COMMON_MODE
 )
 from chipscopy.api.ibert import  create_links, create_eye_scans
-
 
 # %%
 # Make sure to start the hw_server and cs_server prior to running.
@@ -109,7 +108,7 @@ report_versions(session)
 # Typical case - one device on the board - get it.
 device = session.devices[0]
 print(device)
-device.program(BIT_FILE)
+device.program(BIT_FILE, delay_after_program = 10)
 
 # %% [markdown]
 # ## 4 - Discover  IBERT cores
@@ -128,7 +127,7 @@ print("--> Debug core discovery done for board")
 if len(device.ibert_cores) == 0:
     print("No IBERT core found with board 1! Exiting...")
     exit()
-    
+
 for ibert in device.ibert_cores:
     print(f"\n-> {ibert} ({ibert.handle})")
 
@@ -138,7 +137,7 @@ for ibert in device.ibert_cores:
 # %%
 for ibert in device.ibert_cores:
     for gt_group in ibert.gt_groups:
-        print(f"GT Groups available with {ibert.handle} - {[gt_group_obj.name for gt_group_obj in ibert.gt_groups]}")       
+        print(f"GT Groups available with {ibert.handle} - {[gt_group_obj.name for gt_group_obj in ibert.gt_groups]}")
 
 # %% [markdown]
 # ## 6 - Print Hierarchy for each IBERT Core
@@ -220,7 +219,7 @@ for link in links:
     print(f"link.rx.pll.locked = {link.rx.pll.locked} and link.tx.pll.locked = {link.tx.pll.locked}")
 
     print(f"link.status= {link.status}")
-    
+
     link.generate_report()
 
 # %% [markdown]

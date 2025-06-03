@@ -15,4 +15,4 @@
 
 # Vivado version - each time a rel branch is cut, this needs to change
 # expected format is 'YYYY.release' e.g.: '2019.2', '2020.1'
-__vivado_version__ = "2024.2"
+__vivado_version__ = "2025.1"

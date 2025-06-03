@@ -1,9 +1,33 @@
 # ChipScoPy Release Notes
 
-## 2024.2 - Release 
+## 2025.1 - Major Release
 
-- 2024.2.1739397049 - February 12, 2024
-- pin winpty only for windows, do not install on linux
+- <<RELEASE_BUILD>> - <<RELEASE_DATE>>
+- CR-1239400 - Add program set to chipscopy memory example
+- CR-1241135 - Clarify ILA sample data usage
+- CR-1240247 - Report correct bandwidth numbers for DDRMC5E element
+- CR-1234943 - Add storage for crypto node
+- CR-1185161 - Add error_status to the device top level properties
+- CR-1220321 - Fix image display for DDR 2D eyescan example
+- CR-1185161 - Add error_status to device top level properties
+- CR-1240155 - Fix querylist compatibility with more-itertools 1.7.0
+- Fix lin64 install issue due to pywinpty cargo requirement
+- Fix sphinx errors and warnings during doc generation
+- vhk158 and noc perfmon example changes
+- Add IBERT vck190-vcu128 heterogeneous cross-link-debug example
+- Allow delay_after_program for non-progress bar cases
+- Fix GTM link detect test
+- Adding efuse tcf commands to proxy
+- Auto link detection API support for IBERT
+- stimgen: Adding por target arg
+- Allow progress and done callbacks from API layer
+- Adding XicomFlashProxy, stimgen support doc, and image ids for detectHub
+- YK Scan: Add an optional stop callback
+- Python 3.13 compatibility changes
+- Enhanced example design finder to fallback to site-packages area
+- Adding source files for vcu128 board related to example_ibert_vcu128_q131_q132_q134_q135.bit
+
+## 2024.2 - Release
 
 - 2024.2.1733027508 - December 1, 2024
 - Pin winpty version to continue Python 3.8 support for jupyter notebook
@@ -11,7 +35,7 @@
 
 - 2024.2.1732283942 - November 22, 2024
 - Fix chipscopy-examples directory not found with jupyter notebooks
-      
+
 - 2024.2.1732227392 - November 21, 2024
 - Add US+ GTY IBERT example design and notebook
 - Enhanced logging to handle additional logging domains
@@ -77,7 +101,7 @@
   - HBM2E Evaluation Platform support with ChipScoPy
   - Known issue: DDR 2D Eye Scan is not working on this platform
 - SysMon support for synchronous communication
-- Enhanced device event tracking 
+- Enhanced device event tracking
 - Added support for decoupling CPM5 captive GTYP, associated example notebook included in release
   - Note: vpk120 only at this time
 
@@ -113,13 +137,13 @@
 - New VIO example
 - Renamed chipscopy cli to "csutil"
 - Updated 3rd party library dependency versions
-- Enhanced Device class with new properties and error reporting 
+- Enhanced Device class with new properties and error reporting
 - Better identification and handling of multiple devices in jtag chain
   - Both ARM DAP and Versal top-level target are now returned consistent with xsdb
   - Updated examples to match
   - To select a specific target use:
 ```
-    # Typical case - one device on one board 
+    # Typical case - one device on one board
     device = session.devices.filter_by(family="versal").get()
 ```
 - Allow delay for slower cables to identify jtag chains
@@ -140,7 +164,7 @@
 - Added Jupyter notebook examples:
   - DDR 2D Eye Scan
   - NoC Performance Monitor
-  
+
 
 ## 2021.1 - April 26, 2021
 
@@ -148,7 +172,7 @@
 
 ### What's New
 
-Welcome to ChipScoPy! 
+Welcome to ChipScoPy!
 
 ChipScoPy is a Xilinx Python API to communicate with Xilinx devices and debug cores. It translates Python API calls into lower level TCF communication with the cs_server and hw_server applications.
 
@@ -167,7 +191,7 @@ ChipScoPy is a Xilinx Python API to communicate with Xilinx devices and debug co
 
 - ChipScoPy is not an interactive replacement for XSDB or Vivado Lab. It is a Python library.
 - The ChipScoPy API version should match the hw_server and cs_server major/minor version.
-- Only Xilinx Versal debug feature support is available in 2021.1. 
+- Only Xilinx Versal debug feature support is available in 2021.1.
 - PDI/LTX examples are included for the VCK190, VMK180, and VPK120 production boards - others can be built from CED sources.
 - No Advanced ILA FSM trigger support in the ILA API.
 - The code base is quickly evolving as we add features and address issues.
@@ -197,7 +221,7 @@ limitations under the License.
 
 **Additional Licenses**
 
-TCF source files are licensed under terms of the Eclipse Public License 2.0. 
-For additional details, see 
+TCF source files are licensed under terms of the Eclipse Public License 2.0.
+For additional details, see
 
 https://www.eclipse.org/legal/epl-2.0/

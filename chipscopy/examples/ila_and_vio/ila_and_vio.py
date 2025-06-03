@@ -33,10 +33,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Xilinx cs_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -76,7 +76,6 @@ print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
 
-
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
@@ -99,7 +98,6 @@ report_versions(session)
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
 device.program(PROGRAMMING_FILE)
-
 
 # %% [markdown]
 # ## 4 - Discover Debug Cores
@@ -127,7 +125,6 @@ vio_cores = device.vio_cores
 for index, vio_core in enumerate(vio_cores):
     print(f"{index} - {vio_core.core_info.uuid}   {vio_core.name}")
 
-
 # %% [markdown]
 # ## 5 - VIO Control and ILA Capture
 #
@@ -152,7 +149,6 @@ vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 
 print(f"Using ILA: {ila.core_info.uuid}  {ila.name}")
 print(f"Using VIO: {vio.core_info.uuid}  {vio.name}")
-
 
 # %% [markdown]
 # ### 5a - Configure the counter using VIO output probes
@@ -206,15 +202,26 @@ print("ILA is running - looking for trigger")
 ila.wait_till_done(max_wait_minutes=0.1)
 upload_successful = ila.upload()
 if upload_successful:
+    #
+    # ila.waveform.get_data() returns data for probes. By default, all probes are included. But here we specify
+    #     slow_counter_0_Q_1 so only the one probe data is returned.
+    #
     samples = ila.waveform.get_data(
         ["chipscopy_i/counters/slow_counter_0_Q_1"],
         include_trigger=True,
         include_sample_info=True,
     )
-    for trigger, sample_index, window_index, window_sample_index, value in zip(*samples.values()):
+    # Below is a convenient way to iterate over all probe values using a for loop.
+    #
+    # samples.values() is a list of lists including trigger, sample_index, window_index, window_sample_index,
+    #     and any probes in samples from get_data() above.
+    #
+    # for trigger, sample_index, window_index, window_sample_index, probe0, probe1, ..., probeN in zip(*samples.values())
+    #
+    for trigger, sample_index, window_index, window_sample_index, slow_counter_0_Q_1 in zip(*samples.values()):
         trigger = "<-- Trigger" if trigger else ""
         print(
-            f"Window:{window_index}  Window Sample:{window_sample_index}  {value:10}  0x{value:08X} {trigger}"
+            f"Window:{window_index}  Window Sample:{window_sample_index}  {slow_counter_0_Q_1:10}  0x{slow_counter_0_Q_1:08X} {trigger}"
         )
 else:
     print("Failed to upload ILA data from core")
@@ -267,10 +274,10 @@ if upload_successful:
         include_trigger=True,
         include_sample_info=True,
     )
-    for trigger, sample_index, window_index, window_sample_index, value in zip(*samples.values()):
+    for trigger, sample_index, window_index, window_sample_index, slow_counter_0_Q_1 in zip(*samples.values()):
         trigger = "<-- Trigger" if trigger else ""
         print(
-            f"Window:{window_index}  Window Sample:{window_sample_index}  {value:10}  0x{value:08X} {trigger}"
+            f"Window:{window_index}  Window Sample:{window_sample_index}  {slow_counter_0_Q_1:10}  0x{slow_counter_0_Q_1:08X} {trigger}"
         )
 else:
     print("Failed to upload ILA data from core")

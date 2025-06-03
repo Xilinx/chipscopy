@@ -33,10 +33,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Xilinx cs_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -75,7 +75,6 @@ print(f"CS_URL: {CS_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 print(f"PROBES_FILE:{PROBES_FILE}")
 
-
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
@@ -102,7 +101,6 @@ if PROG_DEVICE:
 else:
     print("skipping programming")
 
-
 # %% [markdown]
 # ## 4 - Discover Debug Cores
 #
@@ -122,7 +120,6 @@ print(f"Debug cores setup and ready for use.")
 #
 # The following cells demonstrate how to perform various operations with the VIO core.
 # These are meant to be useful code snippets that can be copy/pasted for your own application.
-
 
 # %%
 # Enumerate all VIO cores in the device.
@@ -207,7 +204,6 @@ value = port_info["probe_in0"]["value"]
 activity = port_info["probe_in0"]["activity"]
 print(f"Counter Value: {value}, Activity: {activity}")
 
-
 # %%
 # Reading probe values
 
@@ -219,9 +215,8 @@ vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
 vio.reset_vio()
 print(f"VIO core {vio} reset to initial values.")
 
-
 # %%
-# You can access low level VIO properties as a dictionary or in json. 
+# You can access low level VIO properties as a dictionary or in json.
 # This gives easy python access to probe and port information.
 
 import pprint

@@ -81,6 +81,19 @@ class DebugCoreProxy(Service):
             hub_addresses = []
         return self.send_xicom_command("detectHubs", (ctx, hub_addresses), done)
 
+    def detect_hubs_ext(
+        self, ctx: str, hub_addresses: List[int], hub_ids: List[List[int]], done: DoneHWCommand
+    ):
+        """Detects cores given a parent context and expected core offsets with Image IDs support.
+
+        :param ctx: Parent context handle
+        :param hub_addresses: List of offsets for each Debug Hub
+        :param hub_ids: List of image IDs for each Debug Hub
+        :param done: Callback with result and any error
+        :returns: Token of command request
+        """
+        return self.send_xicom_command("detectHubs", (ctx, hub_addresses, hub_ids), done)
+
     def setup_cores(self, ctx: str, done: DoneHWCommand):
         """
         Sets up hardened debug nodes from a context

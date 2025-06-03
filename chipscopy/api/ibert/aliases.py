@@ -61,13 +61,17 @@ PLL_LOCK_STATUS: Final[str] = "PLL Lock Status"
 # ----------------------------------------------------------------
 TX_RESET: Final[str] = "Reset"
 TX_PRE_CURSOR: Final[str] = "Pre Cursor"
+TX_PRE_CURSOR2: Final[str] = "Pre Cursor 2"
+TX_PRE_CURSOR3: Final[str] = "Pre Cursor 3"
 TX_POST_CURSOR: Final[str] = "Post Cursor"
+TX_MAIN_CURSOR: Final[str] = "Main Cursor"
 TX_DIFFERENTIAL_SWING: Final[str] = "Differential Control"
 TX_USRCLK_FREQ: Final[str] = "TX USRCLK Frequency"
 TX_USRCLK2_FREQ: Final[str] = "TX USRCLK2 Frequency"
 TX_PHYCLK_FREQ: Final[str] = "TX PHYCLK Frequency"
 TX_POLARITY: Final[str] = "TX Polarity"
 TX_INJECT_ERROR: Final[str] = "Inject Error"
+TX_INJECT_ERROR_MODE: Final[str] = "Inject Error Mode"
 
 # ----------------------------------------------------------------
 # Applicable to RX only

@@ -32,9 +32,9 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
+# - Xilinx hw_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -64,7 +64,6 @@ PROGRAMMING_FILE = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced").p
 print(f"HW_URL: {HW_URL}")
 print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 
-
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server
 #
@@ -89,7 +88,6 @@ report_versions(session)
 # Typical case - one device on the board - get it.
 device = session.devices.filter_by(family="versal").get()
 device.program(PROGRAMMING_FILE)
-
 
 # %%
 ## When done with testing, close the connection

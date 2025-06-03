@@ -336,11 +336,20 @@ class CsFuture(object):
         self._error = None
         self._progress_status = None
         self.final = final
+        self.current_thread = None
 
     def unset(self):
         self.is_done = False
         self._result = None
         self._error = None
+
+    def _set_current_thread(self, thread):
+        self.current_thread = thread
+
+    def _is_current_thread(self):
+        if self.current_thread:
+            return threading.current_thread().ident == self.current_thread.ident
+        return protocol.isDispatchThread()
 
     @staticmethod
     def _is_legacy_done_callback(callback):
@@ -381,7 +390,7 @@ class CsFuture(object):
             self._error = Exception(self.error.get("Format"))
 
     def _finalize(self):
-        if self.final and not protocol.isDispatchThread():
+        if self.final and not self._is_current_thread():
             final = self.final
             self.final = None
             final(self)
@@ -455,6 +464,9 @@ class CsFutureSync(CsFuture):
         self.cond = threading.Event()
         self.timeout = timeout
 
+    def _is_current_thread(self):
+        return super()._is_current_thread()
+
     def _invoke_done(self):
         super()._invoke_done()
         if self.cond:
@@ -462,13 +474,13 @@ class CsFutureSync(CsFuture):
 
     @property
     def result(self):
-        if not protocol.isDispatchThread():
+        if not self._is_current_thread():
             self.cond.wait(self.timeout)
         return super().result
 
     @property
     def error(self):
-        if not protocol.isDispatchThread():
+        if not self._is_current_thread():
             self.cond.wait(self.timeout)
         return super().error
 
@@ -477,12 +489,20 @@ class CsFutureSync(CsFuture):
             func(*args, **kwargs)
         else:
             protocol.invokeLater(func, *args, **kwargs)
-        if self.cond:
-            return self.result
+        # if self.cond:
+        #     return self.result
+        return self
+
+    def run_worker(self, func, *args, **kwargs):
+        # Run the function provided in a new non-daemon thread
+        # This should be used when using Future for a non-tcf thread dependent operation in chipscopy APIs
+        thread = threading.Thread(target=func, name=func.__name__, args=args, kwargs=kwargs)
+        super()._set_current_thread(thread)
+        thread.start()
         return self
 
     def wait(self, timeout: int = None):
-        if protocol.isDispatchThread():
+        if self._is_current_thread():
             return
         if timeout is not None:
             self.timeout = timeout

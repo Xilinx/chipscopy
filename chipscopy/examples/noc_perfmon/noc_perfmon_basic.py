@@ -31,10 +31,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Xilinx cs_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
@@ -206,7 +206,6 @@ extended_monitor_config = {"NOC_NMU512_X0Y0": {"tslide": 0x3}}  # or None
 noc.configure_monitors(
     enable_list, sampling_intervals, (TC_BEW | TC_BER), num_samples, None, extended_monitor_config
 )
-
 
 # %% [markdown]
 # ## 7 - Create plotter and listener

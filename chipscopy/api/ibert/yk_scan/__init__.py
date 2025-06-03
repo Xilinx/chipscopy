@@ -45,13 +45,34 @@ class YKScan:
     """
 
     rx: RX
-    """:py:class:`RX` object attached to this eye scan"""
+    """:py:class:`RX` object attached to this YK scan"""
 
     name: str
-    """Name of the eye scan"""
+    """Name of the YK scan"""
 
     updates_callback: Callable[["YKScan"], None] = None
-    """Callback function called when eye scan has ended"""
+    """
+    Callback function called when YK scan has new data.
+
+    Callback Arguments:
+        - This YK Scan object
+
+    Callback example:
+        def update_callback(scan: YKScan):
+    """
+
+    stop_callback: Callable[["YKScan", str or Exception], None] = None
+    """
+    Callback function called when YK scan has stopped.
+    Stop call will block if callback is None.
+
+    Args:
+        - This YK Scan object
+        - Any error string or exception raised
+
+    Callback example:
+        def done_callback(scan: YKScan, error: str or Exception):
+    """
 
     filter_by: Dict[str, Any] = field(default_factory=dict)
 
@@ -59,10 +80,10 @@ class YKScan:
     """YK scan data samples in the order they are received"""
 
     stop_time: datetime = None
-    """Time stamp of when eye scan was stopped in cs_server"""
+    """Time stamp of when YK scan was stopped in cs_server"""
 
     start_time: datetime = None
-    """Time stamp of when eye scan was started in cs_server"""
+    """Time stamp of when YK scan was started in cs_server"""
 
     elf_version: str = None
     """ELF version read from the MicroBlaze"""
@@ -129,7 +150,22 @@ class YKScan:
 
     def stop(self):
         """
-        Stop eye scan, that is in-progress in the MicroBlaze
+        Stop YK scan, that is in-progress in the MicroBlaze
 
         """
-        self.rx.core_tcf_node.terminate_yk_scan(rx_name=self.rx.handle)
+        done_cb = None
+        if callable(self.stop_callback):
+
+            def done_callback(token: Any, error: str or Exception, result: Any):
+                try:
+                    self.stop_callback(self, error)
+                except Exception as e:
+                    printer(
+                        f"Unhandled exception during YK scan stop callback!\n"
+                        f"Exception - {str(e)}",
+                        level="warning",
+                    )
+
+            done_cb = done_callback
+
+        self.rx.core_tcf_node.terminate_yk_scan(rx_name=self.rx.handle, done=done_cb)

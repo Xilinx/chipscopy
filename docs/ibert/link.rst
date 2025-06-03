@@ -1,13 +1,13 @@
 ..
    Copyright (C) 2021-2022, Xilinx, Inc.
    Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
-   
+
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-   
+
          http://www.apache.org/licenses/LICENSE-2.0
-   
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -178,3 +178,50 @@ To delete a link, use the factory function :py:func:`~delete_links`.
 .. warning::
     Once the link is deleted, any references to the deleted link instance will be stale and are not safe to use.
 
+Auto detect links
+-----------------
+
+To automatically detect links, use the factory function :py:func:`~detect_links`.
+
+Links can be automatically detected using :py:class:`~session.Session` or :py:class:`~device.Devices` or :py:class:`~ibert.IBERT` or :py:class:`~gt_group.GTGroup` or :py:class:`~gt.GT` object(s) as target.
+
+This API supports two optional callback functions to provide progress and done support.
+The progress callback can be setup to check percentage complete and to get any new link created.
+The done callback will be called at the end of auto link detection, this can be used to get list of all the links detected.
+
+This API returns Future object if done or progress callback is provided otherwise a list of links detected is returned.
+
+.. code-block:: python
+    :emphasize-lines: 18, 21
+
+    """
+    Other imports
+    """
+    from chipscopy.dm.request import CsFuture
+    from chipscopy.api.ibert import detect_links
+
+    """
+    Boilerplate stuff - Create a session, get the IBERT core etc etc
+    """
+    def done_callback(f:CsFuture):
+        result = f.result
+        print(f"INFO: {result.info}")
+        print(f"Progress : {result.progress}")
+        links_created = result.new_link
+
+    def progress_callback(f:CsFuture):
+        result = f.result
+        print(f"INFO: {result.info})
+        print(f"Progress : {result.progress}")
+        link_created = result.new_link
+
+
+    # Detect links in a session and use callbacks (non-blocking)
+    detect_future = detect_links(target=session, done=done_callback, progress=progress_callback)
+    assert detect_future.error is None
+
+    # Detect links in a session with no callbacks (blocking)
+    links = detect_links(target=session)
+
+.. note::
+    The API ignores all :py:class:`~TX.tx` and :py:class:`~RX.rx` that are already part of a link.

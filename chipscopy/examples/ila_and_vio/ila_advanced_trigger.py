@@ -34,8 +34,8 @@
 # ------------
 # The following is required to run this demo:
 # 1. Local or remote access to a Versal device
-# 2. 2024.2 cs_server and hw_server applications
-# 3. Python 3.8 environment
+# 2. 2025.1 cs_server and hw_server applications
+# 3. Python 3.9 environment
 # 4. A clone of the chipscopy git enterprise repository:
 #    - https://gitenterprise.xilinx.com/chipscope/chipscopy
 #
@@ -150,7 +150,6 @@ print("\nILA Name:", my_ila.name)
 print("\nILA Core Info", my_ila.core_info)
 print("\nILA Static Info", my_ila.static_info)
 
-
 # %% [markdown]
 # ## Step 7 -  Trigger Immediately using Advanced Trigger Mode
 #
@@ -214,7 +213,6 @@ def print_probe_values(waveform: ILAWaveform, probe_names: [str]):
 
 print_probe_values(my_ila.waveform, [counter_probe_name])
 
-
 # %% [markdown]
 # ## Step 10 - Check if TSM is Valid
 # - The TSM below has undefined probe names and undefined states.
@@ -266,7 +264,7 @@ def status_progress(future):
     if st.is_full:
         print(f"\nAll data has been captured.")
     else:
-        print(f"State: {st.tsm_state_name}   Counters: {st.tsm_counters}    Flags: {st.tsm_flags}")       
+        print(f"State: {st.tsm_state_name}   Counters: {st.tsm_counters}    Flags: {st.tsm_flags}")
 
 
 # %% [markdown]
@@ -293,7 +291,7 @@ TSM_FLAGS_COUNTERS = StringIO(
         else
             goto STATE_A;
       endif
-      
+
     state STATE_B:
         if ( {counter_probe_name} == 32'hxAAA_BBBB && $counter1 == 'u9) then
             set_flag $flag1;
@@ -304,7 +302,7 @@ TSM_FLAGS_COUNTERS = StringIO(
         else
             goto STATE_B;
       endif
-      
+
 """
 )
 

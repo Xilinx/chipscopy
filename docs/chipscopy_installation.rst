@@ -1,6 +1,6 @@
 ..
      Copyright (C) 2021-2022, Xilinx, Inc.
-     Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+     Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
    
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 ChipScoPy Installation
 ======================
 
-ChipScoPy requires Python 3.8 or greater. There are several ways to configure your system to use the ChipScoPy API. This page will cover the following step-by-step installation procedure.
+ChipScoPy requires Python 3.9 or greater. There are several ways to configure your system to use the ChipScoPy API. This page will cover the following step-by-step installation procedure.
 
     - `Step 1: Python Installation`_
     - `Step 2: Set up Virtual Environment`_
@@ -50,7 +50,7 @@ Option 1 - Install Python from python.org
 This is the recommended installation procedure to get the latest available Python interpreter from Python.org.
 
 To install Python, navigate to:
-`<https://www.python.org/downloads/>`_. Locate and install the latest Python 3.8 or newer for your operating system.
+`<https://www.python.org/downloads/>`_. Locate and install a supported Python version for your operating system.
 
 .. note:: Make sure to check the box to add Python to the PATH during installation.
 
@@ -58,34 +58,35 @@ To install Python, navigate to:
 Option 2 - Vivado Distributed Python
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Beginning in 2021.1, the unified Vivado installer will deliver a suitable Python during the install operation. This Python is located at the following operating system-dependent locations:
+Beginning in 2025.1, the unified Vivado installer will deliver a Python 3.13 during the install operation.
+This Python is located at the following operating system-dependent locations:
 
 **Linux:**
 
 Assuming a Vivado Python install location:
 
-    `/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3`
+    `/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.13.0`
 
 .. code-block:: shell
 
     To use this Python, set your path and loader path by (bash syntax):
 
-        export PATH=$PATH:/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3/bin
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.8.3/lib
+        export PATH=$PATH:/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.13.0/bin
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xilinx/Vivado/|vivado_v|/tps/lnx64/python-3.13.0/lib
 
 
 **Windows**
 
 Assuming a Vivado Python install location:
 
-    `C:\\Xilinx\\Vivado\\|vivado_v|\\tps\\win64\\python-3.8.3`
+    `C:\\Xilinx\\Vivado\\|vivado_v|\\tps\\win64\\python-3.13.0`
 
 
 .. code-block:: shell
 
     To use this Python, add this to your user or system-wide %PATH% environment variable
 
-    C:\Xilinx\Vivado\|vivado_v|\tps\win64\python-3.8.3
+    C:\Xilinx\Vivado\|vivado_v|\tps\win64\python-3.13.0
 
 
 Step 2: Set up Virtual Environment
@@ -94,7 +95,7 @@ Step 2: Set up Virtual Environment
 A virtual environment is an isolated Python environment. It allows ChipScoPy and its dependencies to be installed without interfering with the behavior of any other Python applications. The use of virtual environments is best practice.
 
 For more information about Python virtual environments, check out the official
-`Python Virtual Environment Documentation <https://docs.python.org/3.8/tutorial/venv.html>`_.
+`Python Virtual Environment Documentation <http://docs.python.org/3.13/tutorial/venv.html>`_.
 
 .. note:: Linux systems often name the python command 'python3' instead of 'python'. In that case, substitute 'python3' as needed in the commands below.
           

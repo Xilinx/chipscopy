@@ -1,12 +1,12 @@
 ..
      Copyright (C) 2024, Advanced Micro Devices, Inc.
-   
+
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-   
+
          http://www.apache.org/licenses/LICENSE-2.0
-         
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -70,7 +70,7 @@ won't wait for completion of the scan. This allows you to continue doing other t
 in progress.
 
 In order to get YK scan progress update, you can register a callback function with the
-YK scan object before starting a scan. This can be done by setting the ``update_callback``attribute.
+YK scan object before starting a scan. This can be done by setting the ``update_callback`` attribute.
 
 .. code-block:: python
     :emphasize-lines: 6
@@ -82,7 +82,7 @@ YK scan object before starting a scan. This can be done by setting the ``update_
 
     yk_scan_0.start()
 
-The progress callback should accept a single argument. 
+The progress callback should accept a single argument.
 
 .. note::
     The progress update callbacks is **not** called on the main thread.
@@ -104,6 +104,7 @@ accessible as shown.
     * - Attribute
       - Description
     * - :py:data:`~YK_scan.ScanData.slicer`
+      -
 
     * - :py:data:`~YK_scan.ScanData.snr`
       - Access the SNR value being plotted.

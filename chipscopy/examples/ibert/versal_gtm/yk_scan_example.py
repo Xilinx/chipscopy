@@ -1,18 +1,3 @@
-# ---
-# jupyter:
-#   jupytext:
-#     formats: ipynb,py:percent
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.15.1
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
-
 # %% [markdown]
 # <link rel="preconnect" href="https://fonts.gstatic.com">
 # <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
@@ -46,12 +31,11 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, VPK120 or VHK158 (only)
-# - Xilinx hw_server 2023.2 installed and running
-# - Xilinx cs_server 2023.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2023.2 installed
-# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
-# - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons,jupyter]`
 # - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/)
 # - This example assumes that the device has already been programmed with the example design (ie the debug cores have already been initialized)
 
@@ -65,6 +49,7 @@
 
 # %%
 import os
+from threading import Event
 from more_itertools import one
 import matplotlib.pyplot as plt
 
@@ -177,7 +162,7 @@ def yk_scan_updates(obj):
             line.set_ydata(list(obj.scan_data[-1].slicer))
     else:
         ax.scatter(range(len(obj.scan_data[-1].slicer)), list(obj.scan_data[-1].slicer), color='blue')
-    
+
     if ax2.lines:
         for line2 in ax2.lines:
             ax2.set_xlim(0, ax2.get_xlim()[1] + len(obj.scan_data[-1].slicer))
@@ -185,7 +170,7 @@ def yk_scan_updates(obj):
             line2.set_ydata(list(line2.get_ydata()) + list(obj.scan_data[-1].slicer))
     else:
         ax2.scatter(range(len(obj.scan_data[-1].slicer)), list(obj.scan_data[-1].slicer), color='blue')
-        
+
     if ax3.lines:
         for line3 in ax3.lines:
             if len(obj.scan_data) - 1 > ax3.get_xlim()[1]:
@@ -219,7 +204,7 @@ yk.updates_callback = yk_scan_updates
 # %%
 # %matplotlib widget
 
-#This sets up the subplots necessary for the 
+#This sets up the subplots necessary for the
 figure, (ax, ax2, ax3) = plt.subplots(3, constrained_layout = True, num="YK Scan")
 
 ax.set_xlabel("ES Sample")
@@ -249,7 +234,20 @@ yk.start()
 # Stops the YK scan from running.
 
 # %%
+# We use Event to wait until the stop callback is sent, or it times out
+stopped = Event()
+def yk_scan_stop_callback(obj, error):
+    print(f"YK Scan {yk.name} stopped")
+    if error:
+        print(f"YK Scan error: {error}")
+    stopped.set()
+
+yk.stop_callback = yk_scan_stop_callback
 yk.stop()
+# Wait for the stop callback if possible or timeout
+STOP_TIMEOUT_SECONDS = 15
+if not stopped.wait(timeout=STOP_TIMEOUT_SECONDS):
+    print("Failed to stop YK Scan")
 
 # %%
 ## When done with testing, close the connection

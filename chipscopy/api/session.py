@@ -26,6 +26,7 @@ from chipscopy.client.jtagdevice import JtagDevice, JtagCable
 from chipscopy.dm import chipscope, Node
 from chipscopy.utils.logger import log
 from chipscopy.utils.version import version_consistency_check
+from chipscopy.client import stimgen
 from chipscopy.client import connect as client_connect
 from chipscopy.client import disconnect as client_disconnect
 from chipscopy.client.util import connect_hw, process_param_str, parse_params
@@ -513,6 +514,21 @@ class Session:
             raise Exception(
                 f"Connection could not be opened to {server_name} @ {server_url}."
             ) from ex
+
+    def setup_stimgen(self, params: dict = None) -> stimgen.StimgenClient:
+        """
+        Sets up StimGen support on the cs_server
+        :param params: Dict of arguments used for setting up StimGen support.
+        +-------------------+----------------------+------------------------------------------+
+        | Name              | Type                 | Description                              |
+        +===================+======================+==========================================+
+        | sg4db             |  str                 | Path to .sg4db file to use               |
+        +-------------------+----------------------+------------------------------------------+
+        :returns: StimgenClient instance
+        """
+        if params is None:
+            params = {}
+        return stimgen.setup(self.cs_server, self.hw_server, params)
 
 
 ###############################################################################

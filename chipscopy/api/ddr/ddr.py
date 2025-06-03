@@ -2095,7 +2095,7 @@ class DDR(DebugCore["DDRMCClient"]):
         if (not get_margin_only) and (not _plotting_pkgs_available):
             raise ImportError(
                 f"Plotting packages not installed! Please run ",
-                "'pip install chipscopy[plotly,pandas]'",
+                "'pip install chipscopy[core-addons,jupyter]'",
             )
 
         result = self.ddr_node.get_property(["es_data_need_update"])

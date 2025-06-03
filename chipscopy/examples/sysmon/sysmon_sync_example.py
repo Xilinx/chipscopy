@@ -34,10 +34,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Xilinx cs_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -135,11 +135,11 @@ for sensor in schedule.values():
     print(f"  {sensor}")
 print()
 
-
 # %% [markdown]
 # ## 6 - Refresh values from hardware
 #
 # Perform individual sensor read
+
 # %%
 sensor_to_read = 'VCCAUX'
 current_value = sysmon.read_sensor(sensor_to_read)

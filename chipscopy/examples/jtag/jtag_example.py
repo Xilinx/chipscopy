@@ -31,9 +31,9 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 or greater
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 or greater installed
+# - Xilinx hw_server 2025.1 or greater
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 or greater installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -79,7 +79,7 @@ report_versions(session)
 # %%
 jtag_cables = session.jtag_cables
 
-# Lock JTAG cable. This prevents other clients from performing any JTAG shifts or state changes on 
+# Lock JTAG cable. This prevents other clients from performing any JTAG shifts or state changes on
 # the scan chain.
 jtag_cables[0].lock()
 

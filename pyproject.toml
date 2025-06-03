@@ -15,7 +15,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2024.2.1739397049"
+version = "2025.1.1748923355"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -54,7 +54,7 @@ pytest = "^7.4"
 coverage = "^7.3"
 pytest-mock = "^3.11"
 colorama = "^0.4"
-chapsak = "^1.5.0"
+chapsak = "^1.7.1"
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "==6.2.1"
@@ -85,7 +85,7 @@ pytcf = ["pytcf"]
 
 [[tool.poetry.source]]
 name = "artifactory"
-url = "https://artifactory.xilinx.com/artifactory/api/pypi/pypi/simple"
+url = "https://xcoartifactory.xilinx.com/artifactory/api/pypi/pypi/simple"
 priority = "supplemental"
 
 [tool.pytest.ini_options]

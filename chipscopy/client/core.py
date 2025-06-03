@@ -57,7 +57,7 @@ class CoreParent(dm.Node):
                 done.done_request(token, error, results)
 
         # add pending to indicate that this node is being changed
-        return self.add_pending(proc.setup_debug_cores(self.ctx, debug_hub_addrs, done_setup))
+        return self.add_pending(proc.setup_debug_cores(self.ctx, debug_hub_addrs, done=done_setup))
 
     def remove_cores(self, done: request.DoneCallback = None):
         """

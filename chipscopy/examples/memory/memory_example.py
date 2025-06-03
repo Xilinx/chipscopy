@@ -20,6 +20,9 @@
 #
 
 # %% [markdown]
+#
+
+# %% [markdown]
 # # ChipScoPy Memory Read and Write Example
 #
 #
@@ -32,9 +35,9 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
+# - Xilinx hw_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -54,7 +57,15 @@ from chipscopy import create_session, report_versions, delete_session
 # Specify location of the running hw_server below.
 # The default is localhost - but can be other locations on the network.
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
-print(f"HW_URL={HW_URL}")
+# specify hw and if programming is desired
+HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
+
+# The get_design_files() function tries to find the programming and probes
+# files for an included example design.
+PROGRAMMING_FILE = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced").programming_file
+
+print(f"HW_URL: {HW_URL}")
+print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server
@@ -79,11 +90,11 @@ versal_device = session.devices.filter_by(family="versal").get()
 print(versal_device)
 
 # %% [markdown]
-# ## Step 4 - Reset the device
+# ## Step 4 - Program the device
 
 # %%
-versal_device.reset()
-print("Reset complete.")
+versal_device.program(PROGRAMMING_FILE)
+print("Programming complete.")
 
 # %% [markdown]
 # ## Step 5 - Write and Read memory

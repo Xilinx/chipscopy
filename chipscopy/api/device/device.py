@@ -236,6 +236,12 @@ class Device:
         if self.hw_server and self.jtag_node:
             node = self.jtag_node
             props["jtag"] = copy_node_props(node, node.props, force_update=force_update)
+            # Extract error_status on top level (if it exists and is a list with a single element)
+            props["error_status"] = next(
+                iter(props.get("jtag", {}).get("regs", {}).get("error_status", [])), None
+            )
+        else:
+            props["error_status"] = None
         props["is_valid"] = self.is_valid
         props["context"] = self.context
         props["is_programmed"] = self.scan_is_programmed(force_update=force_update)
@@ -905,27 +911,29 @@ class Device:
             if not self.programming_error:
                 self.programming_error = future.error
 
-            if show_progress_bar:
-                if self.programming_error is not None:
-                    progress_.update(status=PercentProgressBar.Status.ABORTED)
-                else:
-                    for i in range(delay_after_program):
-                        # This pushes end-of-config node events to the listeners
-                        # They seem to happen within about 2-3 seconds - need a more
-                        # reliable way to wait for them to finish.
-                        # If we don't wait, the DPC node may not be ready for use.
-                        time.sleep(0.5)
-                        if self.cs_server:
-                            self.cs_server.get_view("chipscope").run_events()
-                        time.sleep(0.5)
-                    # refresh device jtag node properties after program (1190699)
-                    self.refresh(force_update=False)
-                    progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
-
             if self.programming_error is not None:
+                if show_progress_bar:
+                    progress_.update(status=PercentProgressBar.Status.ABORTED)
                 program_future.set_exception(self.programming_error)
-            else:
-                program_future.set_result(None)
+
+                return
+
+            for i in range(delay_after_program):
+                # This pushes end-of-config node events to the listeners
+                # They seem to happen within about 2-3 seconds - need a more
+                # reliable way to wait for them to finish.
+                # If we don't wait, the DPC node may not be ready for use.
+                time.sleep(0.5)
+                if self.cs_server:
+                    self.cs_server.get_view("chipscope").run_events()
+                time.sleep(0.5)
+            # refresh device jtag node properties after program (1190699)
+            self.refresh(force_update=False)
+
+            if show_progress_bar:
+                progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
+
+            program_future.set_result(None)
 
         def finalize_program():
             if self.programming_error is not None:

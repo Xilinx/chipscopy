@@ -32,11 +32,11 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2024.2 installed and running
-# - Xilinx cs_server 2024.2 installed and running
-# - Python 3.8 or greater installed
-# - ChipScoPy 2024.2 installed
-# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons]`
+# - Xilinx hw_server 2025.1 installed and running
+# - Xilinx cs_server 2025.1 installed and running
+# - Python 3.9 or greater installed
+# - ChipScoPy 2025.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons,jupyter]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths

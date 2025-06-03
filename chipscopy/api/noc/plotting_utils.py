@@ -27,6 +27,7 @@ from chipscopy.api.noc.noc_perfmon_utils import (
     PerfTGController,
     NoCElement,
     get_noc_typedef_from_name,
+    decode_ddrmc_gen,
 )
 
 # use this for Qt5
@@ -188,12 +189,25 @@ class MeasurementPlot:
                     or get_noc_typedef_from_name(node) == hbmmc_typedef
                 ):
                     self.display_nodes.append(node)
+        if self.view == "latency":  # special handling for ddrmc gen 5
+            self.display_nodes = []
+            for node in self.enable_nodes:
+                if get_noc_typedef_from_name(node) == ddrmc_main_typedef:
+                    if decode_ddrmc_gen(node) == 5:
+                        pass
+                    else:
+                        self.display_nodes.append(node)
+                else:
+                    self.display_nodes.append(node)
         else:
             self.display_nodes = self.enable_nodes
 
         noc_element_data, _ = self.get_incremental_data()
         col_count = ceil(sqrt(len(self.display_nodes)))
-        row_count = ceil(len(self.display_nodes) / col_count)
+        if col_count != 0:
+            row_count = ceil(len(self.display_nodes) / col_count)
+        else:
+            row_count = len(self.display_nodes)
         if self.figsize is not None:
             self.fig = plt.figure(figsize=self.figsize)
         else:

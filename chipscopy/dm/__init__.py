@@ -395,6 +395,23 @@ class CsManager(Node):
         node.invalid = True
         return new
 
+    def degrade_node(self, node: type) -> Node:
+        """
+        Converts node subclass to "Node" class and maintains node properties and position in manager.
+
+        :param node: Node to convert
+        :return: new node instance of Node class
+        """
+        node.de_init()
+        new = Node()
+        new.__dict__.update(
+            {key: node.__dict__[key] for key in node.__dict__ if key in new.__dict__}
+        )
+        self._nodes[new.ctx] = new
+        new.post_init()
+        node.invalid = True
+        return new
+
     def get_children(self, parent: str or Node = "") -> Node:
         """
         Iterates through list of children of given parent
