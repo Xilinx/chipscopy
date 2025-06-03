@@ -69,7 +69,9 @@ The example designs distributed with ChipScoPy are supported for these hardware 
 - VPK120 (Versal Premium Series Evaluation Board):
     - Versal VP1202 Device
     - `VPK120 product page <https://www.xilinx.com/products/boards-and-kits/vpk120.html>`_
-
+- VHK158 (Versal HBM Series VHK158 Evaluation Kit):
+    - Versal VH1582 Device
+    - `VHK158 product page <https://www.xilinx.com/products/boards-and-kits/vhk158.html>`_
 
 User Designs
 ~~~~~~~~~~~~
