@@ -15,7 +15,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2025.1.1748923355"
+version = "2025.1.1752011002"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]

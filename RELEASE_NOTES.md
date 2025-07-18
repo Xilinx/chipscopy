@@ -2,6 +2,10 @@
 
 ## 2025.1 - Release
 
+- 2025.1.1752011002 - July 18, 2025
+- Resolved an issue where the `is_programmed` property for UltraScale+ devices was always reported as `false`
+- Updated example designs
+
 - 2025.1.1748923355 - June 3, 2025
 - CR-1239400 - Add program set to chipscopy memory example
 - CR-1241135 - Clarify ILA sample data usage

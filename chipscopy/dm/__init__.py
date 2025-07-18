@@ -249,7 +249,7 @@ class Node(object):
                     child.invalidate()
                 if notify:
                     self.manager.notify_node_removed(self)
-            self.listeners = set()
+            self.listeners: NodePropsCallback = list()
 
     def _props_updated(self):
         if not self.dirty:

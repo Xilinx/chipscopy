@@ -301,7 +301,7 @@ class Device:
                     elif config_status:
                         if force_update:
                             node.update_regs(reg_names=("config_status",), force=True, done=None)
-                        done_reg = config_status.fields["DONE_PIN"]
+                        done_reg = config_status.fields[0]["DONE_PIN"]
                         is_programmed_ = done_reg["value"] == 1
         except Exception:  # noqa
             is_programmed_ = False
