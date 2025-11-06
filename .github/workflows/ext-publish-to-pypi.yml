@@ -51,6 +51,8 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - determine-target
+    outputs:
+      package-version: ${{ steps.get-version.outputs.version }}
 
     steps:
       - name: Checkout repository
@@ -77,6 +79,13 @@ jobs:
 
       - name: Build release distributions
         run: poetry build
+
+      - name: Get package version
+        id: get-version
+        run: |
+          VERSION=$(poetry version -s)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "::notice::Package version: $VERSION"
 
       - name: Upload distributions as job artifact
         uses: actions/upload-artifact@v5
@@ -123,6 +132,46 @@ jobs:
         with:
           packages-dir: dist/
 
+  verify-install:
+    name: Verify Installation (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs:
+      - determine-target
+      - release-build
+      - pypi-publish
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      
+      - name: Wait for package to be available
+        run: |
+          echo "Waiting 60 seconds for package to propagate..."
+          sleep 60
+        shell: bash
+      
+      - name: Install from Test PyPI
+        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
+        run: |
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ chipscopy==${{ needs.release-build.outputs.package-version }}
+        shell: bash
+      
+      - name: Install from Prod PyPI
+        if: ${{ needs.determine-target.outputs.pypi-target == 'prod' }}
+        run: |
+          pip install chipscopy==${{ needs.release-build.outputs.package-version }}
+        shell: bash
+      
+      - name: Verify installation
+        run: |
+          python -c "import chipscopy; print(f'Successfully installed chipscopy version: {chipscopy.__version__}')"
+        shell: bash
+
   # TODO - Once published
-  #   - create a job that attempts to install the package from the target PyPI
   #   - creates a GitHub Release for the published version
