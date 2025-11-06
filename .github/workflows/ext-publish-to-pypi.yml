@@ -50,7 +50,7 @@ jobs:
       - name: Use temp version if publishing to Test PyPI
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target == 'test' }}
         run: |
-          TMP_VERSION=9999.0.${{ github.run_number }}
+          TMP_VERSION=9999.${{ github.run_id }}.${{ github.run_attempt }}
           echo "Setting temporary version to $TMP_VERSION for Test PyPI publishing"
           poetry version $TMP_VERSION
 
