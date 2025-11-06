@@ -28,9 +28,29 @@ permissions:
   contents: read
 
 jobs:
+  determine-target:
+    name: Determine PyPI Target
+    runs-on: ubuntu-latest
+    outputs:
+      pypi-target: ${{ steps.set-target.outputs.pypi-target }}
+    
+    steps:
+      - name: Set PyPI target
+        id: set-target
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TARGET="${{ github.event.inputs.pypi-target }}"
+          else
+            TARGET="test"
+          fi
+          echo "pypi-target=$TARGET" >> $GITHUB_OUTPUT
+          echo "::notice::Determined PyPI target: $TARGET"
+
   release-build:
     name: Build Release Distributions
     runs-on: ubuntu-latest
+    needs:
+      - determine-target
 
     steps:
       - name: Checkout repository
@@ -42,22 +62,21 @@ jobs:
           python-version: "3.10"
 
       - name: Set up Poetry
+        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
         uses: abatilo/actions-poetry@v3
         with:
           # TODO - Read this from .poetry-version file
           poetry-version: 1.8.3
 
       - name: Use temp version if publishing to Test PyPI
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target == 'test' }}
+        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
         run: |
           TMP_VERSION=9999.${{ github.run_id }}.${{ github.run_attempt }}
           echo "Setting temporary version to $TMP_VERSION for Test PyPI publishing"
           poetry version $TMP_VERSION
 
       - name: Build release distributions
-        run: |
-          python -m pip install build
-          python -m build
+        run: poetry build
 
       - name: Upload distributions as job artifact
         uses: actions/upload-artifact@v5
@@ -66,10 +85,11 @@ jobs:
           path: dist/
 
   pypi-publish:
-    name: Publish to PyPI (${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target || 'test' }} instance)
+    name: Publish to PyPI (${{ needs.determine-target.outputs.pypi-target }} instance)
     runs-on: ubuntu-latest
     
     needs:
+      - determine-target
       - release-build
 
     permissions:
@@ -81,7 +101,7 @@ jobs:
     environment:
       name: publish-to-pypi
       # OPTIONAL: uncomment and update to include your PyPI project URL in the deployment status:
-      url: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target == 'prod' && 'https://pypi.org/project/chipscopy/' || 'https://test.pypi.org/project/chipscopy/' }}
+      url: ${{ needs.determine-target.outputs.pypi-target == 'prod' && 'https://pypi.org/project/chipscopy/' || 'https://test.pypi.org/project/chipscopy/' }}
 
     steps:
       - name: Download release distributions from job artifact
@@ -90,10 +110,17 @@ jobs:
           name: release-dists
           path: dist/
 
-      - name: Publish release distributions to PyPI
+      - name: Publish to Test PyPI
+        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          repository-url: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target == 'prod' && '' || 'https://test.pypi.org/legacy/' }}
+          repository-url: 'https://test.pypi.org/legacy/'
+          packages-dir: dist/
+
+      - name: Publish to Prod PyPI
+        if: ${{ needs.determine-target.outputs.pypi-target == 'prod' }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
           packages-dir: dist/
 
   # TODO - Once published
