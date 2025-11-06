@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   release-build:
+    name: Build Release Distributions
     runs-on: ubuntu-latest
 
     steps:
@@ -43,9 +44,12 @@ jobs:
           path: dist/
 
   pypi-publish:
+    name: Publish to Test PyPI
     runs-on: ubuntu-latest
+    
     needs:
       - release-build
+
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing
       id-token: write
