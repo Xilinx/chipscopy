@@ -41,6 +41,19 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Set up Poetry
+        uses: abatilo/actions-poetry@v3
+        with:
+          # TODO - Read this from .poetry-version file
+          poetry-version: 1.8.3
+
+      - name: Use temp version if publishing to Test PyPI
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target == 'test' }}
+        run: |
+          TMP_VERSION=9999.0.${{ github.run_number }}
+          echo "Setting temporary version to $TMP_VERSION for Test PyPI publishing"
+          poetry version $TMP_VERSION
+
       - name: Build release distributions
         run: |
           python -m pip install build
