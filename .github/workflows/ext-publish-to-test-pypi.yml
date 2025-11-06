@@ -6,15 +6,23 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build & Upload to Test PyPI
+name: Build & Upload to PyPI (${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target || 'test' }} instance)
 
 on:
   workflow_dispatch:
+    inputs:
+      pypi-target:
+        description: 'PyPI Target'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+          - 'test'
+          - 'prod'
+
   pull_request:
     branches:
       - master
-  # release:
-  #   types: [published]
 
 permissions:
   contents: read
@@ -25,26 +33,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
       - name: Build release distributions
         run: |
-          # NOTE: put your own distribution build steps here.
           python -m pip install build
           python -m build
 
-      - name: Upload distributions
-        uses: actions/upload-artifact@v4
+      - name: Upload distributions as job artifact
+        uses: actions/upload-artifact@v5
         with:
           name: release-dists
           path: dist/
 
   pypi-publish:
-    name: Publish to Test PyPI
+    name: Publish to PyPI (${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target || 'test' }})
     runs-on: ubuntu-latest
     
     needs:
@@ -57,19 +66,23 @@ jobs:
     # Dedicated environments with protections for publishing are strongly recommended.
     # For more information, see: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules
     environment:
-      name: test-pypi
+      name: publish-to-pypi
       # OPTIONAL: uncomment and update to include your PyPI project URL in the deployment status:
-      url: https://test.pypi.org/project/chipscopy/
+      url: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target == 'prod' && 'https://pypi.org/project/chipscopy/' || 'https://test.pypi.org/project/chipscopy/' }}
 
     steps:
-      - name: Retrieve release distributions
+      - name: Download release distributions from job artifact
         uses: actions/download-artifact@v5
         with:
           name: release-dists
           path: dist/
 
-      - name: Publish release distributions to Test PyPI
+      - name: Publish release distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          repository-url: https://test.pypi.org/legacy/
+          repository-url: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pypi-target == 'prod' && '' || 'https://test.pypi.org/legacy/' }}
           packages-dir: dist/
+
+  # TODO - Once published
+  #   - create a job that attempts to install the package from the target PyPI
+  #   - creates a GitHub Release for the published version
