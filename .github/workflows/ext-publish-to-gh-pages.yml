@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: docs-build
-          path: docs/_build/
+          path: docs/_build/html/
 
       - name: Checkout gh-pages branch
         uses: actions/checkout@v5
