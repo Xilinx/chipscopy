@@ -6,21 +6,43 @@ on:
   workflow_dispatch:
     inputs:
       release-name:
-        description: 'Release name (e.g., 2025.1)'
+        description: "Release name (e.g., 2025.1)"
         required: true
         type: string
-
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - master
 
 permissions:
   contents: write
-
 
 jobs:
   build-and-publish-docs:
     name: Build and Publish Documentation
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    outputs:
+      release-name: ${{ steps.determine-release.outputs.release-name }}
+      target-path: ${{ steps.determine-release.outputs.target-path }}
 
     steps:
+      - name: Determine release name and target path
+        id: determine-release
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            RELEASE_NAME="${{ github.event.inputs.release-name }}"
+            TARGET_PATH="$RELEASE_NAME"
+          else
+            # For pull_request, use PR number and put in tmp folder
+            RELEASE_NAME="PR-${{ github.event.pull_request.number }}"
+            TARGET_PATH="tmp/$RELEASE_NAME"
+          fi
+          echo "release-name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+          echo "target-path=$TARGET_PATH" >> $GITHUB_OUTPUT
+          echo "::notice::Release name: $RELEASE_NAME"
+          echo "::notice::Target path: $TARGET_PATH"
+
       - name: Checkout repository
         uses: actions/checkout@v5
 
@@ -52,19 +74,19 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      - name: Remove existing release folder if exists
+      - name: Remove existing folder if exists
         run: |
-          if [ -d "gh-pages/${{ github.event.inputs.release-name }}" ]; then
-            echo "Removing existing folder: ${{ github.event.inputs.release-name }}"
-            rm -rf "gh-pages/${{ github.event.inputs.release-name }}"
+          if [ -d "gh-pages/${{ steps.determine-release.outputs.target-path }}" ]; then
+            echo "Removing existing folder: ${{ steps.determine-release.outputs.target-path }}"
+            rm -rf "gh-pages/${{ steps.determine-release.outputs.target-path }}"
           else
-            echo "No existing folder found for: ${{ github.event.inputs.release-name }}"
+            echo "No existing folder found for: ${{ steps.determine-release.outputs.target-path }}"
           fi
 
-      - name: Create release folder
+      - name: Create target folder
         run: |
-          mkdir -p "gh-pages/${{ github.event.inputs.release-name }}"
-          echo "Created folder: ${{ github.event.inputs.release-name }}"
+          mkdir -p "gh-pages/${{ steps.determine-release.outputs.target-path }}"
+          echo "Created folder: ${{ steps.determine-release.outputs.target-path }}"
 
       - name: Download and copy built documentation
         uses: actions/download-artifact@v5
@@ -72,10 +94,10 @@ jobs:
           name: docs-build
           path: docs-build-temp
 
-      - name: Copy documentation files to release folder
+      - name: Copy documentation files to target folder
         run: |
-          cp -r docs-build-temp/* "gh-pages/${{ github.event.inputs.release-name }}/"
-          echo "Documentation copied to ${{ github.event.inputs.release-name }}"
+          cp -r docs-build-temp/* "gh-pages/${{ steps.determine-release.outputs.target-path }}/"
+          echo "Documentation copied to ${{ steps.determine-release.outputs.target-path }}"
 
       - name: Commit and push changes
         run: |
@@ -86,7 +108,45 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Publish documentation for release: ${{ github.event.inputs.release-name }}"
+            COMMIT_MSG="Publish documentation for: ${{ steps.determine-release.outputs.release-name }}"
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              COMMIT_MSG="$COMMIT_MSG (PR #${{ github.event.pull_request.number }})"
+            fi
+            git commit -m "$COMMIT_MSG"
             git push origin gh-pages
-            echo "Documentation published successfully!"
+            echo "Documentation published successfully to ${{ steps.determine-release.outputs.target-path }}!"
+          fi
+
+  cleanup-pr-docs:
+    name: Cleanup PR docs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+
+      - name: Remove PR documentation folder
+        run: |
+          PR_FOLDER="tmp/pr-${{ github.event.pull_request.number }}"
+          if [ -d "$PR_FOLDER" ]; then
+            echo "Removing PR documentation folder: $PR_FOLDER"
+            rm -rf "$PR_FOLDER"
+          else
+            echo "No documentation folder found for PR #${{ github.event.pull_request.number }}"
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Remove documentation for closed PR #${{ github.event.pull_request.number }}"
+            git push origin gh-pages
+            echo "PR documentation cleaned up successfully!"
           fi
