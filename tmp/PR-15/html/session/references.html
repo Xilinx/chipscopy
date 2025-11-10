@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Factory methods &mdash; ChipScoPy 2025.1.1752011002 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Session" href="../session.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../report.html">Report</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../session.html">Session</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../session.html#factory-methods">Factory methods</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../session.html#reference">Reference</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Factory methods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.create_session"><code class="docutils literal notranslate"><span class="pre">create_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.delete_session"><code class="docutils literal notranslate"><span class="pre">delete_session()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chipscopy-api-session">chipscopy.api.session</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.session.Session"><code class="docutils literal notranslate"><span class="pre">Session</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../session.html">Session</a> &raquo;</li>
+      <li>Factory methods</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="factory-methods">
+<h1>Factory methods<a class="headerlink" href="#factory-methods" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.create_session">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.</span></span><span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.create_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new session. Connect to the specified hw_server, and optionally
+the cs_server.</p>
+<ul class="simple">
+<li><p>hw_server is used for programming and Versal Memory read/write operations</p></li>
+<li><p>cs_server is used for higher level debug core communication</p></li>
+</ul>
+<p>Example 1: Default session create</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_session</span> <span class="o">=</span> <span class="n">create_session</span><span class="p">(</span><span class="n">hw_server_url</span><span class="o">=</span><span class="s2">&quot;TCP:localhost:3121&quot;</span><span class="p">,</span>
+                            <span class="n">cs_server_url</span><span class="o">=</span><span class="s2">&quot;TCP:localhost:3042&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example 2: Disable core scanning and server version checking</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_session</span> <span class="o">=</span> <span class="n">create_session</span><span class="p">(</span><span class="n">hw_server_url</span><span class="o">=</span><span class="s2">&quot;TCP:localhost:3121&quot;</span><span class="p">,</span>
+                            <span class="n">cs_server_url</span><span class="o">=</span><span class="s2">&quot;TCP:localhost:3042&quot;</span><span class="p">,</span>
+                            <span class="n">disable_core_scan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">bypass_version_check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hw_server_url</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Hardware server URL. Format <code class="docutils literal notranslate"><span class="pre">TCP:&lt;hostname&gt;:&lt;port&gt;</span></code></p></li>
+<li><p><strong>cs_server_url</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – ChipScope server URL. Format <code class="docutils literal notranslate"><span class="pre">TCP:&lt;hostname&gt;:&lt;port&gt;</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>disable_core_scan</strong> – Set True to completely disable core scanning during discover_and_setup_debug_cores</p></li>
+<li><p><strong>bypass_version_check</strong> – Set True to change hw_server and cs_server version mismatch to warning instead of error</p></li>
+<li><p><strong>xvc_mm_server_url</strong> – Url for the testing xvc memory map server - For special debug core testing use cases</p></li>
+<li><p><strong>cable_timeout</strong> – Seconds before timing out when detecting devices on a jtag cable</p></li>
+<li><p><strong>initial_device_scan</strong> – Do an initial device scan when opening session (lazy initialization otherwise)</p></li>
+<li><p><strong>pre_device_scan_delay</strong> – Time (in milliseconds) to wait after creating connections to hw_server before scanning for device</p></li>
+<li><p><strong>disable_cache</strong> – Control client caching (experimental)</p></li>
+<li><p><strong>auto_connect</strong> – Automatically connect to server(s) when session is created</p></li>
+<li><p><strong>cs_server_sharing</strong> – Enable reference count to share cs_server connections</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#chipscopy.api.session.Session" title="chipscopy.api.session.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New session object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.delete_session">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.</span></span><span class="sig-name descname"><span class="pre">delete_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#delete_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.delete_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a session. Shuts down any open server connections.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session</strong> (<a class="reference internal" href="#chipscopy.api.session.Session" title="chipscopy.api.session.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>) – The session object to delete</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="chipscopy-api-session">
+<h1>chipscopy.api.session<a class="headerlink" href="#chipscopy-api-session" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.session.Session">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.session.</span></span><span class="sig-name descname"><span class="pre">Session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_server_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xvc_mm_server_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_core_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass_version_check</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cable_timeout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cache</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_device_scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_device_scan_delay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cs_server_sharing</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Top level object that tracks a connection to a hardware server and optionally, chipscope
+server. To create and destroy a session, use the factory function
+create_session() and delete_session().</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="chipscopy.api.session.Session.cables">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cables</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><span class="pre">QueryList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Cable</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.session.Session.cables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all cables connected to the hw_server.
+Similar to vivado get_hw_targets command. target_cables may be jtag or virtual.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Cable</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chipscopy.api.session.Session.devices">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><span class="pre">QueryList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../device.html#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><span class="pre">Device</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.session.Session.devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of devices connected to this hw_server and cable.
+Devices may span multiple jtag chains. No ordering is guaranteed.
+Devices are cached after scanning until an event changes state and
+requires a re-scan if caching is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="../device.html#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.session.Session.get_param">
+<span class="sig-name descname"><span class="pre">get_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.get_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.get_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic parameter get and set for low level chipscope server params</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.session.Session.set_log_level">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.set_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.set_log_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the logging level for the ChipScoPy client. This applies to all sessions.
+Default is “NONE”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>level</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – The minimum level to use for the logger. Valid levels are
+“TRACE”, “DEBUG”, “INFO”, “SUCCESS”, “WARNING”, “ERROR”, “CRITICAL”, “NONE”</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.session.Session.set_param">
+<span class="sig-name descname"><span class="pre">set_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.set_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.set_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic parameter get and set for low level chipscope server params</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.session.Session.setup_stimgen">
+<span class="sig-name descname"><span class="pre">setup_stimgen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/chipscopy/api/session.html#Session.setup_stimgen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.session.Session.setup_stimgen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up StimGen support on the cs_server
+:type params: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]
+:param params: Dict of arguments used for setting up StimGen support.
++——————-+———————-+——————————————+
+| Name              | Type                 | Description                              |
++===================+======================+==========================================+
+| sg4db             |  str                 | Path to .sg4db file to use               |
++——————-+———————-+——————————————+
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">StimgenClient</span></code>
+:returns: StimgenClient instance</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../session.html" class="btn btn-neutral float-left" title="Session" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 10, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

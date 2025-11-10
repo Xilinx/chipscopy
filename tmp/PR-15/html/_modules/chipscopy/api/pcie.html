@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.api.pcie &mdash; ChipScoPy 2025.1.1752011002 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../api.html">chipscopy.api</a> &raquo;</li>
+      <li>chipscopy.api.pcie</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for chipscopy.api.pcie</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">chipscopy.utils.printer</span> <span class="kn">import</span> <span class="n">printer</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api</span> <span class="kn">import</span> <span class="n">CoreType</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api._detail.debug_core</span> <span class="kn">import</span> <span class="n">DebugCore</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">chipscopy.client.axis_pcie_core_client</span> <span class="kn">import</span> <span class="n">AxisPCIeCoreClient</span>
+
+
+<div class="viewcode-block" id="PCIe"><a class="viewcode-back" href="../../../pcie/references/pcie.html#chipscopy.api.pcie.PCIe">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">PCIe</span><span class="p">(</span><span class="n">DebugCore</span><span class="p">[</span><span class="s2">&quot;AxisPCIeCoreClient&quot;</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pcie_tcf</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PCIe</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">CoreType</span><span class="o">.</span><span class="n">AXIS_PCIE</span><span class="p">,</span> <span class="n">pcie_tcf</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">pcie_tcf</span><span class="o">.</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core_info</span><span class="o">.</span><span class="n">uuid</span>
+
+        <span class="c1"># This is used by the filter_by method in QueryList</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_properties</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">property_name_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">property_name_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="n">items</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">property_name_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">return_dict</span>
+
+    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">}</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">props</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">items</span>
+
+<div class="viewcode-block" id="PCIe.refresh"><a class="viewcode-back" href="../../../pcie/references/pcie.html#chipscopy.api.pcie.PCIe.refresh">[docs]</a>    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the PCIe debug memory again, and updated internal properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">read_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">([])</span></div>
+
+<div class="viewcode-block" id="PCIe.read_data"><a class="viewcode-back" href="../../../pcie/references/pcie.html#chipscopy.api.pcie.PCIe.read_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the PCIe debug memory again, and updated internal properties, same as refresh()</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">read_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">([])</span></div>
+
+<div class="viewcode-block" id="PCIe.reset_core"><a class="viewcode-back" href="../../../pcie/references/pcie.html#chipscopy.api.pcie.PCIe.reset_core">[docs]</a>    <span class="k">def</span> <span class="nf">reset_core</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the PCIe debug core, telling the IP to start collecting a new state trace</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core_tcf_node</span><span class="o">.</span><span class="n">reset_core</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;PCIe </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_cap</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
+
+<div class="viewcode-block" id="PCIe.get_dot"><a class="viewcode-back" href="../../../pcie/references/pcie.html#chipscopy.api.pcie.PCIe.get_dot">[docs]</a>    <span class="k">def</span> <span class="nf">get_dot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a text string of the PCIe LTSSM in the DOT format. DOT is a graph</span>
+<span class="sd">        description language:</span>
+<span class="sd">        (https://en.wikipedia.org/wiki/DOT_(graph_description_language))</span>
+<span class="sd">        This format can be graphed using python (networkx) or other graphing tools (graphviz</span>
+<span class="sd">        and others)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            String with the PCIe LTSSM graph in a DOT format, using the same colors and labels</span>
+<span class="sd">            as get_plt()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Detect&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;2,0!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Polling&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;2,-2!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Configuration&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;2,-4!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;L0&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;2,-6!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;1,-7!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;L0s&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;2,-8!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;R.Lock&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;4,-8!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;R.Speed&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;4,-10!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;R.Cfg&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;6,-8!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;R.Idle&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;8,-8!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;R.Eq&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;6,-10!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Loopback&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;4.5,-5.5!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Hotreset&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;4.5,-4!&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;Disabled&quot;</span><span class="p">:</span> <span class="s1">&#39;pos=&quot;4.5,-2!&quot;&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">dot_src</span> <span class="o">=</span> <span class="s2">&quot;digraph {</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">dot_src</span> <span class="o">+=</span> <span class="s1">&#39;graph [pad=&quot;0.212,0.055&quot; bgcolor=white splines=true esep=&quot;+40&quot; sep=&quot;+50&quot;]</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">dot_src</span> <span class="o">+=</span> <span class="s2">&quot;node [style=filled]</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">([])</span>
+        <span class="n">val_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">pos</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;state.&quot;</span> <span class="o">+</span> <span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">val_map</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;orange&quot;</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="s2">&quot;green&quot;</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;gray&quot;</span>
+            <span class="n">dot_src</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s1">&quot; [fillcolor=&quot;</span><span class="si">{</span><span class="n">val_map</span><span class="p">[</span><span class="n">state</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot; </span><span class="si">{</span><span class="n">pos</span><span class="p">[</span><span class="n">state</span><span class="p">]</span><span class="si">}</span><span class="s1">]</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;edge.&quot;</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;edge.(.+)_(.+)&quot;</span><span class="p">)</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">PCIe</span><span class="o">.</span><span class="n">_cap</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">PCIe</span><span class="o">.</span><span class="n">_cap</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">dot_src</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s1"> [label = &quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;]</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">dot_src</span> <span class="o">+=</span> <span class="s2">&quot;}&quot;</span>
+        <span class="k">return</span> <span class="n">dot_src</span></div>
+
+<div class="viewcode-block" id="PCIe.print_trace"><a class="viewcode-back" href="../../../pcie/references/pcie.html#chipscopy.api.pcie.PCIe.print_trace">[docs]</a>    <span class="k">def</span> <span class="nf">print_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints PCIe trace to console, parsing the hierarchy of loops and substates to create</span>
+<span class="sd">        a user-friendly output</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state.trace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trace</span><span class="p">:</span>
+            <span class="n">PCIe</span><span class="o">.</span><span class="n">print_bracketed</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">print_bracketed</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">indent</span><span class="p">):</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;magenta&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">indent</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="n">trace</span><span class="si">}</span><span class="s2">[/</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">]&quot;</span>
+            <span class="n">printer</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">brace_locations</span> <span class="o">=</span> <span class="n">PCIe</span><span class="o">.</span><span class="n">find_brace</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="s2">&quot;[]&quot;</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">while</span> <span class="n">start</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">brace_locations</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="n">prev</span><span class="p">:</span><span class="n">start</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">[/</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">]&quot;</span>
+                    <span class="n">printer</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">PCIe</span><span class="o">.</span><span class="n">print_bracketed</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">end</span><span class="p">],</span> <span class="n">indent</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># skip past the ending bracket and comma</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">prev</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
+                <span class="k">return</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="p">[</span><span class="n">prev</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;,&quot;</span><span class="p">:</span>
+                <span class="n">prev</span> <span class="o">=</span> <span class="n">prev</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="n">prev</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">end</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">[/</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">]&quot;</span>
+                    <span class="n">printer</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_brace</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">braces</span><span class="p">):</span>
+        <span class="n">toret</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">pstack</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">braces</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">pstack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">c</span> <span class="o">==</span> <span class="n">braces</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pstack</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;No matching closing parens at: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="n">toret</span><span class="p">[</span><span class="n">pstack</span><span class="o">.</span><span class="n">pop</span><span class="p">()]</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pstack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;No matching opening parens at: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pstack</span><span class="o">.</span><span class="n">pop</span><span class="p">()))</span>
+
+        <span class="k">return</span> <span class="n">toret</span>
+
+<div class="viewcode-block" id="PCIe.get_plt"><a class="viewcode-back" href="../../../pcie/references/pcie.html#chipscopy.api.pcie.PCIe.get_plt">[docs]</a>    <span class="k">def</span> <span class="nf">get_plt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a matplotlib figure to plot, showing the PCIe LTSSM graph.  States will be</span>
+<span class="sd">        colored green if they have been visited, orange if it&#39;s the last state visited, and</span>
+<span class="sd">        grey if not visited.  The edge labels represent the number of times that state</span>
+<span class="sd">        transition has be traversed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A matplotlib.pyplot that can be titled and shown later (can use plt.title</span>
+<span class="sd">            or plt.show()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">([])</span>
+
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">()</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span>
+            <span class="p">[(</span><span class="s2">&quot;Detect&quot;</span><span class="p">,</span> <span class="s2">&quot;Polling&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;Polling&quot;</span><span class="p">,</span> <span class="s2">&quot;Configuration&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;Configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">)],</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;Polling&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;Configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;Configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;Loopback&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;Configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Lock&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;Configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;Disabled&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="s2">&quot;L0s&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Lock&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="s2">&quot;L1&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Lock&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;L0s&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Lock&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;L0s&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Lock&quot;</span><span class="p">,</span> <span class="s2">&quot;Configuration&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Lock&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Cfg&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Lock&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Eq&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Lock&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Cfg&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Speed&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Cfg&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Idle&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Cfg&quot;</span><span class="p">,</span> <span class="s2">&quot;Configuration&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Cfg&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Eq&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Lock&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Eq&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Speed&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Speed&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+                <span class="c1">#  (&quot;R.Idle&quot;, &quot;R.Lock&quot;),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Idle&quot;</span><span class="p">,</span> <span class="s2">&quot;Loopback&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Idle&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Idle&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Idle&quot;</span><span class="p">,</span> <span class="s2">&quot;Hot reset&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;R.Idle&quot;</span><span class="p">,</span> <span class="s2">&quot;Disabled&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;Loopback&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;Hot reset&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;Disabled&quot;</span><span class="p">,</span> <span class="s2">&quot;Detect&quot;</span><span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;999&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># visual placement of states</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Detect&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;Polling&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;Configuration&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">],</span>
+            <span class="s2">&quot;L0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">],</span>
+            <span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">],</span>
+            <span class="s2">&quot;L0s&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">],</span>
+            <span class="s2">&quot;R.Lock&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">],</span>
+            <span class="s2">&quot;R.Speed&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">],</span>
+            <span class="s2">&quot;R.Cfg&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">],</span>
+            <span class="s2">&quot;R.Idle&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">],</span>
+            <span class="s2">&quot;R.Eq&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">],</span>
+            <span class="s2">&quot;Loopback&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">],</span>
+            <span class="s2">&quot;Hot reset&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">],</span>
+            <span class="s2">&quot;Disabled&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;fontweight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="s2">&quot;fontsize&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">}</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;PCIe LTSSM Graph&quot;</span><span class="p">,</span> <span class="n">font</span><span class="p">)</span>
+        <span class="n">val_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">pos</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;state.&quot;</span> <span class="o">+</span> <span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">val_map</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;orange&quot;</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="s2">&quot;green&quot;</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;gray&quot;</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;grey&quot;</span> <span class="k">if</span> <span class="n">edge</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val_map</span> <span class="k">else</span> <span class="n">val_map</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+
+        <span class="c1"># Specify the edges you want here</span>
+        <span class="n">blue_edges</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;R.Lock&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Cfg&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;R.Cfg&quot;</span><span class="p">,</span> <span class="s2">&quot;R.Idle&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;R.Idle&quot;</span><span class="p">,</span> <span class="s2">&quot;L0&quot;</span><span class="p">)]</span>
+        <span class="n">edge_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;black&quot;</span> <span class="k">if</span> <span class="n">edge</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">blue_edges</span> <span class="k">else</span> <span class="s2">&quot;blue&quot;</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">()]</span>
+        <span class="n">edge_labels</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+            <span class="n">prop_name</span> <span class="o">=</span> <span class="s2">&quot;edge.&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">prop_name</span> <span class="o">=</span> <span class="n">prop_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span>
+            <span class="n">edge_labels</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>
+
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">edge_color</span><span class="o">=</span><span class="n">edge_colors</span><span class="p">,</span> <span class="n">arrows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">arrowsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edge_labels</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">edge_labels</span><span class="o">=</span><span class="n">edge_labels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plt</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 10, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
