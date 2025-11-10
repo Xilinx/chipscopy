@@ -1,0 +1,92 @@
+# This workflow publishes documentation to GitHub Pages
+
+name: Publish Docs to GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-name:
+        description: 'Release name (e.g., 2025.1)'
+        required: true
+        type: string
+
+
+permissions:
+  contents: write
+
+
+jobs:
+  build-and-publish-docs:
+    name: Build and Publish Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install documentation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sphinx sphinx-rtd-theme
+          # Add any other doc dependencies here
+
+      - name: Build documentation
+        run: |
+          cd docs
+          make html
+
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: docs-build
+          path: docs/_build/
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Remove existing release folder if exists
+        run: |
+          if [ -d "gh-pages/${{ github.event.inputs.release-name }}" ]; then
+            echo "Removing existing folder: ${{ github.event.inputs.release-name }}"
+            rm -rf "gh-pages/${{ github.event.inputs.release-name }}"
+          else
+            echo "No existing folder found for: ${{ github.event.inputs.release-name }}"
+          fi
+
+      - name: Create release folder
+        run: |
+          mkdir -p "gh-pages/${{ github.event.inputs.release-name }}"
+          echo "Created folder: ${{ github.event.inputs.release-name }}"
+
+      - name: Download and copy built documentation
+        uses: actions/download-artifact@v5
+        with:
+          name: docs-build
+          path: docs-build-temp
+
+      - name: Copy documentation files to release folder
+        run: |
+          cp -r docs-build-temp/* "gh-pages/${{ github.event.inputs.release-name }}/"
+          echo "Documentation copied to ${{ github.event.inputs.release-name }}"
+
+      - name: Commit and push changes
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Publish documentation for release: ${{ github.event.inputs.release-name }}"
+            git push origin gh-pages
+            echo "Documentation published successfully!"
+          fi
