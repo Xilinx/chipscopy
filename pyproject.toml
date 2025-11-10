@@ -45,7 +45,6 @@ ipywidgets = { version = "^8.1", optional = true }
 pandas = { version = ">=1.5", optional = true }
 matplotlib = { version = "^3.7", optional = true }
 PyQt5 = { version = "^5.15", optional = true }
-pytcf = { version = "^0.0.10", optional = true }
 ipympl = { version = "^0.9.3", optional = true }
 pywinpty = { version = "<=2.0.13", markers = "sys_platform == 'win32' and python_version < '3.9'", optional = true }
 
@@ -54,7 +53,6 @@ pytest = "^7.4"
 coverage = "^7.3"
 pytest-mock = "^3.11"
 colorama = "^0.4"
-chapsak = "^1.7.1"
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "==6.2.1"
@@ -81,12 +79,6 @@ csutil = "chipscopy._cli._chipscopy:main"
 [tool.poetry.extras]
 core-addons = ["plotly", "kaleido", "matplotlib", "PyQt5", "pandas", "ipympl"]
 jupyter = ["notebook", "ipywidgets", "pywinpty"]
-pytcf = ["pytcf"]
-
-[[tool.poetry.source]]
-name = "artifactory"
-url = "https://xcoartifactory.xilinx.com/artifactory/api/pypi/pypi/simple"
-priority = "supplemental"
 
 [tool.pytest.ini_options]
 addopts = "--strict-markers --verbose"

@@ -51,11 +51,15 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Set up Poetry
+        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
+        uses: abatilo/actions-poetry@v3
+        with:
+          # TODO - Read this from .poetry-version file
+          poetry-version: 1.8.3
+
       - name: Install documentation dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install sphinx sphinx-rtd-theme
-          # Add any other doc dependencies here
+        run: poetry install --with docs
 
       - name: Build documentation
         run: |
@@ -96,7 +100,7 @@ jobs:
 
       - name: Copy documentation files to target folder
         run: |
-          cp -r docs-build-temp/* "gh-pages/${{ steps.determine-release.outputs.target-path }}/"
+          cp -r docs-build-temp/. "gh-pages/${{ steps.determine-release.outputs.target-path }}/"
           echo "Documentation copied to ${{ steps.determine-release.outputs.target-path }}"
 
       - name: Commit and push changes
@@ -130,7 +134,7 @@ jobs:
 
       - name: Remove PR documentation folder
         run: |
-          PR_FOLDER="tmp/pr-${{ github.event.pull_request.number }}"
+          PR_FOLDER="tmp/PR-${{ github.event.pull_request.number }}"
           if [ -d "$PR_FOLDER" ]; then
             echo "Removing PR documentation folder: $PR_FOLDER"
             rm -rf "$PR_FOLDER"
