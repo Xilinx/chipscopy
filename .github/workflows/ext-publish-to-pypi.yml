@@ -153,8 +153,8 @@ jobs:
       
       - name: Wait for package to be available
         run: |
-          echo "Waiting 60 seconds for package to propagate..."
-          sleep 60
+          echo "Waiting 120 seconds for package to propagate..."
+          sleep 120
         shell: bash
       
       - name: Install from Test PyPI
