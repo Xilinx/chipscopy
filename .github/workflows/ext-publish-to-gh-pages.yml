@@ -211,8 +211,6 @@ jobs:
             echo "PR documentation cleaned up successfully!"
           fi
 
-            # Single deploy job since we're just deploying
-
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
