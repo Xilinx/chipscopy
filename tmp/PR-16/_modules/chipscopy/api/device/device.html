@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.api.device.device &mdash; ChipScoPy XXXXXXX documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../api.html">chipscopy.api</a> &raquo;</li>
+      <li>chipscopy.api.device.device</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for chipscopy.api.device.device</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">pack</span><span class="p">,</span> <span class="n">unpack</span>
+
+<span class="kn">from</span> <span class="nn">chipscopy.api</span> <span class="kn">import</span> <span class="n">DMNodeListener</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api._detail.ltx</span> <span class="kn">import</span> <span class="n">parse_ltx_files</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api._detail.trace</span> <span class="kn">import</span> <span class="n">Trace</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.containers</span> <span class="kn">import</span> <span class="n">QueryList</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ddr.ddr</span> <span class="kn">import</span> <span class="n">DDR</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.device.client_program_log</span> <span class="kn">import</span> <span class="n">ClientProgramLogStrategy</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.device.device_spec</span> <span class="kn">import</span> <span class="n">DeviceSpec</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.hbm.hbm</span> <span class="kn">import</span> <span class="n">HBM</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ibert</span> <span class="kn">import</span> <span class="n">IBERT</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ila</span> <span class="kn">import</span> <span class="n">ILA</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.memory</span> <span class="kn">import</span> <span class="n">Memory</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.noc.noc</span> <span class="kn">import</span> <span class="n">NocPerfmon</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.pcie</span> <span class="kn">import</span> <span class="n">PCIe</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.sysmon</span> <span class="kn">import</span> <span class="n">Sysmon</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.vio</span> <span class="kn">import</span> <span class="n">VIO</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client</span> <span class="kn">import</span> <span class="n">ServerInfo</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.axis_ila_core_client</span> <span class="kn">import</span> <span class="n">AxisIlaCoreClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.axis_pcie_core_client</span> <span class="kn">import</span> <span class="n">AxisPCIeCoreClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.axis_trace_core_client</span> <span class="kn">import</span> <span class="n">AxisTraceClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.axis_vio_core_client</span> <span class="kn">import</span> <span class="n">AxisVIOCoreClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.core</span> <span class="kn">import</span> <span class="n">CoreParent</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.ddrmc_client</span> <span class="kn">import</span> <span class="n">DDRMCClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.hbm_client</span> <span class="kn">import</span> <span class="n">HBMClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.ibert_core_client</span> <span class="kn">import</span> <span class="n">IBERTCoreClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.jtagdevice</span> <span class="kn">import</span> <span class="n">JtagCable</span><span class="p">,</span> <span class="n">JtagDevice</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.mem</span> <span class="kn">import</span> <span class="n">MemoryNode</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.noc_perfmon_core_client</span> <span class="kn">import</span> <span class="n">NoCPerfMonCoreClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.sysmon_core_client</span> <span class="kn">import</span> <span class="n">SysMonCoreClient</span>
+<span class="kn">from</span> <span class="nn">chipscopy.dm</span> <span class="kn">import</span> <span class="n">chipscope</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">chipscopy.utils.printer</span> <span class="kn">import</span> <span class="n">printer</span><span class="p">,</span> <span class="n">PercentProgressBar</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.device.device_scanner</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">scan_all_views</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.device.device_util</span> <span class="kn">import</span> <span class="n">copy_node_props</span>
+<span class="kn">from</span> <span class="nn">chipscopy.utils.logger</span> <span class="kn">import</span> <span class="n">log</span>
+
+
+<div class="viewcode-block" id="FeatureNotAvailableError"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.FeatureNotAvailableError">[docs]</a><span class="k">class</span> <span class="nc">FeatureNotAvailableError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Feature not available on this architecture&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DeviceException"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.DeviceException">[docs]</a><span class="k">class</span> <span class="nc">DeviceException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DeviceState"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.DeviceState">[docs]</a><span class="k">class</span> <span class="nc">DeviceState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">VALID</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">NEEDS_REFRESH</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">INVALID</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="DeviceFamily"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.DeviceFamily">[docs]</a><span class="k">class</span> <span class="nc">DeviceFamily</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">GENERIC</span> <span class="o">=</span> <span class="s2">&quot;generic&quot;</span>
+    <span class="n">UPLUS</span> <span class="o">=</span> <span class="s2">&quot;ultrascaleplus&quot;</span>
+    <span class="n">VERSAL</span> <span class="o">=</span> <span class="s2">&quot;versal&quot;</span>
+    <span class="n">XVC</span> <span class="o">=</span> <span class="s2">&quot;xvc&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_family_for_name</span><span class="p">(</span><span class="n">family_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DeviceFamily&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">family_name</span> <span class="o">==</span> <span class="s2">&quot;versal&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span>
+        <span class="k">elif</span> <span class="n">family_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;xvc&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">XVC</span>
+        <span class="k">elif</span> <span class="n">family_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;uplus&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">family_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">GENERIC</span></div>
+
+
+<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Device class represents a single device. It is the base class for other</span>
+<span class="sd">    Xilinx or Generic devices. Depending on the device type, some features may be available or unavailable.</span>
+
+<span class="sd">    Device has the kitchen sink of properties functions to make documentation and type hints easy.</span>
+<span class="sd">    Child classes raise FeatureNotAvailable for functions they do not support.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_CORE_TYPE_TO_CLASS_MAP</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;vio&quot;</span><span class="p">:</span> <span class="n">AxisVIOCoreClient</span><span class="p">,</span>
+        <span class="s2">&quot;ila&quot;</span><span class="p">:</span> <span class="n">AxisIlaCoreClient</span><span class="p">,</span>
+        <span class="s2">&quot;trace&quot;</span><span class="p">:</span> <span class="n">AxisTraceClient</span><span class="p">,</span>
+        <span class="c1"># todo: remove after hw_server is updated.</span>
+        <span class="s2">&quot;Core&quot;</span><span class="p">:</span> <span class="n">AxisTraceClient</span><span class="p">,</span>
+        <span class="s2">&quot;pcie&quot;</span><span class="p">:</span> <span class="n">AxisPCIeCoreClient</span><span class="p">,</span>
+        <span class="s2">&quot;npi_nir&quot;</span><span class="p">:</span> <span class="n">NoCPerfMonCoreClient</span><span class="p">,</span>
+        <span class="s2">&quot;ibert&quot;</span><span class="p">:</span> <span class="n">IBERTCoreClient</span><span class="p">,</span>
+        <span class="s2">&quot;sysmon&quot;</span><span class="p">:</span> <span class="n">SysMonCoreClient</span><span class="p">,</span>
+        <span class="s2">&quot;ddrmc_main&quot;</span><span class="p">:</span> <span class="n">DDRMCClient</span><span class="p">,</span>
+        <span class="s2">&quot;hbm&quot;</span><span class="p">:</span> <span class="n">HBMClient</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">hw_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span>
+        <span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">],</span>
+        <span class="n">device_spec</span><span class="p">:</span> <span class="n">DeviceSpec</span><span class="p">,</span>
+        <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cached_props</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="o">=</span> <span class="n">hw_server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span> <span class="o">=</span> <span class="n">cs_server</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span> <span class="o">=</span> <span class="n">device_spec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_target</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;DPC&quot;</span><span class="p">,</span> <span class="s2">&quot;DAP&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;DPC&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">family_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_arch_name</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_family</span> <span class="o">=</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">get_family_for_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">family_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">part_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_part_name</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dna</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_dna</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jtag_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_index</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">disable_core_scan</span> <span class="o">=</span> <span class="n">disable_core_scan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disable_cache</span> <span class="o">=</span> <span class="n">disable_cache</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ltx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ltx_sources</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cores_to_scan</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># set during discover_and_setup_cores</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Keep error for query after programming</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+
+        <span class="c1"># The following filter_by becomes a dictionary with architecture, jtag_index, context, etc.</span>
+        <span class="c1"># This is used when asking for a device by filter from the device list like:</span>
+        <span class="c1">#    report_devices(session.devices.get(dna=&quot;.*1234&quot;))</span>
+        <span class="c1"># Needs improvement because QueryList filtering does not work with hierarchy</span>
+        <span class="c1"># Should always be the last part of __init__ because of to_dict() call...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">part_name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dna</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">props</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No property </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_raise_if_state_invalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">INVALID</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DeviceException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Device </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> is invalid - session rescan required&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force_update</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># Refresh device properties from hardware</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cached_props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_props</span><span class="p">(</span><span class="n">force_update</span><span class="o">=</span><span class="n">force_update</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">disable_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">VALID</span>
+
+    <span class="k">def</span> <span class="nf">node_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">]):</span>
+        <span class="c1"># Called from session when a TCF node event happens</span>
+        <span class="c1"># TODO: TypeError: &#39;ParodyLogger&#39; object is not callable</span>
+        <span class="c1"># log.client.trace(f&quot;node_callback: action={action}, node={node.ctx}&quot;)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span> <span class="ow">or</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_ADDED</span><span class="p">:</span>
+            <span class="c1"># Maybe in the future we will track if a child node was added to anything in the</span>
+            <span class="c1">#     Device tree... For now just ignore.</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Top level device contexts that can represent the device - track for device removal</span>
+        <span class="n">root_device_contexts</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">device_ctx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_device_ctx</span><span class="p">}</span>
+
+        <span class="c1"># Expanded set of device contexts that are important to track for node changes</span>
+        <span class="n">all_device_contexts</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">device_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_device_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">debugcore_dap_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">debugcore_dpc_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">memory_dap_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">memory_dpc_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">chipscope_dap_ctx</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">chipscope_dpc_ctx</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_REMOVED</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">ctx</span> <span class="ow">in</span> <span class="n">root_device_contexts</span><span class="p">:</span>
+            <span class="c1"># Removed a node that is the anchor for this device... Invalidate the device so any subsequent</span>
+            <span class="c1">#     user API calls return an invalid device message</span>
+
+            <span class="c1"># TODO: TypeError: &#39;ParodyLogger&#39; object is not callable</span>
+            <span class="c1"># log.client.warn(f&quot;DEVICE {str(self)} marked invalid -- rescan required!&quot;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">INVALID</span>
+            <span class="n">device_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_device_node</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">device_node</span><span class="p">:</span>
+                <span class="c1"># Remove any cached information for the invalid device</span>
+                <span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="n">DMNodeListener</span><span class="o">.</span><span class="n">NodeAction</span><span class="o">.</span><span class="n">NODE_CHANGED</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">ctx</span> <span class="ow">in</span> <span class="n">all_device_contexts</span><span class="p">:</span>
+            <span class="c1"># One of our watched nodes changed - need to re-scan properties from hardware on next call</span>
+
+            <span class="c1"># TODO: TypeError: &#39;ParodyLogger&#39; object is not callable</span>
+            <span class="c1"># log.client.debug(</span>
+            <span class="c1">#     f&quot;NODE_CHANGED on device {str(self)}, Node: {node.ctx} - setting NEEDS_REFRESH&quot;</span>
+            <span class="c1"># )</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span>
+
+<div class="viewcode-block" id="Device.scan_props"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.scan_props">[docs]</a>    <span class="k">def</span> <span class="nf">scan_props</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force_update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scan device properties from hardware.</span>
+
+<span class="sd">        Returns: Dict of properties</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
+            <span class="n">props</span><span class="p">[</span><span class="s2">&quot;jtag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy_node_props</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">force_update</span><span class="o">=</span><span class="n">force_update</span><span class="p">)</span>
+            <span class="c1"># Extract error_status on top level (if it exists and is a list with a single element)</span>
+            <span class="n">props</span><span class="p">[</span><span class="s2">&quot;error_status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="nb">iter</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;jtag&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;regs&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_status&quot;</span><span class="p">,</span> <span class="p">[])),</span> <span class="kc">None</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">props</span><span class="p">[</span><span class="s2">&quot;error_status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_valid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_programmed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_is_programmed</span><span class="p">(</span><span class="n">force_update</span><span class="o">=</span><span class="n">force_update</span><span class="p">)</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_is_programmable</span><span class="p">()</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;part&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">part_name</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;family&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">family_name</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;dna&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dna</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;jtag_index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_index</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;cable_context&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_cable_ctx</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;jtag_context&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">jtag_device_ctx</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;cable_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_jtag_cable_name</span><span class="p">()</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>  <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="n">props</span></div>
+
+<div class="viewcode-block" id="Device.to_dict"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dictionary representation of the device data&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cached_props</span></div>
+
+<div class="viewcode-block" id="Device.to_json"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a json representation of the device data&quot;&quot;&quot;</span>
+        <span class="n">raw_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">raw_json</span></div>
+
+    <span class="c1"># NODE / LOW LEVEL</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the unique context for this device. Normally this is the</span>
+<span class="sd">        jtag node context. If this device is not on a jtag chain, the top</span>
+<span class="sd">        level device context will be a non-jtag node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">device_ctx</span>
+
+<div class="viewcode-block" id="Device.scan_is_programmed"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.scan_is_programmed">[docs]</a>    <span class="k">def</span> <span class="nf">scan_is_programmed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force_update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this Device is programmed, False otherwise.&quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Queries hardware for jtag program status. This could be slow -</span>
+        <span class="c1">#       is there a way to collect this once, then track by subsequent events pushed from</span>
+        <span class="c1">#       the hw_server if we detect DONE went low?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">is_programmed_</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
+            <span class="n">is_programmable</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_programmable</span><span class="p">:</span>
+                <span class="n">regs</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;regs&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">regs</span><span class="p">:</span>
+                    <span class="n">jtag_status</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;regs&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;jtag_status&quot;</span><span class="p">)</span>
+                    <span class="n">config_status</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;regs&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;config_status&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">jtag_status</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">force_update</span><span class="p">:</span>
+                            <span class="n">node</span><span class="o">.</span><span class="n">update_regs</span><span class="p">(</span><span class="n">reg_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;jtag_status&quot;</span><span class="p">,),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                        <span class="n">done_reg</span> <span class="o">=</span> <span class="n">jtag_status</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;DONE&quot;</span><span class="p">]</span>
+                        <span class="n">is_programmed_</span> <span class="o">=</span> <span class="n">done_reg</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">config_status</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">force_update</span><span class="p">:</span>
+                            <span class="n">node</span><span class="o">.</span><span class="n">update_regs</span><span class="p">(</span><span class="n">reg_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;config_status&quot;</span><span class="p">,),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                        <span class="n">done_reg</span> <span class="o">=</span> <span class="n">config_status</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;DONE_PIN&quot;</span><span class="p">]</span>
+                        <span class="n">is_programmed_</span> <span class="o">=</span> <span class="n">done_reg</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># noqa</span>
+            <span class="n">is_programmed_</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">is_programmed_</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_programmed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this Device is programmed, False otherwise.&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_programmed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Device.scan_is_programmable"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.scan_is_programmable">[docs]</a>    <span class="k">def</span> <span class="nf">scan_is_programmable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this Device is programmable, False otherwise&quot;&quot;&quot;</span>
+        <span class="n">is_programmable_</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
+        <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_programmable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this Device is programmable, False otherwise&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_programmable&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this Node is valid, False otherwise.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">is_valid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jtag_cable_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JtagCable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Low level TCF node access - For advanced use&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_jtag_cable_node</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jtag_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JtagDevice</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Low level TCF node access - For advanced use&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_jtag_node</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">debugcore_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CoreParent</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Low level TCF node access - For advanced use&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_debugcore_node</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_target</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chipscope_node</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CoreParent</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Low level TCF node access - For advanced use&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_chipscope_node</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_target</span><span class="p">)</span>
+
+    <span class="c1"># DEBUG CORES</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ibert_cores</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">IBERT</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        list of detected IBERT cores in the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">IBERTCoreClient</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">vio_cores</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">VIO</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        list of detected VIO cores in the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">AxisVIOCoreClient</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ila_cores</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">ILA</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        list of detected ILA cores in the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">AxisIlaCoreClient</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">trace_cores</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Trace</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        list of detected Trace cores in the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">AxisTraceClient</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pcie_cores</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">PCIe</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        list of detected PCIe cores in the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">AxisPCIeCoreClient</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">noc_core</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">NocPerfmon</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        List with NOC roots for the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">NoCPerfMonCoreClient</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ddrs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">DDR</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        list of detected DDRMC cores in the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">DDRMCClient</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hbms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">HBM</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        list of detected HBM cores in the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">HBMClient</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sysmon_root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Sysmon</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        List with one SysMon core for the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_debug_core_wrappers</span><span class="p">(</span><span class="n">SysMonCoreClient</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_set_client_wrapper</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">api_client_wrapper</span><span class="p">):</span>
+        <span class="c1"># Tacks a wrapper onto a node for tracking. Always call this</span>
+        <span class="c1"># instead of setting directly on node - in case we change the</span>
+        <span class="c1"># client wrapper tracking process.</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">api_client_wrapper</span> <span class="o">=</span> <span class="n">api_client_wrapper</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_client_wrapper</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="c1"># Gets the tacked on wrapper from a node.</span>
+        <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">api_client_wrapper</span>
+
+    <span class="k">def</span> <span class="nf">_create_debugcore_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="c1"># Factory to build debug_core_wrappers</span>
+        <span class="c1"># Instantiate debug core wrappers for a known core type. The wrapper gets attached to a</span>
+        <span class="c1"># node for safe keeping. Any time we need to grab a debug core wrapper (like ILA)</span>
+        <span class="c1"># it is available on the node using</span>
+        <span class="c1">#     wrapper = self._get_client_wrapper(node)</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ila&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">ILA</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">ltx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ltx</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;vio&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">VIO</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ltx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ltx</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;trace&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="c1"># todo: remove after hw_server is updated.</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;Core&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;pcie&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">PCIe</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;npi_nir&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">NocPerfmon</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ibert&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">IBERT</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;sysmon&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">Sysmon</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ddrmc_main&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">DDR</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;hbm&quot;</span><span class="p">:</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">HBM</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># TODO: extend this factory to other core types with a plugin model for additional types</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">debug_core_wrapper</span>
+
+    <span class="k">def</span> <span class="nf">_find_all_debugcore_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="c1"># Traverse the chipscope view for debug cores in this device.</span>
+        <span class="c1"># Returns a dict mapping core_types to a list of found nodes.</span>
+        <span class="c1"># Notes are returned in upgraded form.</span>
+        <span class="c1">#   Example return:</span>
+        <span class="c1">#         {</span>
+        <span class="c1">#           AxisIlaCoreClient: [ila_node_1, ila_node_2, ...],</span>
+        <span class="c1">#           AxisVIOCoreClient: [vio_node_1, vio_node_2, ...],</span>
+        <span class="c1">#           ...</span>
+        <span class="c1">#         }</span>
+        <span class="c1"># The first time calling this function is slow because nodes have</span>
+        <span class="c1"># not been upgraded yet. Slow is around 1 second. Subsequent calls are</span>
+        <span class="c1"># faster, around 1 ms.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Best to avoid calling this function in an inner loop.</span>
+
+        <span class="n">cs_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="n">chipscope</span><span class="p">)</span>
+        <span class="n">found_cores</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">check_and_upgrade_node</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cores_to_scan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cs_node</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">core_class_type</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">_CORE_TYPE_TO_CLASS_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">core_class_type</span> <span class="ow">and</span> <span class="n">core_class_type</span><span class="o">.</span><span class="n">is_compatible</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                    <span class="n">upgraded_node</span> <span class="o">=</span> <span class="n">cs_view</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">ctx</span><span class="p">,</span> <span class="n">core_class_type</span><span class="p">)</span>
+                    <span class="n">found_cores</span><span class="p">[</span><span class="n">core_class_type</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">upgraded_node</span><span class="p">)</span>
+
+        <span class="c1"># Using the self.chipscope_node restricts nodes to this device only</span>
+        <span class="k">for</span> <span class="n">cs_node</span> <span class="ow">in</span> <span class="n">cs_view</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">cs_node</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;debug_hub&quot;</span><span class="p">:</span>
+                <span class="n">debug_hub_children</span> <span class="o">=</span> <span class="n">cs_view</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="n">cs_node</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">debug_hub_children</span><span class="p">:</span>
+                    <span class="n">check_and_upgrade_node</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">check_and_upgrade_node</span><span class="p">(</span><span class="n">cs_node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">found_cores</span>
+
+    <span class="k">def</span> <span class="nf">_get_debug_core_wrappers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">core_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">:</span>
+        <span class="c1"># Returns a QueryList of the debug_core_wrappers matching the given core_type</span>
+        <span class="c1">#   core_type is a class from CORE_TYPE_TO_CLASS_MAP</span>
+        <span class="c1">#   returned wrapper_type is ILA, VIO, etc. wrapping the node</span>
+        <span class="c1">#</span>
+        <span class="c1"># debug_core_wrappers are initialized if they don&#39;t yet exist for the</span>
+        <span class="c1"># node. After initialization, they are hung on the node for future reference.</span>
+        <span class="c1"># This is convenient because their lifecycle is tied to the node.</span>
+        <span class="n">found_cores</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
+        <span class="n">all_debug_core_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_all_debugcore_nodes</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">all_debug_core_nodes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">core_type</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">_get_client_wrapper</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">debug_core_wrapper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Lazy debugcore initialization here.</span>
+                <span class="c1"># Initialization happens the first time we access the debug core.</span>
+                <span class="n">debug_core_wrapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_debugcore_wrapper</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_client_wrapper</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">debug_core_wrapper</span><span class="p">)</span>
+            <span class="c1"># Now the node should have a proper debug_core_wrapper attached.</span>
+            <span class="k">if</span> <span class="n">Device</span><span class="o">.</span><span class="n">_get_client_wrapper</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                <span class="n">found_cores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Device</span><span class="o">.</span><span class="n">_get_client_wrapper</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">found_cores</span>
+
+<div class="viewcode-block" id="Device.discover_and_setup_cores"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.discover_and_setup_cores">[docs]</a>    <span class="k">def</span> <span class="nf">discover_and_setup_cores</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">hub_address_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ltx_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scan device for debug cores. This may take some time depending on</span>
+<span class="sd">        what gets scanned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            hub_address_list: List of debug hub addresses to scan</span>
+<span class="sd">            ltx_file: LTX file (which contains debug hub addresses)</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            ila_scan: True=Scan Device for ILAs</span>
+<span class="sd">            vio_scan: True=Scan Device for VIOs</span>
+<span class="sd">            ibert_scan: True=Scan Device for IBERTs</span>
+<span class="sd">            pcie_scan: True=Scan Device for PCIEs</span>
+<span class="sd">            noc_scan: True=Scan Device for NOC</span>
+<span class="sd">            ddr_scan: True=Scan Device for DDRs</span>
+<span class="sd">            hbm_scan: True=Scan Device for HBMs</span>
+<span class="sd">            sysmon_scan: True=Scan Device for System Monitor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Selectively disable scanning of cores depending on what comes in</span>
+        <span class="c1"># This is second priority to the disable_core_scan in __init__.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cores_to_scan</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">disable_core_scan</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">core_name</span> <span class="ow">in</span> <span class="n">Device</span><span class="o">.</span><span class="n">_CORE_TYPE_TO_CLASS_MAP</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cores_to_scan</span><span class="p">[</span><span class="n">core_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cores_to_scan</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;ila&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ila_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="s2">&quot;vio&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vio_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="s2">&quot;npi_nir&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;noc_scan&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                <span class="s2">&quot;ddrmc_main&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ddr_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="s2">&quot;hbm&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hbm_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="s2">&quot;pcie&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pcie_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="s2">&quot;ibert&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ibert_scan&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="s2">&quot;sysmon&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sysmon_scan&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;cs_server is not connected&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ltx</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Make sure debug_hub_addrs is a list of hub addresses.</span>
+        <span class="c1"># It may come as an int or a list or None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hub_address_list</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">hub_address_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">hub_address_list</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hub_address_list</span><span class="p">:</span>
+            <span class="n">hub_address_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">ltx_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ltx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ltx_sources</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_ltx_files</span><span class="p">(</span><span class="n">ltx_file</span><span class="p">)</span>  <span class="c1"># noqa</span>
+            <span class="n">hub_address_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ltx</span><span class="o">.</span><span class="n">get_debug_hub_addresses</span><span class="p">())</span>
+            <span class="c1"># Remove any duplicate hub addresses in list, in case same one</span>
+            <span class="c1"># was passed to function as well as in ltx</span>
+            <span class="c1"># Below is a quick python trick to uniquify a list.</span>
+            <span class="n">hub_address_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">hub_address_list</span><span class="p">))</span>
+
+        <span class="c1"># Set up all debug cores in hw_server for the given hub addresses</span>
+        <span class="c1"># Do this by default unless the user has explicitly told us not to with</span>
+        <span class="c1"># &quot;disable_core_scan&quot; as an argument.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">disable_core_scan</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_family</span> <span class="o">==</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No chipscope server connection. Could not get chipscope view&quot;</span><span class="p">)</span>
+            <span class="n">cs_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chipscope_node</span>
+            <span class="k">if</span> <span class="n">cs_node</span><span class="p">:</span>
+                <span class="n">cs_node</span><span class="o">.</span><span class="n">setup_cores</span><span class="p">(</span><span class="n">debug_hub_addrs</span><span class="o">=</span><span class="n">hub_address_list</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># print(self._device_spec.to_json())</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;chipscope_node not available&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># MEMORY</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">memory_target_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        list of supported memory targets&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">valid_memory_targets</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">r</span><span class="s2">&quot;(Versal .*)|(DPC)|(APU)|(RPU)|(PPU)|(PSM)|(Cortex.*)|(MicroBlaze.*)|(RISC-V.*)&quot;</span>
+        <span class="p">)</span>
+        <span class="n">memory_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">)</span>
+        <span class="n">memory_node_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mem_dpc_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_memory_node</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;DPC&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mem_dpc_node</span><span class="p">:</span>
+            <span class="n">memory_node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mem_dpc_node</span><span class="p">)</span>
+        <span class="n">mem_dap_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_memory_node</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;DAP&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mem_dap_node</span><span class="p">:</span>
+            <span class="n">memory_node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mem_dap_node</span><span class="p">)</span>
+
+        <span class="n">nodes_to_travel</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">memory_node_list</span><span class="p">)</span>
+        <span class="n">memory_node_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">nodes_to_travel</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">nodes_to_travel</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">MemoryNode</span><span class="o">.</span><span class="n">is_compatible</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                <span class="n">memory_node</span> <span class="o">=</span> <span class="n">memory_view</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">ctx</span><span class="p">,</span> <span class="n">MemoryNode</span><span class="p">)</span>
+                <span class="n">memory_node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">memory_node</span><span class="p">)</span>
+            <span class="n">nodes_to_travel</span><span class="o">.</span><span class="n">extendleft</span><span class="p">(</span><span class="n">memory_view</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+
+        <span class="c1"># Now the memory_node_list has all memory nodes.</span>
+        <span class="c1"># Make the list of what we found and return it</span>
+        <span class="n">memory_target_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">memory_node_list</span><span class="p">:</span>
+            <span class="n">memory_target_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Name&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">memory_target_name</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">valid_memory_targets</span><span class="p">,</span> <span class="n">memory_target_name</span><span class="p">):</span>
+                <span class="n">memory_target_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">memory_target_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">memory_target_names</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">memory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Memory</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns:</span>
+<span class="sd">        the memory access for the device&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">target_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">get_all_memory_nodes</span><span class="p">()</span>
+        <span class="n">node_list</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">target_nodes</span><span class="p">:</span>
+            <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node_list</span>
+
+<div class="viewcode-block" id="Device.memory_read"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.memory_read">[docs]</a>    <span class="k">def</span> <span class="nf">memory_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read num values from given memory address.  This method is slow because it locates the memory context</span>
+<span class="sd">        in the target tree every time. If you want to execute a large number of memory operations, grab a memory</span>
+<span class="sd">        context and do all the operations in batch.</span>
+<span class="sd">        Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory</span>
+<span class="sd">        target every time. Inner loops should just call the find_memory_target once.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">search_memory_node_deep</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">default_target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find memory node for target </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">memory_read</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retval</span></div>
+
+<div class="viewcode-block" id="Device.memory_write"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.memory_write">[docs]</a>    <span class="k">def</span> <span class="nf">memory_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write list of values to given memory address. This method is slow because it locates the memory context</span>
+<span class="sd">        in the target tree every time. If you want to execute a large number of memory operations, grab a memory</span>
+<span class="sd">        context and do the operations in batch.</span>
+<span class="sd">        Note: This method should not be used in inner loops. It is not the fastest because it looks up the memory</span>
+<span class="sd">        target every time. Inner loops should just call the find_memory_target once.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_spec</span><span class="o">.</span><span class="n">search_memory_node_deep</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">default_target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find memory node for target </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">memory_write</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_dpc_read_bytes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">address</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">byte_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads byte data from memory, using the DPC.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            address (int): Start address</span>
+<span class="sd">            data (bytearray): result buffer which gets filled with read data.</span>
+<span class="sd">            offset (int): start index in *data* to start write to.</span>
+<span class="sd">            byte_size (int): Number of bytes to read. Default is the size of the *data* buffer.</span>
+<span class="sd">            show_progress_bar (bool): Show if True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugcore_node</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">byte_size</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># With progress bar</span>
+        <span class="n">transfer_byte_count</span> <span class="o">=</span> <span class="n">byte_size</span> <span class="k">if</span> <span class="n">byte_size</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Transferring </span><span class="si">{</span><span class="n">transfer_byte_count</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> MB &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;[bold](Read </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">address</span><span class="p">)</span><span class="si">}</span><span class="s2">)[/]&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">bar</span> <span class="o">=</span> <span class="n">PercentProgressBar</span><span class="p">()</span>
+        <span class="n">bar</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">STARTING</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(</span>
+                <span class="n">address</span><span class="p">,</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="n">offset</span><span class="p">,</span>
+                <span class="n">byte_size</span><span class="p">,</span>
+                <span class="n">progress</span><span class="o">=</span><span class="k">lambda</span> <span class="n">progress</span><span class="p">:</span> <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="n">completed</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">progress</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">IN_PROGRESS</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">ABORTED</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ex</span>
+
+        <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">DONE</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_dpc_write_bytes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">address</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">byte_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write byte data from memory, using the DPC.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            address (int): Start address</span>
+<span class="sd">            data (bytearray): data to write.</span>
+<span class="sd">            offset (int): start index in *data* to start write from.</span>
+<span class="sd">            byte_size (int): Number of bytes to write. Default is the size of the *data* buffer.</span>
+<span class="sd">            show_progress_bar (bool): Show if True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugcore_node</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">byte_size</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># With progress bar</span>
+        <span class="n">transfer_byte_count</span> <span class="o">=</span> <span class="n">byte_size</span> <span class="k">if</span> <span class="n">byte_size</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Transferring </span><span class="si">{</span><span class="n">transfer_byte_count</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> MB &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;[bold](Write </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">address</span><span class="p">)</span><span class="si">}</span><span class="s2">)[/]&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">bar</span> <span class="o">=</span> <span class="n">PercentProgressBar</span><span class="p">()</span>
+        <span class="n">bar</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">STARTING</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span>
+                <span class="n">address</span><span class="p">,</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="n">offset</span><span class="p">,</span>
+                <span class="n">byte_size</span><span class="p">,</span>
+                <span class="n">progress</span><span class="o">=</span><span class="k">lambda</span> <span class="n">progress</span><span class="p">:</span> <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="n">completed</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">progress</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">IN_PROGRESS</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">ABORTED</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ex</span>
+
+        <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">DONE</span><span class="p">)</span>
+
+    <span class="c1"># PROGRAMMING</span>
+<div class="viewcode-block" id="Device.get_plm_log"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.get_plm_log">[docs]</a>    <span class="k">def</span> <span class="nf">get_plm_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memory_target</span><span class="o">=</span><span class="s2">&quot;Versal.+&quot;</span><span class="p">,</span> <span class="n">slr_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns: Raw log read from hardware</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            memory_target: Optional name of memory target such as APU, RPU, DPC</span>
+<span class="sd">            slr_index: Optional SLR index for multi-SLR devices</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">memory_target</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory target </span><span class="si">{</span><span class="n">memory_target</span><span class="si">}</span><span class="s2"> not available&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mem</span><span class="o">.</span><span class="n">plm_log</span><span class="p">(</span><span class="n">slr_index</span><span class="o">=</span><span class="n">slr_index</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Device.get_program_log"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.get_program_log">[docs]</a>    <span class="k">def</span> <span class="nf">get_program_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memory_target</span><span class="o">=</span><span class="s2">&quot;Versal.+&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns: Programming log read from hardware (None=Use default transport)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            memory_target: Optional name of memory target such as APU, RPU, DPC</span>
+<span class="sd">            slr_index: Optional SLR index for multi-SLR devices</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">memory_target</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory target </span><span class="si">{</span><span class="n">memory_target</span><span class="si">}</span><span class="s2"> not available&quot;</span><span class="p">)</span>
+        <span class="n">report_generator</span> <span class="o">=</span> <span class="n">ClientProgramLogStrategy</span><span class="p">(</span>
+            <span class="n">regs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;regs&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">plm_log_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">mem</span><span class="o">.</span><span class="n">plm_log</span><span class="p">(</span><span class="n">slr_index</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">report_generator</span><span class="o">.</span><span class="n">generate_program_log</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Device.write_program_log"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.write_program_log">[docs]</a>    <span class="k">def</span> <span class="nf">write_program_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">memory_target</span><span class="o">=</span><span class="s2">&quot;Versal.+&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write an enhanced program log to a file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">outfile</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">report_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_program_log</span><span class="p">(</span><span class="n">memory_target</span><span class="o">=</span><span class="n">memory_target</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">outfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">report_str</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">outfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">report_str</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to write report to </span><span class="si">{</span><span class="n">outfile</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Device.reset"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the device to a non-programmed state.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">jtag_programming_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
+        <span class="k">assert</span> <span class="n">jtag_programming_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span>
+        <span class="n">jtag_programming_node</span><span class="o">.</span><span class="n">future</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Device.program"><a class="viewcode-back" href="../../../../device.html#chipscopy.api.device.device.Device.program">[docs]</a>    <span class="k">def</span> <span class="nf">program</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">programming_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">skip_reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">delay_after_program</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">progress</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ProgressFutureCallback</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">done</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">DoneFutureCallback</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Program the device with a given programming file (bit or pdi).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            programming_file: PDI file path</span>
+<span class="sd">            skip_reset: False = Do not reset device prior to program</span>
+<span class="sd">            delay_after_program: Seconds to delay at end of programming (default=0)</span>
+<span class="sd">            show_progress_bar: False if the progress bar doesn&#39;t need to be shown</span>
+<span class="sd">            progress: Optional progress callback</span>
+<span class="sd">            done: Optional async future callback</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_family_not</span><span class="p">(</span><span class="n">DeviceFamily</span><span class="o">.</span><span class="n">VERSAL</span><span class="p">,</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">UPLUS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_state_invalid</span><span class="p">()</span>
+        <span class="n">program_future</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">CsFutureSync</span><span class="p">(</span><span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DeviceState</span><span class="o">.</span><span class="n">NEEDS_REFRESH</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">programming_file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">programming_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">programming_file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">programming_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Programming file: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">programming_file</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span><span class="si">}</span><span class="s2"> doesn&#39;t exists!&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">printer</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Programming device with: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">programming_file</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+            <span class="n">progress_</span> <span class="o">=</span> <span class="n">PercentProgressBar</span><span class="p">()</span>
+            <span class="n">progress_</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Device program progress&quot;</span><span class="p">,</span>
+                <span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">STARTING</span><span class="p">,</span>
+                <span class="n">visible</span><span class="o">=</span><span class="n">show_progress_bar</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">progress_update</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">program_future</span><span class="p">:</span>
+                <span class="n">program_future</span><span class="o">.</span><span class="n">set_progress</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">progress</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+                <span class="n">progress_</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="n">completed</span><span class="o">=</span><span class="n">future</span><span class="o">.</span><span class="n">progress</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">IN_PROGRESS</span>
+                <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">pre_done_programming</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
+            <span class="c1"># refresh jtag node properties after program (1190699)</span>
+            <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">error</span>
+            <span class="n">jtag_programming_node</span><span class="o">.</span><span class="n">future</span><span class="p">()</span><span class="o">.</span><span class="n">update_regs</span><span class="p">(</span>
+                <span class="n">reg_names</span><span class="o">=</span><span class="p">[],</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="n">done_programming</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">done_programming</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">error</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+                    <span class="n">progress_</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">ABORTED</span><span class="p">)</span>
+                <span class="n">program_future</span><span class="o">.</span><span class="n">set_exception</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span><span class="p">)</span>
+
+                <span class="k">return</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">delay_after_program</span><span class="p">):</span>
+                <span class="c1"># This pushes end-of-config node events to the listeners</span>
+                <span class="c1"># They seem to happen within about 2-3 seconds - need a more</span>
+                <span class="c1"># reliable way to wait for them to finish.</span>
+                <span class="c1"># If we don&#39;t wait, the DPC node may not be ready for use.</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cs_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;chipscope&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run_events</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="c1"># refresh device jtag node properties after program (1190699)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">force_update</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+                <span class="n">progress_</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">completed</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">PercentProgressBar</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">DONE</span><span class="p">)</span>
+
+            <span class="n">program_future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">finalize_program</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">programming_error</span><span class="p">)</span>
+
+        <span class="n">jtag_programming_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jtag_node</span>
+        <span class="k">assert</span> <span class="n">jtag_programming_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_reset</span><span class="p">:</span>
+            <span class="n">jtag_programming_node</span><span class="o">.</span><span class="n">future</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="n">jtag_programming_node</span><span class="o">.</span><span class="n">future</span><span class="p">(</span>
+            <span class="n">progress</span><span class="o">=</span><span class="n">progress_update</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="n">pre_done_programming</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="n">finalize_program</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">programming_file</span><span class="o">.</span><span class="n">resolve</span><span class="p">()))</span>
+
+        <span class="k">return</span> <span class="n">program_future</span> <span class="k">if</span> <span class="n">done</span> <span class="k">else</span> <span class="n">program_future</span><span class="o">.</span><span class="n">result</span></div>
+
+    <span class="k">def</span> <span class="nf">_raise_if_family_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_family</span> <span class="o">==</span> <span class="n">DeviceFamily</span><span class="o">.</span><span class="n">XVC</span><span class="p">:</span>
+            <span class="c1"># special partial setup case for xvc sw testing - always ok</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_family</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FeatureNotAvailableError</span><span class="p">()</span></div>
+
+
+<span class="c1"># Legacy support - to not break old code that may have referenced the classes</span>
+<span class="c1"># that were removed (and now all implemented by Device)</span>
+
+<span class="n">VersalDevice</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;VersalDevice&quot;</span><span class="p">,</span> <span class="n">Device</span><span class="p">)</span>
+<span class="n">UltrascaleDevice</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;UltrascaleDevice&quot;</span><span class="p">,</span> <span class="n">Device</span><span class="p">)</span>
+<span class="n">GenericDevice</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;GenericDevice&quot;</span><span class="p">,</span> <span class="n">Device</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">discover_devices</span><span class="p">(</span>
+    <span class="n">hw_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span>
+    <span class="n">cs_server</span><span class="p">:</span> <span class="n">ServerInfo</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cable_ctx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">disable_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;discover_devices: hw_server=</span><span class="si">{</span><span class="n">hw_server</span><span class="si">}</span><span class="s2">, cs_server=</span><span class="si">{</span><span class="n">cs_server</span><span class="si">}</span><span class="s2">, disable_core_scan=</span><span class="si">{</span><span class="n">disable_core_scan</span><span class="si">}</span><span class="s2">, cable_ctx=</span><span class="si">{</span><span class="n">cable_ctx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">disable_cache</span><span class="o">=</span><span class="p">{</span><span class="n">disable_cache</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">include_dna</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">devices</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">device_record_list</span> <span class="ow">in</span> <span class="n">scan_all_views</span><span class="p">(</span><span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">include_dna</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">device_spec</span> <span class="o">=</span> <span class="n">DeviceSpec</span><span class="o">.</span><span class="n">create_from_device_records</span><span class="p">(</span>
+            <span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">device_record_list</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">device_spec</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="c1"># This can happen when a chipscope server is serving multiple sessions.</span>
+            <span class="c1"># The cs_server reports back connection information for the</span>
+            <span class="c1"># other sessions which should be ignored.</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;discover_devices: No device_node for dna key: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> --&gt; ignored.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">cable_ctx</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">device_spec</span><span class="o">.</span><span class="n">jtag_cable_ctx</span> <span class="o">==</span> <span class="n">cable_ctx</span><span class="p">:</span>
+            <span class="n">device_node</span> <span class="o">=</span> <span class="n">device_spec</span><span class="o">.</span><span class="n">get_device_node</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">device_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span> <span class="o">=</span> <span class="n">Device</span><span class="p">(</span>
+                    <span class="n">hw_server</span><span class="o">=</span><span class="n">hw_server</span><span class="p">,</span>
+                    <span class="n">cs_server</span><span class="o">=</span><span class="n">cs_server</span><span class="p">,</span>
+                    <span class="n">device_spec</span><span class="o">=</span><span class="n">device_spec</span><span class="p">,</span>
+                    <span class="n">disable_core_scan</span><span class="o">=</span><span class="n">disable_core_scan</span><span class="p">,</span>
+                    <span class="n">disable_cache</span><span class="o">=</span><span class="n">disable_cache</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;discover_devices: created new device: </span><span class="si">{</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;discover_devices: reusing device wrapper: </span><span class="si">{</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;discover_devices: </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">device_node</span><span class="o">.</span><span class="n">device_wrapper</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">devices</span>
+</pre></div>
+
+           </div>
+          </div>
+          
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 13, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
