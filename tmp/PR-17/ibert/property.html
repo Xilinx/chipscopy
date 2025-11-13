@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Properties &mdash; ChipScoPy XXXXXXX documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="GT Group" href="gt_group.html" />
+    <link rel="prev" title="IBERT" href="../ibert.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../ddr.html">DDR</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../ibert.html">IBERT</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#property-commands">Property commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#get">Get</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#set">Set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commit">Commit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#refresh">Refresh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#report">Report</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#watchlist">Watchlist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#discovering-ibert">Discovering IBERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#hierarchy-of-objects">Hierarchy of objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#reset">Reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#attributes-of-ibert-object">Attributes of IBERT object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#other-serial-objects">Other serial objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#links">Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#scans">Scans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#appendix-reference">Appendix &amp; Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../ibert.html">IBERT</a> &raquo;</li>
+      <li>Properties</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="properties">
+<h1>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h1>
+<p id="id1">Properties allow users to directly read/write to the GT attributes and also access other high level
+information related to the GTs. Operations on properties can be performed using the <code class="docutils literal notranslate"><span class="pre">property</span></code> attribute
+attached to the below serial objects</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="references/gt_group.html#chipscopy.api.ibert.gt_group.GTGroup" title="chipscopy.api.ibert.gt_group.GTGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">GTGroup</span></code></a></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">PLL</span></code></p></li>
+<li><p><a class="reference internal" href="references/gt.html#chipscopy.api.ibert.gt.GT" title="chipscopy.api.ibert.gt.GT"><code class="xref py py-class docutils literal notranslate"><span class="pre">GT</span></code></a></p></li>
+<li><p><a class="reference internal" href="references/tx.html#chipscopy.api.ibert.tx.TX" title="chipscopy.api.ibert.tx.TX"><code class="xref py py-class docutils literal notranslate"><span class="pre">TX</span></code></a></p></li>
+<li><p><a class="reference internal" href="references/rx.html#chipscopy.api.ibert.rx.RX" title="chipscopy.api.ibert.rx.RX"><code class="xref py py-class docutils literal notranslate"><span class="pre">RX</span></code></a></p></li>
+</ul>
+<p>Properties are always passed down from parent to child. A child will always have only a subset of the properties
+available in the parent. Serial objects always pass down properties in the following order</p>
+<a class="reference internal image-reference" href="../_images/property-inheritance-tree.png"><img alt="../_images/property-inheritance-tree.png" class="align-center" src="../_images/property-inheritance-tree.png" style="width: 300px;" /></a>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The top level <a class="reference internal" href="references/ibert.html#chipscopy.api.ibert.IBERT" title="chipscopy.api.ibert.ibert.IBERT"><code class="xref py py-class docutils literal notranslate"><span class="pre">IBERT</span></code></a> object <strong>doesn’t</strong> have a <code class="docutils literal notranslate"><span class="pre">property</span></code> attribute. This is by design.</p>
+</div>
+<section id="property-commands">
+<h2>Property commands<a class="headerlink" href="#property-commands" title="Permalink to this heading">¶</a></h2>
+<p>5 different types of operations can be performed on a property</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#get">Get</a></p></li>
+<li><p><a class="reference internal" href="#set">Set</a></p></li>
+<li><p><a class="reference internal" href="#commit">Commit</a></p></li>
+<li><p><a class="reference internal" href="#refresh">Refresh</a></p></li>
+<li><p><a class="reference internal" href="#report">Report</a></p></li>
+</ul>
+<section id="get">
+<h3>Get<a class="headerlink" href="#get" title="Permalink to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.get" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get()</span></code></a> operation will fetch the value of the
+property from cs_server, which in turn will return the value of the property stored in the object.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since the return value is cached in the cs_server object, it might not accurately reflect the current value in HW.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all the GT Groups in the IBERT core</span>
+<span class="n">first_gt_group</span> <span class="o">=</span> <span class="n">ibert_0</span><span class="o">.</span><span class="n">gt_groups</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="hll"><span class="n">data</span> <span class="o">=</span> <span class="n">first_gt_group</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&lt;some property name&gt;&quot;</span><span class="p">)</span>
+</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s2">&quot;&lt;some property name&gt;&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">property</span> <span class="n">value</span> <span class="n">cached</span><span class="o">&gt;</span><span class="p">}</span>
+
+<span class="hll"><span class="n">data</span> <span class="o">=</span> <span class="n">first_gt_group</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">&quot;&lt;property name 1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;property name 2&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;property name 3&gt;&quot;</span><span class="p">])</span>
+</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;&lt;property name 1&gt;&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">property</span> <span class="n">value</span> <span class="n">cached</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="s2">&quot;&lt;property name 2&gt;&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">property</span> <span class="n">value</span> <span class="n">cached</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="s2">&quot;&lt;property name 3&gt;&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">property</span> <span class="n">value</span> <span class="n">cached</span><span class="o">&gt;</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="set">
+<h3>Set<a class="headerlink" href="#set" title="Permalink to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.set" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set()</span></code></a> operation will set the value of given
+properties in cs_server. This will in turn update the property value in its object <strong>but not</strong> commit it to HW.
+To commit it to HW, please have a look at the <a class="reference internal" href="#commit">Commit</a> operation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all the GT Groups in the IBERT core</span>
+<span class="n">first_gt_group</span> <span class="o">=</span> <span class="n">ibert_0</span><span class="o">.</span><span class="n">gt_groups</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="hll"><span class="n">values_to_set</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;CH0_TX_PATTERN&quot;</span><span class="p">:</span> <span class="s2">&quot;PRBS 31&quot;</span><span class="p">,</span> <span class="s2">&quot;CH0_RX_PATTERN&quot;</span><span class="p">:</span> <span class="s2">&quot;PRBS 31&quot;</span><span class="p">}</span>
+</span><span class="hll"><span class="n">first_gt_group</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">values_to_set</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is important to note that the dictionary of properties to set, is unpacked in the call to <code class="docutils literal notranslate"><span class="pre">set</span></code>. This
+is by design.</p>
+</div>
+</section>
+<section id="commit">
+<h3>Commit<a class="headerlink" href="#commit" title="Permalink to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.commit" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">commit()</span></code></a> operation will commit the values of desired properties
+to HW. Commit will make use of the property value stored in cs_server.</p>
+<p>Almost always, <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.commit" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">commit()</span></code></a> is used in conjunction with
+<a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.set" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set()</span></code></a> i.e. you would first set the value of the property in cs_server
+using <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.set" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set()</span></code></a> and then commit the value to HW using
+<a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.commit" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">commit()</span></code></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all the GT Groups in the IBERT core</span>
+<span class="n">first_gt_group</span> <span class="o">=</span> <span class="n">ibert_0</span><span class="o">.</span><span class="n">gt_groups</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">values_to_set</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;CH0_TX_PATTERN&quot;</span><span class="p">:</span> <span class="s2">&quot;PRBS 31&quot;</span><span class="p">,</span> <span class="s2">&quot;CH0_RX_PATTERN&quot;</span><span class="p">:</span> <span class="s2">&quot;PRBS 31&quot;</span><span class="p">}</span>
+<span class="n">first_gt_group</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">values_to_set</span><span class="p">)</span>
+<span class="hll"><span class="n">first_gt_group</span><span class="o">.</span><span class="n">commit</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">values_to_set</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</span></pre></div>
+</div>
+</section>
+<section id="refresh">
+<h3>Refresh<a class="headerlink" href="#refresh" title="Permalink to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.refresh" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.refresh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">refresh()</span></code></a> operation will fetch the value of the
+property from HW and update the value in cs_server, before returning it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all the GT Groups in the IBERT core</span>
+<span class="n">first_gt_group</span> <span class="o">=</span> <span class="n">ibert_0</span><span class="o">.</span><span class="n">gt_groups</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="hll"><span class="n">data</span> <span class="o">=</span> <span class="n">first_gt_group</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="s2">&quot;&lt;some property name&gt;&quot;</span><span class="p">)</span>
+</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s2">&quot;&lt;some property name&gt;&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">property</span> <span class="n">value</span><span class="o">&gt;</span><span class="p">}</span>
+
+<span class="hll"><span class="n">data</span> <span class="o">=</span> <span class="n">first_gt_group</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">refresh</span><span class="p">([</span><span class="s2">&quot;&lt;property name 1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;property name 2&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;property name 3&gt;&quot;</span><span class="p">])</span>
+</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;&lt;property name 1&gt;&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">property</span> <span class="n">value</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="s2">&quot;&lt;property name 2&gt;&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">property</span> <span class="n">value</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="s2">&quot;&lt;property name 3&gt;&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">property</span> <span class="n">value</span><span class="o">&gt;</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="report">
+<h3>Report<a class="headerlink" href="#report" title="Permalink to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.report" title="chipscopy.api.ibert.serial_object_base.IBERTPropertyCommands.report"><code class="xref py py-meth docutils literal notranslate"><span class="pre">report()</span></code></a> operation provides information like value type,
+default value, valid set of values (in case the property is an enumerated property), permissions, etc, for any given property.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all the GT Groups in the IBERT core</span>
+<span class="n">first_gt_group</span> <span class="o">=</span> <span class="n">ibert_0</span><span class="o">.</span><span class="n">gt_groups</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="hll"><span class="n">data</span> <span class="o">=</span> <span class="n">first_gt_group</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;&lt;some property name&gt;&quot;</span><span class="p">)</span>
+</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;&lt;some property name&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;some property name&gt;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Description&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Permission&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SET&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;REFRESH&quot;</span><span class="p">,</span> <span class="s2">&quot;COMMIT&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;Default value&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Property type&quot;</span><span class="p">:</span> <span class="s2">&quot;NORMAL&quot;</span> <span class="ow">or</span> <span class="s2">&quot;COMPUTED&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Current value&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Groups&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;Value type&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="hll"><span class="n">data</span> <span class="o">=</span> <span class="n">first_gt_group</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">report</span><span class="p">([</span><span class="s2">&quot;&lt;property name 1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;property name 2&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;enum property name 1&gt;&quot;</span><span class="p">])</span>
+</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;&lt;property name 1&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;property name 1&gt;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Description&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Permission&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SET&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;REFRESH&quot;</span><span class="p">,</span> <span class="s2">&quot;COMMIT&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;Default value&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Property type&quot;</span><span class="p">:</span> <span class="s2">&quot;NORMAL&quot;</span> <span class="ow">or</span> <span class="s2">&quot;COMPUTED&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Current value&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+            <span class="s2">&quot;Value type&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;&lt;property name 2&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;property name 2&gt;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Description&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Permission&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SET&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;REFRESH&quot;</span><span class="p">,</span> <span class="s2">&quot;COMMIT&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;Default value&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Property type&quot;</span><span class="p">:</span> <span class="s2">&quot;NORMAL&quot;</span> <span class="ow">or</span> <span class="s2">&quot;COMPUTED&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Current value&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+            <span class="s2">&quot;Value type&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;&lt;enum property name 1&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;enum property name 1&gt;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Description&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Permission&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SET&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;REFRESH&quot;</span><span class="p">,</span> <span class="s2">&quot;COMMIT&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;Default value&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Property type&quot;</span><span class="p">:</span> <span class="s2">&quot;NORMAL&quot;</span> <span class="ow">or</span> <span class="s2">&quot;COMPUTED&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Current value&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;Groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+            <span class="s2">&quot;Valid values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+            <span class="s2">&quot;Value type&quot;</span><span class="p">:</span> <span class="o">&lt;&gt;</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>As shown above, the <code class="docutils literal notranslate"><span class="pre">Valid</span> <span class="pre">values</span></code> key will be present in the report only if the property is an enumerated property.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">report</span></code> without any arguments, fetches information for all available properties.</p>
+</div>
+</section>
+</section>
+<section id="watchlist">
+<h2>Watchlist<a class="headerlink" href="#watchlist" title="Permalink to this heading">¶</a></h2>
+<p>The watchlist features allows users to ‘observe’ the value of a property as it changes. This enables easily tracking
+a property in HW and is particularly useful to check if properties of interest, were modified in the background.
+The watchlist can be accessed via the <code class="docutils literal notranslate"><span class="pre">property</span></code> attribute in serial objects as <code class="docutils literal notranslate"><span class="pre">property.watchlist</span></code>.</p>
+<p>To setup a watch for a property, use the <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTWatchlist.add" title="chipscopy.api.ibert.serial_object_base.IBERTWatchlist.add"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code></a> command as shown</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="k">def</span> <span class="nf">property_watch_event_handler</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
+</span>    <span class="k">pass</span>
+
+<span class="c1"># Get all the GT Groups in the IBERT core</span>
+<span class="n">first_gt_group</span> <span class="o">=</span> <span class="n">ibert_0</span><span class="o">.</span><span class="n">gt_groups</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="hll"><span class="n">first_gt_groups</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">watchlist</span><span class="o">.</span><span class="n">add</span><span class="p">([</span><span class="s2">&quot;property 1&quot;</span><span class="p">,</span> <span class="s2">&quot;property 2&quot;</span><span class="p">],</span> <span class="n">listeners</span><span class="o">=</span><span class="n">property_watch_event_handler</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A watch can be created only once for each property</p>
+</div>
+<p>In above snippet, anytime the value of <code class="docutils literal notranslate"><span class="pre">property</span> <span class="pre">1</span></code> and/or <code class="docutils literal notranslate"><span class="pre">property</span> <span class="pre">2</span></code> changes, the function
+<code class="docutils literal notranslate"><span class="pre">property_watch_event_handler</span></code> is called with a queue containing instance(s) of
+<a class="reference internal" href="references/property.html#chipscopy.api._detail.property.PropertyUpdateEvent" title="chipscopy.api._detail.property.PropertyUpdateEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">PropertyUpdateEvent</span></code></a></p>
+<p>To stop observing properties, use the <a class="reference internal" href="references/serial_object_base.html#chipscopy.api.ibert.serial_object_base.IBERTWatchlist.remove" title="chipscopy.api.ibert.serial_object_base.IBERTWatchlist.remove"><code class="xref py py-meth docutils literal notranslate"><span class="pre">remove()</span></code></a> command as shown</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">first_gt_groups</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">watchlist</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="s2">&quot;property 1&quot;</span><span class="p">,</span> <span class="s2">&quot;property 2&quot;</span><span class="p">])</span>
+</span></pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../ibert.html" class="btn btn-neutral float-left" title="IBERT" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gt_group.html" class="btn btn-neutral float-right" title="GT Group" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 13, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
