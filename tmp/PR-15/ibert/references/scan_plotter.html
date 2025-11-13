@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.api.ibert.eye_scan.plotter &mdash; ChipScoPy XXXXXXX documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="chipscopy.api.ibert.yk_scan" href="yk_scan.html" />
+    <link rel="prev" title="chipscopy.api.ibert.eye_scan.params" href="scan_params.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../ddr.html">DDR</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../ibert.html">IBERT</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../property.html">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#discovering-ibert">Discovering IBERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#hierarchy-of-objects">Hierarchy of objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#reset">Reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#attributes-of-ibert-object">Attributes of IBERT object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#other-serial-objects">Other serial objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#links">Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ibert.html#scans">Scans</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../ibert.html#appendix-reference">Appendix &amp; Reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../appendix.html">Appendix</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../references.html">References</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="property.html">chipscopy.api._detail.property</a></li>
+<li class="toctree-l4"><a class="reference internal" href="serial_object_base.html">chipscopy.api.ibert.serial_object_base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ibert.html">chipscopy.api.ibert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gt_group.html">chipscopy.api.ibert.gt_group</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gt.html">chipscopy.api.ibert.gt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rx.html">chipscopy.api.ibert.rx</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tx.html">chipscopy.api.ibert.tx</a></li>
+<li class="toctree-l4"><a class="reference internal" href="link.html">chipscopy.api.ibert.link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="link_group.html">chipscopy.api.ibert.link.group</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scan.html">chipscopy.api.ibert.eye_scan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scan_params.html">chipscopy.api.ibert.eye_scan.params</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">chipscopy.api.ibert.eye_scan.plotter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="yk_scan.html">chipscopy.api.ibert.yk_scan</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../ibert.html">IBERT</a> &raquo;</li>
+          <li><a href="../references.html">References</a> &raquo;</li>
+      <li>chipscopy.api.ibert.eye_scan.plotter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="chipscopy-api-ibert-eye-scan-plotter">
+<h1>chipscopy.api.ibert.eye_scan.plotter<a class="headerlink" href="#chipscopy-api-ibert-eye-scan-plotter" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.ibert.eye_scan.plotter.</span></span><span class="sig-name descname"><span class="pre">EyeScanPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eye_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for eye scan plot</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.eye_scan">
+<span class="sig-name descname"><span class="pre">eye_scan</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="scan.html#chipscopy.api.ibert.eye_scan.EyeScan" title="chipscopy.api.ibert.eye_scan.EyeScan"><span class="pre">EyeScan</span></a></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.eye_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link to the <cite>EyeScan</cite> object</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.fig">
+<span class="sig-name descname"><span class="pre">fig</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">go.Figure</span></em><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotly <cite>Figure</cite> object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'svg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save plot to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <strong>(Optional)</strong> Location where file should be saved.</p></li>
+<li><p><strong>file_name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – <strong>(Optional)</strong> Name of the file</p></li>
+<li><p><strong>file_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <strong>(Optional)</strong> File format. Default is <cite>SVG</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path of the saved plot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'automatic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chipscopy/api/ibert/eye_scan/plotter.html#EyeScanPlot.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.ibert.eye_scan.plotter.EyeScanPlot.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the plot in the browser</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display_type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – image format to show. Options are automatic, static, dynamic. Default is ‘automatic’</p></li>
+<li><p><strong>title</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – title to display in plot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scan_params.html" class="btn btn-neutral float-left" title="chipscopy.api.ibert.eye_scan.params" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="yk_scan.html" class="btn btn-neutral float-right" title="chipscopy.api.ibert.yk_scan" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 13, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
