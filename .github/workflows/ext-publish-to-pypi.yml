@@ -66,7 +66,6 @@ jobs:
           python-version: "3.10"
 
       - name: Set up Poetry
-        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
         uses: abatilo/actions-poetry@v3
         with:
           # TODO - Read this from .poetry-version file
