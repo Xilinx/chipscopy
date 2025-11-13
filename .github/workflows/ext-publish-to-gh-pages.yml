@@ -218,6 +218,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-and-publish-docs, cleanup-pr-docs]
 
+    # This will run as long as at least one of the first two jobs completes successfully, rather than requiring 
+    # both to complete (which would never happen since they run conditionally based on different triggers)
+    if: always() && (needs.build-and-publish-docs.result == 'success' || needs.cleanup-pr-docs.result == 'success')
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
