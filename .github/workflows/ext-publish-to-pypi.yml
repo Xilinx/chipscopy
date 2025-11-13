@@ -71,11 +71,11 @@ jobs:
           # TODO - Read this from .poetry-version file
           poetry-version: 1.8.3
 
-      - name: Use temp version if publishing to Test PyPI
-        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
+      - name: Use temporary package version for PRs
+        if: github.event_name == 'pull_request'
         run: |
           TMP_VERSION=9999.0.${{ github.run_id }}.${{ github.run_attempt }}
-          echo "Setting temporary version to $TMP_VERSION for Test PyPI publishing"
+          echo "Setting temporary version to $TMP_VERSION for PR/Test PyPI publishing"
           poetry version $TMP_VERSION
 
       - name: Build release distributions
