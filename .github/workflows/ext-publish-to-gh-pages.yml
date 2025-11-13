@@ -1,4 +1,11 @@
 # This workflow publishes documentation to GitHub Pages
+#
+# Structure:
+# - Trigger: Manual dispatch (for releases) or PR events (for preview)
+# - Job 1 (build-and-publish-docs): Builds Sphinx docs and commits to gh-pages branch
+#   - Releases go to root (e.g., 2025.1/), PRs go to tmp/PR-{number}/
+# - Job 2 (cleanup-pr-docs): Removes PR docs when PR is closed
+# - Job 3 (deploy): Deploys the gh-pages branch to GitHub Pages
 
 name: Publish Docs to GitHub Pages
 
@@ -16,6 +23,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build-and-publish-docs:
@@ -203,3 +212,34 @@ jobs:
             git push origin gh-pages
             echo "PR documentation cleaned up successfully!"
           fi
+
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [build-and-publish-docs, cleanup-pr-docs]
+
+    # This will run as long as at least one of the first two jobs completes successfully, rather than requiring 
+    # both to complete (which would never happen since they run conditionally based on different triggers)
+    if: always() && (needs.build-and-publish-docs.result == 'success' || needs.cleanup-pr-docs.result == 'success')
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout the gh-pages branch
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: "."
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
