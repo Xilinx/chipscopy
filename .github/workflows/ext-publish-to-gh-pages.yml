@@ -20,6 +20,8 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - master
+    paths:
+      - '.github/workflows/ext-publish-to-gh-pages.yml'
 
 permissions:
   contents: write
