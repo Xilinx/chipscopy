@@ -66,17 +66,16 @@ jobs:
           python-version: "3.10"
 
       - name: Set up Poetry
-        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
         uses: abatilo/actions-poetry@v3
         with:
           # TODO - Read this from .poetry-version file
           poetry-version: 1.8.3
 
-      - name: Use temp version if publishing to Test PyPI
-        if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
+      - name: Use temporary package version for PRs
+        if: github.event_name == 'pull_request'
         run: |
           TMP_VERSION=9999.0.${{ github.run_id }}.${{ github.run_attempt }}
-          echo "Setting temporary version to $TMP_VERSION for Test PyPI publishing"
+          echo "Setting temporary version to $TMP_VERSION for PR/Test PyPI publishing"
           poetry version $TMP_VERSION
 
       - name: Build release distributions
@@ -97,6 +96,7 @@ jobs:
 
   pypi-publish:
     name: Publish to PyPI (${{ needs.determine-target.outputs.pypi-target }} instance)
+    if: github.event_name == 'workflow_dispatch' 
     runs-on: ubuntu-latest
     
     needs:
@@ -154,8 +154,8 @@ jobs:
       
       - name: Wait for package to be available
         run: |
-          echo "Waiting 60 seconds for package to propagate..."
-          sleep 60
+          echo "Waiting 120 seconds for package to propagate..."
+          sleep 120
         shell: bash
       
       - name: Install from Test PyPI
