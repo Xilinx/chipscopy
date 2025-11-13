@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>chipscopy.NOC &mdash; ChipScoPy 2025.1.1748923355 documentation</title>
+  <title>chipscopy.NOC &mdash; ChipScoPy XXXXXXX documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -161,8 +161,8 @@ largest supported values). The supported fields include</p>
 <code class="docutils literal notranslate"><span class="pre">TDEST[10]</span></code> (AXIS only), <code class="docutils literal notranslate"><span class="pre">DST_ID[12]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxLOCK[1]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxQoS_MIN[4]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxCACHE[4]</span></code>,
 <code class="docutils literal notranslate"><span class="pre">AxSIZE_MAX[3]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxQoS_MAX[4]</span></code>, <code class="docutils literal notranslate"><span class="pre">AxLEN_MAX[8]</span></code></p>
 </p></li>
-<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p></li>
-<li><p><strong>extended_monitor_config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – Optional argument that is a dictionary of additional monitor configuration. The keys must correspond to
+<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received.</p></li>
+<li><p><strong>extended_monitor_config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional argument that is a dictionary of additional monitor configuration. The keys must correspond to
 the monitors. “tslide” is the only supported key at this time. Tslide will change the meaning of the
 latency counters for the specified monitor (read and write channel). The meaning of the counter values
 can be represented by 2^(tslide) clocks. Default tslide is 0, corresponding to 1 clock per count. In
@@ -189,7 +189,7 @@ nodes are programmed or the NPI domain is inaccessible this will return an empty
 always produce zero count values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
@@ -209,7 +209,7 @@ and cannot be monitored.</p>
 Vivado.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
@@ -229,7 +229,7 @@ This function queries the PLLs of the device to determine actual clock speeds of
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p></li>
+<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received.</p></li>
 <li><p><strong>ddrmc_freq_mhz</strong> (<em>dict</em><em>[</em><em>str</em><em>,</em><em>float</em><em>]</em>) – dictionary of DDRMC instance names as the keys and the value is the MC clock in MHz float.</p></li>
 <li><p><strong>ref_clk_feq_mhz</strong> (<em>float</em>) – ref_clk input frequency in MHz, value can be attained from .csa or .hwh files. Default is 33.333MHz</p></li>
 </ul>
@@ -252,7 +252,7 @@ also refreshes the client’s view of specific properties for the root node <em>
 <p>This call must be invoked before clocking information is requested from the device</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>No data is returned directly from this method.</p>
@@ -278,7 +278,7 @@ also refreshes the client’s view of specific properties for the root node <em>
 
   <div role="contentinfo">
     <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on June 03, 2025.
+      <span class="lastupdated">Last updated on November 13, 2025.
       </span></p>
   </div>
 

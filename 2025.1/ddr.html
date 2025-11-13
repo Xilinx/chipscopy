@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>DDR &mdash; ChipScoPy 2025.1.1748923355 documentation</title>
+  <title>DDR &mdash; ChipScoPy XXXXXXX documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -385,7 +385,7 @@ For Write mode, valid integer range between 0 to 50</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>property_names</strong> – single string or list of string of property names
 (if None specified, all properties available will be queried and returned)</p></li>
-<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received</p></li>
+<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -430,7 +430,7 @@ Versal device configuration</p>
 <dd><p>Refresh the calibration windows margin analysis of DDRMC</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received</p>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received</p>
 </dd>
 </dl>
 <p>Returns:</p>
@@ -442,7 +442,7 @@ Versal device configuration</p>
 <dd><p>Refresh the main calibration status of DDRMC</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received</p>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received</p>
 </dd>
 </dl>
 <p>Returns:</p>
@@ -454,7 +454,7 @@ Versal device configuration</p>
 <dd><p>Refresh the overall health status analysis of DDRMC</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>]) – Optional command callback that will be invoked when the response is received</p>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneHWCommand</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the response is received</p>
 </dd>
 </dl>
 <p>Returns:</p>
@@ -490,7 +490,7 @@ check_eye_scan_height()</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional command callback that will be invoked when the scan is finished</p>
+<dd class="field-odd"><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional command callback that will be invoked when the scan is finished</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -652,7 +652,7 @@ Valid integer range between 1 to 51 for Write mode.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on June 03, 2025.
+      <span class="lastupdated">Last updated on November 13, 2025.
       </span></p>
   </div>
 

@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>Device &mdash; ChipScoPy 2025.1.1748923355 documentation</title>
+  <title>Device &mdash; ChipScoPy XXXXXXX documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -169,7 +169,7 @@ Child classes raise FeatureNotAvailable for functions they do not support.</p>
 <dd><p>Low level TCF node access - For advanced use</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">CoreParent</span></code>]</p>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">CoreParent</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -205,7 +205,7 @@ list of detected DDRMC cores in the device</p>
 <dd><p>Low level TCF node access - For advanced use</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">CoreParent</span></code>]</p>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">CoreParent</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -218,7 +218,7 @@ what gets scanned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>hub_address_list</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – List of debug hub addresses to scan</p></li>
+<li><p><strong>hub_address_list</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – List of debug hub addresses to scan</p></li>
 <li><p><strong>ltx_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – LTX file (which contains debug hub addresses)</p></li>
 </ul>
 </dd>
@@ -346,7 +346,7 @@ list of detected ILA cores in the device</p>
 <dd><p>Low level TCF node access - For advanced use</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">JtagCable</span></code>]</p>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">JtagCable</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -357,7 +357,7 @@ list of detected ILA cores in the device</p>
 <dd><p>Low level TCF node access - For advanced use</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">JtagDevice</span></code>]</p>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">JtagDevice</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -446,8 +446,8 @@ list of detected PCIe cores in the device</p>
 <li><p><strong>skip_reset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False = Do not reset device prior to program</p></li>
 <li><p><strong>delay_after_program</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Seconds to delay at end of programming (default=0)</p></li>
 <li><p><strong>show_progress_bar</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – False if the progress bar doesn’t need to be shown</p></li>
-<li><p><strong>progress</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">ProgressFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional progress callback</p></li>
-<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-func docutils literal notranslate"><span class="pre">NewType()</span></code>(<code class="xref py py-data docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>])]) – Optional async future callback</p></li>
+<li><p><strong>progress</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFutureCallback</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional progress callback</p></li>
+<li><p><strong>done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DoneFutureCallback</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional async future callback</p></li>
 </ul>
 </dd>
 </dl>
@@ -601,7 +601,7 @@ list of detected VIO cores in the device</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on June 03, 2025.
+      <span class="lastupdated">Last updated on November 13, 2025.
       </span></p>
   </div>
 

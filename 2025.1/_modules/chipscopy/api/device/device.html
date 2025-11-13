@@ -18,7 +18,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>chipscopy.api.device.device &mdash; ChipScoPy 2025.1.1748923355 documentation</title>
+  <title>chipscopy.api.device.device &mdash; ChipScoPy XXXXXXX documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
@@ -411,7 +411,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     <span class="k">elif</span> <span class="n">config_status</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">force_update</span><span class="p">:</span>
                             <span class="n">node</span><span class="o">.</span><span class="n">update_regs</span><span class="p">(</span><span class="n">reg_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;config_status&quot;</span><span class="p">,),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-                        <span class="n">done_reg</span> <span class="o">=</span> <span class="n">config_status</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;DONE_PIN&quot;</span><span class="p">]</span>
+                        <span class="n">done_reg</span> <span class="o">=</span> <span class="n">config_status</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;DONE_PIN&quot;</span><span class="p">]</span>
                         <span class="n">is_programmed_</span> <span class="o">=</span> <span class="n">done_reg</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># noqa</span>
             <span class="n">is_programmed_</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1135,7 +1135,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   <div role="contentinfo">
     <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on June 03, 2025.
+      <span class="lastupdated">Last updated on November 13, 2025.
       </span></p>
   </div>
 
