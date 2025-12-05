@@ -65,6 +65,9 @@ class JtagContext(object):
     """
 
     def __init__(self, service, props):
+        # Jtag Service will only return properties that changed.  The properties that have a default
+        # value will need to be specified here in order to be initialized with the default value
+        # when not returned by Jtag Service.
         self._props = {
             "ID": "",
             "ParentID": "",
@@ -76,6 +79,7 @@ class JtagContext(object):
             "isMux": False,
             "isBranch": False,
             "isActive": False,
+            "Status": "",
         }
         self._props.update(props)
         self.service = service

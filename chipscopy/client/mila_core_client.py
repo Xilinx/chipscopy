@@ -405,9 +405,8 @@ def display_waveform_in_browser(
 
         """
         + wave_data
-        + f'<script src="{wavedrom_dir}/wavedrom/skins/default.js" type="text/javascript"></script>\n'
-        + f'<script src="{wavedrom_dir}/wavedrom/skins/narrow.js" type="text/javascript"></script>\n'
-        + f'<script src="{wavedrom_dir}/wavedrom/wavedrom.min.js" type="text/javascript"></script>\n'
+        + '<script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js" type="text/javascript"></script>\n'
+        + '<script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js" type="text/javascript"></script>\n'
         + """
 
         <hr>

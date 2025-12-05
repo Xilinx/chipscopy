@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2022, Xilinx, Inc.<br>
-# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -31,11 +31,12 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, VPK120 or VHK158 (only)
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed
-# - ChipScoPy 2025.1 installed
-# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons,jupyter]`
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
+# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
+# - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 # - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/)
 # - This example assumes that the device has already been programmed with the example design (ie the debug cores have already been initialized)
 
@@ -152,8 +153,6 @@ gt_group = ibert_gtm.gt_groups.filter_by(name="Quad_204")[0]
 # This method will be called each time the yk scan updates, allowing it to update its graphs in real time. 
 
 # %%
-# %matplotlib widget
-
 def yk_scan_updates(obj):
     global count, figure, ax, ax2, ax3
     if ax.lines:
@@ -162,7 +161,7 @@ def yk_scan_updates(obj):
             line.set_ydata(list(obj.scan_data[-1].slicer))
     else:
         ax.scatter(range(len(obj.scan_data[-1].slicer)), list(obj.scan_data[-1].slicer), color='blue')
-
+    
     if ax2.lines:
         for line2 in ax2.lines:
             ax2.set_xlim(0, ax2.get_xlim()[1] + len(obj.scan_data[-1].slicer))
@@ -170,7 +169,7 @@ def yk_scan_updates(obj):
             line2.set_ydata(list(line2.get_ydata()) + list(obj.scan_data[-1].slicer))
     else:
         ax2.scatter(range(len(obj.scan_data[-1].slicer)), list(obj.scan_data[-1].slicer), color='blue')
-
+        
     if ax3.lines:
         for line3 in ax3.lines:
             if len(obj.scan_data) - 1 > ax3.get_xlim()[1]:
@@ -203,8 +202,7 @@ yk.updates_callback = yk_scan_updates
 
 # %%
 # %matplotlib widget
-
-#This sets up the subplots necessary for the
+#This sets up the subplots necessary for the 
 figure, (ax, ax2, ax3) = plt.subplots(3, constrained_layout = True, num="YK Scan")
 
 ax.set_xlabel("ES Sample")
@@ -226,6 +224,8 @@ ax3.set_ylabel("SNR (dB)")
 ax3.set_xlim(0,10)
 ax3.set_ylim(-10,100)
 ax3.set_title("Signal-to-Noise Ratio")
+
+plt.show()
 
 yk.start()
 

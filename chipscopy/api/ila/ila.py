@@ -1,5 +1,5 @@
 # Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -145,6 +145,7 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         self._ports: [ILAPort] = None
         self._probes: {str, ILAProbe} = None
         self._probe_values: {str, ILAProbeValues} = None
+        self._bus_probe_mappings: [] = None
         self._probe_to_port_seqs: {str, [ILABitRange]} = None
         self._downstreams_refs: [LtxStreamRef] = None
         self._tsm_state_names: Dict[int, str] = {}
@@ -168,6 +169,9 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         self._probes: {str, ILAProbe} = init_vals["probes"]
         self._probe_values: {str, ILAProbeValues} = init_vals["probe_values"]
         self._probe_to_port_seqs: {str, [ILABitRange]} = init_vals["probe_to_port_seqs"]
+        self._bus_probe_mappings: [] = init_vals["bus_probe_mappings"]  # Add this
+        self._num_slots: int = init_vals["num_slots"]  # Add this
+        self._enable_experimental: bool = init_vals["enable_experimental"]  # Add this
         self._downstreams_refs: [LtxStreamRef] = (
             self._device.ltx.get_downstream_refs(self.name) if self._device.ltx else []
         )
@@ -471,7 +475,13 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
         if uploaded:
             wave = tcf_get_waveform_data(self.core_tcf_node)
             wave["probes"] = self._make_waveform_probes()
+            test = self._make_bus_waveform_probes()
+            wave["probes"].update(test)
             self.waveform = ILAWaveform(**wave)
+            self.waveform.num_slots = self._num_slots
+            self.waveform.enable_experimental = self._enable_experimental
+        #  self.waveform._create_axi_probe_groups()  # Call it here
+
         return uploaded
 
     @ensure_ila_init
@@ -724,6 +734,15 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             )
             for probe in probes.values()
         }
+        bus_probe_mappings = []
+        if ltx:
+            ltx_core = ltx.get_core(CoreType.AXIS_ILA, core_info.uuid)
+            if ltx_core and hasattr(ltx_core, "bus_probes"):
+                bus_probe_mappings = ltx_core.bus_probes
+            if ltx_core and hasattr(ltx_core, "slots"):
+                num_slots = ltx_core.slots
+            if ltx_core and hasattr(ltx_core, "enable_experimental"):
+                enable_experimental = ltx_core.enable_experimental
         return {
             "core_info": core_info,
             "static_info": static_info,
@@ -733,6 +752,9 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             "probes": probes,
             "probe_to_port_seqs": probe_to_port_seqs,
             "probe_values": probe_values,
+            "bus_probe_mappings": bus_probe_mappings,
+            "num_slots": num_slots,
+            "enable_experimental": enable_experimental,
         }
 
     @ensure_ila_init
@@ -787,6 +809,100 @@ class ILA(DebugCore["AxisIlaCoreClient"]):
             for p in self.probes.values()
             if p.is_data
         }
+
+    def _make_bus_waveform_probes(self) -> Dict[str, ILAWaveformProbe]:
+        """Create waveform probes from bus interface mappings."""
+        bus_probes_map: Dict[str, ILAWaveformProbe] = {}
+        # Get bus mappings from the parent ILA
+        bus_mappings = self._bus_probe_mappings
+        for bus_name, physical_probe_name in bus_mappings:  # Unpack the tuple
+            # Extract bus width from the physical probe name if it has bit notation
+            is_bus = "[" in physical_probe_name and ":" in physical_probe_name
+            bus_left_index = 0
+            bus_right_index = 0
+
+            if is_bus:
+                # Parse something like "probe_name[63:0]"
+                import re
+
+                match = re.search(r"\[(\d+):(\d+)\]", physical_probe_name)
+                if match:
+                    bus_left_index = int(match.group(1))
+                    bus_right_index = int(match.group(2))
+            else:
+                # Single bit case - parse "probe_name[1]"
+                import re
+
+                match = re.search(r"\[(\d+)\]", physical_probe_name)
+                if match:
+                    bus_left_index = bus_right_index = int(match.group(1))
+
+            # Find the corresponding physical probe to get its port sequence
+            # You might need to extract just the base probe name without bit indices
+            base_probe_name = (
+                physical_probe_name.split("[")[0]
+                if "[" in physical_probe_name
+                else physical_probe_name
+            )
+
+            # Look for the physical probe in the existing probes
+            physical_probe = None
+            for p in self.probes.values():
+                if p.name == base_probe_name or p.map == base_probe_name:
+                    physical_probe = p
+                    break
+
+            if not physical_probe:
+                print(
+                    f"Warning: Could not find physical probe for bus interface '{bus_name}' -> '{physical_probe_name}'"
+                )
+                continue
+
+            # Get port sequence from the physical probe
+            try:
+                port_seq = self._probe_to_port_seqs[physical_probe.map]
+            except KeyError:
+                print(f"Warning: Missing port sequence for bus interface '{bus_name}'")
+                continue
+
+            # Modify port_seq for single bit extraction
+            if not is_bus:  # Single bit extraction from a bus
+                bit_offset = bus_left_index  # The bit index we want
+                modified_port_seq = []
+                for seq in port_seq:
+                    # Create new ILABitRange for just the specific bit
+                    new_seq = ILABitRange(
+                        index=seq.index + bit_offset,  # Offset to the specific bit
+                        length=1,  # Single bit
+                    )
+                    modified_port_seq.append(new_seq)
+                port_seq = modified_port_seq
+
+            # Get probe values (might need to use physical probe name)
+            pv = self.probe_values.get(physical_probe.name)
+            if not pv:
+                # Use default values if not found
+                from chipscopy.api import RadixEnum  # adjust import as needed
+
+                pv = type(
+                    "ProbeValues", (), {"display_radix": RadixEnum.HEXADECIMAL, "enum_def": None}
+                )()
+
+            # Create bus interface waveform probe
+            probe_obj = ILAWaveformProbe(
+                bus_name,  # Use bus interface name as display name
+                physical_probe_name,  # Use physical probe's map
+                port_seq,
+                is_bus,
+                bus_left_index,
+                bus_right_index,
+                pv.display_radix,
+                pv.enum_def,
+            )
+
+            bus_probes_map[bus_name] = probe_obj
+
+        return bus_probes_map
 
 
 @deprecated_api(release="2023.2", replacement="<waveform object>.export_waveform()")

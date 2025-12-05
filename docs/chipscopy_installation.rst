@@ -19,7 +19,7 @@
 ChipScoPy Installation
 ======================
 
-ChipScoPy requires Python 3.9 or greater. There are several ways to configure your system to use the ChipScoPy API. This page will cover the following step-by-step installation procedure.
+ChipScoPy requires Python 3.10 or greater. There are several ways to configure your system to use the ChipScoPy API. This page will cover the following step-by-step installation procedure.
 
     - `Step 1: Python Installation`_
     - `Step 2: Set up Virtual Environment`_

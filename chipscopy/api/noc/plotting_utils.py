@@ -24,11 +24,11 @@ from matplotlib.widgets import Button, RadioButtons
 from chipscopy.api.noc.graphing.hbmmc import pc_map
 from chipscopy.dm.harden.noc_perfmon.noc_types import ddrmc_main_typedef, hbmmc_typedef
 from chipscopy.api.noc.noc_perfmon_utils import (
-    PerfTGController,
     NoCElement,
     get_noc_typedef_from_name,
     decode_ddrmc_gen,
 )
+from chipscopy.api.patg import PATG, PATGTrigger
 
 # use this for Qt5
 matplotlib.use("Qt5Agg")
@@ -103,14 +103,14 @@ class MeasurementPlot:
         mock_file="slice.json",
         figsize=None,
         kivy=False,
-        tg: PerfTGController = None,
+        trigger: PATGTrigger = None,
     ):
         self.enable_nodes = [x.lower() for x in enable_nodes]
         self.mock = mock
         self.mock_file = mock_file
         self.figsize = figsize
         self.kivy = kivy
-        self.tg = tg
+        self.trigger = trigger
         self.first_render = True
         self.display_nodes = []  # because some views don't apply to all nodes
         self.alive = True
@@ -140,7 +140,7 @@ class MeasurementPlot:
         self.stop_btn = None
         self.back_btn = None
         self.pattern_group = None
-        self.tg_setup_btn = None
+        self.trigger_setup_btn = None
         self.legend_line_map = {}
         self.units_radio = None
         self.pc_radio = None
@@ -221,7 +221,6 @@ class MeasurementPlot:
 
         plt.get_current_fig_manager().set_window_title(f"Versal PerfMon {self.view} Plot")
 
-        # TODO fixup
         all_found = False
         if self.mock:
             while not all_found:
@@ -351,11 +350,11 @@ class MeasurementPlot:
             self.view_buttons.append(ViewButtonProcessor(button_axes, view, self))
 
         # TG setup page
-        if self.tg is not None:
+        if self.trigger is not None:
             # [left, bottom, width, height]
-            tg_setup_ax = plt.axes([0.6, 0.025, 0.075, 0.05])
-            self.tg_setup_btn = Button(tg_setup_ax, "TG Setup")
-            self.tg_setup_btn.on_clicked(self.switch_to_tg_setup)
+            trigger_setup_ax = plt.axes([0.6, 0.025, 0.075, 0.05])
+            self.trigger_setup_btn = Button(trigger_setup_ax, "TG Setup")
+            self.trigger_setup_btn.on_clicked(self.switch_to_trigger_setup)
 
         # if not self.kivy:
         #     # plt.show()
@@ -369,7 +368,7 @@ class MeasurementPlot:
 
     # noinspection PyUnboundLocalVariable
     def update(self, node: NoCElement):
-        if self.view == "tg_control":
+        if self.view == "trigger_control":
             return
 
         # TODO mock-data?
@@ -472,7 +471,7 @@ class MeasurementPlot:
         #     self.fig.canvas.draw()
         #     self.refresh_count = 0
 
-    def build_tg_controlboard(self):
+    def build_trigger_controlboard(self):
         if self.figsize is not None:
             self.fig = plt.figure(figsize=self.figsize)
         else:
@@ -491,28 +490,31 @@ class MeasurementPlot:
 
         # [left, bottom, width, height]
         pattern_ax = plt.axes([0.4, 0.5, 0.2, 0.1])
-        patterns = tuple(list(self.tg.supported_patterns))
-        active_pattern_index = list(self.tg.supported_patterns).index(self.pattern)
+        tg = self.trigger.tgs[0]
+        patterns = tuple(["Write Linear", "Read Linear"])
+        active_pattern_index = 0
         self.pattern_group = RadioButtons(pattern_ax, patterns, active=active_pattern_index)
 
         self.pattern_group.on_clicked(on_pattern_select)
 
         def on_start(event):
-            self.tg.set_active_pattern(self.pattern)
-            self.tg.program()
-            self.tg.start()
+            for tg in self.trigger.tgs:
+                tg.set_active_pattern(self.pattern)
+                tg.program()
+                tg.start()
 
         # [left, bottom, width, height]
-        start_tg_ax = plt.axes([0.4, 0.025, 0.075, 0.05])
-        self.start_btn = Button(start_tg_ax, "Start TG")
+        start_trigger_ax = plt.axes([0.4, 0.025, 0.075, 0.05])
+        self.start_btn = Button(start_trigger_ax, "Start TG")
         self.start_btn.on_clicked(on_start)
 
         def on_stop(event):
-            self.tg.stop()
+            for tg in self.trigger.tgs:
+                tg.stop()
 
         # [left, bottom, width, height]
-        stop_tg_ax = plt.axes([0.5, 0.025, 0.075, 0.05])
-        self.stop_btn = Button(stop_tg_ax, "Stop TG")
+        stop_trigger_ax = plt.axes([0.5, 0.025, 0.075, 0.05])
+        self.stop_btn = Button(stop_trigger_ax, "Stop TG")
         self.stop_btn.on_clicked(on_stop)
 
         def on_back(event):
@@ -577,8 +579,8 @@ class MeasurementPlot:
         # self.build_bandwidth_graphs()
         self.build_graphs()
 
-    def switch_to_tg_setup(self, event):
+    def switch_to_trigger_setup(self, event):
         self.previous = self.view
-        self.view = "tg_control"
+        self.view = "trigger_control"
         self.destroy()
-        self.build_tg_controlboard()
+        self.build_trigger_controlboard()

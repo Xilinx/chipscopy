@@ -68,6 +68,14 @@ class DDR(DebugCore["DDRMCClient"]):
         self.is_enabled = self.is_user_enabled()
         self.is_gen5 = False
         arch_type = ddr_node.props.get("arch")
+        try:
+            hw_props = ddr_node.props["additional_props"]
+            if hw_props.get("architecture"):
+                self.is_lassen_lpddrmc = "Lassen" in hw_props.get("architecture")
+            else:
+                self.is_lassen_lpddrmc = False
+        except AttributeError:
+            self.is_lassen_lpddrmc = False
         if arch_type:
             if arch_type == "gen5":
                 self.is_gen5 = True
@@ -422,65 +430,49 @@ class DDR(DebugCore["DDRMCClient"]):
         left_margs: Dict,
         right_margs: Dict,
         centers: Dict,
+        nibbles: int = 0,
     ):
         left_marg_vals = sorted(left_margs.items())
         right_marg_vals = sorted(right_margs.items())
-        center_vals = {}
-        if not centers:
-            for idx in range(len(left_margs)):
-                center_vals[idx] = (0, 0)
-        else:
-            center_vals = sorted(centers.items())
 
-        if is_dq:
-            for byte in range(bytes):
-                for bit in range(bits_byte):
-                    left_marg = left_marg_vals[byte * bits_byte + bit][1]
-                    center = center_vals[byte * bits_byte + bit][1]
-                    right_marg = right_marg_vals[byte * bits_byte + bit][1]
-                    printer(
-                        "Byte ",
-                        str(byte),
-                        " Bit ",
-                        str(bit),
-                        " - Left Margin: ",
-                        str(left_marg[1]),
-                        "(",
-                        str(left_marg[0]),
-                        ") Center Point: ",
-                        str(center[1]),
-                        "(",
-                        str(center[0]),
-                        ") Right Margin: ",
-                        str(right_marg[1]),
-                        "(",
-                        str(right_marg[0]),
-                        ")",
-                    )
+        if centers:
+            center_vals = sorted(centers.items())
         else:
-            # DBI for LP5 Read
-            # DM for Write
-            for byte in range(bytes):
-                left_marg = left_marg_vals[byte][1]
-                center = center_vals[byte][1]
-                right_marg = right_marg_vals[byte][1]
-                printer(
-                    "Byte ",
-                    str(byte),
-                    " - Left Margin: ",
-                    str(left_marg[1]),
-                    "(",
-                    str(left_marg[0]),
-                    ") Center Point: ",
-                    str(center[1]),
-                    "(",
-                    str(center[0]),
-                    ") Right Margin: ",
-                    str(right_marg[1]),
-                    "(",
-                    str(right_marg[0]),
-                    ")",
+            center_vals = [(idx, (0, 0)) for idx in range(len(left_margs))]
+
+        use_nibbles = nibbles > 0
+        block_count = nibbles if use_nibbles else bytes
+        block_name = "Nibble" if use_nibbles else "Byte"
+        if is_dq and not use_nibbles:
+            # DQ mode with bits per byte
+            for byte_idx in range(bytes):
+                for bit_idx in range(bits_byte):
+                    data_idx = byte_idx * bits_byte + bit_idx
+                    left_marg = left_marg_vals[data_idx][1]
+                    center = center_vals[data_idx][1]
+                    right_marg = right_marg_vals[data_idx][1]
+
+                    margin_info = (
+                        f"Byte {byte_idx} Bit {bit_idx} - "
+                        f"Left Margin: {left_marg[1]}({left_marg[0]}) "
+                        f"Center Point: {center[1]}({center[0]}) "
+                        f"Right Margin: {right_marg[1]}({right_marg[0]})"
+                    )
+                    printer(margin_info)
+        else:
+            # All other cases: DQ with nibbles, or DBI/DM modes
+            for block_idx in range(block_count):
+                left_marg = left_marg_vals[block_idx][1]
+                center = center_vals[block_idx][1]
+                right_marg = right_marg_vals[block_idx][1]
+
+                margin_info = (
+                    f"{block_name}{block_idx} - "
+                    f"Left Margin: {left_marg[1]}({left_marg[0]}) "
+                    f"Center Point: {center[1]}({center[0]}) "
+                    f"Right Margin: {right_marg[1]}({right_marg[0]})"
                 )
+                printer(margin_info)
 
     def __output_write_margins(
         self, bytes: int, left_margs: Dict, right_margs: Dict, centers: Dict
@@ -617,7 +609,7 @@ class DDR(DebugCore["DDRMCClient"]):
             center_points = {}
             cal_margin_modes = self.get_cal_margin_mode()
             num_byte = int(configs["Bytes"])
-            if not self.is_gen5:
+            if not self.is_gen5 and not self.is_lassen_lpddrmc:
                 is_by_8 = True
                 num_nibble = int(configs["Nibbles"])
                 self.refresh_cal_margin()
@@ -727,6 +719,7 @@ class DDR(DebugCore["DDRMCClient"]):
                         )
             # Is Gen5
             else:
+                num_nibbles = int(configs["Nibbles"]) if self.is_lassen_lpddrmc else 0
                 dual_freqs = configs.get("Memory Frequency 1")
                 if dual_freqs:
                     num_freqs = 2
@@ -764,6 +757,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_rise = center_points.copy()
 
@@ -786,6 +780,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_fall = center_points.copy()
 
@@ -811,6 +806,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_rise = center_points.copy()
 
@@ -833,6 +829,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_fall = center_points.copy()
 
@@ -860,6 +857,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_rise.clear()
 
@@ -884,6 +882,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_fall.clear()
 
@@ -909,6 +908,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_rise = center_points.copy()
 
@@ -931,6 +931,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_fall = center_points.copy()
 
@@ -956,6 +957,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_rise = center_points.copy()
 
@@ -978,6 +980,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_fall = center_points.copy()
 
@@ -1005,6 +1008,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_rise.clear()
 
@@ -1029,6 +1033,7 @@ class DDR(DebugCore["DDRMCClient"]):
                                 left_margins,
                                 right_margins,
                                 center_points,
+                                num_nibbles,
                             )
                             prbs_ctps_fall.clear()
 

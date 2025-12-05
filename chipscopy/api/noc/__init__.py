@@ -14,4 +14,5 @@
 # limitations under the License.
 
 from chipscopy.dm.harden.noc_perfmon.traffic_classes import TC_BEW, TC_BER
-from chipscopy.api.noc.noc_perfmon_utils import NoCPerfMonNodeListener, PerfTGController
+from chipscopy.api.noc.noc_perfmon_utils import NoCPerfMonNodeListener
+from chipscopy.api.patg import PATGTrigger, PATG, PATGInstruction

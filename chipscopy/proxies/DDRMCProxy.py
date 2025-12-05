@@ -106,6 +106,11 @@ class DDRMCProxy(CorePropertyProxy, DDRMCService):
     ) -> PropertyValues:
         return self.send_command("refreshProperty", (node_id, prop_names), done)
 
+    def commit_property(
+        self, node_id: str, prop_names: List[str], done: DoneHWCommand
+    ) -> PropertyValues:
+        return self.send_command("commitProperty", (node_id, prop_names), done)
+
     def refresh_cal_status(self, node_id: str, done: DoneHWCommand) -> None:
         return self.send_command("refreshCalStatus", (node_id,), done)
 

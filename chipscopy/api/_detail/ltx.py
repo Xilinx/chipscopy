@@ -1,5 +1,5 @@
 # Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -102,9 +102,12 @@ class LtxCore:
     uuid: str
     debug_hub_address: int
     probes: [LtxProbe]
+    bus_probes: List[tuple]
     upstream_cell_names: List[str]
     """ E.g. A VIO debug core would list the connected debug_hub, as an upstream core."""
     partition: LtxPath
+    slots: int = 1
+    enable_experimental: bool = False
 
     def is_inside_static_partition(self) -> bool:
         """True of the core is inside static partition."""
@@ -149,11 +152,14 @@ class Ltx:
     __net_bus_index_re = None
     __subnet_bus_index_re = None
 
-    def __init__(self, source_name=""):
+    def __init__(self, source_name="", enable_experimental_protocol_decode: bool = False):
         self._source_name: str = source_name
         self._cores: {CoreType, [LtxCore]} = defaultdict(list)
         self._debug_hub_addresses: [int] = []
         self._downstream_refs: {str: List[LtxStreamRef]} = defaultdict(list)
+        self._bus_interfaces = []
+        self._enable_exp = enable_experimental_protocol_decode
+
         """
             key: upstream_cell_name. value: list of downstream LtxStreamRef
             E.g. an entry for a debug_hub core, would list other debug cores connected to it.
@@ -243,9 +249,12 @@ class Ltx:
 
             debug_cores = ltx_data_item.get("debug_cores", [])
             for debug_core in debug_cores:
-                core = Ltx._read_core(debug_core, parent_id_to_enum, self._source_name)
+                core = Ltx._read_core(
+                    debug_core, parent_id_to_enum, self._source_name, self._enable_exp
+                )
                 if not core:
                     continue
+
                 self._cores[core.core_type].append(core)
 
             if not debug_cores and path:
@@ -347,13 +356,32 @@ class Ltx:
 
     @staticmethod
     def _read_core(
-        in_core: {}, parent_enums: ParentEnums, source_name: str
+        in_core: {}, parent_enums: ParentEnums, source_name: str, enable_experimental: bool
     ) -> Union[LtxCore, None]:
         partition_str = in_core.get("reconfigTop", "")
         partition = LtxPath(partition_str, source_name)
         pins = in_core.get("pins", [])
         probes = [Ltx._read_pin(pin, parent_enums) for pin in pins]
         probes = [probe for probe in probes if probe]
+        businterfaces = in_core.get("bus_interfaces", [])
+        bus_probes = []
+        slots = 1
+        if businterfaces and enable_experimental:
+            slots = len(businterfaces)
+            for i in range(slots):
+                connectedbus = businterfaces[i]["connectedBus"]
+                slot = businterfaces[i]["name"]
+                bus_probes.extend(
+                    [
+                        Ltx._read_bus_portmap(
+                            port, pins, parent_enums, connectedbus, slot, slots > 1
+                        )
+                        for port in businterfaces[i]["port_maps"]
+                    ]
+                )
+
+        else:
+            bus_probes = []
         ip_name = in_core.get("ipName", "")
         if ip_name == "axi_dbg_hub" and "address_info" in in_core:
             addr = in_core["address_info"].get("offset", "")
@@ -369,7 +397,18 @@ class Ltx:
         # todo syntax/semantic checks?
         if not core_type:
             return None
-        return LtxCore(core_type, cell_name, uuid, addr, probes, upstream_cell_names, partition)
+        return LtxCore(
+            core_type,
+            cell_name,
+            uuid,
+            addr,
+            probes,
+            bus_probes,
+            upstream_cell_names,
+            partition,
+            slots=slots,
+            enable_experimental=enable_experimental,
+        )
 
     @staticmethod
     def read_nets(nets: []) -> Tuple[bool, int, int, List[int]]:
@@ -449,6 +488,69 @@ class Ltx:
             probe_def,
         )
 
+    @staticmethod
+    def _read_bus_portmap(
+        port_map: dict,
+        probes: dict,
+        parent_enums: ParentEnums,
+        connectedBus: str,
+        slot: str,
+        more_than_one_bus: bool = False,
+    ) -> tuple:
+        """
+        port_map example:
+          {
+            "logical_port": "AWVALID",
+            "physical_pin": {
+              "id": 71,
+              "name": "probe29",
+              "leftBit": 0,
+              "width": 1
+            }
+          }
+        """
+        name = port_map["logical_port"]
+        pin = port_map["physical_pin"]
+        pinName = pin["name"]
+        bitAd = pin["leftBit"]
+        width = pin["width"]
+
+        # Find the actual probe
+        probeactual = next((prob for prob in probes if prob.get("name") == pinName), None)
+        actualwidth = probeactual["rightIndex"]
+        if not probeactual:
+            return ()
+
+        # Create the bus interface key with the connected bus prefix
+        bus_key = name
+        if more_than_one_bus:
+            bus_key = slot + "/" + name
+
+        if width == 1:
+            # Single bit mapping
+            if probeactual.get("isVector", False) and "subnets" in probeactual["nets"][0]:
+                actual_probe_name = probeactual["nets"][0]["subnets"][actualwidth - bitAd]["name"]
+            else:
+                actual_probe_name = probeactual["nets"][0]["name"]
+            return (bus_key, actual_probe_name)
+        else:
+            # Multi-bit mapping
+            if probeactual.get("isVector", False) and "subnets" in probeactual["nets"][0]:
+                # Return range notation
+                subnets = probeactual["nets"][0]["subnets"]
+                start_bit = bitAd
+                end_bit = bitAd + width - 1
+                if end_bit < len(subnets):
+                    # Create a range reference
+                    base_name = probeactual["nets"][0]["name"]
+                    return (bus_key, f"{base_name}[{end_bit}:{start_bit}]")
+            else:
+                # For non-vector probes with width > 1
+                base_name = probeactual["nets"][0]["name"]
+                return (bus_key, f"{base_name}[{bitAd + width - 1}:{bitAd}]")
+
+        return ()
+
     def __str__(self) -> str:
         dump = "\ndebug_hub_addresses: " + ", ".join(
             [hex(addr) for addr in self._debug_hub_addresses]
@@ -484,7 +586,9 @@ class Ltx:
 
 
 def parse_ltx_files(
-    ltx_sources: List[Union[Path, str, TextIOBase]], source_names: Optional[List[str]] = None
+    ltx_sources: List[Union[Path, str, TextIOBase]],
+    source_names: Optional[List[str]] = None,
+    enable_experimental_protocol_decode: bool = False,
 ) -> (Ltx, List[Union[str, TextIOBase]], List[str]):
     """
     One or more Ltx source(s) are read to produce one returned Ltx object.
@@ -530,11 +634,12 @@ def parse_ltx_files(
 
     ltxs = []
     for ltx_src, ltx_name in zip(sources, source_names):
-        ltx = Ltx(ltx_name)
+        ltx = Ltx(ltx_name, enable_experimental_protocol_decode=enable_experimental_protocol_decode)
         if isinstance(ltx_src, str):
             ltx.parse_file(ltx_src)
         else:
             ltx.parse_ltx(ltx_src)
+
         ltxs.append(ltx)
 
     if len(ltxs) == 1:

@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -224,10 +224,19 @@ def verify_ports(ltx: Ltx, uuid: str, ports: [ILAPort]) -> None:
     def get_width(port: ILAPort, trigger: bool, data: bool) -> int:
         return port.bit_width if port.is_trigger == trigger and port.is_data == data else 0
 
+    def get_bus_interface_width(port: ILAPort) -> int:
+        return port.bit_width
+
     widths_by_type = {
         "DATA": [get_width(port, trigger=False, data=True) for port in ports],
         "DATA_TRIGGER": [get_width(port, trigger=True, data=True) for port in ports],
         "TRIGGER": [get_width(port, trigger=True, data=False) for port in ports],
+        "BUS_INTERFACE": [
+            get_bus_interface_width(
+                port,
+            )
+            for port in ports
+        ],
     }
     ltx.verify_port_width_by_type(CoreType.AXIS_ILA, uuid, widths_by_type)
 

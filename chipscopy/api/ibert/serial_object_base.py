@@ -40,6 +40,7 @@ from chipscopy.api.ibert.aliases import (
     PROPERTY_ENDPOINT,
     ALIAS_DICT,
     MODIFIABLE_ALIASES,
+    PROPERTIES,
 )
 from chipscopy.client.ibert_core_client import IBERTCoreClient
 from typing_extensions import Final
@@ -117,10 +118,12 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
     def __init__(self, parent, property_endpoint):
         PropertyCommands.__init__(self, parent)
 
+        self.all_props: list[str] = []
+        """Names of all properties on this object"""
+
         self.watchlist = IBERTWatchlist(self)
         self.endpoint_name: Final[str] = property_endpoint.name
         self.endpoint_tcf_node = self.core_tcf_node.get_node_with_name(self.endpoint_name)
-        self.property_report = None
 
     """
     NOTE - The 'endpoint_tcf_node' is different from 'core_tcf_node'.
@@ -215,9 +218,6 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
         sanitized_data = PropertyCommands.sanitize_input(property_names, list)
         return self.core_tcf_node.commit_property(sanitized_data, self.endpoint_name)
 
-    def set_property_report_filter(self, property_names: Union[str, List[str]] = None):
-        self.property_report = property_names
-
     def report(self, property_names: Union[str, List[str]] = None) -> Dict[str, Dict[str, Any]]:
         """
         Generate a report providing detailed information about the properties.
@@ -229,11 +229,9 @@ class IBERTPropertyCommands(PropertyCommands["SerialObjectBase"]):
             Dictionary with property name and information as key, value pairs.
 
         """
-        sanitized_data = []
-        if property_names is not None:
-            sanitized_data = PropertyCommands.sanitize_input(property_names, list)
-        elif self.property_report is not None:
-            sanitized_data = self.property_report
+        if property_names is None:
+            property_names = self.all_props
+        sanitized_data = PropertyCommands.sanitize_input(property_names, list)
         return self.core_tcf_node.report_property(sanitized_data, self.endpoint_name)
 
 
@@ -290,6 +288,7 @@ class SerialObjectBase(Generic[parent_type, child_type]):
                 )
             except AttributeError:
                 self._property_endpoint = None
+                self._property = None
 
         self.filter_by = {}
 
@@ -329,7 +328,6 @@ class SerialObjectBase(Generic[parent_type, child_type]):
     @builtins.property
     def property(self) -> IBERTPropertyCommands:
         self.setup()
-        self._property.set_property_report_filter(set(self.property_for_alias.values()))
         return self._property
 
     @builtins.property
@@ -341,6 +339,13 @@ class SerialObjectBase(Generic[parent_type, child_type]):
     def reset(self):
         raise NotImplementedError(f"Reset is not supported for {self.handle}!")
 
+    def _get_obj_info_with_props(self):
+        return self.core_tcf_node.get_obj_info(self.handle, include_property="client_visible")
+
+    def _update_all_props(self, obj_info: Dict[str, Any]):
+        if self._property is not None:
+            self._property.all_props = obj_info[PROPERTIES]
+
     def _build_aliases(self, obj_info: Dict[str, Any]):
         if obj_info.get(ALIAS_DICT):
             self._property_for_alias = obj_info[ALIAS_DICT]
@@ -351,6 +356,7 @@ class SerialObjectBase(Generic[parent_type, child_type]):
         if self.setup_done:
             return
 
-        obj_info = self.core_tcf_node.get_obj_info(self.handle)
+        obj_info = self._get_obj_info_with_props()
+        self._update_all_props(obj_info)
         self._build_aliases(obj_info)
         self.setup_done = True

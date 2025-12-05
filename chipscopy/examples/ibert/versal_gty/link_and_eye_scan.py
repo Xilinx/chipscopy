@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.<br>
-# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -37,10 +37,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed
-# - ChipScoPy 2025.1 installed
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 # - Optional - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/) (For the sweep example only).
@@ -324,8 +324,8 @@ selected_termvolt = rx_termvolt_report['Valid values'][0:2]
 # This step displays the resulting eye scans, completing the sweep.
 
 # %%
-combinations = list(product(selected_precurs,
-                selected_postcurs, selected_diffswing,
+combinations = list(product(selected_precurs, 
+                selected_postcurs, selected_diffswing, 
                     selected_termvolt))
 print(f"-----Total Eye Scans in this Sweep: {len(combinations)}-----")
 
@@ -338,13 +338,13 @@ for (precurs, poscurs, difswing, tervolt) in combinations:
     }
     link.tx.property.set(**props)
     link.tx.property.commit(list(props.keys()))
-
+    
     props = {
         link.rx.property_for_alias[RX_TERMINATION_VOLTAGE]: tervolt,
     }
     link.rx.property.set(**props)
     link.rx.property.commit(list(props.keys()))
-
+    
     eye_scan = create_eye_scans(target_objs=link)[0]
     eye_scan.params[EYE_SCAN_HORZ_STEP].value = 10
     eye_scan.params[EYE_SCAN_VERT_STEP].value = 10
@@ -353,10 +353,10 @@ for (precurs, poscurs, difswing, tervolt) in combinations:
     eye_scan.params[EYE_SCAN_TARGET_BER].value = 1e-5
     eye_scan.start()
     eye_scan.wait_till_done()
-    print(f"Finished eye scan {eye_scan}")
+    print(f"Finished eye scan {eye_scan}")    
     title_string = f"Pre Cursor: {precurs}, Post Cursor: {poscurs}, Diff Swing: {difswing}," + "<br>" + f" Termination Voltage: {tervolt}" #, Common mode: {commode}
     eye_scans.append([eye_scan,title_string])
-
+    
 
 
 
@@ -388,15 +388,15 @@ props = {
     link.tx.property_for_alias[TX_POST_CURSOR]: orig_postcursor,
     link.tx.property_for_alias[TX_DIFFERENTIAL_SWING]: orig_diffswing,
 
-}
-link.tx.property.set(**props)
+}    
+link.tx.property.set(**props)  
 link.tx.property.commit(list(props.keys()))
 
 props = {
     link.rx.property_for_alias[RX_TERMINATION_VOLTAGE]: orig_termvolt,
 
-}
-link.rx.property.set(**props)
+}    
+link.rx.property.set(**props)  
 link.rx.property.commit(list(props.keys()))
 
 
@@ -431,7 +431,7 @@ def progress_callback(f:CsFuture):
 
 # Detect links in a session
 detect_future = detect_links(target=session, done=done_callback, progress=progress_callback)
-assert detect_future.error is None
+assert detect_future.error is None 
 
 print(f"Links found - {links_created}")
 

@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -123,6 +123,7 @@ class Device:
         device_spec: DeviceSpec,
         disable_core_scan: bool,
         disable_cache: bool,
+        enable_experimental_protocol_decode: bool,
     ):
         self.state = DeviceState.NEEDS_REFRESH
         self.cached_props = {}
@@ -138,7 +139,7 @@ class Device:
         self.part_name = self._device_spec.get_part_name()
         self.dna = self._device_spec.get_dna()
         self.jtag_index = self._device_spec.jtag_index
-
+        self.enable_experimental_protocol_decode = enable_experimental_protocol_decode
         self.disable_core_scan = disable_core_scan
         self.disable_cache = disable_cache
 
@@ -405,7 +406,7 @@ class Device:
     def ddrs(self) -> QueryList[DDR]:
         """Returns:
         list of detected DDRMC cores in the device"""
-        self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
         self._raise_if_state_invalid()
         return self._get_debug_core_wrappers(DDRMCClient)
 
@@ -553,6 +554,7 @@ class Device:
         """
         # Selectively disable scanning of cores depending on what comes in
         # This is second priority to the disable_core_scan in __init__.
+
         self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
         self._raise_if_state_invalid()
         self.cores_to_scan = {}
@@ -581,9 +583,11 @@ class Device:
             hub_address_list = [hub_address_list]
         if not hub_address_list:
             hub_address_list = []
-
         if ltx_file:
-            self.ltx, self.ltx_sources, _ = parse_ltx_files(ltx_file)  # noqa
+            self.ltx, self.ltx_sources, _ = parse_ltx_files(
+                ltx_file,
+                enable_experimental_protocol_decode=self.enable_experimental_protocol_decode,
+            )  # noqa
             hub_address_list.extend(self.ltx.get_debug_hub_addresses())
             # Remove any duplicate hub addresses in list, in case same one
             # was passed to function as well as in ltx
@@ -972,6 +976,7 @@ def discover_devices(
     disable_core_scan: bool = False,
     cable_ctx: Optional[str] = None,
     disable_cache: bool = False,
+    enable_experimental_protocol_decode: bool = False,
 ) -> QueryList[Device]:
     log.client.debug(
         f"discover_devices: hw_server={hw_server}, cs_server={cs_server}, disable_core_scan={disable_core_scan}, cable_ctx={cable_ctx}",
@@ -1001,6 +1006,7 @@ def discover_devices(
                     device_spec=device_spec,
                     disable_core_scan=disable_core_scan,
                     disable_cache=disable_cache,
+                    enable_experimental_protocol_decode=enable_experimental_protocol_decode,
                 )
                 log.client.debug(
                     f"discover_devices: created new device: {device_node.device_wrapper}"

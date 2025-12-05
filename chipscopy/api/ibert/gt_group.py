@@ -79,8 +79,8 @@ class GTGroup(SerialObjectBase["IBERT", Union[GT, PLL]]):
             return
 
         self.core_tcf_node.setup_gt_group(self.name)
-        obj_info = self.core_tcf_node.get_obj_info(self.handle, include_property="no")
-
+        obj_info = self._get_obj_info_with_props()
+        self._update_all_props(obj_info)
         self._build_aliases(obj_info)
 
         if not obj_info.get(CHILDREN):
