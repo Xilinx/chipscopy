@@ -60,6 +60,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Remove examples from repo
+        run: rm -rf chipscopy/examples
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
