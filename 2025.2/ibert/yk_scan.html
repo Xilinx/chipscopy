@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>YK Scan &mdash; ChipScoPy XXXXXXX documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Appendix" href="appendix.html" />
+    <link rel="prev" title="Eye Scan" href="eye_scan.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../ddr.html">DDR</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../ibert.html">IBERT</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="property.html">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#discovering-ibert">Discovering IBERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#hierarchy-of-objects">Hierarchy of objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#reset">Reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#attributes-of-ibert-object">Attributes of IBERT object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#other-serial-objects">Other serial objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#links">Links</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../ibert.html#scans">Scans</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="eye_scan.html">Eye Scan</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">YK Scan</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create-yk-scan">Create YK scan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-yk-scan">Start YK scan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#accessing-yk-scan-data">Accessing YK scan data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stop-yk-scan">Stop YK scan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-all-yk-scans">Get all YK scans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delete-yk-scan">Delete YK scan</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ibert.html#appendix-reference">Appendix &amp; Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../ibert.html">IBERT</a> &raquo;</li>
+      <li>YK Scan</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="yk-scan">
+<h1>YK Scan<a class="headerlink" href="#yk-scan" title="Permalink to this heading">¶</a></h1>
+<p>A YK scan helps us perform margin analysis on the channel over which the RX is receiving data.</p>
+<section id="create-yk-scan">
+<h2>Create YK scan<a class="headerlink" href="#create-yk-scan" title="Permalink to this heading">¶</a></h2>
+<p>YK scans can be created using <a class="reference internal" href="references/rx.html#chipscopy.api.ibert.rx.RX" title="chipscopy.api.ibert.rx.RX"><code class="xref py py-class docutils literal notranslate"><span class="pre">RX</span></code></a>.
+To create an YK scan, use the factory function <a class="reference internal" href="references/yk_scan.html#chipscopy.api.ibert.create_yk_scans" title="chipscopy.api.ibert.create_yk_scans"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_yk_scans()</span></code></a>.
+Here’s an example of creating YK scan for</p>
+<ul class="simple">
+<li><p>RX’s</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Other imports</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">more_itertools</span> <span class="kn">import</span> <span class="n">one</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ibert</span> <span class="kn">import</span> <span class="n">create_yk_scans</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Boilerplate stuff - Create a session, get the IBERT core etc etc</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">quad_204</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span><span class="n">ibert</span><span class="o">.</span><span class="n">gt_groups</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Quad_204&quot;</span><span class="p">))</span>
+
+<span class="n">ch_0</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span><span class="n">quad_204</span><span class="o">.</span><span class="n">gts</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CH_0&quot;</span><span class="p">))</span>
+<span class="n">ch_1</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span><span class="n">quad_204</span><span class="o">.</span><span class="n">gts</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CH_1&quot;</span><span class="p">))</span>
+<span class="n">ch_2</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span><span class="n">quad_204</span><span class="o">.</span><span class="n">gts</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CH_2&quot;</span><span class="p">))</span>
+<span class="n">ch_3</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span><span class="n">quad_204</span><span class="o">.</span><span class="n">gts</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CH_3&quot;</span><span class="p">))</span>
+
+<span class="c1"># Creating YK scan for a single RX</span>
+<span class="hll"><span class="n">yk_scan_0</span> <span class="o">=</span> <span class="n">one</span><span class="p">(</span><span class="n">create_yk_scans</span><span class="p">(</span><span class="n">target_objs</span><span class="o">=</span><span class="n">ch_0</span><span class="o">.</span><span class="n">rx</span><span class="p">))</span>
+</span>
+<span class="c1"># OR</span>
+
+<span class="c1"># Creating YK scan for multiple RX&#39;s in one shot</span>
+<span class="hll"><span class="n">new_yk_scans</span> <span class="o">=</span> <span class="n">create_yk_scans</span><span class="p">(</span><span class="n">target_objs</span><span class="o">=</span><span class="p">[</span><span class="n">ch_1</span><span class="o">.</span><span class="n">rx</span><span class="p">,</span> <span class="n">ch_2</span><span class="o">.</span><span class="n">rx</span><span class="p">,</span> <span class="n">ch_3</span><span class="o">.</span><span class="n">rx</span><span class="p">])</span>
+</span></pre></div>
+</div>
+</section>
+<section id="start-yk-scan">
+<h2>Start YK scan<a class="headerlink" href="#start-yk-scan" title="Permalink to this heading">¶</a></h2>
+<p>To start an YK scan, simply call the <a class="reference internal" href="references/yk_scan.html#chipscopy.api.ibert.yk_scan.YKScan.start" title="chipscopy.api.ibert.yk_scan.YKScan.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code></a>.
+.. code-block:: python</p>
+<blockquote>
+<div><p>yk_scan_0.start()</p>
+</div></blockquote>
+<p>This will start the YK scan in a non-blocking fashion i.e. the call will return once the scan has started and
+won’t wait for completion of the scan. This allows you to continue doing other things while the YK scan is
+in progress.</p>
+<p>In order to get YK scan progress update, you can register a callback function with the
+YK scan object before starting a scan. This can be done by setting the <code class="docutils literal notranslate"><span class="pre">update_callback</span></code> attribute.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scan_progress_event_handler</span><span class="p">(</span><span class="n">progress_percent</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="k">pass</span> <span class="c1"># --&gt; Add your logic here</span>
+
+<span class="n">yk_scan_0</span><span class="o">.</span><span class="n">update_callback</span> <span class="o">=</span> <span class="n">scan_progress_event_handler</span>
+
+<span class="hll"><span class="n">yk_scan_0</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<p>The progress callback should accept a single argument.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The progress update callbacks is <strong>not</strong> called on the main thread.
+It is best to keep the logic in the event handlers as minimal as possible.</p>
+</div>
+</section>
+<section id="accessing-yk-scan-data">
+<h2>Accessing YK scan data<a class="headerlink" href="#accessing-yk-scan-data" title="Permalink to this heading">¶</a></h2>
+<p>YK scan data can be accessed via the <a class="reference internal" href="references/yk_scan.html#chipscopy.api.ibert.yk_scan.YKScan.scan_data" title="chipscopy.api.ibert.yk_scan.YKScan.scan_data"><code class="xref py py-data docutils literal notranslate"><span class="pre">scan_data</span></code></a> attribute which is part of the <code class="xref py py-class docutils literal notranslate"><span class="pre">YKSample</span></code> class.</p>
+<p>This instance stores the normalised slicer data from the MicroBlaze and the processed snr value. These are
+accessible as shown.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-number">Table 13 </span><span class="caption-text">ScanData attributes</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">slicer</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">snr</span></code></p></td>
+<td><p>Access the SNR value being plotted.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Snippet below shows how to access the scan data given an instance of the <code class="xref py py-class docutils literal notranslate"><span class="pre">YKScan</span></code> class</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assumed that we created &quot;YK_scan_0&quot; in a previous step and ran it to completion.</span>
+
+<span class="c1"># To access the raw slicer data</span>
+<span class="hll"><span class="n">YK_scan_0</span><span class="o">.</span><span class="n">scan_data</span><span class="o">.</span><span class="n">slicer</span>
+</span>
+<span class="c1"># To access the snr value</span>
+<span class="hll"><span class="n">YK_scan_0</span><span class="o">.</span><span class="n">scan_data</span><span class="o">.</span><span class="n">snr</span>
+</span></pre></div>
+</div>
+</section>
+<section id="stop-yk-scan">
+<h2>Stop YK scan<a class="headerlink" href="#stop-yk-scan" title="Permalink to this heading">¶</a></h2>
+<p>To stop an YK scan while it is in progress, call the <code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">YK_scan_0</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will send the stop command to cs_server which will in-turn gracefully halt the YK scan test in the MicroBlaze.</p>
+<p>If you would like to re-start a stopped scan, you can do so by calling the <code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code>
+function again.</p>
+</section>
+<section id="get-all-yk-scans">
+<h2>Get all YK scans<a class="headerlink" href="#get-all-yk-scans" title="Permalink to this heading">¶</a></h2>
+<p>To get all the links, use the function <a class="reference internal" href="references/yk_scan.html#chipscopy.api.ibert.get_all_yk_scans" title="chipscopy.api.ibert.get_all_yk_scans"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_all_yk_scans()</span></code></a>.</p>
+</section>
+<section id="delete-yk-scan">
+<h2>Delete YK scan<a class="headerlink" href="#delete-yk-scan" title="Permalink to this heading">¶</a></h2>
+<p>To delete an YK scan, use the factory function <a class="reference internal" href="references/yk_scan.html#chipscopy.api.ibert.delete_yk_scans" title="chipscopy.api.ibert.delete_yk_scans"><code class="xref py py-func docutils literal notranslate"><span class="pre">delete_yk_scans()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Other imports</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.ibert</span> <span class="kn">import</span> <span class="n">delete_yk_scans</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Boilerplate stuff - Create a session, get the IBERT core etc etc</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Assume we created &#39;yk_scan_0&#39; through &#39;yk_scan_3&#39;.</span>
+<span class="hll"><span class="n">delete_yk_scans</span><span class="p">(</span><span class="n">yk_scan_0</span><span class="p">)</span>
+</span><span class="hll"><span class="n">delete_yk_scans</span><span class="p">([</span><span class="n">yk_scan_1</span><span class="p">,</span> <span class="n">yk_scan_2</span><span class="p">,</span> <span class="n">yk_scan_3</span><span class="p">])</span>
+</span></pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Once the YK scan is deleted, any references to the deleted YK scan instance will be stale and are not safe to use.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="eye_scan.html" class="btn btn-neutral float-left" title="Eye Scan" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="appendix.html" class="btn btn-neutral float-right" title="Appendix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on December 05, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

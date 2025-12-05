@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.api.ila.ila_probe &mdash; ChipScoPy XXXXXXX documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../api.html">chipscopy.api</a> &raquo;</li>
+      <li>chipscopy.api.ila.ila_probe</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for chipscopy.api.ila.ila_probe</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2025, Advanced Micro Devices, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">chipscopy.api</span> <span class="kn">import</span> <span class="n">CoreType</span><span class="p">,</span> <span class="n">dataclass_fields</span><span class="p">,</span> <span class="n">filter_props</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api._detail.ltx</span> <span class="kn">import</span> <span class="n">Ltx</span><span class="p">,</span> <span class="n">LtxCore</span><span class="p">,</span> <span class="n">LtxProbe</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.axis_ila_core_client</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AxisIlaCoreClient</span> <span class="k">as</span> <span class="n">TCF_AxisIlaCoreClient</span><span class="p">,</span>
+    <span class="n">ILAPortType</span> <span class="k">as</span> <span class="n">TCF_ILAPortType</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">chipscopy.shared.ila_util</span> <span class="kn">import</span> <span class="n">is_hex_str</span>
+
+
+<span class="k">class</span> <span class="nc">ILAMatchUnitType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Probe comparator types. Only LARGE is supported.</span>
+
+<span class="sd">    ===========  =====================================================================</span>
+<span class="sd">    Enum Value   Description</span>
+<span class="sd">    ===========  =====================================================================</span>
+<span class="sd">    SMALL        Not supported.</span>
+<span class="sd">    MEDIUM       Not supported.</span>
+<span class="sd">    LARGE        Supports operators: [&#39;==&#39;, &#39;!=&#39;, &#39;&gt;&#39;, &#39;&lt;&#39;, &#39;&gt;=&#39;, &#39;&lt;=&#39;, &#39;||&#39;]</span>
+<span class="sd">                  and bit values: &#39;01xXrRfFnNbBtTlLsS_&#39;</span>
+<span class="sd">    ===========  =====================================================================</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SMALL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MEDIUM</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">LARGE</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<span class="k">class</span> <span class="nc">ILAProbeRadix</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display radix for probe data values.</span>
+
+<span class="sd">    =====================  ================================</span>
+<span class="sd">    Enum Value             Description</span>
+<span class="sd">    =====================  ================================</span>
+<span class="sd">    BIN                    Not Supported.</span>
+<span class="sd">    ENUM                   Enumeration</span>
+<span class="sd">    HEX                    Default.</span>
+<span class="sd">    SIGNED                 Not supported.</span>
+<span class="sd">    UNSIGNED               Not supported.</span>
+<span class="sd">    =====================  ================================</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">BIN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ENUM</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">HEX</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SIGNED</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">UNSIGNED</span> <span class="o">=</span> <span class="mi">4</span>
+
+
+<div class="viewcode-block" id="ILAPort"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILAPort">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ILAPort</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Probe Port on the ILA Core&quot;&quot;&quot;</span>
+
+    <span class="n">bit_width</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of port bits.&quot;&quot;&quot;</span>
+    <span class="n">data_bit_index</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start bit index in waveform data.&quot;&quot;&quot;</span>
+    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Port index&quot;&quot;&quot;</span>
+    <span class="n">is_trigger</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Port is used for triggering.&quot;&quot;&quot;</span>
+    <span class="n">is_data</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Port is used for capturing data.&quot;&quot;&quot;</span>
+    <span class="n">match_unit_type</span><span class="p">:</span> <span class="n">ILAMatchUnitType</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Type of match unit.&quot;&quot;&quot;</span>
+    <span class="n">match_units</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of match unit indices.&quot;&quot;&quot;</span></div>
+
+
+<span class="n">ILA_PORT_MEMBERS</span> <span class="o">=</span> <span class="n">dataclass_fields</span><span class="p">(</span><span class="n">ILAPort</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ILAProbe"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILAProbe">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ILAProbe</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Logical probe. Probes may share the same probe port.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of probe.&quot;&quot;&quot;</span>
+    <span class="n">bit_width</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of probe bits.&quot;&quot;&quot;</span>
+    <span class="n">is_data</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Probe is used to capture waveform data.&quot;&quot;&quot;</span>
+    <span class="n">is_trigger</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Probe can be used in trigger settings.&quot;&quot;&quot;</span>
+    <span class="nb">map</span><span class="p">:</span> <span class="nb">str</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;How probe is mapped to ports.&quot;&quot;&quot;</span>
+    <span class="n">mu_count</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Max number of compare match units, available to the probe.&quot;&quot;&quot;</span>
+    <span class="n">is_bus</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;True for bus probes&quot;&quot;&quot;</span>
+    <span class="n">bus_left_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bus left index. E.g. 5 in probe ``counter[5:0]``&quot;&quot;&quot;</span>
+    <span class="n">bus_right_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bus right index. E.g. 0 in probe ``counter[5:0]``&quot;&quot;&quot;</span></div>
+
+
+<span class="n">ILA_PROBE_MEMBERS</span> <span class="o">=</span> <span class="n">dataclass_fields</span><span class="p">(</span><span class="n">ILAProbe</span><span class="p">)</span>
+
+
+<span class="n">ILA_MATCH_OPERATORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;!=&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="s2">&quot;||&quot;</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Operators for probe compare values.</span>
+
+<span class="sd">========= =================================================================</span>
+<span class="sd">Operator  Description</span>
+<span class="sd">========= =================================================================</span>
+<span class="sd">==        Equal</span>
+<span class="sd">!=        Not equal</span>
+<span class="sd">&lt;         Less than</span>
+<span class="sd">&lt;=        Equal or less than</span>
+<span class="sd">&gt;         Greater than</span>
+<span class="sd">&gt;=        Equal or Greater than</span>
+<span class="sd">||        Reduction OR</span>
+<span class="sd">========= =================================================================</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="n">ILA_MATCH_BIT_VALUES</span> <span class="o">=</span> <span class="s2">&quot;01xXrRfFnNbBtTlLsS_&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Binary bit values for probe compare values.</span>
+
+<span class="sd">========= =================================================================</span>
+<span class="sd">Bit Value Description</span>
+<span class="sd">========= =================================================================</span>
+<span class="sd">_         Underscore separator for readability.</span>
+<span class="sd">X         Don&#39;t care bit matches any bit-value.</span>
+<span class="sd">0         Zero</span>
+<span class="sd">1         One</span>
+<span class="sd">F         Falling. Transition 1 -&gt; 0</span>
+<span class="sd">R         Rising. Transition 0 -&gt; 1</span>
+<span class="sd">L         Laying. Opposite to R.</span>
+<span class="sd">S         Staying. Opposite to F.</span>
+<span class="sd">B         Either Falling or Rising.</span>
+<span class="sd">N         No change. Opposite to B.</span>
+<span class="sd">========= =================================================================</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="ILAProbeValues"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILAProbeValues">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ILAProbeValues</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A compare value consists of a pair: &lt;operator&gt; and &lt;value&gt;</span>
+<span class="sd">    &lt;value&gt; may be of type int or binary/hex string of the correct bit_width.</span>
+
+<span class="sd">    Hex values start with a &#39;0x&#39; prefix.</span>
+<span class="sd">    Note! String values for 3-bit probes are always interpreted as binary values,</span>
+<span class="sd">    e.g. &quot;0x0&quot;, &quot;0x1&quot;, &quot;0xx&quot;, &quot;011&quot;.</span>
+
+<span class="sd">    An empty list is a don&#39;t-care value.</span>
+
+
+
+
+<span class="sd">        Example: Test for LSB is &#39;0&#39; on a 4-bit probe.</span>
+<span class="sd">           [&#39;==&#39;,   &#39;XXX0&#39;]</span>
+
+<span class="sd">        Example: Range check, assuming the global Trigger Condition is ILATriggerCondition.AND:</span>
+<span class="sd">           [&#39;&gt;=&#39;,   &#39;0x3&#39;,   &#39;&lt;=&#39;,   &#39;0x10&#39;]</span>
+
+<span class="sd">        Example: Range check, assuming the global Trigger Condition is ILATriggerCondition.AND:</span>
+<span class="sd">           [&#39;&gt;=&#39;,   3,   &#39;&lt;=&#39;,   10]</span>
+
+<span class="sd">        Example: Test equal to any of 3 numbers, assuming the global Trigger Condition is ILATriggerCondition.OR:</span>
+<span class="sd">           [&#39;==&#39;,   &#39;0011&#39;,   &#39;==&#39;,   &#39;0111&#39;,   &#39;==&#39;,   &#39;1111&#39;]</span>
+
+<span class="sd">        Example: 4-bit dont-care value.</span>
+<span class="sd">           [&#39;==&#39;,   &#39;XXXX&#39;]</span>
+
+<span class="sd">        Example: Dont-care value, written as an empty list.</span>
+<span class="sd">           []</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">bit_width</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of probe bits.&quot;&quot;&quot;</span>
+    <span class="n">trigger_value</span><span class="p">:</span> <span class="p">[]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger compare values, in a list.&quot;&quot;&quot;</span>
+    <span class="n">capture_value</span><span class="p">:</span> <span class="p">[]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic capture compare value. A two item list with [&lt;operator&gt;, &lt;value&gt;]&quot;&quot;&quot;</span>
+    <span class="n">display_radix</span><span class="p">:</span> <span class="n">ILAProbeRadix</span> <span class="o">=</span> <span class="n">ILAProbeRadix</span><span class="o">.</span><span class="n">HEX</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display radix, when exporting waveform data. Default is ILAProbeRadix.HEX&quot;&quot;&quot;</span>
+    <span class="n">enum_def</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">EnumMeta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enum class defining {name:int} enum values, for this probe.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">default_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bit_width</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ILABitRange"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILABitRange">[docs]</a><span class="k">class</span> <span class="nc">ILABitRange</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bit index.&quot;&quot;&quot;</span>
+    <span class="n">length</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bit length.&quot;&quot;&quot;</span></div>
+
+
+<span class="c1">#</span>
+<span class="c1"># ports functions</span>
+<span class="c1">#</span>
+<span class="k">def</span> <span class="nf">verify_ports</span><span class="p">(</span><span class="n">ltx</span><span class="p">:</span> <span class="n">Ltx</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ports</span><span class="p">:</span> <span class="p">[</span><span class="n">ILAPort</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_width</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="n">ILAPort</span><span class="p">,</span> <span class="n">trigger</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">port</span><span class="o">.</span><span class="n">bit_width</span> <span class="k">if</span> <span class="n">port</span><span class="o">.</span><span class="n">is_trigger</span> <span class="o">==</span> <span class="n">trigger</span> <span class="ow">and</span> <span class="n">port</span><span class="o">.</span><span class="n">is_data</span> <span class="o">==</span> <span class="n">data</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">get_bus_interface_width</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="n">ILAPort</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">port</span><span class="o">.</span><span class="n">bit_width</span>
+
+    <span class="n">widths_by_type</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;DATA&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">get_width</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">ports</span><span class="p">],</span>
+        <span class="s2">&quot;DATA_TRIGGER&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">get_width</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">ports</span><span class="p">],</span>
+        <span class="s2">&quot;TRIGGER&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">get_width</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">ports</span><span class="p">],</span>
+        <span class="s2">&quot;BUS_INTERFACE&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">get_bus_interface_width</span><span class="p">(</span>
+                <span class="n">port</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">ports</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+    <span class="n">ltx</span><span class="o">.</span><span class="n">verify_port_width_by_type</span><span class="p">(</span><span class="n">CoreType</span><span class="o">.</span><span class="n">AXIS_ILA</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">widths_by_type</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">ports_from_tcf_props</span><span class="p">(</span><span class="n">props</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">ILAPort</span><span class="p">]:</span>
+    <span class="n">ports</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p_index</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;ports&quot;</span><span class="p">]):</span>
+        <span class="n">port_info</span> <span class="o">=</span> <span class="n">filter_props</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ILA_PORT_MEMBERS</span><span class="p">)</span>
+        <span class="n">port_info</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_index</span>
+        <span class="n">port_info</span><span class="p">[</span><span class="s2">&quot;match_units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;mus&quot;</span><span class="p">]</span>
+        <span class="n">port_type</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;port_type&quot;</span><span class="p">]</span>
+        <span class="n">port_info</span><span class="p">[</span><span class="s2">&quot;is_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">port_type</span> <span class="o">&amp;</span> <span class="n">TCF_ILAPortType</span><span class="o">.</span><span class="n">IS_DATA</span> <span class="o">!=</span> <span class="mi">0</span>
+        <span class="n">port_info</span><span class="p">[</span><span class="s2">&quot;is_trigger&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">port_type</span> <span class="o">&amp;</span> <span class="n">TCF_ILAPortType</span><span class="o">.</span><span class="n">IS_TRIGGER</span> <span class="o">!=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">port_type</span> <span class="o">&amp;</span> <span class="n">TCF_ILAPortType</span><span class="o">.</span><span class="n">MU_EDGE_EQ_REL</span><span class="p">:</span>
+            <span class="n">port_info</span><span class="p">[</span><span class="s2">&quot;match_unit_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ILAMatchUnitType</span><span class="o">.</span><span class="n">LARGE</span>
+        <span class="k">elif</span> <span class="n">port_type</span> <span class="o">&amp;</span> <span class="n">TCF_ILAPortType</span><span class="o">.</span><span class="n">MU_EDGE_EQ_EDGE</span><span class="p">:</span>
+            <span class="n">port_info</span><span class="p">[</span><span class="s2">&quot;match_unit_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ILAMatchUnitType</span><span class="o">.</span><span class="n">MEDIUM</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">port_info</span><span class="p">[</span><span class="s2">&quot;match_unit_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ILAMatchUnitType</span><span class="o">.</span><span class="n">SMALL</span>
+        <span class="n">ports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ILAPort</span><span class="p">(</span><span class="o">**</span><span class="n">port_info</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">ports</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># probes functions</span>
+<span class="c1">#</span>
+<span class="k">def</span> <span class="nf">verify_probe_value</span><span class="p">(</span><span class="n">value_list</span><span class="p">:</span> <span class="p">[],</span> <span class="n">is_trigger</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">probe</span><span class="p">:</span> <span class="n">ILAProbe</span><span class="p">,</span> <span class="n">enum_def</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    int values, enums, binary string and hex strings are supported for now.</span>
+<span class="sd">    More verification is done by the cs_server.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">is_valid_enum_str</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">enum</span> <span class="o">=</span> <span class="n">enum_def</span><span class="p">[</span><span class="n">number</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">verify_enum_value</span><span class="p">(</span><span class="n">enum</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">get_hex_char_bit_len</span><span class="p">(</span><span class="n">ch</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="s2">&quot;x01&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">ch</span> <span class="ow">in</span> <span class="s2">&quot;23&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">ch</span> <span class="ow">in</span> <span class="s2">&quot;4567&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">4</span>
+
+    <span class="k">def</span> <span class="nf">verify_int_bit_length</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+        <span class="n">val_len</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">bit_length</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">val_len</span> <span class="o">&gt;</span> <span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; has bit width:</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="si">}</span><span class="s1"> and cannot be assigned&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; value &quot;</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s1">&quot; which has bit width:</span><span class="si">{</span><span class="n">val_len</span><span class="si">}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">verify_enum_value</span><span class="p">(</span><span class="n">enum</span><span class="p">:</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enum</span><span class="p">,</span> <span class="n">enum_def</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; cannot be assigned enum value </span><span class="si">{</span><span class="n">enum</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="n">verify_int_bit_length</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">verify_one_hex_value</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">hex_number</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">valid_hex_chars</span> <span class="o">=</span> <span class="s2">&quot;x0123456789abcdef_&quot;</span>
+        <span class="n">value_no_underscore</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ch</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">hex_number</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">ch</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span><span class="p">])</span>
+        <span class="n">hex_val_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_no_underscore</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">hex_val_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; has cannot be assigned invalid value &quot;</span><span class="si">{</span><span class="n">hex_number</span><span class="si">}</span><span class="s1">&quot;.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">ch</span> <span class="ow">in</span> <span class="n">valid_hex_chars</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">value_no_underscore</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; value &quot;</span><span class="si">{</span><span class="n">hex_number</span><span class="si">}</span><span class="s1">&quot; has invalid character(s).&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; Valid characters are </span><span class="si">{</span><span class="n">valid_hex_chars</span><span class="si">}</span><span class="s1">&quot;.&#39;</span>
+            <span class="p">)</span>
+        <span class="n">required_hex_ch_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">//</span> <span class="mi">4</span>
+        <span class="k">if</span> <span class="n">hex_val_len</span> <span class="o">!=</span> <span class="n">required_hex_ch_len</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; has bit width:</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="si">}</span><span class="s1"> requiring </span><span class="si">{</span><span class="n">required_hex_ch_len</span><span class="si">}</span><span class="s1"> hex character(s)&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; but value &quot;</span><span class="si">{</span><span class="n">hex_number</span><span class="si">}</span><span class="s1">&quot; has only </span><span class="si">{</span><span class="n">hex_val_len</span><span class="si">}</span><span class="s1"> hex character(s).&#39;</span>
+            <span class="p">)</span>
+        <span class="n">bin_val_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">hex_val_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">get_hex_char_bit_len</span><span class="p">(</span><span class="n">value_no_underscore</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">bin_val_len</span> <span class="o">&gt;</span> <span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="p">:</span>
+            <span class="c1"># Too many bits in first hex char.</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; has bit width:</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="si">}</span><span class="s1"> and cannot be assigned&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; value &quot;</span><span class="si">{</span><span class="n">hex_number</span><span class="si">}</span><span class="s1">&quot; which has bit width:</span><span class="si">{</span><span class="n">bin_val_len</span><span class="si">}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">op</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;!=&quot;</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span> <span class="ow">in</span> <span class="n">value_no_underscore</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; is assigned value &quot;</span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">hex_number</span><span class="si">}</span><span class="s1">&quot;. &#39;</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;The operator cannot be used when the value has a don&#39;t care &quot;x&quot;.&quot;&quot;&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">verify_value_pair</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ILA_MATCH_OPERATORS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; operator &quot;</span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="s1">&quot; is not one of the allowed operators: &#39;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ILA_MATCH_OPERATORS</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">verify_int_bit_length</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">enum_def</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+            <span class="n">verify_enum_value</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">is_hex_str</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="p">):</span>
+            <span class="n">verify_one_hex_value</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">enum_def</span> <span class="ow">and</span> <span class="n">is_valid_enum_str</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+            <span class="c1"># is_valid_enum_str() will do the checking if it is an enum string for this probe.</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># binary value</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">ch</span> <span class="ow">in</span> <span class="n">ILA_MATCH_BIT_VALUES</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">number</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; value &quot;</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s1">&quot; has invalid character(s).&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39; Valid characters are &quot;</span><span class="si">{</span><span class="n">ILA_MATCH_BIT_VALUES</span><span class="si">}</span><span class="s1">&quot;.&#39;</span>
+                <span class="p">)</span>
+
+            <span class="n">val_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">-</span> <span class="n">number</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val_len</span> <span class="o">!=</span> <span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; has bit width:</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="si">}</span><span class="s1"> and cannot be assigned&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39; value &quot;</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s1">&quot; which has bit width:</span><span class="si">{</span><span class="n">val_len</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">op</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;!=&quot;</span><span class="p">])</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">ch</span> <span class="ow">in</span> <span class="s2">&quot;01_&quot;</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">number</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; is assigned value &quot;</span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s1">&quot;. &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;The operator &quot;</span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="s1">&quot; can only be used with &quot;0&quot; and &quot;1&quot; bit values.&#39;</span>
+                <span class="p">)</span>
+
+    <span class="c1"># Empty list are allowed. Used for DONT_CARE values.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; trigger/capture set value </span><span class="si">{</span><span class="n">value_list</span><span class="si">}</span><span class="s1"> is required to be a list.&#39;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_trigger</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; capture set value </span><span class="si">{</span><span class="n">value_list</span><span class="si">}</span><span class="s1"> list length cannot be more than 2.&#39;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_list</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; trigger/capture set value </span><span class="si">{</span><span class="n">value_list</span><span class="si">}</span><span class="s1"> is required to be a list&#39;</span>
+            <span class="s2">&quot; with even number of items. Odd items are operators and even items are numbers.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_list</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">verify_value_pair</span><span class="p">(</span><span class="n">value_list</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">value_list</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">create_probes_from_ports_and_ltx</span><span class="p">(</span>
+    <span class="n">tcf_ila</span><span class="p">:</span> <span class="n">TCF_AxisIlaCoreClient</span><span class="p">,</span> <span class="n">ports</span><span class="p">:</span> <span class="p">[</span><span class="n">ILAPort</span><span class="p">],</span> <span class="n">ltx</span><span class="p">:</span> <span class="n">Ltx</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="p">({},</span> <span class="p">{},</span> <span class="nb">str</span><span class="p">,</span> <span class="p">{}):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns:  probes, map_to_port_seqs, probe enum defs&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">process_one_tcf_probe</span><span class="p">(</span><span class="n">attrs</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="p">{}:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">value</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;bit_width&quot;</span><span class="p">,</span> <span class="s2">&quot;mu_count&quot;</span><span class="p">,</span> <span class="s2">&quot;map&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">port_type</span> <span class="o">=</span> <span class="n">TCF_ILAPortType</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;port_type&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">res</span><span class="p">[</span><span class="s2">&quot;is_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TCF_ILAPortType</span><span class="o">.</span><span class="n">IS_DATA</span> <span class="ow">in</span> <span class="n">port_type</span>
+        <span class="n">res</span><span class="p">[</span><span class="s2">&quot;is_trigger&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TCF_ILAPortType</span><span class="o">.</span><span class="n">IS_TRIGGER</span> <span class="ow">in</span> <span class="n">port_type</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="k">def</span> <span class="nf">process_one_tcf_probe_mapping</span><span class="p">(</span><span class="n">attrs</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">ILABitRange</span><span class="p">]:</span>
+        <span class="k">def</span> <span class="nf">create_bit_range</span><span class="p">(</span><span class="n">map_seq</span><span class="p">:</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="n">ILABitRange</span><span class="p">:</span>
+            <span class="n">port_idx</span><span class="p">,</span> <span class="n">high_idx</span><span class="p">,</span> <span class="n">low_idx</span> <span class="o">=</span> <span class="n">map_seq</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">ports</span><span class="p">[</span><span class="n">port_idx</span><span class="p">]</span><span class="o">.</span><span class="n">data_bit_index</span> <span class="o">+</span> <span class="n">low_idx</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">high_idx</span> <span class="o">-</span> <span class="n">low_idx</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">ILABitRange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+
+        <span class="n">tcf_mapping</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;__map_seqs&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="p">[</span><span class="n">create_bit_range</span><span class="p">(</span><span class="n">map_seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">map_seq</span> <span class="ow">in</span> <span class="n">tcf_mapping</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">mapping</span>
+
+    <span class="k">def</span> <span class="nf">ltx_probes_to_tcf_pdefs</span><span class="p">(</span><span class="n">ltx</span><span class="p">:</span> <span class="n">LtxCore</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[{</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">}]:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;net_name&quot;</span><span class="p">:</span> <span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;map&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;port</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">port_index</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">port_msb_index</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">port_lsb_index</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">probe</span> <span class="ow">in</span> <span class="n">ltx</span><span class="o">.</span><span class="n">probes</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">add_probe_bus_info</span><span class="p">(</span><span class="n">p_dicts</span><span class="p">:</span> <span class="p">{},</span> <span class="n">ltx_probes</span><span class="p">:</span> <span class="p">[</span><span class="n">LtxProbe</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ltx_p</span> <span class="ow">in</span> <span class="n">ltx_probes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">is_bus</span> <span class="ow">and</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">p_dicts</span><span class="p">:</span>
+                <span class="n">p_dicts</span><span class="p">[</span><span class="n">ltx_p</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;is_bus&quot;</span><span class="p">:</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">is_bus</span><span class="p">,</span>
+                        <span class="s2">&quot;bus_left_index&quot;</span><span class="p">:</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">bus_left_index</span><span class="p">,</span>
+                        <span class="s2">&quot;bus_right_index&quot;</span><span class="p">:</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">bus_right_index</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_probe_enum_defs</span><span class="p">(</span><span class="n">p_dicts</span><span class="p">:</span> <span class="p">{},</span> <span class="n">ltx_probes</span><span class="p">:</span> <span class="p">[</span><span class="n">LtxProbe</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="p">{}:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ltx_p</span> <span class="ow">in</span> <span class="n">ltx_probes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">enum_def</span> <span class="ow">and</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">p_dicts</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="n">ltx_p</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ltx_p</span><span class="o">.</span><span class="n">enum_def</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="n">tcf_ila</span><span class="o">.</span><span class="n">undefine_probe</span><span class="p">([])</span>
+    <span class="n">ltx_core</span> <span class="o">=</span> <span class="n">ltx</span><span class="o">.</span><span class="n">get_core</span><span class="p">(</span><span class="n">CoreType</span><span class="o">.</span><span class="n">AXIS_ILA</span><span class="p">,</span> <span class="n">uuid</span><span class="p">)</span> <span class="k">if</span> <span class="n">ltx</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">ltx</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ltx_core</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to find ILA core with uuid:</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2"> in LTX file.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ltx_core</span><span class="p">:</span>
+        <span class="n">probe_defs</span> <span class="o">=</span> <span class="n">ltx_probes_to_tcf_pdefs</span><span class="p">(</span><span class="n">ltx_core</span><span class="p">)</span>
+        <span class="n">tcf_ila</span><span class="o">.</span><span class="n">define_probe</span><span class="p">(</span><span class="n">probe_defs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tcf_ila</span><span class="o">.</span><span class="n">define_port_probes</span><span class="p">({</span><span class="s2">&quot;force&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+
+    <span class="n">probe_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;bit_width&quot;</span><span class="p">,</span> <span class="s2">&quot;mu_count&quot;</span><span class="p">,</span> <span class="s2">&quot;port_type&quot;</span><span class="p">,</span> <span class="s2">&quot;map&quot;</span><span class="p">,</span> <span class="s2">&quot;__map_seqs&quot;</span><span class="p">]</span>
+    <span class="n">tcf_probes</span> <span class="o">=</span> <span class="n">tcf_ila</span><span class="o">.</span><span class="n">get_probe</span><span class="p">([],</span> <span class="n">probe_attrs</span><span class="p">)</span>
+    <span class="n">probe_dicts</span> <span class="o">=</span> <span class="p">{</span><span class="n">p_name</span><span class="p">:</span> <span class="n">process_one_tcf_probe</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="n">tcf_probes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="c1"># Add bus information</span>
+    <span class="n">add_probe_bus_info</span><span class="p">(</span><span class="n">probe_dicts</span><span class="p">,</span> <span class="n">ltx_core</span><span class="o">.</span><span class="n">probes</span><span class="p">)</span>
+    <span class="n">enum_defs</span> <span class="o">=</span> <span class="n">get_probe_enum_defs</span><span class="p">(</span><span class="n">probe_dicts</span><span class="p">,</span> <span class="n">ltx_core</span><span class="o">.</span><span class="n">probes</span><span class="p">)</span>
+    <span class="n">map_to_port_seqs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;map&quot;</span><span class="p">]:</span> <span class="n">process_one_tcf_probe_mapping</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">attrs</span> <span class="ow">in</span> <span class="n">tcf_probes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">probes</span> <span class="o">=</span> <span class="p">{</span><span class="n">p_name</span><span class="p">:</span> <span class="n">ILAProbe</span><span class="p">(</span><span class="o">**</span><span class="n">probe</span><span class="p">)</span> <span class="k">for</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">probe</span> <span class="ow">in</span> <span class="n">probe_dicts</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">return</span> <span class="n">probes</span><span class="p">,</span> <span class="n">map_to_port_seqs</span><span class="p">,</span> <span class="n">enum_defs</span>
+
+
+<span class="k">def</span> <span class="nf">verify_probe_enum_def</span><span class="p">(</span><span class="n">probe</span><span class="p">:</span> <span class="n">ILAProbe</span><span class="p">,</span> <span class="n">enum_def</span><span class="p">:</span> <span class="n">enum</span><span class="o">.</span><span class="n">EnumMeta</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enum_def</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">EnumMeta</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;enum definition need to be an Enum class. Type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">enum_def</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; was passed in.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">ei</span> <span class="ow">in</span> <span class="n">enum_def</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ei</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;enum </span><span class="si">{</span><span class="n">ei</span><span class="si">}</span><span class="s1"> value must be of type &quot;int&quot; for probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ei</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Enum value </span><span class="si">{</span><span class="n">ei</span><span class="si">}</span><span class="s2"> has bit length:</span><span class="si">{</span><span class="n">ei</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s1">&#39;which is more than probe &quot;</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; bit length:</span><span class="si">{</span><span class="n">probe</span><span class="o">.</span><span class="n">bit_width</span><span class="si">}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on December 05, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

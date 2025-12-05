@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.api.ila.ila_capture &mdash; ChipScoPy XXXXXXX documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2025.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../api.html">chipscopy.api</a> &raquo;</li>
+      <li>chipscopy.api.ila.ila_capture</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for chipscopy.api.ila.ila_capture</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2023, Advanced Micro Devices, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pformat</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">chipscopy.client.axis_ila_core_client</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ILATriggerCondition</span> <span class="k">as</span> <span class="n">TCF_ILATriggerCondition</span><span class="p">,</span>
+    <span class="n">ILATriggerMode</span> <span class="k">as</span> <span class="n">TCF_ILATriggerMode</span><span class="p">,</span>
+    <span class="n">ILACaptureCondition</span> <span class="k">as</span> <span class="n">TCF_ILACaptureCondition</span><span class="p">,</span>
+    <span class="n">ILACaptureMode</span> <span class="k">as</span> <span class="n">TCF_ILACaptureMode</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api</span> <span class="kn">import</span> <span class="n">dataclass_fields</span><span class="p">,</span> <span class="n">filter_props</span>
+<span class="kn">from</span> <span class="nn">chipscopy.shared.ila_util</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">prop_to_enum</span><span class="p">,</span>
+    <span class="n">replace_enum_values</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot; Constant for indicating &#39;trigger in the middle of waveform window.&quot;&quot;&quot;</span>
+<span class="n">ILA_TRIGGER_POSITION_HALF</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="sd">&quot;&quot;&quot; Constant for &#39;Maximum window sample depth.&quot;&quot;&quot;</span>
+<span class="n">ILA_WINDOW_SIZE_MAX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+
+<div class="viewcode-block" id="ILACaptureCondition"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILACaptureCondition">[docs]</a><span class="k">class</span> <span class="nc">ILACaptureCondition</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For Basic Capture Control, the global boolean operator of participating probe comparators.</span>
+
+<span class="sd">    ==================== ================================</span>
+<span class="sd">    Enum Value           Description</span>
+<span class="sd">    ==================== ================================</span>
+<span class="sd">    ALWAYS               Capture all samples.</span>
+<span class="sd">    AND                  AND probe comparators to filter data.</span>
+<span class="sd">    OR                   OR probe comparators to filter data.</span>
+<span class="sd">    NAND                 NAND probe comparators to filter data.</span>
+<span class="sd">    NOR                  NOR probe comparators to filter data.</span>
+<span class="sd">    ==================== ================================</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ALWAYS</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">OR</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">AND</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">NOR</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">NAND</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+
+<div class="viewcode-block" id="ILATriggerCondition"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILATriggerCondition">[docs]</a><span class="k">class</span> <span class="nc">ILATriggerCondition</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For Trigger Condition, set trigger mode including basic trigger global boolean operator</span>
+<span class="sd">    of participating probe comparators</span>
+
+<span class="sd">    =====================  ================================</span>
+<span class="sd">    Enum Value             Description</span>
+<span class="sd">    =====================  ================================</span>
+<span class="sd">    AND                    Basic Trigger mode: AND probe comparators.</span>
+<span class="sd">    OR                     Basic Trigger mode: OR probe comparators.</span>
+<span class="sd">    NAND                   Basic Trigger mode: NAND probe comparators.</span>
+<span class="sd">    NOR                    Basic Trigger mode: NOR probe comparators.</span>
+<span class="sd">    IMMEDIATELY            Trigger now.</span>
+<span class="sd">    TRIGGER_STATE_MACHINE  Advanced Trigger mode: TSM file decides when to trigger.</span>
+<span class="sd">    =====================  ================================</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">OR</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">AND</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">NOR</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">NAND</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">IMMEDIATELY</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">TRIGGER_STATE_MACHINE</span> <span class="o">=</span> <span class="mi">5</span></div>
+
+
+<div class="viewcode-block" id="ILATrigInMode"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILATrigInMode">[docs]</a><span class="k">class</span> <span class="nc">ILATrigInMode</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    =====================  ================================</span>
+<span class="sd">    Enum Value             Description</span>
+<span class="sd">    =====================  ================================</span>
+<span class="sd">    DISABLED               No TRIG-IN port use.</span>
+<span class="sd">    TRIG_IN_ONLY           Trigger only on TRIG-IN port.</span>
+<span class="sd">    TRIGGER_OR_TRIG_IN     Trigger on basic/trigger mode or on TRIG-IN port.</span>
+<span class="sd">    =====================  ================================</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DISABLED</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">TRIG_IN_ONLY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">TRIGGER_OR_TRIG_IN</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="ILATrigOutMode"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILATrigOutMode">[docs]</a><span class="k">class</span> <span class="nc">ILATrigOutMode</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Choices for Trig-Out port.</span>
+
+<span class="sd">    ==================== ================================</span>
+<span class="sd">    Enum Value           Description</span>
+<span class="sd">    ==================== ================================</span>
+<span class="sd">    DISABLED             Disables the TRIG_OUT port.</span>
+<span class="sd">    TRIGGER_ONLY         Result of the basic/advanced trigger condition.</span>
+<span class="sd">    TRIG_IN_ONLY         Propagates the TRIG_IN port to the TRIG_OUT port.</span>
+<span class="sd">    TRIGGER_OR_TRIG_IN   OR-ing of the basic/advanced trigger and TRIG_IN port.</span>
+<span class="sd">    ==================== ================================</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DISABLED</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">TRIGGER_ONLY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">TRIG_IN_ONLY</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">TRIGGER_OR_TRIG_IN</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+
+<div class="viewcode-block" id="ILAState"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILAState">[docs]</a><span class="k">class</span> <span class="nc">ILAState</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ILA State Transitions:</span>
+<span class="sd">        IDLE -&gt; PRE_TRIGGER -&gt; TRIGGER -&gt; POST_TRIGGER -&gt; IDLE</span>
+
+<span class="sd">    =====================  ================================</span>
+<span class="sd">    Enum Value             Description</span>
+<span class="sd">    =====================  ================================</span>
+<span class="sd">    IDLE                   Not armed.</span>
+<span class="sd">    PRE_TRIGGER            Capturing pre-trigger samples.</span>
+<span class="sd">    TRIGGER                Waiting for trigger.</span>
+<span class="sd">    POST_TRIGGER           Capturing post-trigger samples.</span>
+<span class="sd">    =====================  ================================</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">IDLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">PRE_TRIGGER</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">TRIGGER</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">POST_TRIGGER</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+
+<div class="viewcode-block" id="ILAControl"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILAControl">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ILAControl</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger setup&quot;&quot;&quot;</span>
+
+    <span class="n">capture_condition</span><span class="p">:</span> <span class="n">ILACaptureCondition</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic capture cntrol global boolean operator. See :class:`ILACaptureCondition`&quot;&quot;&quot;</span>
+    <span class="n">trig_in_mode</span><span class="p">:</span> <span class="n">ILATrigInMode</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Usage of TRIG-IN port. See :class:`ILATrigInMode`&quot;&quot;&quot;</span>
+    <span class="n">trig_out_mode</span><span class="p">:</span> <span class="n">ILATrigOutMode</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Usage of TRIG-OUT port. See :class:`ILATrigOutMode`&quot;&quot;&quot;</span>
+    <span class="n">trigger_condition</span><span class="p">:</span> <span class="n">ILATriggerCondition</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Global boolean operator, for trigger probes. See :class:`ILATriggerCondition`&quot;&quot;&quot;</span>
+    <span class="n">trigger_position</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger position index, within data window.&quot;&quot;&quot;</span>
+    <span class="n">window_count</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of data windows.&quot;&quot;&quot;</span>
+    <span class="n">window_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sample count for a window.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<span class="n">ILA_CONTROL_MEMBERS</span> <span class="o">=</span> <span class="n">dataclass_fields</span><span class="p">(</span><span class="n">ILAControl</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ILAStatus"><a class="viewcode-back" href="../../../../ila.html#chipscopy.api.ila.ILAStatus">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ILAStatus</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dynamic status of ILA capture controller&quot;&quot;&quot;</span>
+
+    <span class="n">capture_state</span><span class="p">:</span> <span class="n">ILAState</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Capture state. See :class:`ILAState`&quot;&quot;&quot;</span>
+    <span class="n">is_armed</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger is armed.&quot;&quot;&quot;</span>
+    <span class="n">is_full</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data buffer is full.&quot;&quot;&quot;</span>
+    <span class="n">is_trigger_at_startup</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ILA is armed at startup.&quot;&quot;&quot;</span>
+    <span class="n">samples_captured</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of samples captured in current data window.&quot;&quot;&quot;</span>
+    <span class="n">windows_captured</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of fully captured data windows.&quot;&quot;&quot;</span>
+    <span class="n">samples_requested</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of samples per window, as requested when was ILA armed.&quot;&quot;&quot;</span>
+    <span class="n">windows_requested</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of windows, as requested when ILA was armed.&quot;&quot;&quot;</span>
+    <span class="n">trigger_position_requested</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger position, as requested when ILA was armed.&quot;&quot;&quot;</span>
+    <span class="n">tsm_counters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger State Machine counter values.&quot;&quot;&quot;</span>
+    <span class="n">tsm_flags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger State Machine flag values.&quot;&quot;&quot;</span>
+    <span class="n">tsm_state</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger State Machine current state index.&quot;&quot;&quot;</span>
+    <span class="n">tsm_state_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trigger State Machine current state name.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<span class="n">ILA_STATUS_MEMBERS</span> <span class="o">=</span> <span class="n">dataclass_fields</span><span class="p">(</span><span class="n">ILAStatus</span><span class="p">)</span>
+
+
+<span class="c1"># ILAStatus functions</span>
+<span class="k">def</span> <span class="nf">post_process_status</span><span class="p">(</span><span class="n">props</span><span class="p">:</span> <span class="p">{},</span> <span class="n">state_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;capture_state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ILAState</span><span class="p">[</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;capture_state&quot;</span><span class="p">]]</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;is_trigger_at_startup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_tas&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;samples_requested&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;window_depth_readback&quot;</span><span class="p">)</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;windows_requested&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;window_count_readback&quot;</span><span class="p">)</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;trigger_position_requested&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;trigger_pos_readback&quot;</span><span class="p">)</span>
+    <span class="n">props</span><span class="p">[</span><span class="s2">&quot;tsm_counters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;tsm_counter0&quot;</span><span class="p">,</span> <span class="s2">&quot;tsm_counter1&quot;</span><span class="p">,</span> <span class="s2">&quot;tsm_counter2&quot;</span><span class="p">,</span> <span class="s2">&quot;tsm_counter3&quot;</span><span class="p">]</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">state_names</span><span class="p">:</span>
+        <span class="n">props</span><span class="p">[</span><span class="s2">&quot;tsm_state_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;tsm_state&quot;</span><span class="p">],</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">tcf_props_to_status</span><span class="p">(</span><span class="n">props</span><span class="p">:</span> <span class="p">{},</span> <span class="n">state_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ILAStatus</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make immutable ILAStatus instance from status dict.&quot;&quot;&quot;</span>
+    <span class="n">post_process_status</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">state_names</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ILAStatus</span><span class="p">(</span><span class="o">**</span><span class="n">filter_props</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">ILA_STATUS_MEMBERS</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">tcf_refresh_status</span><span class="p">(</span><span class="n">tcf_node</span><span class="p">,</span> <span class="n">state_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ILAStatus</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read dynamic status.&quot;&quot;&quot;</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="n">tcf_node</span><span class="o">.</span><span class="n">refresh_property_group</span><span class="p">([</span><span class="s2">&quot;status&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">tcf_props_to_status</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">state_names</span><span class="p">)</span>
+
+
+<span class="c1"># ILAControl functions</span>
+<span class="n">__enum_control</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="s2">&quot;capture_condition&quot;</span><span class="p">,</span> <span class="n">ILACaptureCondition</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;trig_out_mode&quot;</span><span class="p">,</span> <span class="n">ILATrigOutMode</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;trigger_condition&quot;</span><span class="p">,</span> <span class="n">ILATriggerCondition</span><span class="p">),</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">control_from_tcf</span><span class="p">(</span><span class="n">props</span><span class="p">:</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="n">ILAControl</span><span class="p">:</span>
+    <span class="c1"># No translation for trigger_position, window_count, window_size, trigger_out_mode</span>
+    <span class="n">cc</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">is_tsm</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;trigger_mode&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">ADVANCED_OR_TRIG_IN</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">ADVANCED_ONLY</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">is_trigger_or_trig_in</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;trigger_mode&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">BASIC_OR_TRIG_IN</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">ADVANCED_OR_TRIG_IN</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">TRIG_IN_ONLY</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="c1"># trigger condition</span>
+    <span class="k">del</span> <span class="n">cc</span><span class="p">[</span><span class="s2">&quot;trigger_mode&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">is_tsm</span><span class="p">:</span>
+        <span class="n">cc</span><span class="p">[</span><span class="s2">&quot;trigger_condition&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ILATriggerCondition</span><span class="o">.</span><span class="n">TRIGGER_STATE_MACHINE</span>
+
+    <span class="c1"># trig_in_mode</span>
+    <span class="k">if</span> <span class="n">is_trigger_or_trig_in</span><span class="p">:</span>
+        <span class="n">cc</span><span class="p">[</span><span class="s2">&quot;trig_in_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ILATrigInMode</span><span class="o">.</span><span class="n">TRIGGER_OR_TRIG_IN</span> <span class="k">if</span> <span class="n">is_trigger_or_trig_in</span> <span class="k">else</span> <span class="n">ILATrigInMode</span><span class="o">.</span><span class="n">TRIG_IN</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cc</span><span class="p">[</span><span class="s2">&quot;trig_in_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ILATrigInMode</span><span class="o">.</span><span class="n">DISABLED</span>
+
+    <span class="c1"># capture mode, capture condition</span>
+    <span class="k">del</span> <span class="n">cc</span><span class="p">[</span><span class="s2">&quot;capture_mode&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;capture_mode&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">TCF_ILACaptureMode</span><span class="o">.</span><span class="n">ALWAYS</span><span class="p">:</span>
+        <span class="n">cc</span><span class="p">[</span><span class="s2">&quot;capture_condition&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ILACaptureCondition</span><span class="o">.</span><span class="n">ALWAYS</span>
+
+    <span class="n">prop_to_enum</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">__enum_control</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ILAControl</span><span class="p">(</span><span class="o">**</span><span class="n">filter_props</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ILA_CONTROL_MEMBERS</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">control_to_tcf</span><span class="p">(</span><span class="n">cc</span><span class="p">:</span> <span class="n">ILAControl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="c1"># trigger condition</span>
+    <span class="n">tcf_t_condition</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">trigger_condition</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="c1"># trigger mode</span>
+    <span class="k">if</span> <span class="n">cc</span><span class="o">.</span><span class="n">trig_in_mode</span> <span class="o">==</span> <span class="n">ILATrigInMode</span><span class="o">.</span><span class="n">TRIG_IN_ONLY</span><span class="p">:</span>
+        <span class="n">tcf_t_mode</span> <span class="o">=</span> <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">TRIG_IN_ONLY</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">elif</span> <span class="n">cc</span><span class="o">.</span><span class="n">trigger_condition</span> <span class="o">==</span> <span class="n">ILATriggerCondition</span><span class="o">.</span><span class="n">TRIGGER_STATE_MACHINE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cc</span><span class="o">.</span><span class="n">trig_in_mode</span> <span class="o">==</span> <span class="n">ILATrigInMode</span><span class="o">.</span><span class="n">TRIGGER_OR_TRIG_IN</span><span class="p">:</span>
+            <span class="n">tcf_t_mode</span> <span class="o">=</span> <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">ADVANCED_OR_TRIG_IN</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tcf_t_mode</span> <span class="o">=</span> <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">ADVANCED_ONLY</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">elif</span> <span class="n">cc</span><span class="o">.</span><span class="n">trig_in_mode</span> <span class="o">==</span> <span class="n">ILATrigInMode</span><span class="o">.</span><span class="n">TRIGGER_OR_TRIG_IN</span><span class="p">:</span>
+        <span class="n">tcf_t_mode</span> <span class="o">=</span> <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">BASIC_OR_TRIG_IN</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tcf_t_mode</span> <span class="o">=</span> <span class="n">TCF_ILATriggerMode</span><span class="o">.</span><span class="n">BASIC_ONLY</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="c1"># capture mode, capture condition</span>
+    <span class="k">if</span> <span class="n">cc</span><span class="o">.</span><span class="n">capture_condition</span> <span class="o">==</span> <span class="n">ILACaptureCondition</span><span class="o">.</span><span class="n">ALWAYS</span><span class="p">:</span>
+        <span class="n">tcf_capture_mode</span> <span class="o">=</span> <span class="n">TCF_ILACaptureMode</span><span class="o">.</span><span class="n">ALWAYS</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">tcf_capture_condition</span> <span class="o">=</span> <span class="n">TCF_ILACaptureCondition</span><span class="o">.</span><span class="n">AND</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tcf_capture_mode</span> <span class="o">=</span> <span class="n">TCF_ILACaptureMode</span><span class="o">.</span><span class="n">BASIC</span>
+        <span class="n">tcf_capture_condition</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">capture_condition</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;capture_mode&quot;</span><span class="p">:</span> <span class="n">tcf_capture_mode</span><span class="p">,</span>
+        <span class="s2">&quot;capture_condition&quot;</span><span class="p">:</span> <span class="n">tcf_capture_condition</span><span class="p">,</span>
+        <span class="s2">&quot;trig_out_mode&quot;</span><span class="p">:</span> <span class="n">cc</span><span class="o">.</span><span class="n">trig_out_mode</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;trigger_mode&quot;</span><span class="p">:</span> <span class="n">tcf_t_mode</span><span class="p">,</span>
+        <span class="s2">&quot;trigger_condition&quot;</span><span class="p">:</span> <span class="n">tcf_t_condition</span><span class="p">,</span>
+        <span class="s2">&quot;trigger_position&quot;</span><span class="p">:</span> <span class="n">cc</span><span class="o">.</span><span class="n">trigger_position</span><span class="p">,</span>
+        <span class="s2">&quot;window_count&quot;</span><span class="p">:</span> <span class="n">cc</span><span class="o">.</span><span class="n">window_count</span><span class="p">,</span>
+        <span class="s2">&quot;window_size&quot;</span><span class="p">:</span> <span class="n">cc</span><span class="o">.</span><span class="n">window_size</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">replace_enum_values</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+
+           </div>
+          </div>
+          
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on December 05, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
