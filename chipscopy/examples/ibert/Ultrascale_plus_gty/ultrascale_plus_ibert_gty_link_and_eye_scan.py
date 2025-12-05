@@ -5,7 +5,7 @@
 # ### License
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
-# Copyright (C) 2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2025, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -31,10 +31,10 @@
 #
 # ### Requirements
 # - VCU128 Board
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed
-# - ChipScoPy 2025.1 installed
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
 # - Jupyter notebook support installed - Please do so, using the command pip install chipscopy[jupyter]
 # - Plotting support installed - Please do so, using the command pip install chipscopy[core-addons]
 #
@@ -51,7 +51,7 @@ import os
 from more_itertools import one
 from itertools import product
 
-from chipscopy import create_session, report_versions, get_design_files, report_hierarchy
+from chipscopy import create_session, delete_session, report_versions, get_design_files, report_hierarchy
 from chipscopy.api.ibert.aliases import (
     EYE_SCAN_HORZ_RANGE,
     EYE_SCAN_VERT_RANGE,
@@ -109,6 +109,15 @@ report_versions(session)
 device = session.devices[0]
 print(device)
 device.program(BIT_FILE, delay_after_program = 10)
+
+
+
+# %%
+# Workaround for UltraScale+ devices...
+# We need to close then reopen the session to force a rescanning of the nodes after programming.
+delete_session(session)
+session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
+device = session.devices[0]
 
 # %% [markdown]
 # ## 4 - Discover  IBERT cores

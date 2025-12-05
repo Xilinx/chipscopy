@@ -34,7 +34,7 @@ Host System Software
 - Operating System: please refer to `Vivado Design Suite User Guide <https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug973-vivado-release-notes-install-license.pdf>`_
 - |vivado_v| or newer Xilinx Hardware Server ``hw_server``
 - |vivado_v| or newer Xilinx ChipScope Server ``cs_server``
-- Python 3.9 or newer
+- Python 3.10 or newer
 - ChipScoPy Python Package
 - ChipScoPy Examples
 

@@ -32,10 +32,10 @@
 #
 # ### Requirements
 # - VCK190 and VCU128 board
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed
-# - ChipScoPy 2025.1 installed
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
 # - Jupyter notebook support installed - Please do so, using the command pip install chipscopy[jupyter]
 # - Plotting support installed - Please do so, using the command pip install chipscopy[core-addons]
 #
@@ -155,7 +155,7 @@ print("--> Debug core discovery done for board 1")
 if len(device_1.ibert_cores) == 0:
     print("No IBERT core found with board 1! Exiting...")
     exit()
-
+    
 # Use the first available IBERT core from the device
 ibert_0 = device_1.ibert_cores.at(index=0)
 

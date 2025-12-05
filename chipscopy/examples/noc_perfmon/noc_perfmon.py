@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -31,10 +31,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed
-# - ChipScoPy 2025.1 installed
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
@@ -127,7 +127,7 @@ print(f"Debug cores setup and ready for use.")
 # Then we ask the design for the supported timebases. And, finally:
 # The NoC is scanned to determine the activated elements.
 
-noc = versal_device.noc_core.all()[0]
+noc = versal_device.noc_core.get()
 
 scan_nodes = ["DDRMC_X0Y0", "NOC_NMU512_X0Y0"]
 print("\nEnumerating nodes: ", end="")

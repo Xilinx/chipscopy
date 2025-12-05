@@ -1,12 +1,46 @@
 # ChipScoPy Release Notes
 
-## 2025.1 - Release
+## 2025.2
 
-- 2025.1.1752011002 - July 18, 2025
-- Resolved an issue where the `is_programmed` property for UltraScale+ devices was always reported as `false`
-- Updated example designs
+### 2025.2.0.55 - December 5, 2025
 
-- 2025.1.1748923355 - June 3, 2025
+> [!CAUTION] 
+> **Breaking change** - Python 3.9 is no longer supported. Minimum required Python version is now 3.10.
+
+- Versioning scheme has changed from a three-part versioning scheme to a four-part versioning scheme. Example
+  ```
+  Old - 2025.1.<epoch>
+  New - 2025.2.0.<build number>
+  ```
+- Performance AXI Traffic Generator: New performance monitoring and traffic generation capabilities (Redux)
+- EA Lassen LPDDRMC Support: Early access support for LPDDR Memory Controller
+- eFuse enhancements: Added efuseGeneratePufKek proxy command
+- CR-1244881: Fixed ILA partial window capture not working
+- CR-1242935: Fixed done_pin check for US+ devices
+- CR-1241172: Fixed 2D eye scan plot not displaying with example script ddr_2d_eye_scan.py
+- CR-1241135: Clarified ILA sample data usage
+- CR-1240247: Fixed bandwidth reporting for DDRMC5E elements
+- CR-1240155: Fixed querylist compatibility with more-itertools 1.7.0
+- CR-1239400: Added program set to chipscopy memory example
+- CR-1237731: Added Status property default value to JtagProxy.py
+- CR-1234943: Added storage for crypto node
+- CR-1220321: Fixed image display for DDR 2D eyescan example
+- CR-1185161: Added error_status to device top level properties
+- CR-1256549: Removed chipscopy timestamp from version report
+- CR-1256657: General bug fix
+- Fixed YK scan plotting issues
+- Fixed architecture check for Versal DDRMC
+- Fixed GTM link detect test
+- Fixed JtagCable getContext argument handling
+- Cached property names at setup time for improved performance with serial objects
+- Updated PDI and LTX files for Chipscopy CEDs using Vivado 2025.2
+- Added heterogenous cross link debug example to demonstrates IBERT functionality using VCK190 & VCU128 boards
+- Added delay_after_program support for non-progress bar cases
+- Improved device program done callback logic
+
+## 2025.1
+
+### 2025.1.1748923355 - June 3, 2025
 - CR-1239400 - Add program set to chipscopy memory example
 - CR-1241135 - Clarify ILA sample data usage
 - CR-1240247 - Report correct bandwidth numbers for DDRMC5E element
@@ -31,16 +65,17 @@
 - Enhanced example design finder to fallback to site-packages area
 - Adding source files for vcu128 board related to example_ibert_vcu128_q131_q132_q134_q135.bit
 
-## 2024.2 - Release
 
-- 2024.2.1733027508 - December 1, 2024
+## 2024.2
+
+### 2024.2.1733027508 - December 1, 2024
 - Pin winpty version to continue Python 3.8 support for jupyter notebook
 - Update README with 3.12 support
-
-- 2024.2.1732283942 - November 22, 2024
+      
+### 2024.2.1732283942 - November 22, 2024
 - Fix chipscopy-examples directory not found with jupyter notebooks
-
-- 2024.2.1732227392 - November 21, 2024
+      
+### 2024.2.1732227392 - November 21, 2024
 - Add US+ GTY IBERT example design and notebook
 - Enhanced logging to handle additional logging domains
 - Move example designs and jupyter notebooks out of pypi wheel to reduce file size
@@ -56,9 +91,9 @@
 - Host examples on github not pypi
 
 
-## 2024.1 - June 12, 2024
+## 2024.1
 
-- 2024.1.1717799899
+### 2024.1.1717799899 - June 12, 2024
 - hw_server and cs_server compatibility updates
 - Fixed device status register not updating after program
 - Fixed duplicate field names in JTAG register
@@ -68,52 +103,35 @@
 - Add link check before eye scan in cpm_decoupling example
 - Improvements to documentation template
 
-
-## 2024.1 - May 22, 2024
-
-- 2024.1.dev1715183651
+### 2024.1.dev1715183651 - May 22, 2024
 - Pre-release version for testing and verification
 
-## 2023.2 - May 10, 2024
 
-### Bugfix Release
-- 2023.2.1715225694
+## 2023.2
+
+### 2023.2.1715225694 - May 10, 2024
 - Versal HBM noc perfmon bugfix: corrected B/W computation for pseudo channels
 
-## 2023.2 - Mar 18, 2024
-
-### Bugfix Release
-
-- 2023.2.1710645976
+### 2023.2.1710645976 - Mar 18, 2024
 - Updated VHK158 design
 
-## 2023.2 - Dec 8, 2023
-
-### Bugfix Release
-
-- 2023.2.1702018464
+### 2023.2.1702018464 - Dec 8, 2023
 - Fixed jupyter notebook hangs on windows during eye scan plots by reverting Kaleido to previous version 0.1.0.post1
 - We recommend using Python 3.8, 3.9, 3.10, or 3.11 with ChipScoPy
 
-
-## 2023.2 - Oct 24, 2023
-
-### Minor Release
-
-- 2023.2.1698639225
+### 2023.2.1698639225 - Oct 24, 2023
 - VHK158 Preliminary Support
   - HBM2E Evaluation Platform support with ChipScoPy
   - Known issue: DDR 2D Eye Scan is not working on this platform
 - SysMon support for synchronous communication
-- Enhanced device event tracking
+- Enhanced device event tracking 
 - Added support for decoupling CPM5 captive GTYP, associated example notebook included in release
   - Note: vpk120 only at this time
 
-## 2023.1 - June 8, 2023
 
-### Major Release
+## 2023.1
 
-- 2023.1.1686244797
+### 2023.1.1686244797 - June 8, 2023
 - NoC Perfmon features:
   - fixes for SSI devices and HBM
   - new basic noc perfmon example (other examples are now deprecated and will be removed in a future release)
@@ -122,32 +140,29 @@
 - Fixed missing docs on github for older 2021.2 release
 - Clean up and overhaul of device scan algorithm to enable non-dpc communications (CR-1151331, CR-1151160)
 
-## 2022.2 - December 5, 2022
+## 2022.2
 
-### Minor Release
-
-- 2022.2.1670292617
+### 2022.2.1670292617 - December 5, 2022
 - ILA: Reorganized waveform functions export_waveform(), get_data(), get_probe_data()
 - ILA: Advanced trigger state machine support
 - Fixed device program progress callback
 - IBERT: Handler for EYE_SCAN_ABORTED
 - Switch csutil to argparse instead of click
 
-## 2022.1 - June 9, 2022
 
-###  Major release
+## 2022.1
 
-- 2022.1.1654632407
+### 2022.1.1654632407 - June 9, 2022
 - New VIO example
 - Renamed chipscopy cli to "csutil"
 - Updated 3rd party library dependency versions
-- Enhanced Device class with new properties and error reporting
+- Enhanced Device class with new properties and error reporting 
 - Better identification and handling of multiple devices in jtag chain
   - Both ARM DAP and Versal top-level target are now returned consistent with xsdb
   - Updated examples to match
   - To select a specific target use:
 ```
-    # Typical case - one device on one board
+    # Typical case - one device on one board 
     device = session.devices.filter_by(family="versal").get()
 ```
 - Allow delay for slower cables to identify jtag chains
@@ -157,26 +172,24 @@
   - stack, memory controller cores
   - performance monitoring
 
-## 2021.2 - December 11, 2021
+## 2021.2 
 
-### Minor release
-
-- 2021.2.1639266951
+### 2021.2.1639266951 - December 11, 2021
 - Compatibility with 2021.2 hw_server & cs_server versions
 - ChipScoPy example design moving to a CED (https://github.com/Xilinx/XilinxCEDStore)
 - Enum support for ILA Probes
 - Added Jupyter notebook examples:
   - DDR 2D Eye Scan
   - NoC Performance Monitor
+  
 
+## 2021.1 
 
-## 2021.1 - April 26, 2021
-
-- 2021.1.1637713037
+## 2021.1.1637713037 - April 26, 2021
 
 ### What's New
 
-Welcome to ChipScoPy!
+Welcome to ChipScoPy! 
 
 ChipScoPy is a Xilinx Python API to communicate with Xilinx devices and debug cores. It translates Python API calls into lower level TCF communication with the cs_server and hw_server applications.
 
@@ -195,7 +208,7 @@ ChipScoPy is a Xilinx Python API to communicate with Xilinx devices and debug co
 
 - ChipScoPy is not an interactive replacement for XSDB or Vivado Lab. It is a Python library.
 - The ChipScoPy API version should match the hw_server and cs_server major/minor version.
-- Only Xilinx Versal debug feature support is available in 2021.1.
+- Only Xilinx Versal debug feature support is available in 2021.1. 
 - PDI/LTX examples are included for the VCK190, VMK180, and VPK120 production boards - others can be built from CED sources.
 - No Advanced ILA FSM trigger support in the ILA API.
 - The code base is quickly evolving as we add features and address issues.
@@ -225,7 +238,7 @@ limitations under the License.
 
 **Additional Licenses**
 
-TCF source files are licensed under terms of the Eclipse Public License 2.0.
-For additional details, see
+TCF source files are licensed under terms of the Eclipse Public License 2.0. 
+For additional details, see 
 
 https://www.eclipse.org/legal/epl-2.0/

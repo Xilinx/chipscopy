@@ -79,8 +79,8 @@ class GT(SerialObjectBase["GTGroup", Union[TX, RX]]):
         if self.setup_done:
             return
 
-        obj_info = self.core_tcf_node.get_obj_info(self.handle)
-
+        obj_info = self._get_obj_info_with_props()
+        self._update_all_props(obj_info)
         self._build_aliases(obj_info)
 
         if not obj_info.get(CHILDREN):

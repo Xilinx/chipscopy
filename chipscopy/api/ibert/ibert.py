@@ -94,7 +94,7 @@ class IBERT(DebugCore["IBERTCoreClient"]):
             gt_group_handles = [gt_group_handles]
 
         for handle in gt_group_handles:
-            obj_info = self.core_tcf_node.get_obj_info(handle)
+            obj_info = self.core_tcf_node.get_obj_info(handle, include_property="client_visible")
             self.children.append(GTGroup(obj_info, self, self.core_tcf_node))
 
         self._gt_groups_discovery_complete = True

@@ -62,6 +62,11 @@ class DDRMCClient(CorePropertyClient):
         token = service.refresh_property(self.ctx, names, done_cb)
         return self.add_pending(token)
 
+    def commit_property(self, names: List[str], done: DoneHWCommand = None):
+        service, done_cb = self.make_done(done)
+        token = service.commit_property(self.ctx, names, done_cb)
+        return self.add_pending(token)
+
     def refresh_cal_status(self, done: DoneHWCommand = None):
         service, done_cb = self.make_done(done)
         token = service.refresh_cal_status(self.ctx, done_cb)

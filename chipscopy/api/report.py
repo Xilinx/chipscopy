@@ -85,13 +85,6 @@ def report_versions(session: Optional["Session"] = None):
         pass
     else:
         chipscopy_report.add_row("PyTCF Version", pytcf_version)
-    # Need to handle case like "dev1668723891"
-    version_number_with_chars = chipscopy.__version__.split(".")[-1]
-    version_number = int("".join(filter(str.isdigit, version_number_with_chars)))
-    chipscopy_report.add_row(
-        "Timestamp",
-        datetime.datetime.fromtimestamp(version_number).strftime("%b %d %Y-%H:%M:%S"),
-    )
 
     report.add_row("ChipScoPy", chipscopy_report)
 

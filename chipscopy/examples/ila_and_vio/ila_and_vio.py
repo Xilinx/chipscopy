@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2022, Xilinx, Inc.<br>
-# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -33,10 +33,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed
-# - ChipScoPy 2025.1 installed
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 
 # %% [markdown]
@@ -203,7 +203,7 @@ ila.wait_till_done(max_wait_minutes=0.1)
 upload_successful = ila.upload()
 if upload_successful:
     #
-    # ila.waveform.get_data() returns data for probes. By default, all probes are included. But here we specify
+    # ila.waveform.get_data() returns data for probes. By default, all probes are included. But here we specify 
     #     slow_counter_0_Q_1 so only the one probe data is returned.
     #
     samples = ila.waveform.get_data(
@@ -213,8 +213,8 @@ if upload_successful:
     )
     # Below is a convenient way to iterate over all probe values using a for loop.
     #
-    # samples.values() is a list of lists including trigger, sample_index, window_index, window_sample_index,
-    #     and any probes in samples from get_data() above.
+    # samples.values() is a list of lists including trigger, sample_index, window_index, window_sample_index, 
+    #     and any probes in samples from get_data() above. 
     #
     # for trigger, sample_index, window_index, window_sample_index, probe0, probe1, ..., probeN in zip(*samples.values())
     #

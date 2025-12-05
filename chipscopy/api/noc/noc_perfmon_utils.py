@@ -16,7 +16,6 @@
 import json
 import re
 from datetime import datetime
-from time import sleep
 from abc import ABC, abstractmethod
 
 from chipscopy.dm import NodeListener
@@ -34,7 +33,7 @@ from chipscopy.utils.logger import log
 # %%
 DOMAIN = "noc_perfmon"
 log.register_domain(DOMAIN)
-epoch = datetime.utcfromtimestamp(0)  # this is stupid, be best python
+epoch = datetime.utcfromtimestamp(0)
 
 # %%
 # defines
@@ -579,150 +578,6 @@ class NoCPerfMonNodeListener(NodeListener):
     def change_log_level(self, new_level):
         self.level = new_level
         log.change_log_level(self.level)
-
-
-class PerfTGController:
-    """
-    This class is designed to aid in controlling and using the Performance AXI Traffic Generator LogicCore IP for
-    Versal series ACAP devices from AMD. It supports no other architectures or Traffic Generator IPs. There are several
-    others in the default catalog.
-
-
-    """
-
-    def __init__(self, base_address, device, vio=None):
-        self.base_address = base_address
-        self.device = device
-        self.vio = vio
-        self.instr_ba = self.base_address + 0x8000
-        self.ctrl = self.base_address + 0x4000
-        self.tg_start = self.base_address + 0x4004
-        self.instr_0 = []
-        self.instr_1 = []
-        self.supported_patterns = {
-            "Write Linear": [
-                [
-                    0xFF200000,
-                    0x00080000,
-                    0x00000002,
-                    0x00000000,
-                    0xFFE00000,
-                    0x000FFFFF,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00010020,
-                    0x00143500,
-                    0x0000048C,
-                    0x0,
-                ],
-                [
-                    0x00000001,
-                    0x00100000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00020000,
-                    0x00000000,
-                    0x00000000,
-                    0x0,
-                ],
-            ],
-            "Read Linear": [
-                [
-                    0xFF200000,
-                    0x00000000,
-                    0x00000002,
-                    0x00000000,
-                    0xFFE00000,
-                    0x000FFFFF,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00010020,
-                    0x00143500,
-                    0x0000048E,
-                    0x0,
-                ],
-                [
-                    0x00000001,
-                    0x00100000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00000000,
-                    0x00020000,
-                    0x00000000,
-                    0x00000000,
-                    0x0,
-                ],
-            ],
-        }
-        self.active_pattern = "Write Linear"
-        self.trigger_block_rst_probe = None
-        self.tg_rst_probe = None
-        for probe in self.vio.probe_names:
-            if probe.split("/")[-1] == "noc_sim_trig_rst_n":
-                self.trigger_block_rst_probe = probe
-            if probe.split("/")[-1] == "noc_tg_tg_rst_n":
-                self.tg_rst_probe = probe
-
-    def start(self):
-        self.device.memory_write(self.tg_start, [0x1])
-        # CR-1062874
-        # Second write of the ctrl reg is required for the start command to be effective.
-        sleep(0.5)
-        self.device.memory_write(self.tg_start, [0x1])
-
-    def stop(self):
-        # this doesn't seem to be doing much
-        self.device.memory_write(self.tg_start, [0x0])
-
-        self._soft_reset()
-        self._clear_instruction_memory()
-
-    def block_reset(self):
-        if self.vio is not None:
-            self.vio.write_probes(
-                {
-                    self.trigger_block_rst_probe: 0x0,
-                    self.tg_rst_probe: 0x0,
-                }
-            )
-            self.vio.write_probes(
-                {
-                    self.trigger_block_rst_probe: 0x1,
-                    self.tg_rst_probe: 0x1,
-                }
-            )
-
-    def program(self):
-        self._soft_reset()
-        self.device.memory_write(self.instr_ba, self.supported_patterns[self.active_pattern][0])
-        self.device.memory_write(
-            self.instr_ba + 0x40, self.supported_patterns[self.active_pattern][1]
-        )
-
-    def set_active_pattern(self, pattern):
-        if pattern not in self.supported_patterns.keys():
-            raise ValueError(f"Unsupported pattern: {pattern}")
-        else:
-            self.active_pattern = pattern
-
-    def _clear_instruction_memory(self):
-        self.device.memory_write(self.instr_ba, [0x0] * 13)
-        self.device.memory_write(self.instr_ba + 0x40, [0x0] * 13)
-
-    def _soft_reset(self):
-        self.device.memory_write(self.ctrl, [0x0])
-        self.device.memory_write(self.ctrl, [0x1])
 
 
 class DDRMCCrypto:

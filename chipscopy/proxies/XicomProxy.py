@@ -257,5 +257,20 @@ class XicomProxy(Service):
         bit_count = len(key) * 8
         return self.send_xicom_command("getCRC", (ctx, slr, bit_count, key), done)
 
+    def generate_pufkek(
+        self, ctx: str, redkey: ByteString, iv: ByteString, done: DoneHWCommand = None
+    ) -> Token:
+        """
+        Generates PufKek and returns resulting key, puf, etc.
+
+        :param ctx: Context ID of the device
+        :param redkey: Key value
+        :param iv: IV value
+        :param done: Callback with the result and any error
+        :return: Token of command sent
+        """
+        inputs = {"redkey": redkey, "iv": iv}
+        return self.send_xicom_command("efuseGeneratePUFKek", (ctx, inputs), done)
+
 
 XicomService = XicomProxy

@@ -74,6 +74,7 @@ class Session:
         initial_device_scan: bool,
         pre_device_scan_delay: int,
         cs_server_sharing: bool,
+        enable_experimental_protocol_decode: bool = False,
     ):
         self._cs_server_sharing: bool = cs_server_sharing
         self._disable_core_scan: bool = disable_core_scan
@@ -87,7 +88,7 @@ class Session:
         self._register_node_listeners = not self._disable_cache
         self._initial_device_scan = initial_device_scan
         self._pre_device_scan_delay = pre_device_scan_delay
-
+        self.enable_experimental_protocol_decode = enable_experimental_protocol_decode
         self.hw_server: Optional[ServerInfo] = None
         self.cs_server: Optional[ServerInfo] = None
 
@@ -294,7 +295,6 @@ class Session:
                         self.hw_server.get_view(view_name).add_node_listener(self._dm_node_listener)
                 if self.cs_server:
                     self.cs_server.get_view("chipscope").add_node_listener(self._dm_node_listener)
-
             if self._pre_device_scan_delay:
                 time.sleep(self._pre_device_scan_delay / 1000.0)
 
@@ -428,7 +428,8 @@ class Session:
             disable_core_scan=self._disable_core_scan,
             cable_ctx=None,
             disable_cache=self._disable_cache,
-        )
+            enable_experimental_protocol_decode=self.enable_experimental_protocol_decode,
+        )  # Gating logic goes Here
         self._set_device_with_lock(devices)
         return QueryList(self._devices)
 
@@ -584,7 +585,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
     disable_cache = kwargs.get("disable_cache", False)
     auto_connect = kwargs.get("auto_connect", True)
     cs_server_sharing = kwargs.get("cs_server_sharing", False)
-
+    enable_experimental_protocol_decode = kwargs.get("enable_experimental_protocol_decode", False)
     # Create session even if there already exists a session with the same cs_server and hw_server
     # It *should* be safe.
     session = Session(
@@ -598,6 +599,7 @@ def create_session(*, hw_server_url: str, cs_server_url: Optional[str] = None, *
         initial_device_scan=initial_device_scan,
         pre_device_scan_delay=pre_device_scan_delay,
         cs_server_sharing=cs_server_sharing,
+        enable_experimental_protocol_decode=enable_experimental_protocol_decode,
     )
     if auto_connect:
         session.connect()

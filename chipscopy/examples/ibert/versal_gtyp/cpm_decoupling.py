@@ -34,10 +34,10 @@
 # ## Requirements
 # - Xilinx vpk120 production board
 # - PCIE Loopback card
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed
-# - ChipScoPy 2025.1 installed
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
@@ -72,7 +72,7 @@ def is_quad_decoupled(quad):
     prop_name = "CAPTIVE_QUAD_DECOUPLED"
     prop_val = quad.property.refresh(prop_name)[prop_name]
     print(f"{prop_name} = {prop_val}")
-
+    
 def decouple_quad_using_prop(quad):
     props = {
         "CAPTIVE_QUAD_DECOUPLE": 1,
@@ -103,7 +103,7 @@ def set_channel_rate_using_prop(quad, rate):
     }
     quad.property.set(**props)
     quad.property.commit(list(props.keys()))
-
+    
 def setRate(quads, rate):
     print(f"\n--------> Setting line rate to {rate}")
     for quad in quads:

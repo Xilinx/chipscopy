@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.<br>
-# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -34,8 +34,8 @@
 # ------------
 # The following is required to run this demo:
 # 1. Local or remote access to a Versal device
-# 2. 2025.1 cs_server and hw_server applications
-# 3. Python 3.9 environment
+# 2. 2025.2 cs_server and hw_server applications
+# 3. Python 3.10 environment
 # 4. A clone of the chipscopy git enterprise repository:
 #    - https://gitenterprise.xilinx.com/chipscope/chipscopy
 #
@@ -264,7 +264,7 @@ def status_progress(future):
     if st.is_full:
         print(f"\nAll data has been captured.")
     else:
-        print(f"State: {st.tsm_state_name}   Counters: {st.tsm_counters}    Flags: {st.tsm_flags}")
+        print(f"State: {st.tsm_state_name}   Counters: {st.tsm_counters}    Flags: {st.tsm_flags}")       
 
 
 # %% [markdown]
@@ -291,7 +291,7 @@ TSM_FLAGS_COUNTERS = StringIO(
         else
             goto STATE_A;
       endif
-
+      
     state STATE_B:
         if ( {counter_probe_name} == 32'hxAAA_BBBB && $counter1 == 'u9) then
             set_flag $flag1;
@@ -302,7 +302,7 @@ TSM_FLAGS_COUNTERS = StringIO(
         else
             goto STATE_B;
       endif
-
+      
 """
 )
 

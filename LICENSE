@@ -1,5 +1,5 @@
 Copyright (C) 2021-2022, Xilinx, Inc.
-Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,3 +19,11 @@ TCF source files are licensed under terms of the Eclipse Public License 2.0.
 For additional details, see 
 
 https://www.eclipse.org/legal/epl-2.0/
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+This repository may include third-party files and dependencies that are licensed under terms 
+different from the Apache License, Version 2.0 and the Eclipse Public License v2.0. 
+For these components, the applicable license and copyright information is provided in the header of each source file. 
+Please refer to the individual file headers for specific license terms and conditions.

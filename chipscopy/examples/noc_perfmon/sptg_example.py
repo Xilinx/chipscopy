@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -31,10 +31,10 @@
 #
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed
-# - ChipScoPy 2025.1 installed
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
 # - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
 # - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
 
@@ -53,8 +53,9 @@ from chipscopy.api.noc import (
     TC_BEW,
     TC_BER,
     NoCPerfMonNodeListener,
-    PerfTGController,
 )
+from chipscopy.api.patg import PATG, PATGInstruction, TransactionType, AddressPattern, PATGTrigger, \
+    PATGTriggerInterfaceMode
 from chipscopy.api.noc.plotting_utils import MeasurementPlot
 from chipscopy import create_session, report_versions
 from chipscopy import get_design_files
@@ -231,11 +232,18 @@ tg_vio.write_probes(
     {f"{tg_vio_bc}/noc_sim_trig_rst_n": 0x1, f"{tg_vio_bc}/noc_tg_tg_rst_n": 0x1}
 )  # clear nrst on trigger and tg
 
-first_tg_ba = 0x201_8000_0000
+tg_instructions = {
+0: [PATGInstruction(axi_len=0x3F, axi_size=6, axi_burst=1, base_addr=0x0,
+                    high_addr=0x7FFF_FFFF, wdata_pat_value=0x123, data_integrity=1,
+                    transaction_type=TransactionType.WRITE,
+                    loop=1, loop_start=1, loop_count=0x86A0, addr_incr_by="AUTO_INCR", address_pattern=AddressPattern.INCREMENT_BY_VALUE)]
+}
+
+trigger_base_address = 0x201_8000_0000
 #    This class is designed to aid in controlling and using the Performance AXI Traffic Generator LogicCore IP for
 #    Versal series ACAP devices from AMD. It supports no other architectures or Traffic Generator IPs. There are several
 #    others in the default catalog.
-tg = PerfTGController(first_tg_ba, versal_device, vio=tg_vio)
+trigger = PATGTrigger(trigger_base_address, versal_device, tg_instructions, interface_mode=PATGTriggerInterfaceMode.AXI4_LITE, vio=tg_vio)
 
 # %% [markdown]
 # ## 7 - Create plotter and listener
@@ -253,7 +261,7 @@ node_listener = NoCPerfMonNodeListener(
 )
 session.chipscope_view.add_node_listener(node_listener)
 
-plotter = MeasurementPlot(enable_list, mock=False, figsize=(10, 7.5), tg=tg)
+plotter = MeasurementPlot(enable_list, mock=False, figsize=(10, 7.5), trigger=trigger)
 node_listener.link_plotter(plotter)
 
 # Build Plotting Graphs
@@ -284,4 +292,4 @@ while True:
 # Reset Traffic Generator
 # This allows for a hard block-level reset of the traffic generator.
 
-tg.block_reset()
+trigger.block_reset_tgs()

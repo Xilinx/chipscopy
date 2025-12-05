@@ -15,7 +15,7 @@
 
 [tool.poetry]
 name = "chipscopy"
-version = "2025.1.1752011002"
+version = "2025.2.0.55"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = ["Xilinx ChipScope Team"]
 maintainers = ["Xilinx ChipScope Team"]
@@ -26,7 +26,7 @@ readme = "README.md"
 include = ["LICENSE", "epl-v20.html"]
 
 [tool.poetry.dependencies]
-python = ">=3.8.3, <4.0"
+python = "^3.10.0"
 requests = ">=2.0.0"
 more-itertools = "^10.1"
 typing_extensions = "^4.7"
@@ -49,7 +49,7 @@ ipympl = { version = "^0.9.3", optional = true }
 pywinpty = { version = "<=2.0.13", markers = "sys_platform == 'win32' and python_version < '3.9'", optional = true }
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.4"
+pytest = "^8.4.1"
 coverage = "^7.3"
 pytest-mock = "^3.11"
 colorama = "^0.4"
@@ -73,9 +73,6 @@ jupytext = "^1.15"
 chipscopy-get-examples = "chipscopy._cli.example_delivery:main"
 csutil = "chipscopy._cli._chipscopy:main"
 
-[tool.poetry.urls]
-"Bug Tracker" = "https://github.com/Xilinx/chipscopy/issues"
-
 [tool.poetry.extras]
 core-addons = ["plotly", "kaleido", "matplotlib", "PyQt5", "pandas", "ipympl"]
 jupyter = ["notebook", "ipywidgets", "pywinpty"]
@@ -86,7 +83,8 @@ markers = [
     "xvc_suite: Use for tests that need the XVC server setup to run",
     "board_suite: Use for tests that need a board to run",
     "tcf_record_suite: Tests that record hardware interactions to a file",
-    "tcf_playback_suite: Tests that playback tcf recordings from existing recording files"
+    "tcf_playback_suite: Tests that playback tcf recordings from existing recording files",
+    "sw: marks tests as software tests when no hardware markers are present"
 ]
 testpaths = "tests"
 

@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -29,13 +29,14 @@
 # ## Description
 # This demo shows how to exercise and run Versal DDRMC 2D Margin Scan features
 #
+#
 # ## Requirements
 # - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.1 installed and running
-# - Xilinx cs_server 2025.1 installed and running
-# - Python 3.9 or greater installed 
-# - ChipScoPy 2025.1 installed
-# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons,jupyter]`
+# - Xilinx hw_server 2025.2 installed and running
+# - Xilinx cs_server 2025.2 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2025.2 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
@@ -230,15 +231,12 @@ ddr.run_eye_scan()
 
 # %%
 """Display a figure in both Jupyter and command-line environments"""
-display_type = "dynamic"  # Default for terminal
-try:
-    import importlib.util
-    if importlib.util.find_spec("IPython") is not None:
-        from IPython import get_ipython
-        if get_ipython() is not None and hasattr(get_ipython(), 'kernel'):
-            display_type = "static"  # Better for Jupyter notebook
-except (ImportError, AttributeError):
-    pass  # Keep default "dynamic" if IPython not available
+from IPython import get_ipython
+if get_ipython() is not None and hasattr(get_ipython(), 'kernel'):
+    from IPython.display import Image, display
+    display_type = "static"  # best for jupyter notebook
+else:
+    display_type = "dynamic"  # best for terminal
 
 ddr.display_eye_scan(DISPLAY_INDEX, display_type=display_type)
 
