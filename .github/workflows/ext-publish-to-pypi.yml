@@ -60,6 +60,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Read Poetry version
+        id: poetry-version
+        run: echo "version=$(cat .poetry-version)" >> "$GITHUB_OUTPUT"
+
       - name: Remove examples from repo
         run: rm -rf chipscopy/examples
 
@@ -71,8 +75,7 @@ jobs:
       - name: Set up Poetry
         uses: abatilo/actions-poetry@v3
         with:
-          # TODO - Read this from .poetry-version file
-          poetry-version: 1.8.3
+          poetry-version: ${{ steps.poetry-version.outputs.version }}
 
       - name: Use temporary package version for PRs
         if: github.event_name == 'pull_request'
