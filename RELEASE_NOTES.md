@@ -2,19 +2,27 @@
 
 ## 2026.1
 
-### 2026.1.0.45 - June 24, 2026
+### 2026.1.0.45 - June 25, 2026
 
-> [!NOTE]
-> - The VEK385 design in this release is compatible only with Rev B boards; it is not supported on Rev A boards.
-> - Some cosmetic issues may affect progress bar rendering in Jupyter notebooks. These do not impact the correctness or functionality of the APIs.
->
-- MESA (Manifest driven Example System for All-platforms) support for unified example delivery. MESA (Manifest driven Example System for All-platforms) makes ChipScoPy examples easier to run and maintain by letting a single notebook adapt to multiple hardware platforms. It automatically locates the correct programming/probes files, validates the connected device, and selects the right programming flow, reducing per-board setup and keeping example code consistent.
-- VEK280 and VCU128 design updates for production boards
-- CR-1268900: Fixed sampled eye scan image in notebook
-- Fixed scaling issue due to SI change in Gen 5 controllers
+- ChipScoPy MESA: Manifest driven Example System for All-platforms support
+- CR-1272668: Updated VEK280 manifest for production boards
+- CR-1272555: Added optional LTX for segmented MESA programming
+- CR-1272552: Fixed NOC VEK385 issues
+- CR-1272531: GTM YK scan notebook can now run as script or Jupyter notebook
+- CR-1272267: MESA merge fixup
+- CR-1268900: Fixed sample YK scan image in notebook
+- CR-1267331: Fixed vanilla NOC perfmon example
+- Added VEK385 rev B PDI and LTX files
+- Updated VEK385 design to use Quad_205 and Quad_206
+- Updated VEK385 manifest to remove failing examples
+- Updated MESA to handle NOC trigger base address
+- Fixed NOC sptg_example to use MESA
+- Fixed scaling issue due to silicon change in generation 5 controllers
+- Fixed XSDBS type nodes handling
 - Updated PDI and LTX files using Vivado 2026.1
-- Added VEK385 Rev B PDI and LTX files
+- Unified example notebook conversion
 - Added Windows long-path check to example delivery
+- Used production IDCODE for VCU128 design
 
 ## 2025.2
 
