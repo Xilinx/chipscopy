@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>MESA &mdash; ChipScoPy 2026.1.0.45 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Report" href="report.html" />
+    <link rel="prev" title="Device" href="device.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2026.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MESA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exampledesign-paths-flat-vs-segmented">ExampleDesign paths (flat vs segmented)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-the-manifest">Working with the manifest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manifest-structure">Manifest structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#programming-flows">Programming flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#management-cli-internal">Management CLI (internal)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#notebook-entry-points">Notebook entry points</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.resolve_example_design"><code class="docutils literal notranslate"><span class="pre">resolve_example_design()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.get_manifest"><code class="docutils literal notranslate"><span class="pre">get_manifest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.get_all_platforms"><code class="docutils literal notranslate"><span class="pre">get_all_platforms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.get_designs_directory"><code class="docutils literal notranslate"><span class="pre">get_designs_directory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.print_manifest_info"><code class="docutils literal notranslate"><span class="pre">print_manifest_info()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#exampledesign">ExampleDesign</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.ExampleDesign"><code class="docutils literal notranslate"><span class="pre">ExampleDesign</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#manifest">Manifest</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.Manifest"><code class="docutils literal notranslate"><span class="pre">Manifest</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.DebugCore"><code class="docutils literal notranslate"><span class="pre">DebugCore</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.DesignInfo"><code class="docutils literal notranslate"><span class="pre">DesignInfo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.ManifestMetadata"><code class="docutils literal notranslate"><span class="pre">ManifestMetadata</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#registry-and-errors">Registry and errors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.ManifestRegistry"><code class="docutils literal notranslate"><span class="pre">ManifestRegistry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.ManifestError"><code class="docutils literal notranslate"><span class="pre">ManifestError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#validation">Validation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.validate_manifest_file"><code class="docutils literal notranslate"><span class="pre">validate_manifest_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.examples.mesa.ManifestValidationReporter"><code class="docutils literal notranslate"><span class="pre">ManifestValidationReporter</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>MESA</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mesa">
+<h1>MESA<a class="headerlink" href="#mesa" title="Permalink to this heading">¶</a></h1>
+<p>MESA (Manifest driven Example System for All-platforms) is the runtime
+helper that every shipped ChipScoPy example notebook uses to locate its
+programming and probes files, validate that the connected device matches
+the expected design, and program the device with the correct flow
+(<code class="docutils literal notranslate"><span class="pre">flat</span></code> or <code class="docutils literal notranslate"><span class="pre">segmented</span></code>).</p>
+<p>Each design ships with a <code class="docutils literal notranslate"><span class="pre">manifest.json</span></code> that captures the platform’s
+debug cores, programming flow, and supported example IDs. MESA discovers
+those manifests, resolves any <code class="docutils literal notranslate"><span class="pre">extends</span></code> chain, and exposes a small
+typed Python API. Users write one notebook; MESA adapts it to whichever
+hardware platform the manifest targets.</p>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this heading">¶</a></h2>
+<p>Every notebook in <code class="docutils literal notranslate"><span class="pre">chipscopy/examples/</span></code> uses the same setup-cell shape,
+built around <a class="reference internal" href="#chipscopy.examples.mesa.resolve_example_design" title="chipscopy.examples.mesa.resolve_example_design"><code class="xref py py-func docutils literal notranslate"><span class="pre">resolve_example_design()</span></code></a>. It returns an
+<a class="reference internal" href="#chipscopy.examples.mesa.ExampleDesign" title="chipscopy.examples.mesa.ExampleDesign"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExampleDesign</span></code></a> that hides whether the notebook is running in
+<strong>MESA mode</strong> (manifest-driven) or <strong>direct mode</strong> (user-supplied PDI /
+LTX), so the rest of the example is identical in both cases.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">chipscopy</span> <span class="kn">import</span> <span class="n">create_session</span><span class="p">,</span> <span class="n">delete_session</span>
+<span class="kn">from</span> <span class="nn">chipscopy.examples.mesa</span> <span class="kn">import</span> <span class="n">resolve_example_design</span>
+
+<span class="n">CS_URL</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;CS_SERVER_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;TCP:localhost:3042&quot;</span><span class="p">)</span>
+<span class="n">HW_URL</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;HW_SERVER_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;TCP:localhost:3121&quot;</span><span class="p">)</span>
+<span class="n">HW_PLATFORM</span> <span class="o">=</span> <span class="s2">&quot;vck190&quot;</span>
+<span class="n">EXAMPLE_ID</span> <span class="o">=</span> <span class="s2">&quot;ila_and_vio&quot;</span>
+
+<span class="n">PROGRAMMING_FILE</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># Direct mode: set to your own PDI to skip MESA</span>
+<span class="n">PROBES_FILE</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="hll"><span class="n">example_design</span> <span class="o">=</span> <span class="n">resolve_example_design</span><span class="p">(</span>
+</span>    <span class="n">HW_PLATFORM</span><span class="p">,</span>
+    <span class="n">EXAMPLE_ID</span><span class="p">,</span>
+    <span class="n">programming_file</span><span class="o">=</span><span class="n">PROGRAMMING_FILE</span><span class="p">,</span>
+    <span class="n">probes_file</span><span class="o">=</span><span class="n">PROBES_FILE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">example_design</span><span class="o">.</span><span class="n">print_summary</span><span class="p">()</span>
+
+<span class="hll"><span class="n">session</span> <span class="o">=</span> <span class="n">create_session</span><span class="p">(</span><span class="n">cs_server_url</span><span class="o">=</span><span class="n">CS_URL</span><span class="p">,</span> <span class="n">hw_server_url</span><span class="o">=</span><span class="n">HW_URL</span><span class="p">)</span>
+</span><span class="n">device</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="n">example_design</span><span class="o">.</span><span class="n">device_family</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="hll">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">example_design</span><span class="o">.</span><span class="n">verify_device_idcode</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Device IDCODE does not match the manifest design.&quot;</span><span class="p">)</span>
+
+<span class="n">example_design</span><span class="o">.</span><span class="n">program_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">discover_and_setup_cores</span><span class="p">(</span><span class="n">ltx_file</span><span class="o">=</span><span class="n">example_design</span><span class="o">.</span><span class="n">probes_file</span><span class="p">)</span>
+
+<span class="c1"># ... your example logic here ...</span>
+
+<span class="n">delete_session</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">HW_PLATFORM</span></code> and <code class="docutils literal notranslate"><span class="pre">EXAMPLE_ID</span></code> constants are the only things a
+notebook author needs to set; everything else is derived from the
+manifest.</p>
+<section id="exampledesign-paths-flat-vs-segmented">
+<h3>ExampleDesign paths (flat vs segmented)<a class="headerlink" href="#exampledesign-paths-flat-vs-segmented" title="Permalink to this heading">¶</a></h3>
+<p><a class="reference internal" href="#chipscopy.examples.mesa.ExampleDesign" title="chipscopy.examples.mesa.ExampleDesign"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExampleDesign</span></code></a> exposes string fields <code class="docutils literal notranslate"><span class="pre">programming_file</span></code> and
+<code class="docutils literal notranslate"><span class="pre">probes_file</span></code> for the usual notebook pattern (assign to <code class="docutils literal notranslate"><span class="pre">PROGRAMMING_FILE</span></code>
+/ <code class="docutils literal notranslate"><span class="pre">PROBES_FILE</span></code> and pass them to APIs such as
+<code class="docutils literal notranslate"><span class="pre">device.discover_and_setup_cores(ltx_file=...)</span></code>). It also exposes
+<code class="docutils literal notranslate"><span class="pre">programming_files</span></code> and <code class="docutils literal notranslate"><span class="pre">probes_files</span></code>: ordered lists of resolved
+programming paths and any matching LTX paths. <code class="docutils literal notranslate"><span class="pre">probes_files</span></code> may be empty
+or shorter than <code class="docutils literal notranslate"><span class="pre">programming_files</span></code> when no LTX is present (LTX is for
+debug setup, not for <code class="docutils literal notranslate"><span class="pre">device.program</span></code>).</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">programming_flow:</span> <span class="pre">&quot;flat&quot;</span></code>, each list has at most one element matching
+the scalar fields when paths exist. For <code class="docutils literal notranslate"><span class="pre">&quot;segmented&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">programming_files</span></code>
+is <code class="docutils literal notranslate"><span class="pre">[boot,</span> <span class="pre">PLD]</span></code> in that order; the scalars are set to the <strong>PLD</strong> pair when
+an LTX is resolved so ILA/VIO and other PL-side debug use the correct LTX
+without per-notebook branching. If no segmented LTX is found, <code class="docutils literal notranslate"><span class="pre">probes_file</span></code>
+falls back to any LTX returned by <code class="xref py py-func docutils literal notranslate"><span class="pre">chipscopy.get_design_files()</span></code>, or is
+empty. Boot and PLD PDIs are always required for segmented programming; LTX
+files are optional and are resolved with the same manifest glob patterns when
+present.</p>
+<p>To retarget another board, change <code class="docutils literal notranslate"><span class="pre">HW_PLATFORM</span></code> (or override it via
+the environment) - any platform that has a manifest will work:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HW_PLATFORM</span><span class="o">=</span>vck190<span class="w"> </span>python<span class="w"> </span>my_example.py
+<span class="nv">HW_PLATFORM</span><span class="o">=</span>vpk120<span class="w"> </span>python<span class="w"> </span>my_example.py
+<span class="nv">HW_PLATFORM</span><span class="o">=</span>vcu128<span class="w"> </span>python<span class="w"> </span>my_example.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="working-with-the-manifest">
+<h2>Working with the manifest<a class="headerlink" href="#working-with-the-manifest" title="Permalink to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="#chipscopy.examples.mesa.ExampleDesign.manifest" title="chipscopy.examples.mesa.ExampleDesign.manifest"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ExampleDesign.manifest</span></code></a> attribute returns a typed
+<a class="reference internal" href="#chipscopy.examples.mesa.Manifest" title="chipscopy.examples.mesa.Manifest"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manifest</span></code></a> (or <code class="docutils literal notranslate"><span class="pre">None</span></code> in direct mode). Use it to gate
+optional capabilities cleanly instead of hard-coding per-platform
+branches in the notebook.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">manifest</span> <span class="o">=</span> <span class="n">example_design</span><span class="o">.</span><span class="n">manifest</span>
+
+<span class="k">if</span> <span class="n">manifest</span> <span class="ow">and</span> <span class="n">manifest</span><span class="o">.</span><span class="n">has_core</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">):</span>
+    <span class="n">memory</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">manifest</span> <span class="ow">and</span> <span class="n">manifest</span><span class="o">.</span><span class="n">has_all_cores</span><span class="p">(</span><span class="s2">&quot;ila&quot;</span><span class="p">,</span> <span class="s2">&quot;vio&quot;</span><span class="p">):</span>
+    <span class="n">ila</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">ila_cores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">manifest</span> <span class="ow">and</span> <span class="n">manifest</span><span class="o">.</span><span class="n">has_feature</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="s2">&quot;2d_eye_scan&quot;</span><span class="p">):</span>
+    <span class="n">run_2d_eye_scan</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For platform-specific knobs (quad names, ILA instance paths, NoC node
+names), use <a class="reference internal" href="#chipscopy.examples.mesa.Manifest.get_core_config" title="chipscopy.examples.mesa.Manifest.get_core_config"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Manifest.get_core_config()</span></code></a> so the notebook reads the
+value from the manifest rather than embedding it in code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">quad_names</span> <span class="o">=</span> <span class="n">manifest</span><span class="o">.</span><span class="n">get_core_config</span><span class="p">(</span><span class="s2">&quot;ibert_gty&quot;</span><span class="p">,</span> <span class="s2">&quot;quad_names&quot;</span><span class="p">,</span> <span class="p">[])</span>
+<span class="n">node_names</span> <span class="o">=</span> <span class="n">manifest</span><span class="o">.</span><span class="n">get_core_config</span><span class="p">(</span><span class="s2">&quot;noc_perfmon&quot;</span><span class="p">,</span> <span class="s2">&quot;node_names&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+<span class="n">ila_instance</span> <span class="o">=</span> <span class="n">manifest</span><span class="o">.</span><span class="n">get_core_instance</span><span class="p">(</span><span class="s2">&quot;ila&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">ila_instance</span><span class="p">:</span>
+    <span class="n">ila_name</span> <span class="o">=</span> <span class="n">ila_instance</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">probe_prefix</span> <span class="o">=</span> <span class="n">ila_instance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;probe_prefix&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="manifest-structure">
+<h2>Manifest structure<a class="headerlink" href="#manifest-structure" title="Permalink to this heading">¶</a></h2>
+<p>Each design directory under <code class="docutils literal notranslate"><span class="pre">examples/designs/&lt;platform&gt;/&lt;design&gt;</span></code>
+contains a <code class="docutils literal notranslate"><span class="pre">manifest.json</span></code> like this:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;extends&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;_base/versal_standard_cores.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;design_info&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;design_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chipscopy_ced&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ChipScoPy CED for VCK190&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hw_platform&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vck190&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;programming_flow&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flat&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;design_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vck190/production/chipscopy_ced&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;family&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;versal&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;device&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xcvc1902&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;board&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VCK190&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;idcode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0x14CA8093&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;debug_cores&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;ibert_gty&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;quad_names&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Quad_205&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Quad_204&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Quad_201&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Quad_105&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;supported_examples&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;ila_and_vio&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;link_and_eye_scan&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;ddr_example&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;maintainer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AMD ChipScoPy Team&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Notable fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">extends</span></code> (optional) - relative path to a base manifest under
+<code class="docutils literal notranslate"><span class="pre">_base/</span></code>; child manifests deep-merge over the base.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">programming_flow</span></code> - must be <code class="docutils literal notranslate"><span class="pre">&quot;flat&quot;</span></code> (single PDI) or
+<code class="docutils literal notranslate"><span class="pre">&quot;segmented&quot;</span></code> (boot + PLD PDI for partial reconfiguration).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">family</span></code> - must match a ChipScoPy device family
+(<code class="docutils literal notranslate"><span class="pre">versal</span></code>, <code class="docutils literal notranslate"><span class="pre">virtexuplus</span></code>, etc.).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">idcode</span></code> / <code class="docutils literal notranslate"><span class="pre">idcode_list</span></code> - JTAG IDCODE(s) used by
+<a class="reference internal" href="#chipscopy.examples.mesa.ExampleDesign.verify_device_idcode" title="chipscopy.examples.mesa.ExampleDesign.verify_device_idcode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ExampleDesign.verify_device_idcode()</span></code></a> to detect the wrong board
+before programming. Use <code class="docutils literal notranslate"><span class="pre">idcode_list</span></code> for multi-variant silicon
+(e.g. production + ES).</p></li>
+</ul>
+<p>The full schema lives in
+<code class="docutils literal notranslate"><span class="pre">chipscopy/examples/mesa/manifest_schema.json</span></code>. Both the JSON schema
+and the Python-side <code class="xref py py-class docutils literal notranslate"><span class="pre">ManifestValidator</span></code> set
+<code class="docutils literal notranslate"><span class="pre">additionalProperties:</span> <span class="pre">false</span></code> for nested <code class="docutils literal notranslate"><span class="pre">debug_cores</span></code> entries, so
+typo’d keys (e.g. <code class="docutils literal notranslate"><span class="pre">descripton</span></code>) are rejected at validation time
+instead of silently behaving as no-ops at runtime.</p>
+</section>
+<section id="programming-flows">
+<h2>Programming flows<a class="headerlink" href="#programming-flows" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="#chipscopy.examples.mesa.ExampleDesign.program_device" title="chipscopy.examples.mesa.ExampleDesign.program_device"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ExampleDesign.program_device()</span></code></a> and <a class="reference internal" href="#chipscopy.examples.mesa.Manifest.program_device" title="chipscopy.examples.mesa.Manifest.program_device"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Manifest.program_device()</span></code></a>
+both dispatch on the manifest’s <code class="docutils literal notranslate"><span class="pre">programming_flow</span></code> field through an
+internal flow table; adding a new flow is a one-line registration.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flow</p></th>
+<th class="head"><p>PDI files</p></th>
+<th class="head"><p>Skip reset</p></th>
+<th class="head"><p>Use case</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">flat</span></code></p></td>
+<td><p>1 (monolithic)</p></td>
+<td><p>No</p></td>
+<td><p>Simple designs, full configuration</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">segmented</span></code></p></td>
+<td><p>2 (boot + PLD)</p></td>
+<td><p>Yes (PLD)</p></td>
+<td><p>Partial reconfiguration, boot + dynamic</p></td>
+</tr>
+</tbody>
+</table>
+<p>Segmented boot and PLD PDIs (and LTX paths during example resolution) use
+the manifest’s <code class="docutils literal notranslate"><span class="pre">boot_pdi_pattern</span></code> / <code class="docutils literal notranslate"><span class="pre">pld_pdi_pattern</span></code> with the same
+matching rules whenever MESA resolves files or runs the segmented program
+steps.</p>
+</section>
+<section id="management-cli-internal">
+<h2>Management CLI (internal)<a class="headerlink" href="#management-cli-internal" title="Permalink to this heading">¶</a></h2>
+<p>ChipScoPy maintainers use the private <code class="xref py py-mod docutils literal notranslate"><span class="pre">chipscopy.examples.mesa._cli</span></code>
+module to validate, lint, and scaffold MESA manifests and example notebooks.
+End users do not need to call it; it is documented here as a reference for
+maintainers contributing new MESA examples.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Validate every manifest under chipscopy/examples/designs.</span>
+python<span class="w"> </span>-m<span class="w"> </span>chipscopy.examples.mesa._cli<span class="w"> </span>validate<span class="w"> </span>--all
+
+<span class="c1"># Validate a specific manifest by path.</span>
+python<span class="w"> </span>-m<span class="w"> </span>chipscopy.examples.mesa._cli<span class="w"> </span>validate<span class="w"> </span>--manifest<span class="w"> </span>path/to/manifest.json
+
+<span class="c1"># Cross-check manifests vs. notebook filenames; flag dangling references</span>
+<span class="c1"># and per-manifest lint warnings.</span>
+python<span class="w"> </span>-m<span class="w"> </span>chipscopy.examples.mesa._cli<span class="w"> </span>lint
+
+<span class="c1"># Add an example ID to all compatible manifests (use --dry-run first).</span>
+python<span class="w"> </span>-m<span class="w"> </span>chipscopy.examples.mesa._cli<span class="w"> </span>add-example<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--example-id<span class="w"> </span>my_example<span class="w"> </span>--dry-run
+
+<span class="c1"># Scaffold a new MESA-powered example notebook.</span>
+python<span class="w"> </span>-m<span class="w"> </span>chipscopy.examples.mesa._cli<span class="w"> </span>new-example<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--example-id<span class="w"> </span>my_example<span class="w"> </span>--template<span class="w"> </span>basic
+
+<span class="c1"># Print a compatibility report (platforms, examples, categories).</span>
+python<span class="w"> </span>-m<span class="w"> </span>chipscopy.examples.mesa._cli<span class="w"> </span>report
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API reference<a class="headerlink" href="#api-reference" title="Permalink to this heading">¶</a></h2>
+<section id="notebook-entry-points">
+<h3>Notebook entry points<a class="headerlink" href="#notebook-entry-points" title="Permalink to this heading">¶</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.resolve_example_design">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">resolve_example_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hw_platform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_id</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">programming_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probes_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_family</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'versal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#resolve_example_design"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.resolve_example_design" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve programming and probes files for an example notebook.</p>
+<p>Two paths are supported, in this order:</p>
+<ol class="arabic simple">
+<li><p><strong>Direct mode</strong>: if <code class="docutils literal notranslate"><span class="pre">programming_file</span></code> is non-empty the MESA manifest
+lookup is skipped entirely. The notebook can run with any user-provided
+PDI/LTX combination - no manifest is required.</p></li>
+<li><p><strong>MESA mode</strong>: otherwise the design is resolved from the MESA manifest
+for <code class="docutils literal notranslate"><span class="pre">hw_platform</span></code> and <code class="docutils literal notranslate"><span class="pre">example_id</span></code>. The platform’s <code class="docutils literal notranslate"><span class="pre">design_path</span></code>
+is converted into actual file paths via
+<code class="xref py py-func docutils literal notranslate"><span class="pre">chipscopy.get_design_files()</span></code>, and <code class="docutils literal notranslate"><span class="pre">device_family</span></code> is taken from
+the manifest.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – In MESA mode when no compatible manifest is found.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#chipscopy.examples.mesa.ExampleDesign" title="chipscopy.examples.mesa.mesa.ExampleDesign"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExampleDesign</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.get_manifest">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">get_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">platform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#get_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.get_manifest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get MESA manifest for platform and optional example ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#chipscopy.examples.mesa.Manifest" title="chipscopy.examples.mesa.mesa.Manifest"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manifest</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.get_all_platforms">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">get_all_platforms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#get_all_platforms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.get_all_platforms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of all available platforms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.get_designs_directory">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">get_designs_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/utils.html#get_designs_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.get_designs_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the MESA designs directory.</p>
+<p>Single source of truth for <code class="docutils literal notranslate"><span class="pre">examples/designs/</span></code> lookup. Honours the
+<code class="docutils literal notranslate"><span class="pre">CHIPSCOPY_EXAMPLES</span></code> environment variable through
+<code class="xref py py-func docutils literal notranslate"><span class="pre">chipscopy.get_examples_dir_or_die()</span></code> so notebooks, the registry
+and CLI all agree on the same location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.print_manifest_info">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">print_manifest_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manifest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#print_manifest_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.print_manifest_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print manifest information in a formatted way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="exampledesign">
+<h3>ExampleDesign<a class="headerlink" href="#exampledesign" title="Permalink to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">ExampleDesign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manifest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">design_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">programming_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probes_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_family</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_platform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">programming_files=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probes_files=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ExampleDesign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolved design files for an example notebook.</p>
+<p>Hides whether the notebook is running in MESA mode (manifest-driven) or
+direct mode (user-supplied PDI/LTX), so the rest of the notebook uses one
+consistent interface.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.manifest">
+<span class="sig-name descname"><span class="pre">manifest</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.manifest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loaded <a class="reference internal" href="#chipscopy.examples.mesa.Manifest" title="chipscopy.examples.mesa.Manifest"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manifest</span></code></a> when MESA resolved the design,
+or <code class="docutils literal notranslate"><span class="pre">None</span></code> when the user supplied design files directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#chipscopy.examples.mesa.Manifest" title="chipscopy.examples.mesa.mesa.Manifest">chipscopy.examples.mesa.mesa.Manifest</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.design_files">
+<span class="sig-name descname"><span class="pre">design_files</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.design_files" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">DesignFiles</span></code> object from
+<code class="xref py py-func docutils literal notranslate"><span class="pre">chipscopy.get_design_files()</span></code> when MESA is used,
+<code class="docutils literal notranslate"><span class="pre">None</span></code> otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.programming_file">
+<span class="sig-name descname"><span class="pre">programming_file</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.programming_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to the PDI / programming file used by the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.probes_file">
+<span class="sig-name descname"><span class="pre">probes_file</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.probes_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to the LTX / probes file used by the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.device_family">
+<span class="sig-name descname"><span class="pre">device_family</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.device_family" title="Permalink to this definition">¶</a></dt>
+<dd><p>Device family string suitable for
+<code class="docutils literal notranslate"><span class="pre">session.devices.filter_by(family=...)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.hw_platform">
+<span class="sig-name descname"><span class="pre">hw_platform</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.hw_platform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hardware platform identifier (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;vck190&quot;</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.example_id">
+<span class="sig-name descname"><span class="pre">example_id</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.example_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example ID requested by the notebook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.programming_files">
+<span class="sig-name descname"><span class="pre">programming_files</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.programming_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ordered programming file paths (boot then PLD when segmented).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.probes_files">
+<span class="sig-name descname"><span class="pre">probes_files</span></span><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.probes_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ordered LTX paths when resolved (boot then PLD when both exist).
+May be shorter than <code class="docutils literal notranslate"><span class="pre">programming_files</span></code> or empty when no LTX
+is available; probe files are optional and not required for
+<a class="reference internal" href="#chipscopy.examples.mesa.ExampleDesign.program_device" title="chipscopy.examples.mesa.ExampleDesign.program_device"><code class="xref py py-meth docutils literal notranslate"><span class="pre">program_device()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.print_summary">
+<span class="sig-name descname"><span class="pre">print_summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ExampleDesign.print_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.print_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the server-independent design details used by the notebook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.program_device">
+<span class="sig-name descname"><span class="pre">program_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">program_options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ExampleDesign.program_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.program_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Program the device using the resolved design files.</p>
+<p>In MESA mode this delegates to <a class="reference internal" href="#chipscopy.examples.mesa.Manifest.program_device" title="chipscopy.examples.mesa.Manifest.program_device"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Manifest.program_device()</span></code></a>, which
+handles flat vs. segmented programming flows. In direct mode it falls
+back to <code class="docutils literal notranslate"><span class="pre">device.program(self.programming_file)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.using_manifest">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">using_manifest</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.using_manifest" title="Permalink to this definition">¶</a></dt>
+<dd><p>True when this design was resolved through a MESA manifest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ExampleDesign.verify_device_idcode">
+<span class="sig-name descname"><span class="pre">verify_device_idcode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ExampleDesign.verify_device_idcode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ExampleDesign.verify_device_idcode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify the device JTAG IDCODE matches the resolved design.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> in direct mode (no manifest constraint) and
+delegates to <a class="reference internal" href="#chipscopy.examples.mesa.Manifest.verify_device_idcode" title="chipscopy.examples.mesa.Manifest.verify_device_idcode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Manifest.verify_device_idcode()</span></code></a> in MESA mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="manifest">
+<h3>Manifest<a class="headerlink" href="#manifest" title="Permalink to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">Manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">design_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_cores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supported_examples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manifest_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type-safe MESA manifest representation.</p>
+<p>Provides IDE autocomplete and type checking for manifest fields.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manifest_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Manifest from a dictionary that has already been merged with its bases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#chipscopy.examples.mesa.Manifest" title="chipscopy.examples.mesa.mesa.Manifest"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manifest</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and return a Manifest from <code class="docutils literal notranslate"><span class="pre">path</span></code>, resolving any <code class="docutils literal notranslate"><span class="pre">extends</span></code> chain.</p>
+<p>Raises <a class="reference internal" href="#chipscopy.examples.mesa.ManifestError" title="chipscopy.examples.mesa.utils.ManifestError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ManifestError</span></code></a> for any
+load / parse / merge / required-field problem so callers can catch a
+single exception type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#chipscopy.examples.mesa.Manifest" title="chipscopy.examples.mesa.mesa.Manifest"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manifest</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.get_all_enabled_cores_by_prefix">
+<span class="sig-name descname"><span class="pre">get_all_enabled_cores_by_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.get_all_enabled_cores_by_prefix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.get_all_enabled_cores_by_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all enabled cores whose name starts with <code class="docutils literal notranslate"><span class="pre">prefix</span></code> (with optional filter).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#chipscopy.examples.mesa.DebugCore" title="chipscopy.examples.mesa.mesa.DebugCore"><code class="xref py py-class docutils literal notranslate"><span class="pre">DebugCore</span></code></a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.get_all_ibert_cores">
+<span class="sig-name descname"><span class="pre">get_all_ibert_cores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.get_all_ibert_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.get_all_ibert_cores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all enabled IBERT cores with optional filtering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#chipscopy.examples.mesa.DebugCore" title="chipscopy.examples.mesa.mesa.DebugCore"><code class="xref py py-class docutils literal notranslate"><span class="pre">DebugCore</span></code></a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.get_core_config">
+<span class="sig-name descname"><span class="pre">get_core_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.get_core_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.get_core_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a platform-specific configuration value from a debug core.</p>
+<p>For platform-specific hardware details like quad names, node names,
+and core instances. Algorithm parameters (scan patterns, step sizes,
+thresholds) should remain visible in notebooks for learning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.get_core_instance">
+<span class="sig-name descname"><span class="pre">get_core_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.get_core_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.get_core_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a specific core instance by name and index.</p>
+<p>Thin wrapper around <a class="reference internal" href="#chipscopy.examples.mesa.Manifest.get_core_config" title="chipscopy.examples.mesa.Manifest.get_core_config"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_core_config()</span></code></a> that returns the entry
+from the core’s <code class="docutils literal notranslate"><span class="pre">core_instances</span></code> list at <code class="docutils literal notranslate"><span class="pre">index</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.get_enabled_cores">
+<span class="sig-name descname"><span class="pre">get_enabled_cores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.get_enabled_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.get_enabled_cores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of all enabled core names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.get_first_enabled_core_by_prefix">
+<span class="sig-name descname"><span class="pre">get_first_enabled_core_by_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.get_first_enabled_core_by_prefix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.get_first_enabled_core_by_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get enabled core by prefix with optional filtering and indexing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Core name prefix to match (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;ibert_&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ila&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;vio&quot;</span></code>).</p></li>
+<li><p><strong>filter_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#chipscopy.examples.mesa.DebugCore" title="chipscopy.examples.mesa.mesa.DebugCore"><code class="xref py py-class docutils literal notranslate"><span class="pre">DebugCore</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional <code class="docutils literal notranslate"><span class="pre">(core_name,</span> <span class="pre">core)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code> for custom filtering.</p></li>
+<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Index of matching core to return (default <code class="docutils literal notranslate"><span class="pre">0</span></code>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#chipscopy.examples.mesa.DebugCore" title="chipscopy.examples.mesa.mesa.DebugCore"><code class="xref py py-class docutils literal notranslate"><span class="pre">DebugCore</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple of <code class="docutils literal notranslate"><span class="pre">(core_name,</span> <span class="pre">DebugCore)</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.get_ibert_core">
+<span class="sig-name descname"><span class="pre">get_ibert_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.get_ibert_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.get_ibert_core" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get IBERT core (any type) with optional custom filtering and indexing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#chipscopy.examples.mesa.DebugCore" title="chipscopy.examples.mesa.mesa.DebugCore"><code class="xref py py-class docutils literal notranslate"><span class="pre">DebugCore</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.get_mem_type_name">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_mem_type_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mem_type_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.get_mem_type_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.get_mem_type_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate DDR memory type integer code to human-readable name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mem_type_val</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Integer from <code class="docutils literal notranslate"><span class="pre">ddr_node.get_property([&quot;mem_type&quot;])[&quot;mem_type&quot;]</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String name like <code class="docutils literal notranslate"><span class="pre">&quot;DDR4&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;LPDDR4&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;DDR5&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;LPDDR5&quot;</span></code>,
+or <code class="docutils literal notranslate"><span class="pre">&quot;Unknown(N)&quot;</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.has_all_cores">
+<span class="sig-name descname"><span class="pre">has_all_cores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">core_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.has_all_cores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.has_all_cores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if all specified cores are present and enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.has_core">
+<span class="sig-name descname"><span class="pre">has_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.has_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.has_core" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a debug core is present and enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.has_feature">
+<span class="sig-name descname"><span class="pre">has_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.has_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.has_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a specific feature is available for a core.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.program_device">
+<span class="sig-name descname"><span class="pre">program_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">design_files</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_after_program</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.program_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.program_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Program <code class="docutils literal notranslate"><span class="pre">device</span></code> according to the manifest’s programming flow.</p>
+<p>Dispatches to the appropriate flow handler based on
+<code class="docutils literal notranslate"><span class="pre">design_info.programming_flow</span></code>. Adding a new flow is one entry in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_FLOW_HANDLERS</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.supports_example">
+<span class="sig-name descname"><span class="pre">supports_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">example_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.supports_example"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.supports_example" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if this manifest supports a specific example.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.Manifest.verify_device_idcode">
+<span class="sig-name descname"><span class="pre">verify_device_idcode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#Manifest.verify_device_idcode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.Manifest.verify_device_idcode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify device JTAG IDCODE matches manifest expectation.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if no IDCODE constraint is specified, if all
+IDCODEs are placeholders, or if the device IDCODE matches any
+configured value. Returns <code class="docutils literal notranslate"><span class="pre">False</span></code> only when a real IDCODE is
+specified and the device does not match.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.DebugCore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">DebugCore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quad_names=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_types=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_instances=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_names=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_base_address=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probe_mapping=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vio_hierarchy=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#DebugCore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.DebugCore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a debug core configuration.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.DesignInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">DesignInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">design_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw_platform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">programming_flow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">design_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boot_pdi_pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pld_pdi_pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idcode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idcode_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#DesignInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.DesignInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents design information.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestMetadata">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">ManifestMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">created_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maintainer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ManifestMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestMetadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents manifest metadata.</p>
+</dd></dl>
+
+</section>
+<section id="registry-and-errors">
+<h3>Registry and errors<a class="headerlink" href="#registry-and-errors" title="Permalink to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestRegistry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">ManifestRegistry</span></span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ManifestRegistry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestRegistry" title="Permalink to this definition">¶</a></dt>
+<dd><p>MESA manifest registry for design discovery.</p>
+<p>Manifests are loaded lazily and cached by file path. Each cached entry
+is keyed on the file’s mtime so notebook reruns automatically pick up
+edits without an explicit invalidate call.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestRegistry.find_manifest_files">
+<span class="sig-name descname"><span class="pre">find_manifest_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ManifestRegistry.find_manifest_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestRegistry.find_manifest_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find all manifest.json files under the configured designs directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestRegistry.get_all_platforms">
+<span class="sig-name descname"><span class="pre">get_all_platforms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ManifestRegistry.get_all_platforms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestRegistry.get_all_platforms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get sorted list of all available platforms across all manifests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestRegistry.get_designs_directory">
+<span class="sig-name descname"><span class="pre">get_designs_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ManifestRegistry.get_designs_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestRegistry.get_designs_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the designs directory path (delegates to <a class="reference internal" href="#chipscopy.examples.mesa.get_designs_directory" title="chipscopy.examples.mesa.get_designs_directory"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_designs_directory()</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestRegistry.get_manifest">
+<span class="sig-name descname"><span class="pre">get_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">platform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ManifestRegistry.get_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestRegistry.get_manifest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get MESA manifest for <code class="docutils literal notranslate"><span class="pre">platform</span></code> and optional <code class="docutils literal notranslate"><span class="pre">example_id</span></code>.</p>
+<p>Returns the first manifest whose <code class="docutils literal notranslate"><span class="pre">hw_platform</span></code> matches and that
+either supports the requested example or - if no example is given -
+is just the first match. Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> when no manifest matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#chipscopy.examples.mesa.Manifest" title="chipscopy.examples.mesa.mesa.Manifest"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manifest</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestRegistry.invalidate_cache">
+<span class="sig-name descname"><span class="pre">invalidate_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">platform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ManifestRegistry.invalidate_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestRegistry.invalidate_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop cached manifests. Filters by platform when one is given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestRegistry.invalidate_directory_cache">
+<span class="sig-name descname"><span class="pre">invalidate_directory_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/mesa.html#ManifestRegistry.invalidate_directory_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestRegistry.invalidate_directory_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backward-compatible alias for <a class="reference internal" href="#chipscopy.examples.mesa.ManifestRegistry.invalidate_cache" title="chipscopy.examples.mesa.ManifestRegistry.invalidate_cache"><code class="xref py py-meth docutils literal notranslate"><span class="pre">invalidate_cache()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">ManifestError</span></span><a class="reference internal" href="_modules/chipscopy/examples/mesa/utils.html#ManifestError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a manifest cannot be loaded, parsed or merged.</p>
+</dd></dl>
+
+</section>
+<section id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Permalink to this heading">¶</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.validate_manifest_file">
+<span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">validate_manifest_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/manifest_validator.html#validate_manifest_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.validate_manifest_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a manifest file (resolving any <code class="docutils literal notranslate"><span class="pre">extends</span></code> chain first).</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">(is_valid,</span> <span class="pre">errors)</span></code>. Inheritance is resolved exactly as it
+will be at runtime so override-only typos are caught here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestValidationReporter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.examples.mesa.</span></span><span class="sig-name descname"><span class="pre">ManifestValidationReporter</span></span><a class="reference internal" href="_modules/chipscopy/examples/mesa/manifest_validator.html#ManifestValidationReporter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestValidationReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>CLI-friendly reporter that wraps <a class="reference internal" href="#chipscopy.examples.mesa.validate_manifest_file" title="chipscopy.examples.mesa.validate_manifest_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">validate_manifest_file()</span></code></a>.</p>
+<p>Adds non-schema lint warnings (missing recommended <code class="docutils literal notranslate"><span class="pre">description</span></code> /
+<code class="docutils literal notranslate"><span class="pre">maintainer</span></code> fields, empty <code class="docutils literal notranslate"><span class="pre">supported_examples</span></code>) on the fully merged
+manifest and formats the result for terminal output. All authoritative
+schema rules still live in <code class="xref py py-class docutils literal notranslate"><span class="pre">ManifestValidator</span></code>; this class only
+layers CLI presentation on top.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestValidationReporter.get_validation_report">
+<span class="sig-name descname"><span class="pre">get_validation_report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/manifest_validator.html#ManifestValidationReporter.get_validation_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestValidationReporter.get_validation_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format collected errors and warnings for CLI output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.examples.mesa.ManifestValidationReporter.validate_manifest">
+<span class="sig-name descname"><span class="pre">validate_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manifest_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/examples/mesa/manifest_validator.html#ManifestValidationReporter.validate_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.examples.mesa.ManifestValidationReporter.validate_manifest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate one manifest file and collect lint warnings on the merged dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="device.html" class="btn btn-neutral float-left" title="Device" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="report.html" class="btn btn-neutral float-right" title="Report" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on June 25, 2026.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
