@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ import typing
 from typing import Any, Dict
 from chipscopy.tcf import services
 from chipscopy.proxies.CorePropertyProxy import CorePropertyProxy
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 
 # NOTE: There should NOT be any dependency from proxy to server.
 #  Instead define the service name locally in this file.
@@ -26,8 +26,7 @@ from chipscopy.utils.logger import log
 # NOTE: This name MUST match with the service name defined in the server side IBERT code
 IBERT_SERVICE_NAME = "IBERT"
 
-# NOTE: PLEASE USE THIS DOMAIN NAME IN ALL LOG MESSAGES FROM THIS FILE.
-DOMAIN_NAME = "proxy_ibert"
+logger = get_logger("proxy_ibert")
 
 
 class IBERTService(services.Service):
@@ -41,7 +40,7 @@ class IBERTProxy(IBERTService):
         self.listeners = {}
 
     def initialize(self, node_id: str, done):
-        log[DOMAIN_NAME].debug("Sending initializeCmd")
+        logger.debug("Sending initializeCmd")
         return self.send_xicom_command("initialize", (node_id,), done)
 
     def initialize_architecture(self, node_id: str, done):

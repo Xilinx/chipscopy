@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@ import re
 from chipscopy.tcf import protocol
 from chipscopy.tcf.channel import ChannelListener
 from chipscopy.proxies.ChipScopeProxy import ChipScopeService, ChipScopeListener as CSListener
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 from . import CsManager, Node, add_manager, get_manager, _managers, remove_manager
+
+logger = get_logger("dm")
 
 MANAGER_TYPE = "chipscope"
 
@@ -70,7 +72,7 @@ class ChipScopeListener(CSListener):
         self.manager = manager
 
     def node_added(self, node_ctx, props):
-        log.dm.debug(f"{self.manager.name}: Adding Node {node_ctx}")
+        logger.debug(f"{self.manager.name}: Adding Node {node_ctx}")
         parent_ctx = props.get("parent_ctx")
         if not parent_ctx:
             parent_ctx = ""
@@ -79,7 +81,7 @@ class ChipScopeListener(CSListener):
         self.manager._node_added()  # send notifications immediately
 
     def node_changed(self, node_ctx, props):
-        log.dm.debug(f"{self.manager.name}: Changing Node {node_ctx}: {props}")
+        logger.debug(f"{self.manager.name}: Changing Node {node_ctx}: {props}")
         try:
             node = self.manager[node_ctx]
             node.update(props)
@@ -96,7 +98,7 @@ class ChipScopeListener(CSListener):
             self.manager._node_added()  # send notifications immediately
 
     def node_removed(self, node_ctx):
-        log.dm.debug(f"{self.manager.name}: Removing Node {node_ctx}")
+        logger.debug(f"{self.manager.name}: Removing Node {node_ctx}")
         try:
             node = self.manager[node_ctx]
             # node.invalidate()

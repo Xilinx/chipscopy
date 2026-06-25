@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.<br>
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -25,21 +25,17 @@
 # %% [markdown]
 # Description
 # -----------
-# This demo shows how to use the ILA Advanced Trigger Mode.
+# This example shows how to use the ILA Advanced Trigger Mode.
 # In this mode, the trigger setup is described in text using the ILA Trigger State Machine (TSM) language.
-# See UG908 Vivado Design User Guide: Programming and Debugging, Appendix B "Trigger State Machine Language Description". 
+# See UG908 Vivado Design User Guide: Programming and Debugging, Appendix B "Trigger State Machine Language Description".
 #
-#
-# Requirements
-# ------------
-# The following is required to run this demo:
-# 1. Local or remote access to a Versal device
-# 2. 2025.2 cs_server and hw_server applications
-# 3. Python 3.10 environment
-# 4. A clone of the chipscopy git enterprise repository:
-#    - https://gitenterprise.xilinx.com/chipscope/chipscopy
-#
-# ---
+# ## Requirements
+# - Local or remote AMD Versal board, such as a VCK190
+# - AMD hw_server 2026.1 installed and running
+# - AMD cs_server 2026.1 installed and running
+# - Python 3.10 or greater installed
+# - ChipScoPy 2026.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
 # ## Step 1 - Set up environment
@@ -50,36 +46,56 @@ from enum import Enum
 import chipscopy
 from chipscopy import (
     create_session,
-    get_design_files,
     null_callback,
     report_versions,
     delete_session,
 )
+from chipscopy.examples.mesa import resolve_example_design
 from chipscopy.api.ila import ILAStatus, ILAWaveform
 from io import StringIO
 from pprint import pformat
 
 # %%
-# Specify locations of the running hw_server and cs_server below.
+# ============================================================
+# USER CONFIGURATION - Edit these for your own setup / design
+# ============================================================
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
-
-# specify hw and if programming is desired
 HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
-PROG_DEVICE = os.getenv("PROG_DEVICE", 'True').lower() in ('true', '1', 't')
+EXAMPLE_ID = "ila_advanced_trigger"
+PROG_DEVICE = True
+
+# Direct mode: set these to use your own design files (skips MESA).
+PROGRAMMING_FILE = ""
+PROBES_FILE = ""
+
+# ============================================================
+
+# --- MESA setup (no edits needed below) ---
+example_design = resolve_example_design(
+    HW_PLATFORM,
+    EXAMPLE_ID,
+    programming_file=PROGRAMMING_FILE,
+    probes_file=PROBES_FILE,
+)
+design_manifest = example_design.manifest  # None in direct mode
+DEVICE_FAMILY = example_design.device_family
+PROGRAMMING_FILE = example_design.programming_file
+PROBES_FILE = example_design.probes_file
+
+example_design.print_summary()
+print(f"HW_URL: {HW_URL}")
+print(f"CS_URL: {CS_URL}")
 
 # %%
-design_files = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced")
-PROGRAMMING_FILE = design_files.programming_file
-PROBES_FILE = design_files.probes_file
-assert os.path.isfile(PROGRAMMING_FILE)
-assert os.path.isfile(PROBES_FILE)
+print(f"HW_URL: {HW_URL}")
+print(f"CS_URL: {CS_URL}")
+print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
+print(f"PROBES_FILE: {PROBES_FILE}")
 
 # %%
-print(f"HW_URL={HW_URL}")
-print(f"CS_URL={CS_URL}")
-print(f"PDI={PROGRAMMING_FILE}")
-print(f"LTX={PROBES_FILE}")
+assert os.path.isfile(PROGRAMMING_FILE), f"PDI file not found: {PROGRAMMING_FILE}"
+assert os.path.isfile(PROBES_FILE), f"Probes file not found: {PROBES_FILE}"
 
 # %% [markdown]
 # ## Step 2 - Create a session and connect to the server(s)
@@ -95,21 +111,23 @@ report_versions(session)
 # ## Step 3 - Get our device from the session
 
 # %%
-# Use the first available device and setup its debug cores
 if len(session.devices) == 0:
     raise ValueError("No devices detected")
+
 print(f"Device count: {len(session.devices)}")
-versal_device = session.devices.get(family="versal")
+versal_device = session.devices.filter_by(family=DEVICE_FAMILY).get()
 
 # %% [markdown]
 # ## Step 4 - Program the device with our example programming file
 
+# %% [markdown]
+# `example_design.program_device()` dispatches to the correct flow (flat vs. segmented) based on the manifest. See [program.ipynb](../program/program.ipynb) for the explicit per-flow code.
+
 # %%
-print(f"Programming {PROGRAMMING_FILE}...")
 if PROG_DEVICE:
-    versal_device.program(PROGRAMMING_FILE)
-else:
-    print("skipping programming")
+    if not example_design.verify_device_idcode(versal_device):
+        raise RuntimeError("Device IDCODE does not match the manifest design.")
+    example_design.program_device(versal_device)
 
 # %% [markdown]
 # ## Step 5 - Detect Debug Cores
@@ -134,10 +152,31 @@ for index, ila_core in enumerate(ila_cores):
     print(f"    ILA Core #{index}: NAME={ila_core.name}, UUID={ila_core.core_info.uuid}")
 
 # %%
-# Get the ILA cores matching a given name. filter_by returns a list, even if just one item is present.
-my_ila = versal_device.ila_cores.filter_by(name="chipscopy_i/counters/ila_slow_counter_0")[0]
+# Get ILA instance from design_manifest configuration
+if design_manifest and design_manifest.has_core("ila"):
+    ila_config = design_manifest.debug_cores["ila"]
+    if hasattr(ila_config, 'core_instances') and ila_config.core_instances:
+        ila_name = ila_config.core_instances[0]["name"]
+        my_ila = versal_device.ila_cores.filter_by(name=ila_name)[0]
+        print(f"Using ILA from design_manifest: {ila_name}")
+    else:
+        my_ila = versal_device.ila_cores[0]
+        print(f"Using first available ILA (design_manifest did not specify instances)")
+else:
+    my_ila = versal_device.ila_cores[0]
+    print(f"Using first available ILA (no ILA in design_manifest)")
+
+# Get probe prefix from design_manifest for use in trigger and waveform steps
+if design_manifest and design_manifest.has_core("ila") and hasattr(ila_config, 'core_instances') and ila_config.core_instances:
+    probe_prefix = ila_config.core_instances[0].get("probe_prefix", "chipscopy_i/counters/slow_counter_0")
+else:
+    probe_prefix = "chipscopy_i/counters/slow_counter_0"
+
+counter_probe_name = f'{probe_prefix}_Q_1'
 
 print(f"USING ILA: {my_ila.name}")
+print(f"Probe prefix: {probe_prefix}")
+print(f"Counter probe: {counter_probe_name}")
 
 # %% [markdown]
 # ## Step 6 - Get Information for this ILA Core
@@ -159,6 +198,15 @@ print("\nILA Static Info", my_ila.static_info)
 # - tsm_flags
 # - tsm_state
 # - tsm_state_name
+
+# %%
+# Verify this design supports advanced trigger before proceeding
+if design_manifest and not design_manifest.has_feature("ila", "advanced_trigger"):
+    raise RuntimeError(
+        f"Platform '{HW_PLATFORM}' does not support advanced_trigger for ILA. "
+        f"Available ILA features: {design_manifest.debug_cores.get('ila', {}).features if design_manifest and design_manifest.has_core('ila') else 'N/A'}"
+    )
+print(f"Advanced trigger feature confirmed for platform: {HW_PLATFORM}")
 
 # %%
 TRIGGER_NOW_TSM = StringIO(
@@ -187,18 +235,26 @@ print("Trigger State Machine current state name : ", my_ila.status.tsm_state_nam
 my_ila.wait_till_done(max_wait_minutes=0.5)
 my_ila.upload()
 if not my_ila.waveform:
-    print("\nUpload failed!")
+    # Fail loudly here so the root cause is obvious. Otherwise the next cell
+    # would attempt to call .get_data() on None and surface a confusing
+    # AttributeError far from the actual problem.
+    raise RuntimeError(
+        "ILA upload returned no waveform. The trigger state machine likely "
+        "did not fire (check the 'Trigger State Machine flags' / 'counter "
+        "values' printed in the previous cell -- all-False / all-zero means "
+        "the ILA never captured). Verify the design's clock is running and "
+        "that the probe data is reaching the ILA."
+    )
+
 
 # %% [markdown]
-# ## Step 9 - Print samples for probe 'chipscopy_i/counters/slow_counter_0_Q_1'. 
+# ## Step 9 - Print samples for the counter probe
 #
 # Using the function ILAWaveform.get_data(), the waveform data is put into a sorted dict.
 # First 4 entries in sorting order are: trigger, sample index, window index, window sample index.
-# Then comes probe values. In this case just one probe.
+# Then comes probe values. In this case just one probe. The probe name was derived from the manifest `probe_prefix` in Step 5.
 
 # %%
-counter_probe_name = 'chipscopy_i/counters/slow_counter_0_Q_1'
-
 def print_probe_values(waveform: ILAWaveform, probe_names: [str]):
     samples = waveform.get_data(
         probe_names,
@@ -211,6 +267,7 @@ def print_probe_values(waveform: ILAWaveform, probe_names: [str]):
             f"Window:{window_index}  Window Sample:{window_sample_index}  dec:{value:10}  hex:0x{value:08X} {trigger}"
         )
 
+# counter_probe_name was set from design_manifest probe_prefix in Step 5
 print_probe_values(my_ila.waveform, [counter_probe_name])
 
 # %% [markdown]
@@ -321,10 +378,14 @@ print(f"\nCounters: {status.tsm_counters}    Flags: {status.tsm_flags}")
 # %%
 my_ila.upload()
 if not my_ila.waveform:
-    print("\nUpload failed!")
+    raise RuntimeError(
+        "ILA upload returned no waveform after monitor_status completed. "
+        "Check the 'Counters' / 'Flags' printed above -- if the trigger never "
+        "fired the ILA has nothing to upload."
+    )
 
 # %% [markdown]
-# ## Step 14 - Print samples for probe 'chipscopy_i/counters/slow_counter_0_Q_1'. 
+# ## Step 14 - Print samples for the counter probe
 
 # %%
 print_probe_values(my_ila.waveform, [counter_probe_name])

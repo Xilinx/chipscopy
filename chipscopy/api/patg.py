@@ -1,12 +1,27 @@
-# Copyright (C) 2025, Advanced Micro Devices, Inc. All Rights Reserved.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import csv
 import time
 from enum import IntEnum
 from pathlib import Path
 
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 
-DOMAIN = "patg"
+logger = get_logger("patg")
 
 # section - defines
 MAX_TG_INSTRUCTIONS = 511
@@ -15,7 +30,7 @@ dbg_hub_preamble = 0x0002_800F  # Dbg HUB preamble
 
 
 def dbg_hub_txn(device, addr, data):
-    log[DOMAIN].debug(f"dhub wtxn: {addr:08X}, l:{len(data)} " + " ".join(f"{x:02X}" for x in data))
+    logger.debug(f"dhub wtxn: {addr:08X}, l:{len(data)} " + " ".join(f"{x:02X}" for x in data))
     device.memory_write(addr, data)
 
 
@@ -322,11 +337,11 @@ class PATGInstruction:
         very_wide_instruction_word = 0
         for field_name, (width, bit_shift) in self.instruction_packing.items():
             value = getattr(self, field_name)
-            log[DOMAIN].trace(f"{field_name}: {value} (width: {width})")
+            logger.debug(f"{field_name}: {value} (width: {width})")
             very_wide_instruction_word |= (value & ((1 << width) - 1)) << bit_shift
 
         self.very_wide_instruction_word = very_wide_instruction_word
-        log[DOMAIN].trace(f"Packed very_wide_instruction_word: 0x{very_wide_instruction_word:064X}")
+        logger.debug(f"Packed very_wide_instruction_word: 0x{very_wide_instruction_word:064X}")
 
     def unpack_from_string(self, mem_str: str):
         if len(mem_str) != 103:

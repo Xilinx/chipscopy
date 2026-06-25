@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2022, Xilinx, Inc.<br>
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -30,18 +30,16 @@
 #
 #
 # ## Requirements
-# - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.2 or greater
+# - Local or remote AMD Versal board, such as a VCK190
+# - AMD hw_server 2026.1 or greater
 # - Python 3.10 or greater installed
-# - ChipScoPy 2025.2 or greater installed
-# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
+# - ChipScoPy 2026.1 or greater installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
+#
+# This notebook intentionally does not use the MESA design-manifest flow because it demonstrates low-level JTAG cable/scan-chain operations without programming a design.
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
-#
-# After this step,
-# - Required functions and classes are imported
-# - Paths to server(s) and files are set correctly
 
 # %%
 import os
@@ -61,11 +59,8 @@ print(f"HW_URL={HW_URL}")
 # ## 2 - Create a session and connect to the hw_server
 #
 # The session is a container that keeps track of devices and debug cores.
-# After this step,
-# - Session is initialized and connected to `hw_server`
-# - Versions are detected and reported to stdout
 #
-# *NOTE*: No `cs_server` is required for this example.
+# For this JTAG example, only `hw_server` is required; `cs_server` is not needed.
 
 # %%
 session = create_session(hw_server_url=HW_URL)

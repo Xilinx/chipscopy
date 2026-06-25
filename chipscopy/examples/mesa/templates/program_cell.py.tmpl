@@ -1,0 +1,10 @@
+session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
+report_versions(session)
+device = session.devices.filter_by(family=DEVICE_FAMILY).get()
+
+if PROG_DEVICE:
+    if not example_design.verify_device_idcode(device):
+        raise RuntimeError("Device IDCODE does not match the manifest design.")
+    example_design.program_device(device)
+
+device.discover_and_setup_cores(ltx_file=PROBES_FILE)

@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 import json
 import re
 import sys
+import threading
 import time
 from collections import defaultdict, deque
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Union, Dict, List, Set, Any, NewType, Literal
+from typing import Optional, Union, Dict, List, Set, Any, NewType, Literal, Callable
 from struct import pack, unpack
 
 from chipscopy.api import DMNodeListener
@@ -52,12 +53,15 @@ from chipscopy.client.mem import MemoryNode
 from chipscopy.client.noc_perfmon_core_client import NoCPerfMonCoreClient
 from chipscopy.client.sysmon_core_client import SysMonCoreClient
 from chipscopy.dm import chipscope, request, Node
+from chipscopy.tcf import protocol
 from chipscopy.utils.printer import printer, PercentProgressBar
 from chipscopy.api.device.device_scanner import (
     scan_all_views,
 )
 from chipscopy.api.device.device_util import copy_node_props
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
+
+logger = get_logger("client")
 
 
 class FeatureNotAvailableError(Exception):
@@ -148,6 +152,19 @@ class Device:
         self.cores_to_scan = {}  # set during discover_and_setup_cores
         self.programming_error: Optional[str] = None  # Keep error for query after programming
 
+        # Callback for triggering device rescan (registered by Session)
+        self.rescan_callback: Callable[[ServerInfo], None] | None = None
+
+        # Flag to track programming in progress
+        self._programming_in_progress: bool = False
+
+        # Future for tracking background rescan operation
+        self._rescan_future: Optional[request.CsFutureSync] = None
+        self._rescan_cancelled = threading.Event()
+
+        # Lock for protecting device state during rebinding
+        self._state_lock = threading.RLock()
+
         self.refresh()
 
         # The following filter_by becomes a dictionary with architecture, jtag_index, context, etc.
@@ -169,6 +186,67 @@ class Device:
             return props[item]
         else:
             raise AttributeError(f"No property {str(item)}")
+
+    def _rebind_device_spec(self, device_spec: DeviceSpec):
+        # Acquire lock to make all property updates atomic
+        with self._state_lock:
+            self._clear_debugcore_wrapper_cache()
+            self._device_spec = device_spec
+            self.family_name = self._device_spec.get_arch_name()
+            self.device_family = DeviceFamily.get_family_for_name(self.family_name)
+            self.part_name = self._device_spec.get_part_name()
+            self.dna = self._device_spec.get_dna()
+            self.jtag_index = self._device_spec.jtag_index
+            self.cached_props = {}
+            self.state = DeviceState.NEEDS_REFRESH
+
+            if hasattr(self, "filter_by") and isinstance(self.filter_by, dict):
+                self.filter_by.update(
+                    {
+                        "family": self.family_name,
+                        "dna": self.dna,
+                        "jtag_index": self.jtag_index,
+                        "part": self.part_name,
+                        "context": self.context,
+                        "cable_context": self._device_spec.jtag_cable_ctx,
+                        "jtag_context": self._device_spec.jtag_device_ctx,
+                    }
+                )
+            self._clear_debugcore_wrapper_cache()
+
+    def _cancel_rescan_future(self, timeout: float = 2.0):
+        """
+        Cancel and wait for the background rescan future to complete.
+
+        Called during session disconnect to ensure threads are cleaned up
+        before resources are freed.
+
+        Args:
+            timeout: Maximum seconds to wait for future completion (default 2.0)
+        """
+        rescan_future = self._rescan_future
+        if rescan_future is None:
+            return  # No rescan in progress
+
+        try:
+            # Signal the worker loop to unwind before tearing down session resources.
+            self._rescan_cancelled.set()
+
+            # Cancel the future so callers waiting on it can complete promptly.
+            if not rescan_future.is_done:
+                rescan_future.cancel()
+
+            # Wait for cancellation to complete
+            rescan_future.wait(timeout=timeout)
+        except Exception as e:
+            # Handle timeout or unexpected errors
+            if "timed out" in str(e).lower():
+                logger.warning(
+                    f"Rescan future for device {self} did not cancel within {timeout}s. "
+                    "Operation may continue but may access stale resources."
+                )
+            elif not isinstance(e, request.CancelError):
+                logger.debug(f"Error cancelling rescan future: {e}")
 
     def _raise_if_state_invalid(self):
         if self.state == DeviceState.INVALID:
@@ -208,6 +286,9 @@ class Device:
         if action == DMNodeListener.NodeAction.NODE_REMOVED and node.ctx in root_device_contexts:
             # Removed a node that is the anchor for this device... Invalidate the device so any subsequent
             #     user API calls return an invalid device message
+            # Protect device during active programming - node removal is temporary
+            if self._programming_in_progress:
+                return
 
             # TODO: TypeError: 'ParodyLogger' object is not callable
             # log.client.warn(f"DEVICE {str(self)} marked invalid -- rescan required!")
@@ -260,9 +341,11 @@ class Device:
     def to_dict(self) -> Dict[str, Any]:
         """Returns a dictionary representation of the device data"""
         self._raise_if_state_invalid()
-        if self.state == DeviceState.NEEDS_REFRESH:
-            self.refresh()
-        return self.cached_props
+        # Acquire lock to ensure consistent snapshot of device state
+        with self._state_lock:
+            if self.state == DeviceState.NEEDS_REFRESH:
+                self.refresh()
+            return self.cached_props
 
     def to_json(self) -> str:
         """Returns a json representation of the device data"""
@@ -438,6 +521,67 @@ class Device:
         # Gets the tacked on wrapper from a node.
         return node.api_client_wrapper
 
+    @staticmethod
+    def _clear_client_wrapper(node):
+        if hasattr(node, "api_client_wrapper"):
+            node.api_client_wrapper = None
+
+    def _clear_debugcore_wrapper_cache(self, root_node=None):
+        if not self.cs_server:
+            return
+        if root_node is None:
+            root_node = self.chipscope_node
+        if not root_node:
+            return
+
+        try:
+            cs_view = self.cs_server.get_view(chipscope)
+        except Exception:
+            return
+
+        nodes_to_visit = deque([root_node])
+        visited = set()
+        while nodes_to_visit:
+            node = nodes_to_visit.popleft()
+            node_ctx = getattr(node, "ctx", "")
+            if not node_ctx or node_ctx in visited:
+                continue
+            visited.add(node_ctx)
+            Device._clear_client_wrapper(node)
+            try:
+                nodes_to_visit.extend(cs_view.get_children(node))
+            except Exception:
+                continue
+
+    def _needs_post_program_rescan(self) -> bool:
+        return (
+            bool(self.rescan_callback)
+            and bool(self.cs_server)
+            and self.device_family == DeviceFamily.UPLUS
+        )
+
+    def _run_post_program_rescan_if_needed(self):
+        """Run post-program device rescan if needed for this device family."""
+        if self._needs_post_program_rescan():
+            assert self.rescan_callback is not None
+            self.rescan_callback(self.hw_server)
+
+    def _run_post_program_rescan_worker(self, rescan_future: request.CsFutureSync):
+        """
+        Worker function for background rescan after programming.
+
+        The future is auto-completed by run_worker(auto_complete=True).
+        """
+        try:
+            # Check cooperative cancellation signal before proceeding
+            if self._rescan_cancelled.is_set() or rescan_future.is_done:
+                return None
+
+            self._run_post_program_rescan_if_needed()
+            return None
+        finally:
+            self._rescan_cancelled.clear()
+
     def _create_debugcore_wrapper(self, node):
         # Factory to build debug_core_wrappers
         # Instantiate debug core wrappers for a known core type. The wrapper gets attached to a
@@ -551,6 +695,7 @@ class Device:
             ddr_scan: True=Scan Device for DDRs
             hbm_scan: True=Scan Device for HBMs
             sysmon_scan: True=Scan Device for System Monitor
+            setup_timeout: Maximum time in seconds to wait for core setup (default=10)
         """
         # Selectively disable scanning of cores depending on what comes in
         # This is second priority to the disable_core_scan in __init__.
@@ -600,9 +745,25 @@ class Device:
         if not self.disable_core_scan or self.device_family == DeviceFamily.UPLUS:
             if not self.cs_server:
                 raise RuntimeError("No chipscope server connection. Could not get chipscope view")
+            cs_view = self.cs_server.get_view("chipscope")
             cs_node = self.chipscope_node
             if cs_node:
                 cs_node.setup_cores(debug_hub_addrs=hub_address_list)
+                setup_timeout = kwargs.get("setup_timeout", 10)
+                deadline = None if setup_timeout is None else time.monotonic() + setup_timeout
+
+                while True:
+                    # setup_cores() tracks pending work on the sync node returned by the
+                    # view, so wait on that node's readiness while draining queued events.
+                    cs_view.run_events()
+                    if cs_node.is_ready:
+                        break
+                    if deadline is not None and time.monotonic() >= deadline:
+                        raise TimeoutError(f"Core setup did not complete within {setup_timeout}s")
+                    time.sleep(0.1)
+
+                cs_view.run_events()
+                logger.debug("Core setup completed and events processed")
             else:
                 # print(self._device_spec.to_json())
                 raise RuntimeError("chipscope_node not available")
@@ -876,6 +1037,9 @@ class Device:
         program_future = request.CsFutureSync(done=done, progress=progress)
         self.state = DeviceState.NEEDS_REFRESH
 
+        # Mark programming in progress
+        self._programming_in_progress = True
+
         if isinstance(programming_file, str):
             programming_file = Path(programming_file)
 
@@ -912,15 +1076,38 @@ class Device:
             )
 
         def done_programming(future):
+            def complete_program_future_failure(error: Exception):
+                program_future.set_exception(error)
+
+            def complete_program_future_success():
+                program_future.set_result(None)
+
             if not self.programming_error:
                 self.programming_error = future.error
 
             if self.programming_error is not None:
+                self._programming_in_progress = False
                 if show_progress_bar:
                     progress_.update(status=PercentProgressBar.Status.ABORTED)
-                program_future.set_exception(self.programming_error)
+                complete_program_future_failure(self.programming_error)
 
                 return
+
+            def finalize_program_failure(error: Exception):
+                self.programming_error = error
+                self._programming_in_progress = False
+
+                if show_progress_bar:
+                    progress_.update(status=PercentProgressBar.Status.ABORTED)
+                complete_program_future_failure(error)
+
+            def finalize_program_success():
+                # Clear programming flag
+                self._programming_in_progress = False
+
+                if show_progress_bar:
+                    progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
+                complete_program_future_success()
 
             for i in range(delay_after_program):
                 # This pushes end-of-config node events to the listeners
@@ -934,13 +1121,45 @@ class Device:
             # refresh device jtag node properties after program (1190699)
             self.refresh(force_update=False)
 
-            if show_progress_bar:
-                progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
+            # Notify session to rescan devices via callback when it is needed.
+            # If this callback is running on the TCF dispatch thread, offload the
+            # rescan so the synchronous scan path does not deadlock the dispatcher.
+            if protocol.isDispatchThread():
 
-            program_future.set_result(None)
+                def rescan_done(future: request.CsFuture):
+                    """Handle rescan completion or cancellation."""
+                    try:
+                        error = future.error
+                        if error:
+                            if future.cancelled:
+                                logger.debug(f"Rescan cancelled for device {self}")
+                            finalize_program_failure(error)
+                        else:
+                            finalize_program_success()
+                    finally:
+                        if self._rescan_future is future:
+                            self._rescan_future = None
+
+                # Create future and run in background worker thread
+                self._rescan_cancelled.clear()
+                self._rescan_future = request.CsFutureSync(done=rescan_done)
+                self._rescan_future.run_worker(
+                    self._run_post_program_rescan_worker,
+                    self._rescan_future,
+                    auto_complete=True,
+                )
+                return
+
+            # Synchronous path (not on dispatch thread)
+            try:
+                self._run_post_program_rescan_if_needed()
+            except Exception as error:
+                finalize_program_failure(error)
+                return
+            finalize_program_success()
 
         def finalize_program():
-            if self.programming_error is not None:
+            if self.programming_error is not None and not program_future.is_done:
                 raise RuntimeError(self.programming_error)
 
         jtag_programming_node = self.jtag_node
@@ -978,9 +1197,8 @@ def discover_devices(
     disable_cache: bool = False,
     enable_experimental_protocol_decode: bool = False,
 ) -> QueryList[Device]:
-    log.client.debug(
-        f"discover_devices: hw_server={hw_server}, cs_server={cs_server}, disable_core_scan={disable_core_scan}, cable_ctx={cable_ctx}",
-        disable_cache={disable_cache},
+    logger.debug(
+        f"discover_devices: hw_server={hw_server}, cs_server={cs_server}, disable_core_scan={disable_core_scan}, cable_ctx={cable_ctx}, disable_cache={disable_cache}"
     )
     include_dna = True
     devices: QueryList[Device] = QueryList()
@@ -993,7 +1211,7 @@ def discover_devices(
             # This can happen when a chipscope server is serving multiple sessions.
             # The cs_server reports back connection information for the
             # other sessions which should be ignored.
-            log.client.debug(f"discover_devices: No device_node for dna key: {key} --> ignored.\n")
+            logger.debug(f"discover_devices: No device_node for dna key: {key} --> ignored.\n")
             continue
 
         if cable_ctx is None or device_spec.jtag_cable_ctx == cable_ctx:
@@ -1008,14 +1226,13 @@ def discover_devices(
                     disable_cache=disable_cache,
                     enable_experimental_protocol_decode=enable_experimental_protocol_decode,
                 )
-                log.client.debug(
-                    f"discover_devices: created new device: {device_node.device_wrapper}"
-                )
+                logger.debug(f"discover_devices: created new device: {device_node.device_wrapper}")
             else:
-                log.client.debug(
+                device_node.device_wrapper._rebind_device_spec(device_spec)
+                logger.debug(
                     f"discover_devices: reusing device wrapper: {device_node.device_wrapper}"
                 )
             devices.append(device_node.device_wrapper)
-            log.client.info(f"discover_devices: {idx}: {device_node.device_wrapper}")
+            logger.info(f"discover_devices: {idx}: {device_node.device_wrapper}")
             idx += 1
     return devices

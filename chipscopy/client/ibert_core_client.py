@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ from chipscopy.client import core
 from chipscopy.client.core import CoreClient
 from chipscopy.dm.request import DoneCallback
 from chipscopy.utils import listify
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 
-DOMAIN_NAME = "client_ibert"
+logger = get_logger("client_ibert")
 
 
 class IBERTCoreClient(CoreClient):
@@ -74,21 +74,30 @@ class IBERTCoreClient(CoreClient):
     def get_service_proxy(self):
         return self.manager.channel.getRemoteService("IBERT")
 
+    def _service_node_id(self) -> str:
+        manager_name, _ = dm.parse_node_id(self.ctx)
+        if manager_name:
+            return self.ctx
+        manager_name = getattr(self.manager, "name", "")
+        if manager_name:
+            return f"[{manager_name}]-{self.ctx}"
+        return self.ctx
+
     def tier1_initialize(self, done: DoneCallback = None):
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initializing IBERT core skeleton")
-        token = service.tier1_initialize(self.ctx, done_cb)
+        logger.info(f"Initializing IBERT core skeleton")
+        token = service.tier1_initialize(self._service_node_id(), done_cb)
         return self.add_pending(token)
 
     def initialize(self, done: DoneCallback = None):
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initializing IBERT service")
-        token = service.initialize(self.ctx, done_cb)
+        logger.info(f"Initializing IBERT service")
+        token = service.initialize(self._service_node_id(), done_cb)
         return self.add_pending(token)
 
     def initialize_architecture(self, done: DoneCallback = None):
         service, done_cb = self.make_done(done)
-        token = service.initialize_architecture(self.ctx, done_cb)
+        token = service.initialize_architecture(self._service_node_id(), done_cb)
         return self.add_pending(token)
 
     def discover_gt_groups(self, include_uninstantiated: bool = False, done: DoneCallback = None):
@@ -105,7 +114,10 @@ class IBERTCoreClient(CoreClient):
 
         """
         service, done_cb = self.make_done(done)
-        options = {"node_id": self.ctx, "include_uninstantiated": include_uninstantiated}
+        options = {
+            "node_id": self._service_node_id(),
+            "include_uninstantiated": include_uninstantiated,
+        }
         token = service.discover_gt_groups(options, done_cb)
         return self.add_pending(token)
 
@@ -113,7 +125,11 @@ class IBERTCoreClient(CoreClient):
         self, gt_group: str, done: DoneCallback = None, *, skip_post_ops: bool = False
     ):
         service, done_cb = self.make_done(done)
-        options = {"node_id": self.ctx, "gt_group": gt_group, "skip_post_ops": skip_post_ops}
+        options = {
+            "node_id": self._service_node_id(),
+            "gt_group": gt_group,
+            "skip_post_ops": skip_post_ops,
+        }
         token = service.setup_gt_group(options, done_cb)
         return self.add_pending(token)
 
@@ -127,7 +143,7 @@ class IBERTCoreClient(CoreClient):
     ):
         service, done_cb = self.make_done(done)
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "handle": handle,
             "include_alias": include_alias,
             "include_property": include_property,
@@ -137,7 +153,7 @@ class IBERTCoreClient(CoreClient):
 
     def setup(self, done: DoneCallback = None):
         service, done_cb = self.make_done(done)
-        options = {"node_id": self.ctx}
+        options = {"node_id": self._service_node_id()}
         token = service.setup(options, done_cb)
         return self.add_pending(token)
 
@@ -182,7 +198,7 @@ class IBERTCoreClient(CoreClient):
         """
         service, done_cb = self.make_done(done)
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "endpoint_name": endpoint_display_name,
             "start": start_address,
             "size": size,
@@ -224,7 +240,7 @@ class IBERTCoreClient(CoreClient):
         """
         service, done_cb = self.make_done(done)
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "endpoint_name": endpoint_display_name,
             "start": start_address,
             "data": data,
@@ -245,7 +261,7 @@ class IBERTCoreClient(CoreClient):
 
         """
         service, done_cb = self.make_done(done)
-        options = {"node_id": self.ctx}
+        options = {"node_id": self._service_node_id()}
         token = service.get_layout(options, done_cb)
         return self.add_pending(token)
 
@@ -304,7 +320,7 @@ class IBERTCoreClient(CoreClient):
         if isinstance(property_names, str):
             property_names = [property_names]
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "Property Names": property_names,
             "Endpoint Display Name": endpoint_name,
         }
@@ -375,7 +391,7 @@ class IBERTCoreClient(CoreClient):
         service, done_cb = self.make_done(done)
         if isinstance(groups, str):
             groups = [groups]
-        options = {"node_id": self.ctx, "Groups": groups}
+        options = {"node_id": self._service_node_id(), "Groups": groups}
         token = service.get_property_group(options, done_cb)
         return self.add_pending(token)
 
@@ -419,7 +435,7 @@ class IBERTCoreClient(CoreClient):
         """
         service, done_cb = self.make_done(done)
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "Property Dict": property_dict,
             "Endpoint Display Name": endpoint_name,
         }
@@ -484,7 +500,7 @@ class IBERTCoreClient(CoreClient):
         if isinstance(property_names, str):
             property_names = [property_names]
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "Property Names": property_names,
             "Endpoint Display Name": endpoint_name,
         }
@@ -555,7 +571,7 @@ class IBERTCoreClient(CoreClient):
         service, done_cb = self.make_done(done)
         if isinstance(groups, str):
             groups = [groups]
-        options = {"node_id": self.ctx, "Groups": groups}
+        options = {"node_id": self._service_node_id(), "Groups": groups}
         token = service.refresh_property_group(options, done_cb)
         return self.add_pending(token)
 
@@ -604,7 +620,7 @@ class IBERTCoreClient(CoreClient):
         if isinstance(property_names, str):
             property_names = [property_names]
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "Property Names": property_names,
             "Endpoint Display Name": endpoint_name,
         }
@@ -631,7 +647,7 @@ class IBERTCoreClient(CoreClient):
 
         """
         service, done_cb = self.make_done(done)
-        options = {"node_id": self.ctx}
+        options = {"node_id": self._service_node_id()}
         token = service.list_property_groups(options, done_cb)
         return self.add_pending(token)
 
@@ -645,7 +661,7 @@ class IBERTCoreClient(CoreClient):
         service, done_cb = self.make_done(done)
         property_names = listify(property_names)
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "Property Names": property_names,
             "Endpoint Display Name": endpoint_name,
         }
@@ -662,7 +678,7 @@ class IBERTCoreClient(CoreClient):
         service, done_cb = self.make_done(done)
         property_names = listify(property_names)
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "Property Names": property_names,
             "Endpoint Display Name": endpoint_name,
         }
@@ -752,7 +768,7 @@ class IBERTCoreClient(CoreClient):
         if isinstance(property_names, str):
             property_names = [property_names]
         options = {
-            "node_id": self.ctx,
+            "node_id": self._service_node_id(),
             "Property Names": property_names,
             "Endpoint Display Name": endpoint_name,
         }
@@ -771,7 +787,11 @@ class IBERTCoreClient(CoreClient):
         if scan_parameters is None:
             scan_parameters = dict()
 
-        options = {"node_id": self.ctx, "RX Name": rx_name, "Scan Parameters": scan_parameters}
+        options = {
+            "node_id": self._service_node_id(),
+            "RX Name": rx_name,
+            "Scan Parameters": scan_parameters,
+        }
 
         token = service.start_eye_scan(options, done_cb)
         return self.add_pending(token)
@@ -779,7 +799,7 @@ class IBERTCoreClient(CoreClient):
     def terminate_eye_scan(self, rx_name: str, *, done: DoneCallback = None):
         service, done_cb = self.make_done(done)
 
-        options = {"node_id": self.ctx, "RX Name": rx_name}
+        options = {"node_id": self._service_node_id(), "RX Name": rx_name}
 
         token = service.terminate_eye_scan(options, done_cb)
         return self.add_pending(token)
@@ -793,14 +813,14 @@ class IBERTCoreClient(CoreClient):
         if isinstance(rx_name, str):
             rx_name = [rx_name]
 
-        options = {"node_id": self.ctx, "RX Name": rx_name}
+        options = {"node_id": self._service_node_id(), "RX Name": rx_name}
         token = service.get_eye_scan_parameters(options, done_cb)
         return self.add_pending(token)
 
     def start_yk_scan(self, rx_name: str, *, done: DoneCallback = None):
         service, done_cb = self.make_done(done)
 
-        options = {"node_id": self.ctx, "RX Name": rx_name}
+        options = {"node_id": self._service_node_id(), "RX Name": rx_name}
 
         token = service.start_yk_scan(options, done_cb)
         return self.add_pending(token)
@@ -808,7 +828,7 @@ class IBERTCoreClient(CoreClient):
     def terminate_yk_scan(self, rx_name: str, *, done: DoneCallback = None):
         service, done_cb = self.make_done(done)
 
-        options = {"node_id": self.ctx, "RX Name": rx_name}
+        options = {"node_id": self._service_node_id(), "RX Name": rx_name}
 
         token = service.terminate_yk_scan(options, done_cb)
         return self.add_pending(token)

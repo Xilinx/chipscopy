@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +16,13 @@
 import typing
 from chipscopy.tcf import services
 from chipscopy.proxies.CorePropertyProxy import CorePropertyProxy
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 
 # NOTE: This name MUST match with the services name defined in the server side AXIS VIO code
 AXIS_VIO_SERVICE_NAME = "AxisVIO"
 AXIS_VIO_NODE_NAME = "vio"
 
-# NOTE: PLEASE USE THIS DOMAIN NAME IN ALL LOG MESSAGES FROM THIS FILE.
-DOMAIN_NAME = "proxy_axis_vio"
+logger = get_logger("proxy_axis_vio")
 
 
 class AxisVIOService(services.Service):
@@ -37,7 +36,7 @@ class AxisVIOProxy(CorePropertyProxy, AxisVIOService):
         self.listeners = {}
 
     def initialize(self, node_id: str, done: services.DoneHWCommand) -> None:
-        log[DOMAIN_NAME].debug("Sending initializeCmd")
+        logger.debug("Sending initializeCmd")
         return self.send_xicom_command("initialize", (node_id,), done)
 
     # ===========================================
@@ -47,7 +46,7 @@ class AxisVIOProxy(CorePropertyProxy, AxisVIOService):
     def reset_core(
         self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand
     ) -> None:
-        log[DOMAIN_NAME].debug("Sending resetCoreCmd")
+        logger.debug("Sending resetCoreCmd")
         return self.send_xicom_command("resetCore", (options["node_id"],), done)
 
     # ===========================================
@@ -56,27 +55,25 @@ class AxisVIOProxy(CorePropertyProxy, AxisVIOService):
     def commit_port_out_data(
         self, node_id: str, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand
     ) -> None:
-        log[DOMAIN_NAME].debug(f"Sending commitPortOutDataCmd with data {options['port_data']}")
+        logger.debug(f"Sending commitPortOutDataCmd with data {options['port_data']}")
         return self.send_xicom_command("commitPortOutData", (node_id, options), done)
 
     def refresh_port_out_data(
         self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand
     ) -> None:
-        log[DOMAIN_NAME].debug(
-            f"Sending refreshPortOutDataCmd with data {options['port_out_numbers']}"
-        )
+        logger.debug(f"Sending refreshPortOutDataCmd with data {options['port_out_numbers']}")
         return self.send_xicom_command("refreshPortOutData", (options["node_id"], options), done)
 
     def refresh_port_in_data(
         self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand
     ) -> None:
-        log[DOMAIN_NAME].debug(f"Sending refreshPortInDataCmd")
+        logger.debug(f"Sending refreshPortInDataCmd")
         return self.send_xicom_command("refreshPortInData", (options["node_id"],), done)
 
     def get_port_data(
         self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand
     ) -> None:
-        log[DOMAIN_NAME].debug(f"Sending getPortDataCmd")
+        logger.debug(f"Sending getPortDataCmd")
         return self.send_xicom_command("getPortData", (options["node_id"],), done)
 
     # ===========================================
@@ -84,21 +81,21 @@ class AxisVIOProxy(CorePropertyProxy, AxisVIOService):
     # ===========================================
 
     def define_probe(self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand):
-        log[DOMAIN_NAME].debug(f"Sending defineProbe with data {options['probe_options']}")
+        logger.debug(f"Sending defineProbe with data {options['probe_options']}")
         return self.send_xicom_command("defineProbe", (options["node_id"], options), done)
 
     def report_probe(self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand):
-        log[DOMAIN_NAME].debug(f"Sending reportProbeCmd with data {options['probe_name']}")
+        logger.debug(f"Sending reportProbeCmd with data {options['probe_name']}")
         return self.send_xicom_command("reportProbe", (options["node_id"], options), done)
 
     def undefine_probe(self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand):
-        log[DOMAIN_NAME].debug(f"Sending undefineProbeCmd with data {options['probe_name']}")
+        logger.debug(f"Sending undefineProbeCmd with data {options['probe_name']}")
         return self.send_xicom_command("undefineProbe", (options["node_id"], options), done)
 
     def refresh_probe(self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand):
-        log[DOMAIN_NAME].debug(f"Sending refreshProbeCmd with data {options['probe_name']}")
+        logger.debug(f"Sending refreshProbeCmd with data {options['probe_name']}")
         return self.send_xicom_command("refreshProbe", (options["node_id"], options), done)
 
     def commit_probe(self, options: typing.Dict[str, typing.Any], done: services.DoneHWCommand):
-        log[DOMAIN_NAME].debug(f"Sending commitProbe with data {options['probe_data']}")
+        logger.debug(f"Sending commitProbe with data {options['probe_data']}")
         return self.send_xicom_command("commitProbe", (options["node_id"], options), done)

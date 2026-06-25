@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@ import threading
 from socket import AF_INET, SOCK_STREAM, socket, SHUT_RD
 from typing import ByteString, Iterable
 
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 from chipscopy.utils import bytes_from_words
+
+logger = get_logger("xvc")
 
 
 def recv(sock, size=1):
@@ -260,7 +262,7 @@ class XVCServer(object):
         [capability list] comma separated list of strings
         """
         reply = b",".join(self.handler.capabilities)
-        log.xvc.debug("\treply [{}]{}".format(len(reply), reply.decode("utf-8")))
+        logger.debug("\treply [{}]{}".format(len(reply), reply.decode("utf-8")))
         self.sock.send(write_uleb128(len(reply)) + reply)
 
     def process_configure(self):
@@ -297,7 +299,7 @@ class XVCServer(object):
 
         Special machine decodable errors may be returned from commands as single word all uppercase
         """
-        log.xvc.debug(f"\tmessage: {self.pending_error}")
+        logger.debug(f"\tmessage: {self.pending_error}")
         message = self.pending_error.encode("utf-8")
         self.pending_error = ""
         self.sock.send(write_uleb128(len(message)) + message)
@@ -335,7 +337,7 @@ class XVCServer(object):
         [period] LE value of resulting TCK period in ns
         """
         period = get_uint_le(self.sock, 4)
-        log.xvc.debug(f"\tperiod: {period}")
+        logger.debug(f"\tperiod: {period}")
         self.sock.send(set_uint_le(self.handler.set_tck(period), 4))
 
     def process_mwr(self):
@@ -356,7 +358,7 @@ class XVCServer(object):
         num_bytes = get_uleb128(self.sock)
         payload = recv(self.sock, num_bytes)
 
-        log.xvc.debug(
+        logger.debug(
             f"\tflags: {flags}, addr: {addr:X}, num_bytes: {num_bytes}, payload: {payload}"
         )
 
@@ -365,13 +367,13 @@ class XVCServer(object):
                 self.handler.write_mem(flags, addr, payload)
             except Exception as e:
                 self.pending_error = str(e)
-                log.xvc.error(self.pending_error)
+                logger.error(self.pending_error)
 
         if not self.pending_error:
-            log.xvc.debug("\tstatus: 0")
+            logger.debug("\tstatus: 0")
             self.sock.send(b"\x00")
         else:
-            log.xvc.debug("\tstatus: 1")
+            logger.debug("\tstatus: 1")
             self.sock.send(b"\x01")
 
     def process_mrd(self):
@@ -390,7 +392,7 @@ class XVCServer(object):
         flags = get_uleb128(self.sock)
         addr = get_uleb128(self.sock)
         num_bytes = get_uleb128(self.sock)
-        log.xvc.debug(f"\tflags: {flags}, addr: {addr:X}, num_bytes: {num_bytes}")
+        logger.debug(f"\tflags: {flags}, addr: {addr:X}, num_bytes: {num_bytes}")
 
         data = b""
         if not self.pending_error:
@@ -398,17 +400,17 @@ class XVCServer(object):
                 data = self.handler.read_mem(flags, addr, num_bytes)
             except Exception as e:
                 self.pending_error = str(e)
-                log.xvc.error(self.pending_error)
+                logger.error(self.pending_error)
 
         if len(data) < num_bytes:
             data = bytes(num_bytes)
         self.sock.send(data)
 
         if self.pending_error:
-            log.xvc.debug("\tstatus: 1")
+            logger.debug("\tstatus: 1")
             self.sock.send(b"\x01")
         else:
-            log.xvc.debug("\tstatus: 0")
+            logger.debug("\tstatus: 0")
             self.sock.send(b"\x00")
 
     def process_stop(self):
@@ -440,7 +442,7 @@ class XVCServer(object):
             "error": self.process_error,
         }
         cmd = cmd.decode("utf-8")
-        log.xvc.debug(f"{cmd}:")
+        logger.debug(f"{cmd}:")
         func = d.get(cmd, self.process_default)
         func()
 
@@ -450,7 +452,7 @@ class XVCServer(object):
         server_address = ("", self.port)
         self.listen_sock.bind(server_address)
         self.listen_sock.listen(5)
-        log.xvc.info(f"Starting service {server_address}")
+        logger.info(f"Starting service {server_address}")
         with self.listening:
             self.listening.notify()
         while self.running:
@@ -464,19 +466,19 @@ class XVCServer(object):
                 else:
                     print(f"Unhandled OSError: {str(e)}, class {e.__class__}, dict {e.__dict__}")
                     raise e
-            log.xvc.info("Accepted connection from {}".format(address))
+            logger.info("Accepted connection from {}".format(address))
             while self.running:
                 try:
                     cmd = get_cmd(self.sock)
                     if cmd:
                         self.process(cmd)
                 except Exception as e:  # pragma: no cover
-                    log.xvc.error(f"{str(e)}")
+                    logger.error(f"{str(e)}")
                     break
-            log.xvc.info("Connection {} disconnected".format(address))
+            logger.info("Connection {} disconnected".format(address))
             self.sock.close()
         self.listen_sock.close()
-        log.xvc.info(f"Completed service {server_address}")
+        logger.info(f"Completed service {server_address}")
 
     def start(self, wait: int = 0):
         """

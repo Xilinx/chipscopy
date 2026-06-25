@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +26,9 @@ import threading
 from chipscopy.dm import request
 from chipscopy.tcf import protocol, channel, peer
 from chipscopy.tcf.channel.AbstractChannel import AbstractChannel
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
+
+logger = get_logger("client")
 from .server_info import ServerInfo
 from .util import process_param_str, sync_call, parse_params
 from chipscopy import proxies
@@ -47,7 +49,7 @@ def _setup_channel_listener(params, chan: channel):
             with _lock:
                 for peer, c in _connections.items():
                     if c == chan and c.getState() == channel.STATE_CLOSED:
-                        log.client.info(f"Channel {peer} closed")
+                        logger.info(f"Channel {peer} closed")
                         _connections.pop(peer)
                         break
 
@@ -124,20 +126,20 @@ def get_channel(peer):
 
 def _openChannel(p, done=None):
     assert protocol.isDispatchThread()
-    log.client.debug(f"Connecting to {p.getID()}")
+    logger.debug(f"Connecting to {p.getID()}")
     c = p.openChannel()
     if done is None:
         return c
 
     class ChannelListener(channel.ChannelListener):
         def onChannelOpened(self):
-            log.client.info(f"Connected to {p.getID()}")
+            logger.info(f"Connected to {p.getID()}")
             c.removeChannelListener(self)
             _setup_channel_listener(c.remote_peer.getID(), c)
             done(c, None, c)
 
         def onChannelClosed(self, error):
-            log.client.error(f"Failed to connect to {p.getID()}")
+            logger.error(f"Failed to connect to {p.getID()}")
             done(c, error, None)
 
     c.addChannelListener(ChannelListener())

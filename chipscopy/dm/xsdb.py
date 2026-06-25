@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@ import re
 from chipscopy.tcf import protocol
 from chipscopy.tcf.channel import ChannelListener
 from chipscopy.proxies import xsdbProxy as dc_service
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger, is_domain_enabled
 from . import CsManager, Node, add_manager, get_manager, _managers, remove_manager
+
+logger = get_logger("dm")
 
 MANAGER_TYPE = "xsdb"
 
@@ -63,17 +65,13 @@ def get_manager_from_channel_id(channel_id):
     return get_manager(f"{channel_id}.{MANAGER_TYPE}")
 
 
-def id_domain_enable(param, param1):
-    pass
-
-
 class XsdbNodeListener(dc_service.XsdbNodeListener):
     def __init__(self, manager):
         self.manager = manager
 
     def node_added(self, node_ctx, props):
-        if log.is_domain_enabled("dm", "DEBUG"):
-            log.dm.debug(f"{self.manager.name}: Adding Node {node_ctx}: {props}")
+        if is_domain_enabled("dm", "DEBUG"):
+            logger.debug(f"{self.manager.name}: Adding Node {node_ctx}: {props}")
         parent_ctx = props.get("ParentID")
         if not parent_ctx:
             parent_ctx = ""
@@ -84,8 +82,8 @@ class XsdbNodeListener(dc_service.XsdbNodeListener):
             node.update(additional_props)
 
     def node_changed(self, node_ctx, props):
-        if id_domain_enable("dm", "DEBUG"):
-            log.dm.debug(f"{self.manager.name}: Changing Node {node_ctx}: {props}")
+        if is_domain_enabled("dm", "DEBUG"):
+            logger.debug(f"{self.manager.name}: Changing Node {node_ctx}: {props}")
         parent_ctx = props.get("ParentID")
         if not parent_ctx:
             parent_ctx = ""
@@ -96,7 +94,7 @@ class XsdbNodeListener(dc_service.XsdbNodeListener):
             node.update(additional_props)
 
     def node_removed(self, node_ctx):
-        log.dm.debug(f"{self.manager.name}: Removing Node {node_ctx}")
+        logger.debug(f"{self.manager.name}: Removing Node {node_ctx}")
         try:
             node = self.manager[node_ctx]
             # node.invalidate()

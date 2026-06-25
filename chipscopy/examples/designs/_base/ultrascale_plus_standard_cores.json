@@ -1,0 +1,43 @@
+{
+  "debug_cores": {
+    "ibert_usp_gty": {
+      "enabled": false,
+      "description": "IBERT GTY debug core for UltraScale+ GTY transceivers",
+      "quad_names": [],
+      "features": [
+        "link",
+        "eye_scan",
+        "bit_error_test"
+      ]
+    },
+    "ibert_usp_gth": {
+      "enabled": false,
+      "description": "IBERT GTH debug core for UltraScale+ GTH transceivers",
+      "quad_names": [],
+      "features": [
+        "link",
+        "eye_scan",
+        "bit_error_test"
+      ]
+    },
+    "memory": {
+      "enabled": false,
+      "description": "DDRMC / LPDDRMC debug and calibration",
+      "memory_types": ["LPDDR4", "LPDDR5"],
+      "features": [
+        "calibration_status",
+        "eye_scan",
+        "1d_eye_scan",
+        "margining",
+        "2d_eye_scan"
+      ]
+    }
+  },
+  "metadata": {
+    "created_date": "2026-02-16",
+    "version": "1.1.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-05-11",
+    "notes": "Base manifest for UltraScale+ standard cores (IBERT GTY/GTH and memory). Children inherit via the `extends` field and override `enabled`/`quad_names`/`memory_types`/etc."
+  }
+}

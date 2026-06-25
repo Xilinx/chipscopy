@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,9 @@
 # limitations under the License.
 
 from chipscopy.tcf.services import ServiceProvider, add_service_provider
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
+
+logger = get_logger("all")
 
 
 class ProxiesServiceProvider(ServiceProvider):
@@ -35,7 +37,7 @@ class ProxiesServiceProvider(ServiceProvider):
         except ImportError:
             pass
         except Exception as x:
-            log.all.error(f"Cannot instantiate service proxy for {service_name}: {x}")
+            logger.error(f"Cannot instantiate service proxy for {service_name}: {x}")
         return service
 
 

@@ -1,0 +1,48 @@
+{
+  "design_info": {
+    "design_name": "pcie_pio_ced",
+    "description": "PCIe PIO CED - PCIe example design with programmed I/O functionality",
+    "hw_platform": "vpk120",
+    "programming_flow": "flat",
+    "design_path": "vpk120/production/pcie_pio_ced",
+    "family": "versal",
+    "device": "xcvp1202",
+    "board": "VPK120",
+    "idcode": "0x00000000"
+  },
+  "debug_cores": {
+    "pcie": {
+      "enabled": true,
+      "description": "PCIe debug and monitoring functionality",
+      "features": [
+        "traffic_monitoring",
+        "error_detection",
+        "performance_analysis"
+      ]
+    },
+    "ibert_gtyp": {
+      "enabled": true,
+      "description": "IBERT GTYP debug core for Landlocked (CPM5-controlled) GTYP transceivers",
+      "quad_names": [
+        "Quad_104",
+        "Quad_105"
+      ],
+      "features": [
+        "link",
+        "eye_scan",
+        "cpm_decoupling",
+        "rate_change"
+      ]
+    }
+  },
+  "supported_examples": [
+    "cpm_decoupling"
+  ],
+  "metadata": {
+    "created_date": "2025-10-13",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-05-05",
+    "notes": "VPK120 PCIe PIO CED with PCIe core and CPM5-controlled (landlocked) GTYPs for cpm_decoupling."
+  }
+}

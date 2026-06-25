@@ -9,21 +9,35 @@
                 "debug_cores": [
                     {
                         "type": "AXI_DEBUG_HUB_V1",
-                        "name": "axi_dbg_hub",
+                        "name": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "spec": "axi_dbg_hub_v2_0",
                         "ipName": "axi_dbg_hub",
                         "address_info": {
-                            "offset": "0x00000FFF00000000",
-                            "range": "0x0000000000200000"
+                            "offset": "0x20180000000",
+                            "range": "0x00200000"
                         },
-                        "uuid": "B9D1F8486D8A558EB272313CA4912C24"
+                        "available_addresses": [
+                            {
+                                "master": "/versal_cips_0/FPD_CCI_NOC_0/SEG_axi_dbg_hub_0_Mem0",
+                                "vlnv": "xilinx.com:ip:versal_cips:3.4",
+                                "offset": "0x20180000000",
+                                "range": "0x200000"
+                            },
+                            {
+                                "master": "/versal_cips_0/PMC_NOC_AXI_0/SEG_axi_dbg_hub_0_Mem0",
+                                "vlnv": "xilinx.com:ip:versal_cips:3.4",
+                                "offset": "0x20180000000",
+                                "range": "0x200000"
+                            }
+                        ],
+                        "uuid": "50E5E58A1CF75FE7A064C2D545A20C4D"
                     },
                     {
                         "type": "AXIS_ILA_V1",
                         "name": "chipscopy_i/counters/ila_fast_counter_0",
                         "spec": "axis_ila_v1_3",
                         "ipName": "axis_ila",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "D62FB110F1A25D439EB15D9149F450CE",
                         "pins": [
                             {
@@ -582,7 +596,7 @@
                         "name": "chipscopy_i/counters/ila_slow_counter_0",
                         "spec": "axis_ila_v1_3",
                         "ipName": "axis_ila",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "9125D1429AD25223AECDD656C2856755",
                         "pins": [
                             {
@@ -1141,7 +1155,7 @@
                         "name": "chipscopy_i/counters/vio_fast_counter_0",
                         "spec": "axis_vio_v1_0",
                         "ipName": "axis_vio",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "718A03DBCD265D969EA5C15840AEFD17",
                         "pins": [
                             {
@@ -1463,7 +1477,7 @@
                         "name": "chipscopy_i/counters/vio_slow_counter_0",
                         "spec": "axis_vio_v1_0",
                         "ipName": "axis_vio",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "22BC7ED6C4145AAB88C58EAEDFF2B04C",
                         "pins": [
                             {
@@ -1785,7 +1799,7 @@
                         "name": "chipscopy_i/noc_tg_bc/axis_vio_0",
                         "spec": "axis_vio_v1_0",
                         "ipName": "axis_vio",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "021098F58FE659EFAD76657E635E53FE",
                         "pins": [
                             {
@@ -1975,7 +1989,7 @@
                         "name": "chipscopy_i/noc_tg_bc/ddr_tg/inst/u_top_axi_mst/u_tg_top/gen_aximm_reg_space.u_reg_space/gen_vio_status_monitor.u_vio_status_monitor",
                         "spec": "axis_vio_v1_0",
                         "ipName": "axis_vio",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "183A9283857C5FEB8F0425814D96DD8F",
                         "pins": [
                             {
@@ -2361,7 +2375,7 @@
                         "name": "chipscopy_i/noc_tg_bc/hbm_tg_0/inst/u_top_axi_mst/u_tg_top/gen_aximm_reg_space.u_reg_space/gen_vio_status_monitor.u_vio_status_monitor",
                         "spec": "axis_vio_v1_0",
                         "ipName": "axis_vio",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "048705D1649258CC800C584045E42D59",
                         "pins": [
                             {
@@ -2747,7 +2761,7 @@
                         "name": "chipscopy_i/noc_tg_bc/hbm_tg_1/inst/u_top_axi_mst/u_tg_top/gen_aximm_reg_space.u_reg_space/gen_vio_status_monitor.u_vio_status_monitor",
                         "spec": "axis_vio_v1_0",
                         "ipName": "axis_vio",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "8A8C462683D95B38BA6E038D4A34FC33",
                         "pins": [
                             {
@@ -3133,7 +3147,7 @@
                         "name": "chipscopy_i/noc_tg_bc/noc_bc_axis_ila_0",
                         "spec": "axis_ila_v1_3",
                         "ipName": "axis_ila",
-                        "master": "axi_dbg_hub",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
                         "uuid": "C53C0D3572B655B6A8A13A86686D262D",
                         "pins": [
                             {
@@ -5718,6 +5732,13 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "name": "chipscopy_i/noc_tg_bc/noc_sim_trig/inst/sim_trig_inst/u_dbg_load",
+                        "spec": "dbg_intf_v1_0",
+                        "ipName": "dbg_intf",
+                        "master": "chipscopy_i/noc_tg_bc/axi_dbg_hub_0",
+                        "uuid": "1EA415636A855B1C8729FD0EFD781E03"
                     }
                 ]
             }

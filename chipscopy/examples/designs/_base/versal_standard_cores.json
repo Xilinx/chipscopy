@@ -1,0 +1,93 @@
+{
+  "debug_cores": {
+    "ila": {
+      "enabled": true,
+      "description": "Integrated Logic Analyzer debug cores",
+      "features": [
+        "trigger",
+        "capture",
+        "advanced_trigger"
+      ]
+    },
+    "vio": {
+      "enabled": true,
+      "description": "Virtual Input/Output debug cores",
+      "features": [
+        "input_monitor",
+        "output_control"
+      ]
+    },
+    "sysmon": {
+      "enabled": true,
+      "description": "System Monitor for temperature and voltage monitoring",
+      "features": [
+        "temperature_monitoring",
+        "voltage_monitoring",
+        "synchronous_sampling"
+      ]
+    },
+    "memory": {
+      "enabled": true,
+      "description": "Memory debug and calibration",
+      "memory_types": [
+        "DDR4"
+      ],
+      "features": [
+        "calibration_status",
+        "eye_scan",
+        "1d_eye_scan",
+        "margining",
+        "2d_eye_scan"
+      ]
+    },
+    "noc_perfmon": {
+      "enabled": true,
+      "description": "Network on Chip Performance Monitor",
+      "features": [
+        "traffic_monitoring",
+        "bandwidth_measurement",
+        "latency_analysis"
+      ],
+      "trigger_base_address": "0x20180000000"
+    },
+    "ibert_gty": {
+      "enabled": false,
+      "description": "IBERT GTY debug core for Versal GTY transceivers",
+      "quad_names": [],
+      "features": [
+        "link",
+        "eye_scan",
+        "bit_error_test",
+        "sweep_analysis"
+      ]
+    },
+    "ibert_gtm": {
+      "enabled": false,
+      "description": "IBERT GTM debug core for Versal GTM transceivers",
+      "quad_names": [],
+      "features": [
+        "link",
+        "yk_scan",
+        "bit_error_test"
+      ]
+    },
+    "ibert_gtyp": {
+      "enabled": false,
+      "description": "IBERT GTYP debug core for Versal Premium GTY transceivers",
+      "quad_names": [],
+      "features": [
+        "link",
+        "eye_scan",
+        "bit_error_test",
+        "advanced_analysis"
+      ]
+    }
+  },
+  "metadata": {
+    "created_date": "2026-02-16",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-05-05",
+    "notes": "Base manifest for standard Versal debug cores (ILA, VIO, Sysmon, Memory, NoC, IBERT GTY/GTM/GTYP). Children inherit via the `extends` field and override `enabled`/`quad_names`/etc."
+  }
+}

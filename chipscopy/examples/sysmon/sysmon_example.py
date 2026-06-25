@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -29,60 +29,64 @@
 # ## Description
 #
 #
-# This demo shows how to take and display measurements with the System Monitor.
+# This demo shows how to take, display, and review measurements with the System Monitor.
 #
 #
 # ## Requirements
-# - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.2 installed and running
-# - Xilinx cs_server 2025.2 installed and running
+# - Local or remote AMD Versal board, such as a VCK190
+# - AMD hw_server 2026.1 installed and running
+# - AMD cs_server 2026.1 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2025.2 installed
-# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
+# - ChipScoPy 2026.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
-#
-# After this step,
-# - Required functions and classes are imported
-# - URL paths are set correctly
-# - File paths to example files are set correctly
 
 # %%
 import os
 import time
-from chipscopy import get_design_files
 from chipscopy import __version__, dm
-from chipscopy import create_session, report_versions
+from chipscopy.examples.mesa import resolve_example_design
+from chipscopy import create_session, report_versions, delete_session
+
 
 # %%
-# Specify locations of the running hw_server and cs_server below.
+# ============================================================
+# USER CONFIGURATION - Edit these for your own setup / design
+# ============================================================
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
-
-# specify hw and if programming is desired
 HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
-PROG_DEVICE = os.getenv("PROG_DEVICE", 'True').lower() in ('true', '1', 't')
+EXAMPLE_ID = "sysmon_example"
+PROG_DEVICE = True
 
-# The get_design_files() function tries to find the PDI and LTX files. In non-standard
-# configurations, you can put the path for PROGRAMMING_FILE and PROBES_FILE below.
-design_files = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced")
+# Direct mode: set these to use your own design files (skips MESA).
+PROGRAMMING_FILE = ""
+PROBES_FILE = ""
 
-PROGRAMMING_FILE = design_files.programming_file
-PROBES_FILE = design_files.probes_file
+# ============================================================
 
+# --- MESA setup (no edits needed below) ---
+example_design = resolve_example_design(
+    HW_PLATFORM,
+    EXAMPLE_ID,
+    programming_file=PROGRAMMING_FILE,
+    probes_file=PROBES_FILE,
+)
+design_manifest = example_design.manifest  # None in direct mode
+DEVICE_FAMILY = example_design.device_family
+PROGRAMMING_FILE = example_design.programming_file
+PROBES_FILE = example_design.probes_file
+
+example_design.print_summary()
 print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
-print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
-print(f"PROBES_FILE:{PROBES_FILE}")
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
-# After this step,
-# - Session is initialized and connected to server(s)
-# - Versions are detected and reported to stdout
 
 # %%
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
@@ -90,30 +94,28 @@ report_versions(session)
 
 # %% [markdown]
 # ## 3 - Program the device with the example design
-#
-# After this step,
-# - Device is programmed with the example programming file
+
+# %% [markdown]
+# `example_design.program_device()` dispatches to the correct flow (flat vs. segmented) based on the manifest. See [program.ipynb](../program/program.ipynb) for the explicit per-flow code.
 
 # %%
-# Typical case - one device on the board - get it.
-device = session.devices.filter_by(family="versal").get()
+device = session.devices.filter_by(family=DEVICE_FAMILY).get()
+
+# Refer program example to understand how segmented PDI programming is supported by device.program API.
+
 if PROG_DEVICE:
-    device.program(PROGRAMMING_FILE)
-else:
-    print("skipping programming")
+    if not example_design.verify_device_idcode(device):
+        raise RuntimeError("Device IDCODE does not match the manifest design.")
+    example_design.program_device(device)
 
 # %% [markdown]
 # ## 4 - Discover Debug Cores
 #
-# Debug core discovery initializes the chipscope server debug cores. This brings debug cores in the chipscope server online.
-#
-# After this step,
-#
-# - The cs_server is initialized and ready for use
+# Debug core discovery initializes the ChipScoPy server debug cores. This brings debug cores in the ChipScoPy server online.
 
 # %%
-device.discover_and_setup_cores(sysmon_scan=True, ddr_scan=False, noc_scan=False)
-print(f"System monitor setup and ready for use.")
+device.discover_and_setup_cores(sysmon_scan=True)
+print(f"System monitor is set up and ready for use.")
 
 # %% [markdown]
 # ## 5 - Initialize System Monitor
@@ -174,3 +176,18 @@ while time.time() < time_end:
     time.sleep(0.1)
 
 print("Measurement done.")
+
+# %% [markdown]
+# ## 8 - Stop streaming and clean up
+#
+# Stopping the sensor data stream and removing our node listener before
+# closing the session avoids a deadlock in `delete_session` on some
+# platforms, where a still-active stream keeps producing events for a
+# listener that is being torn down.
+
+# %%
+sysmon.stream_sensor_data(0)
+session.chipscope_view.remove_node_listener(node_listener)
+
+delete_session(session)
+

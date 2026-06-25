@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,11 +28,10 @@ from chipscopy.dm.harden.noc_perfmon.noc_types import (
     hbmmc_typedef,
     ddrmc_crypto_typedef,
 )
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger, enable_domain, change_log_level
 
 # %%
-DOMAIN = "noc_perfmon"
-log.register_domain(DOMAIN)
+logger = get_logger("noc_perfmon")
 epoch = datetime.utcfromtimestamp(0)
 
 # %%
@@ -64,7 +63,7 @@ def get_noc_typedef_from_name(name) -> str:
     elif ddrmc_crypto_re.match(name):
         return ddrmc_crypto_typedef
     else:
-        log[DOMAIN].debug(f"unknown type for name: {name}")
+        logger.debug(f"unknown type for name: {name}")
         return ""
 
 
@@ -141,7 +140,7 @@ class NoCElement(ABC):
         self.samples["write_bandwidth"].append(write_bytes_per_s)
         self.samples["avg_read_latency"].append(avg_read_latency)
         self.samples["avg_write_latency"].append(avg_write_latency)
-        log[DOMAIN].info(
+        logger.info(
             f"{self.name}: rb: {read_bytes}, wb: {write_bytes}, "
             + f"rbw: {read_bytes_per_s}, wbw: {write_bytes_per_s}, "
             + f"arl: {avg_read_latency}, awl: {avg_write_latency}"
@@ -361,7 +360,7 @@ class DDRMC(NoCElement):
                 if total_ops > 0:
                     self.samples[agg_metric][-1] = (self.samples[agg_metric][-1] * 100) / total_ops
 
-            log[DOMAIN].info(disagg_data)
+            logger.info(disagg_data)
 
         # timestamp handling
         # the way the polls are created the NA reports AFTER the main, so when this event is received, update plots
@@ -486,9 +485,9 @@ class NoCPerfMonNodeListener(NodeListener):
         self.plotter = None
         super().__init__()
         # setup logging
-        log.enable_domain([DOMAIN])
+        enable_domain(["noc_perfmon"])
         self.level = "WARNING"
-        log.change_log_level("WARNING")
+        change_log_level("WARNING")
         # self.start_time = datetime.now()
         self.noc_elements = {}  # storage for the active monitors
         self.unique_elements = (
@@ -520,11 +519,16 @@ class NoCPerfMonNodeListener(NodeListener):
                 name_parts = elem.split("_")
                 assert len(name_parts) == 2
                 alt_name = name_parts[0] + "_noc_" + name_parts[1]
+                ddrmc_sampling_period = (
+                    sampling_period_ms["NPI"]
+                    if decode_ddrmc_gen(elem) == 5
+                    else sampling_period_ms["NoC"]
+                )
                 node = DDRMC(
                     elem.lower(),
                     alt_name.lower(),
                     num_samples,
-                    sampling_period_ms["NoC"],
+                    ddrmc_sampling_period,
                     record_to_file,
                     tslide,
                     noc_clk_freq / 1000000.0,
@@ -562,7 +566,7 @@ class NoCPerfMonNodeListener(NodeListener):
         node_type = get_noc_typedef_from_name(node.Name)
         name = node.Name.lower()
         if node_type in noc_node_types and node.Name.lower() in self.noc_elements.keys():
-            log[DOMAIN].debug(f"{node.type}: {node.Name}")
+            logger.debug(f"{node.type}: {node.Name}")
 
             # dispatch the class handler
             self.noc_elements[name].update_node(node, updated_keys)
@@ -577,7 +581,7 @@ class NoCPerfMonNodeListener(NodeListener):
 
     def change_log_level(self, new_level):
         self.level = new_level
-        log.change_log_level(self.level)
+        change_log_level(self.level)
 
 
 class DDRMCCrypto:
@@ -634,7 +638,7 @@ class DDRMCCrypto:
         }
 
         # log_str = f"{self.name} - aes_xts_enc: {raw_trace_data['aes_xts_enc']}"
-        log[DOMAIN].info(str(self))
+        logger.info(str(self))
         # self.samples["ts"].append(time_delta)
         # self.trim_and_log(raw_trace_data)
 

@@ -1,0 +1,7 @@
+from more_itertools import one
+
+ila = one(device.ila_cores)
+vio = one(device.vio_cores)
+print(f'Using ILA core: {ila.name}')
+print(f'Using VIO core: {vio.name}')
+# TODO: drive VIO outputs, trigger ILA, capture waveform.

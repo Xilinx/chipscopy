@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +18,14 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
 
 from chipscopy.api.ibert.aliases import (
     RX_BER,
+    RX_BER_RESET,
     RX_LINE_RATE,
     RX_PATTERN_CHECKER_ERROR_COUNT,
     RX_RECEIVED_BIT_COUNT,
+    RX_RESET,
     RX_STATUS,
+    TX_INJECT_ERROR,
+    TX_RESET,
 )
 from chipscopy.api.ibert.link.group import LinkGroup
 from chipscopy.api.ibert.rx import RX
@@ -32,6 +36,9 @@ from rich.table import Table
 
 if TYPE_CHECKING:  # pragma: no cover
     from chipscopy.api.ibert.eye_scan import EyeScan
+
+
+NON_REFRESHABLE_ALIASES = frozenset({RX_RESET, RX_BER_RESET, TX_RESET, TX_INJECT_ERROR})
 
 
 @dataclass
@@ -198,6 +205,27 @@ class Link:
             pass
         return prop_value
 
+    @staticmethod
+    def _get_alias_values(serial_obj) -> Dict[str, Any]:
+        refreshable_props = []
+        non_refreshable_props = []
+
+        for alias, prop in serial_obj.property_for_alias.items():
+            if alias in NON_REFRESHABLE_ALIASES:
+                non_refreshable_props.append(prop)
+            else:
+                refreshable_props.append(prop)
+
+        values = {}
+        if refreshable_props:
+            values.update(serial_obj.property.refresh(refreshable_props))
+        if non_refreshable_props:
+            # Reset and inject-error aliases are action-oriented, so use cached values
+            # instead of issuing a refresh request that the server will warn about.
+            values.update(serial_obj.property.get(non_refreshable_props))
+
+        return values
+
     def generate_report(self):
         """
         Generate a report for this link and send it to the "printer" for printing
@@ -216,14 +244,14 @@ class Link:
         report.add_row("", "")
 
         if self.rx is not None:
-            values = self.rx.property.refresh(list(self.rx.property_for_alias.values()))
+            values = self._get_alias_values(self.rx)
             for alias, prop in self.rx.property_for_alias.items():
                 report.add_row(f"RX {alias}", f"{values[prop]}")
 
         report.add_row("", "")
 
         if self.tx is not None:
-            values = self.tx.property.refresh(list(self.tx.property_for_alias.values()))
+            values = self._get_alias_values(self.tx)
             for alias, prop in self.tx.property_for_alias.items():
                 report.add_row(f"TX {alias}", f"{values[prop]}")
 
@@ -236,6 +264,6 @@ class Link:
         Refresh the attributes
         """
         if self.rx is not None:
-            self.rx.property.refresh(list(self.rx.property_for_alias.values()))
+            self._get_alias_values(self.rx)
         if self.tx is not None:
-            self.tx.property.refresh(list(self.tx.property_for_alias.values()))
+            self._get_alias_values(self.tx)

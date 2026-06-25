@@ -1,0 +1,37 @@
+{
+  "extends": "_base/ultrascale_plus_standard_cores.json",
+  "design_info": {
+    "design_name": "ibert_vcu128_q131_q132_q134_q135_example",
+    "description": "IBERT example design for VCU128",
+    "hw_platform": "vcu128",
+    "programming_flow": "flat",
+    "design_path": "vcu128/example_design",
+    "family": "virtexuplus",
+    "device": "xcvu37p",
+    "board": "VCU128",
+    "idcode": "0x14B79093"
+  },
+  "debug_cores": {
+    "ibert_usp_gty": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_131",
+        "Quad_132",
+        "Quad_134",
+        "Quad_135"
+      ]
+    }
+  },
+  "supported_examples": [
+    "cross_link_debug",
+    "link_and_eye_scan_usp",
+    "program"
+  ],
+  "metadata": {
+    "created_date": "2026-02-16",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-05-05",
+    "notes": "VCU128 IBERT GTY example design for UltraScale+ transceivers; supports cross_link_debug paired with VCK190."
+  }
+}

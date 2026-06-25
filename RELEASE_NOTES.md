@@ -1,5 +1,21 @@
 # ChipScoPy Release Notes
 
+## 2026.1
+
+### 2026.1.0.45 - June 24, 2026
+
+> [!NOTE]
+> - The VEK385 design in this release is compatible only with Rev B boards; it is not supported on Rev A boards.
+> - Some cosmetic issues may affect progress bar rendering in Jupyter notebooks. These do not impact the correctness or functionality of the APIs.
+>
+- MESA (Manifest driven Example System for All-platforms) support for unified example delivery. MESA (Manifest driven Example System for All-platforms) makes ChipScoPy examples easier to run and maintain by letting a single notebook adapt to multiple hardware platforms. It automatically locates the correct programming/probes files, validates the connected device, and selects the right programming flow, reducing per-board setup and keeping example code consistent.
+- VEK280 and VCU128 design updates for production boards
+- CR-1268900: Fixed sampled eye scan image in notebook
+- Fixed scaling issue due to SI change in Gen 5 controllers
+- Updated PDI and LTX files using Vivado 2026.1
+- Added VEK385 Rev B PDI and LTX files
+- Added Windows long-path check to example delivery
+
 ## 2025.2
 
 ### 2025.2.0.55 - December 5, 2025
@@ -38,9 +54,9 @@
 - Added delay_after_program support for non-progress bar cases
 - Improved device program done callback logic
 
-## 2025.1
+## 2025.1 - Release
 
-### 2025.1.1748923355 - June 3, 2025
+- 2025.1.1748923355 - June 3, 2025
 - CR-1239400 - Add program set to chipscopy memory example
 - CR-1241135 - Clarify ILA sample data usage
 - CR-1240247 - Report correct bandwidth numbers for DDRMC5E element
@@ -65,17 +81,16 @@
 - Enhanced example design finder to fallback to site-packages area
 - Adding source files for vcu128 board related to example_ibert_vcu128_q131_q132_q134_q135.bit
 
+## 2024.2 - Release 
 
-## 2024.2
-
-### 2024.2.1733027508 - December 1, 2024
+- 2024.2.1733027508 - December 1, 2024
 - Pin winpty version to continue Python 3.8 support for jupyter notebook
 - Update README with 3.12 support
       
-### 2024.2.1732283942 - November 22, 2024
+- 2024.2.1732283942 - November 22, 2024
 - Fix chipscopy-examples directory not found with jupyter notebooks
       
-### 2024.2.1732227392 - November 21, 2024
+- 2024.2.1732227392 - November 21, 2024
 - Add US+ GTY IBERT example design and notebook
 - Enhanced logging to handle additional logging domains
 - Move example designs and jupyter notebooks out of pypi wheel to reduce file size
@@ -91,9 +106,9 @@
 - Host examples on github not pypi
 
 
-## 2024.1
+## 2024.1 - June 12, 2024
 
-### 2024.1.1717799899 - June 12, 2024
+- 2024.1.1717799899
 - hw_server and cs_server compatibility updates
 - Fixed device status register not updating after program
 - Fixed duplicate field names in JTAG register
@@ -103,23 +118,39 @@
 - Add link check before eye scan in cpm_decoupling example
 - Improvements to documentation template
 
-### 2024.1.dev1715183651 - May 22, 2024
+
+## 2024.1 - May 22, 2024
+
+- 2024.1.dev1715183651
 - Pre-release version for testing and verification
 
+## 2023.2 - May 10, 2024
 
-## 2023.2
-
-### 2023.2.1715225694 - May 10, 2024
+### Bugfix Release
+- 2023.2.1715225694
 - Versal HBM noc perfmon bugfix: corrected B/W computation for pseudo channels
 
-### 2023.2.1710645976 - Mar 18, 2024
+## 2023.2 - Mar 18, 2024
+
+### Bugfix Release
+
+- 2023.2.1710645976
 - Updated VHK158 design
 
-### 2023.2.1702018464 - Dec 8, 2023
+## 2023.2 - Dec 8, 2023
+
+### Bugfix Release
+
+- 2023.2.1702018464
 - Fixed jupyter notebook hangs on windows during eye scan plots by reverting Kaleido to previous version 0.1.0.post1
 - We recommend using Python 3.8, 3.9, 3.10, or 3.11 with ChipScoPy
 
-### 2023.2.1698639225 - Oct 24, 2023
+
+## 2023.2 - Oct 24, 2023
+
+### Minor Release
+
+- 2023.2.1698639225
 - VHK158 Preliminary Support
   - HBM2E Evaluation Platform support with ChipScoPy
   - Known issue: DDR 2D Eye Scan is not working on this platform
@@ -128,10 +159,11 @@
 - Added support for decoupling CPM5 captive GTYP, associated example notebook included in release
   - Note: vpk120 only at this time
 
+## 2023.1 - June 8, 2023
 
-## 2023.1
+### Major Release
 
-### 2023.1.1686244797 - June 8, 2023
+- 2023.1.1686244797
 - NoC Perfmon features:
   - fixes for SSI devices and HBM
   - new basic noc perfmon example (other examples are now deprecated and will be removed in a future release)
@@ -140,19 +172,22 @@
 - Fixed missing docs on github for older 2021.2 release
 - Clean up and overhaul of device scan algorithm to enable non-dpc communications (CR-1151331, CR-1151160)
 
-## 2022.2
+## 2022.2 - December 5, 2022
 
-### 2022.2.1670292617 - December 5, 2022
+### Minor Release
+
+- 2022.2.1670292617
 - ILA: Reorganized waveform functions export_waveform(), get_data(), get_probe_data()
 - ILA: Advanced trigger state machine support
 - Fixed device program progress callback
 - IBERT: Handler for EYE_SCAN_ABORTED
 - Switch csutil to argparse instead of click
 
+## 2022.1 - June 9, 2022
 
-## 2022.1
+###  Major release
 
-### 2022.1.1654632407 - June 9, 2022
+- 2022.1.1654632407
 - New VIO example
 - Renamed chipscopy cli to "csutil"
 - Updated 3rd party library dependency versions
@@ -172,9 +207,11 @@
   - stack, memory controller cores
   - performance monitoring
 
-## 2021.2 
+## 2021.2 - December 11, 2021
 
-### 2021.2.1639266951 - December 11, 2021
+### Minor release
+
+- 2021.2.1639266951
 - Compatibility with 2021.2 hw_server & cs_server versions
 - ChipScoPy example design moving to a CED (https://github.com/Xilinx/XilinxCEDStore)
 - Enum support for ILA Probes
@@ -183,9 +220,9 @@
   - NoC Performance Monitor
   
 
-## 2021.1 
+## 2021.1 - April 26, 2021
 
-## 2021.1.1637713037 - April 26, 2021
+- 2021.1.1637713037
 
 ### What's New
 

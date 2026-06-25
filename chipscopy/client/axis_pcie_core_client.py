@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ from chipscopy.client.core_property_client import CorePropertyClient
 from chipscopy import dm
 from chipscopy.client.core import CoreClient
 from chipscopy.tcf.services import DoneHWCommand
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 
 
-DOMAIN_NAME = "client_axis_pcie"
+logger = get_logger("client_axis_pcie")
 
 AXIS_PCIE_NODE_NAME = "pcie"
 AXIS_PCIE_SERVICE_NAME = "AxisPCIe"
@@ -38,7 +38,7 @@ class AxisPCIeCoreClient(CorePropertyClient):
 
     def initialize(self, done: DoneHWCommand = None):
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initializing {AXIS_PCIE_SERVICE_NAME} service")
+        logger.info(f"Initializing {AXIS_PCIE_SERVICE_NAME} service")
         token = service.initialize(self.ctx, done_cb)
         return self.add_pending(token)
 

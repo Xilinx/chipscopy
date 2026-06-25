@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ from chipscopy import dm
 from chipscopy.dm import memory, jtag, request
 from chipscopy.tcf import protocol
 from chipscopy.tcf.services import xicom, ServiceSync
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger, is_domain_enabled
+
+logger = get_logger("client")
 from .view_info import ViewInfo
 from .util import sync_call, parse_params, process_param_str
 from .util import config
@@ -102,7 +104,7 @@ class ServerInfo(dm.Node):
         locator = self.channel.getRemoteService("Locator")
 
         def done_remote_connect(token, error, result):
-            log.client.info(f"{str(self)} connected to {url}")
+            logger.info(f"{str(self)} connected to {url}")
             done(token, error, result)
 
         return locator.connect_remote_peer({"ID": url}, done_remote_connect)
@@ -120,7 +122,7 @@ class ServerInfo(dm.Node):
         locator = self.channel.getRemoteService("Locator")
 
         def done_remote_disconnect(token, error, result):
-            log.client.info(f"{str(self)} disconnected from {url}")
+            logger.info(f"{str(self)} disconnected from {url}")
             done(token, error, result)
 
         return locator.disconnect_remote_peer({"ID": url}, done_remote_disconnect)
@@ -154,9 +156,9 @@ class ServerInfo(dm.Node):
         done: request.DoneCallback = None,
     ):
         def done_connect_xvc(token, error, result):
-            if log.is_domain_enabled("client", "INFO"):
+            if is_domain_enabled("client", "INFO"):
                 server = remote_server if remote_server else str(self)
-                log.client.info(f"{server} connected to XVC Server {xvc_host}:{xvc_port}")
+                logger.info(f"{server} connected to XVC Server {xvc_host}:{xvc_port}")
             done(token, error, result)
 
         if not remote_server:
@@ -183,6 +185,12 @@ class ServerInfo(dm.Node):
         view = ViewInfo(manager)
         self.views[dm_name] = view
         return view
+
+    def wait_for_view_node(self, dm_view, ctx: str, cls=dm.Node, **kwargs):
+        return self.get_view(dm_view).wait_for_node(ctx, cls, **kwargs)
+
+    def wait_for_view_filter(self, dm_view, *, parent=None, cls=dm.Node, **kwargs):
+        return self.get_view(dm_view).wait_for_filter(parent=parent, cls=cls, **kwargs)
 
     def target(self, target_id=None, cls=dm.Node, index=None, **kwargs):
         view = self.get_view(memory)

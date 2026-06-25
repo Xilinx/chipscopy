@@ -1,5 +1,5 @@
-# Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,14 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import re
 from datetime import datetime
 
 from chipscopy.api.noc.noc_perfmon_utils import NoCElement, get_noc_typedef_from_name, MAX_SAMPLES
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 
 # %%
-DOMAIN = "noc_perfmon"
+logger = get_logger("noc_perfmon")
 
 pc_map = {"PC0": 0, "PC1": 1}
 
@@ -186,7 +187,7 @@ class HBMMC(NoCElement):
         rcmds = [tcf_node.props["hbmmc_mc_pm_read_pc0"], tcf_node.props["hbmmc_mc_pm_read_pc1"]]
         wcmds = [tcf_node.props["hbmmc_mc_pm_write_pc0"], tcf_node.props["hbmmc_mc_pm_write_pc1"]]
         # record bw
-        log[DOMAIN].info(
+        logger.info(
             f"{self.name}: rb[pc0, pc1]: {rf}, wb[pc0, pc1]: {wf}, "
             + f"rbw[pc0, pc1]: {read_bytes_per_s}, wbw[pc0, pc1]: {write_bytes_per_s}, "
             + f"rcmd[pc0, pc1]: {rcmds}, wcmds[pc0, pc1]: {wcmds}"

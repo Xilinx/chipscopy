@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 import json
 import sys
 import threading
@@ -24,7 +24,7 @@ from typing import Optional, Dict, Any, List, Union, Callable, Set, Tuple
 from chipscopy.api import DMNodeListener
 from chipscopy.client.jtagdevice import JtagDevice, JtagCable
 from chipscopy.dm import chipscope, Node
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger, enable_domain, disable_domain, change_log_level
 from chipscopy.utils.version import version_consistency_check
 from chipscopy.client import stimgen
 from chipscopy.client import connect as client_connect
@@ -33,13 +33,16 @@ from chipscopy.client.util import connect_hw, process_param_str, parse_params
 from chipscopy.client.view_info import ViewInfo
 from chipscopy.client.server_info import ServerInfo
 from chipscopy.api.containers import QueryList
-from chipscopy.api.device.device import Device, FeatureNotAvailableError, DeviceState
+from chipscopy.api.device.device import Device, FeatureNotAvailableError, DeviceState, DeviceFamily
 from chipscopy.api.device.device_util import get_jtag_view_dict
 from chipscopy.api.memory import Memory
 from chipscopy.api.cable import Cable, discover_devices, wait_for_all_cables_ready, discover_cables
 
-DOMAIN_NAME = "client"
-log.register_domain(DOMAIN_NAME)
+logger = get_logger("client")
+
+
+class PostProgramReacquireError(RuntimeError):
+    """Raised when a programmed device never reacquires a stable chipscope root."""
 
 
 class Session:
@@ -174,6 +177,155 @@ class Session:
                 sessions.append(session)
         return sessions
 
+    @staticmethod
+    def _make_device_rescan_callback(device: Device, callback: Callable):
+        def request_rescan(hw_server: ServerInfo):
+            callback(hw_server, device)
+
+        return request_rescan
+
+    @staticmethod
+    def _device_needs_post_program_wait(device: Device) -> bool:
+        return bool(device.cs_server) and device.device_family == DeviceFamily.UPLUS
+
+    @staticmethod
+    def _get_stable_chipscope_node(device: Device) -> Optional[Node]:
+        chipscope_node = device.chipscope_node
+        if not chipscope_node:
+            return None
+
+        cs_server = getattr(device, "cs_server", None)
+        if not cs_server:
+            return chipscope_node
+
+        node_ctx = getattr(chipscope_node, "ctx", "")
+        if not node_ctx:
+            return None
+
+        try:
+            chipscope_view = cs_server.get_view(chipscope)
+        except Exception:
+            return None
+
+        raw_node = None
+        for _ in range(2):
+            chipscope_view.run_events()
+            raw_node = chipscope_view.cs_manager.get_node(node_ctx)
+            if raw_node is None:
+                return None
+
+        return raw_node
+
+    @staticmethod
+    def _matches_reacquired_device(original_device: Device, scanned_device: Device) -> bool:
+        if scanned_device is original_device:
+            return True
+        if scanned_device.context == original_device.context:
+            return True
+        return (
+            getattr(scanned_device, "dna", None) is not None
+            and scanned_device.dna == getattr(original_device, "dna", None)
+            and scanned_device.jtag_index == getattr(original_device, "jtag_index", None)
+            and scanned_device.part_name == getattr(original_device, "part_name", None)
+        )
+
+    def _adopt_reacquired_device(
+        self, original_device: Device, reacquired_device: Optional[Device]
+    ) -> Device:
+        if reacquired_device is None or reacquired_device is original_device:
+            return original_device
+
+        original_device._rebind_device_spec(reacquired_device._device_spec)
+        original_device.hw_server = reacquired_device.hw_server
+        original_device.cs_server = reacquired_device.cs_server
+
+        device_node = original_device._device_spec.get_device_node()
+        if device_node:
+            device_node.device_wrapper = original_device
+
+        rebound_devices = QueryList()
+        replaced = False
+        for scanned_device in self._get_devices_with_lock():
+            if scanned_device is reacquired_device:
+                rebound_devices.append(original_device)
+                replaced = True
+            elif scanned_device is not original_device:
+                rebound_devices.append(scanned_device)
+
+        if replaced:
+            self._set_device_with_lock(rebound_devices)
+
+        return original_device
+
+    def _rescan_after_program(
+        self, device: Device, timeout: float = 5.0, poll_interval: float = 0.1
+    ) -> None:
+        deadline = time.monotonic() + timeout
+        current_device = device
+        last_error: Optional[Exception] = None
+
+        while True:
+            rescan_cancelled = getattr(current_device, "_rescan_cancelled", None)
+            if rescan_cancelled is not None and rescan_cancelled.is_set():
+                return
+
+            try:
+                scanned_devices = self.scan_devices()
+                reacquired_device = None
+                for scanned_device in scanned_devices:
+                    if self._matches_reacquired_device(device, scanned_device):
+                        reacquired_device = scanned_device
+                        break
+
+                current_device = self._adopt_reacquired_device(device, reacquired_device)
+                if not self._device_needs_post_program_wait(current_device):
+                    return
+
+                if self._get_stable_chipscope_node(current_device):
+                    return
+
+                # Device found but chipscope node not yet stable. For UPLUS
+                # devices the chipscope context is established by
+                # discover_and_setup_cores() which runs after program() returns.
+                # Accept the device as reacquired once it is visible in the
+                # JTAG chain; the debug infrastructure will be set up later.
+                if reacquired_device is not None:
+                    return
+
+                last_error = None
+            except Exception as exc:
+                last_error = exc
+
+            if time.monotonic() >= deadline:
+                message = (
+                    f"Timed out waiting for device reacquire after programming " f"{current_device}"
+                )
+                if last_error is not None:
+                    raise PostProgramReacquireError(message) from last_error
+                raise PostProgramReacquireError(message)
+
+            if self.cs_server:
+                self.cs_server.get_view("chipscope").run_events()
+            time.sleep(poll_interval)
+
+    def _on_device_rescan_needed(self, hw_server: ServerInfo, device: Device = None):
+        """Callback invoked when a device requests device list rescan.
+
+        This is called after device programming to ensure newly created debug paths
+        are discovered and added to session.devices.
+
+        Args:
+            hw_server: The hw_server connection whose devices need rescanning
+            device: The device object that triggered the rescan request
+        """
+        # Capture reference to avoid TOCTOU (time-of-check-time-of-use) race
+        # where disconnect could set hw_server to None between check and use
+        current_hw_server = self.hw_server
+        if current_hw_server and current_hw_server == hw_server:
+            self._need_to_scan_devices = True
+            if device:
+                self._rescan_after_program(device)
+
     @classmethod
     def disconnect_all_sessions(cls):
         sessions_to_disconnect = []
@@ -196,6 +348,86 @@ class Session:
         host = host_port_dict.get("Host")
         port = int(host_port_dict.get("Port"))
         return host, port
+
+    @staticmethod
+    def _normalize_sync_result(result: Any) -> Any:
+        while isinstance(result, list) and len(result) == 1:
+            result = result[0]
+        return result
+
+    @staticmethod
+    def _resolve_host(host: str) -> str:
+        try:
+            return socket.gethostbyname(host)
+        except OSError:
+            return host
+
+    @classmethod
+    def _remote_channel_matches_hw_server(cls, remote_channel_id: str, hw_server_url: str) -> bool:
+        target_url = hw_server_url if hw_server_url.startswith("TCP:") else f"TCP:{hw_server_url}"
+        try:
+            target_host, target_port = cls._parse_url(target_url)
+            remote_host, remote_port = cls._parse_url(remote_channel_id)
+        except (TypeError, ValueError):
+            return False
+
+        if remote_port != target_port:
+            return False
+
+        target_hosts = {target_host, cls._resolve_host(target_host)}
+        remote_hosts = {remote_host, cls._resolve_host(remote_host)}
+        return bool(target_hosts & remote_hosts)
+
+    @classmethod
+    def _get_remote_disconnect_candidates(cls, server: ServerInfo, hw_server_url: str) -> List[str]:
+        candidates: List[str] = []
+        if not hw_server_url:
+            return candidates
+
+        try:
+            locator = server.get_sync_service("Locator")
+            remote_channels = cls._normalize_sync_result(locator.get_remote_channels().get())
+            if isinstance(remote_channels, str):
+                remote_channels = [remote_channels]
+            if isinstance(remote_channels, list):
+                for remote_channel_id in remote_channels:
+                    if not isinstance(remote_channel_id, str):
+                        continue
+                    if cls._remote_channel_matches_hw_server(remote_channel_id, hw_server_url):
+                        candidates.append(remote_channel_id)
+        except Exception:
+            pass
+
+        fallback_url = hw_server_url if hw_server_url.startswith("TCP:") else f"TCP:{hw_server_url}"
+        candidates.append(fallback_url)
+
+        try:
+            fallback_host, fallback_port = cls._parse_url(fallback_url)
+            candidates.append(f"TCP:{cls._resolve_host(fallback_host)}:{fallback_port}")
+        except (TypeError, ValueError):
+            pass
+
+        deduped_candidates: List[str] = []
+        for candidate in candidates:
+            if candidate and candidate not in deduped_candidates:
+                deduped_candidates.append(candidate)
+        return deduped_candidates
+
+    @classmethod
+    def _disconnect_remote_hw_server(cls, server: ServerInfo, hw_server_url: str) -> None:
+        last_error: Optional[Exception] = None
+        for remote_peer_id in cls._get_remote_disconnect_candidates(server, hw_server_url):
+            try:
+                result = server.disconnect_remote(remote_peer_id)
+            except Exception as exc:
+                last_error = exc
+                continue
+
+            if cls._normalize_sync_result(result):
+                return
+
+        if last_error is not None:
+            raise last_error
 
     def connect_hw_server(self):
         if not self._hw_server_url:
@@ -263,7 +495,8 @@ class Session:
         ref_cnt, server = entry
         ref_cnt -= 1
 
-        server.disconnect_remote(f"TCP:{self.hw_server.url}")
+        hw_server_url = self.hw_server.url if self.hw_server else self._hw_server_url
+        self._disconnect_remote_hw_server(server, hw_server_url)
         self.cs_server = None
 
         if ref_cnt == 0 or not self._cs_server_sharing:
@@ -310,6 +543,11 @@ class Session:
             raise t(v).with_traceback(tb)
 
     def disconnect(self):
+        # Cancel any running rescan futures before disconnect
+        for device in self._get_devices_with_lock():
+            if hasattr(device, "_cancel_rescan_future"):
+                device._cancel_rescan_future()
+
         # Cleanup registered event listeners
         if self._register_node_listeners:
             if self.hw_server:
@@ -329,7 +567,7 @@ class Session:
         """Generic parameter get and set for low level chipscope server params"""
         if not isinstance(params, dict):
             message = "Please provide the params to set as a dictionary!"
-            log[DOMAIN_NAME].error(message)
+            logger.error(message)
             raise TypeError(message)
         cs_service = self.cs_server.get_sync_service("ChipScope")
         cs_service.set_css_param(params)
@@ -430,6 +668,14 @@ class Session:
             disable_cache=self._disable_cache,
             enable_experimental_protocol_decode=self.enable_experimental_protocol_decode,
         )  # Gating logic goes Here
+
+        # Register rescan callback on all discovered devices
+        # This enables devices to notify the session when they need a rescan (e.g., after programming)
+        for device in devices:
+            if device.rescan_callback is None:
+                device.rescan_callback = self._make_device_rescan_callback(
+                    device, self._on_device_rescan_needed
+                )
         self._set_device_with_lock(devices)
         return QueryList(self._devices)
 
@@ -479,18 +725,22 @@ class Session:
 
         Args:
             level: The minimum level to use for the logger. Valid levels are
-                "TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL", "NONE"
+                "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "NONE"
 
         """
 
-        if level is None:
-            log.disable_domain(DOMAIN_NAME)
+        if level is None or level.upper() == "NONE":
+            disable_domain("client")
+            return
 
-        valid_levels = ["TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL", "NONE"]
+        valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         level = level.upper()
-        assert level in valid_levels
-        log.change_log_level(level)
-        log.enable_domain(DOMAIN_NAME)
+        if level not in valid_levels:
+            raise ValueError(
+                f"Invalid log level '{level}'. Valid levels: {', '.join(valid_levels)}, NONE"
+            )
+        change_log_level(level)
+        enable_domain("client")
 
     @staticmethod
     def _connect_server(server_name: str, server_url: str, connect_func: Callable) -> ServerInfo:

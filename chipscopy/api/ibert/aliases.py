@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -72,6 +72,7 @@ TX_PHYCLK_FREQ: Final[str] = "TX PHYCLK Frequency"
 TX_POLARITY: Final[str] = "TX Polarity"
 TX_INJECT_ERROR: Final[str] = "Inject Error"
 TX_INJECT_ERROR_MODE: Final[str] = "Inject Error Mode"
+TX_INHIBIT: Final[str] = "TX Inhibit"
 
 # ----------------------------------------------------------------
 # Applicable to RX only

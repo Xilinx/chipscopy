@@ -1,0 +1,52 @@
+{
+  "extends": "_base/versal_standard_cores.json",
+  "design_info": {
+    "design_name": "cross_link_debug",
+    "description": "Cross-link debug design for multi-device IBERT analysis",
+    "hw_platform": "vck190",
+    "programming_flow": "flat",
+    "design_path": "vck190/production/cross_link_debug",
+    "family": "versal",
+    "device": "xcvc1902",
+    "board": "VCK190",
+    "idcode": "0x14CA8093"
+  },
+  "debug_cores": {
+    "ila": {
+      "enabled": false
+    },
+    "vio": {
+      "enabled": false
+    },
+    "sysmon": {
+      "enabled": false
+    },
+    "memory": {
+      "enabled": false
+    },
+    "noc_perfmon": {
+      "enabled": false
+    },
+    "ibert_gty": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_224",
+        "Quad_225"
+      ],
+      "features": [
+        "cross_device_links",
+        "multi_session_debug"
+      ]
+    }
+  },
+  "supported_examples": [
+    "cross_link_debug"
+  ],
+  "metadata": {
+    "created_date": "2025-10-13",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-05-05",
+    "notes": "VCK190 cross-link debug design (IBERT GTY only, paired with VCU128 in cross_link_debug example)."
+  }
+}

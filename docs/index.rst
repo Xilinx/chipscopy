@@ -34,7 +34,7 @@ Analyzer (ILA), Virtual IO (VIO), device memory access, and more.
     ChipScoPy System Diagram
 
 
-Project source code link: `ChipScoPy <https://www.github.com/Xilinx/chipscopy>`_
+Project source code link: `ChipScoPy <https://github.com/Xilinx/chipscopy/>`_
 
 |ced_link|
 
@@ -79,5 +79,6 @@ Indices and Tables
 
    containers.rst
    device.rst
+   mesa.rst
    report.rst
    session.rst
