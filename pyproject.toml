@@ -82,6 +82,5 @@ target-version = ['py39']
 extend-exclude = '''chipscopy/tcf/.*$|docs/.*$|internal-examples/.*$|examples/.*$|tests/.*$'''
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "jupytext>=1.15"]
-build-backend = "build"
-backend-path = ["."]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
