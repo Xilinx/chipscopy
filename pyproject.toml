@@ -13,27 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[tool.poetry]
+[project]
 name = "chipscopy"
-version = "2025.2.0.55"
+version = "2026.1.0.45"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
-authors = ["Xilinx ChipScope Team"]
-maintainers = ["Xilinx ChipScope Team"]
-license = "Apache-2.0 AND EPL-2.0"
-repository = "https://github.com/Xilinx/chipscopy"
-documentation = "https://xilinx.github.io/chipscopy/"
-readme = "README.md"
-include = ["LICENSE", "epl-v20.html"]
+authors = [{ name = "AMD ChipScope Team" }]
+
+[tool.poetry]
+package-mode = true
+requires-poetry = "^2.2.0"
+include = [{ path = "chipscopy/examples/**/*.py", format = ["sdist", "wheel"] }]
 
 [tool.poetry.dependencies]
 python = "^3.10.0"
 requests = ">=2.0.0"
 more-itertools = "^10.1"
 typing_extensions = "^4.7"
-loguru = "^0.7"
-importlib_metadata = "^6.8"
 rich = "^13.5"
-Click = "^8.1"
 antlr4-python3-runtime = "==4.13.1"
 kaleido = [
     { platform = "win32", version = "==0.1.0.post1", optional = true },
@@ -46,13 +42,16 @@ pandas = { version = ">=1.5", optional = true }
 matplotlib = { version = "^3.7", optional = true }
 PyQt5 = { version = "^5.15", optional = true }
 ipympl = { version = "^0.9.3", optional = true }
-pywinpty = { version = "<=2.0.13", markers = "sys_platform == 'win32' and python_version < '3.9'", optional = true }
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.4.1"
-coverage = "^7.3"
+coverage = "^7.13.0"
+pytest-cov = "^7.0.0"
 pytest-mock = "^3.11"
 colorama = "^0.4"
+papermill = "^2.7.0"
+
+[tool.poetry.group.examples.dependencies]
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "==6.2.1"
@@ -75,18 +74,7 @@ csutil = "chipscopy._cli._chipscopy:main"
 
 [tool.poetry.extras]
 core-addons = ["plotly", "kaleido", "matplotlib", "PyQt5", "pandas", "ipympl"]
-jupyter = ["notebook", "ipywidgets", "pywinpty"]
-
-[tool.pytest.ini_options]
-addopts = "--strict-markers --verbose"
-markers = [
-    "xvc_suite: Use for tests that need the XVC server setup to run",
-    "board_suite: Use for tests that need a board to run",
-    "tcf_record_suite: Tests that record hardware interactions to a file",
-    "tcf_playback_suite: Tests that playback tcf recordings from existing recording files",
-    "sw: marks tests as software tests when no hardware markers are present"
-]
-testpaths = "tests"
+jupyter = ["notebook", "ipywidgets"]
 
 [tool.black]
 line-length = 100
@@ -94,5 +82,6 @@ target-version = ['py39']
 extend-exclude = '''chipscopy/tcf/.*$|docs/.*$|internal-examples/.*$|examples/.*$|tests/.*$'''
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "jupytext>=1.15"]
+build-backend = "build"
+backend-path = ["."]

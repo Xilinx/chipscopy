@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ class ServerVersionInfo:
     version: str
     timestamp: str
     server_type: str
-    package: Optional[str] = None
-    artifact: Optional[str] = None
     pytcf_version: Optional[str] = None
 
     def __init__(self, server: ServerInfo, server_type: str):
@@ -61,8 +59,6 @@ class ServerVersionInfo:
             self.build = version_dict["build_number"]
             self.version = version_dict["version"]
             self.timestamp = version_dict["timestamp"]
-            self.package = version_dict["package_version"]
-            self.artifact = version_dict["artifact_type"]
             if "pytcf_version" in version_dict.keys():
                 self.pytcf_version = version_dict["pytcf_version"]
         else:
@@ -75,11 +71,8 @@ class ServerVersionInfo:
             f"\tTimestamp    : {self.timestamp}\n"
         )
 
-        if self.server_type == "cs_server":
-            retval += f"\tPackage      : {self.package}\n"
-            retval += f"\tArtifact Type: {self.artifact}"
-            if self.pytcf_version:
-                retval += f"\n\tPyTCF Version: {self.pytcf_version}"
+        if self.server_type == "cs_server" and self.pytcf_version:
+            retval += f"\tPyTCF Version: {self.pytcf_version}\n"
 
         return retval
 
@@ -87,8 +80,7 @@ class ServerVersionInfo:
         retval = (
             f"{type(self).__name__}("
             f"server_type='{self.server_type}', "
-            f"version='{self.version}', timestamp='{self.timestamp}', build='{self.build}', "
-            f"package='{self.package}', artifact='{self.artifact}'"
+            f"version='{self.version}', timestamp='{self.timestamp}', build='{self.build}'"
             f")"
         )
         return retval

@@ -1,0 +1,85 @@
+{
+  "extends": "_base/versal_standard_cores.json",
+  "design_info": {
+    "design_name": "chipscopy_ced",
+    "description": "ChipScoPy CED (Configurable Example Design) for VEK385 with segmented programming",
+    "hw_platform": "vek385",
+    "programming_flow": "segmented",
+    "design_path": "vek385/production/chipscopy_ced",
+    "family": "versal",
+    "device": "xc2ve3858",
+    "board": "VEK385",
+    "idcode": "0x04DB0093",
+    "boot_pdi_pattern": "*_boot.pdi",
+    "pld_pdi_pattern": "*_pld.pdi"
+  },
+  "debug_cores": {
+    "ibert_gtyp": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_106",
+        "Quad_107",
+        "Quad_205",
+        "Quad_206"
+      ]
+    },
+    "ila": {
+      "core_instances": [
+        {
+          "name": "chipscopy_i/counters/ila_slow_counter_0",
+          "probe_prefix": "chipscopy_i/counters/slow_counter_0",
+          "description": "ILA monitoring slow counter signals"
+        }
+      ]
+    },
+    "vio": {
+      "core_instances": [
+        {
+          "name": "chipscopy_i/counters/vio_slow_counter_0",
+          "probe_prefix": "chipscopy_i/counters/slow_counter_0",
+          "description": "VIO controlling slow counter"
+        }
+      ]
+    },
+    "noc_perfmon": {
+      "node_names": [
+        "DDRMC5E_X0Y0",
+        "NOC2_NMU512_X4Y2"
+      ],
+      "trigger_base_address": "0x80100000000"
+    },
+    "memory": {
+      "memory_types": [
+        "DDR5"
+      ],
+      "node_names": [
+        "DDRMC5E_X0Y0",
+        "DDRMC5E_X1Y0",
+        "DDRMC5E_X2Y0",
+        "DDRMC5E_X3Y0",
+        "DDRMC5E_X4Y0"
+      ]
+    }
+  },
+  "supported_examples": [
+    "ddr_example",
+    "ila_advanced_trigger",
+    "ila_and_vio",
+    "ila_monitor_status",
+    "memory_example",
+    "noc_perfmon",
+    "noc_perfmon_basic",
+    "program",
+    "sptg_example",
+    "sysmon_example",
+    "sysmon_sync_example",
+    "vio"
+  ],
+  "metadata": {
+    "created_date": "2026-02-20",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-05-05",
+    "notes": "VEK385 ChipScoPy CED with segmented programming (boot + PLD PDI) and DDR5 memory support."
+  }
+}

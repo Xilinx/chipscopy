@@ -1,6 +1,6 @@
 # *****************************************************************************
 # * Modifications Copyright (C) 2021-2022, Xilinx, Inc., All rights reserved.
-# * Modifications Copyright (C) 2022-2024, Advanced Micro Devices, Inc., All rights reserved..
+# * Modifications Copyright (C) 2022-2026, Advanced Micro Devices, Inc., All rights reserved..
 # *
 # * Copyright (c) 2011, 2013-2014, 2016 Wind River Systems, Inc. and others.
 # * All rights reserved. This program and the accompanying materials
@@ -13,7 +13,9 @@
 # *****************************************************************************
 
 import threading
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger, is_domain_enabled
+
+logger = get_logger("events")
 
 
 class EventQueue(object):
@@ -64,9 +66,9 @@ class EventQueue(object):
                         self.__is_waiting = True
                         self.__lock.wait()
                     r, args, kwargs = self.__queue.pop(0)
-                if log.is_domain_enabled("events", "DEBUG"):
+                if is_domain_enabled("events", "DEBUG"):
                     str_args = ",".join(str(arg) for arg in args)
-                    log.events.debug(f"{str(r)}({str_args},{kwargs})")
+                    logger.debug(f"{str(r)}({str_args},{kwargs})")
                 r(*args, **kwargs)
             except Exception as x:
                 self.__error(x)

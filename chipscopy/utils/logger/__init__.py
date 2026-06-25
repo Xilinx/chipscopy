@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,134 +14,139 @@
 # limitations under the License.
 
 import sys
-import copy
-from typing import List, Union, ClassVar
 import logging
+from typing import List, Optional, Union
 from pathlib import Path
 from logging import handlers
 
-import loguru
+
+class DomainFilter(logging.Filter):
+    """Filter that checks whether a domain is enabled on the owning CSSLogger."""
+
+    def __init__(self, css_logger: "CSSLogger"):
+        super().__init__()
+        self._css_logger = css_logger
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        domain = getattr(record, "domain", None)
+        if domain is None:
+            return True
+        return self._css_logger.domain_enabled.get(domain, False)
 
 
-class ParodyLogger:
-    def trace(self, *args, **kwargs):
-        pass
+class CSSFormatter(logging.Formatter):
+    """Formatter that includes the domain field."""
 
-    def debug(self, *args, **kwargs):
-        pass
+    DEFAULT_FORMAT = (
+        "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(domain)20s | "
+        "%(name)50s | %(lineno)-4d | %(message)s"
+    )
+    DEFAULT_DATEFMT = "%Y-%m-%d %H:%M:%S"
 
-    def info(self, *args, **kwargs):
-        pass
+    def format(self, record: logging.LogRecord) -> str:
+        if not hasattr(record, "domain"):
+            record.domain = "unknown"
+        return super().format(record)
 
-    def warning(self, *args, **kwargs):
-        pass
 
-    def success(self, *args, **kwargs):
-        pass
+class DomainLogger:
+    """Thin wrapper that injects domain context into every log record."""
 
-    def error(self, *args, **kwargs):
-        pass
+    def __init__(self, stdlib_logger: logging.Logger, domain: str):
+        self._logger = stdlib_logger
+        self._domain = domain
 
-    def critical(self, *args, **kwargs):
-        pass
+    def _log(self, level: int, msg, *args, **kwargs):
+        kwargs.setdefault("stacklevel", 3)
+        if self._logger.isEnabledFor(level):
+            extra = dict(kwargs.pop("extra", None) or {})
+            extra["domain"] = self._domain
+            kwargs["extra"] = extra
+            self._logger.log(level, msg, *args, **kwargs)
 
-    def __getattr__(self, item):
-        return self
+    def debug(self, msg, *args, **kwargs):
+        self._log(logging.DEBUG, msg, *args, **kwargs)
 
-    def __getitem__(self, item):
-        return self
+    def info(self, msg, *args, **kwargs):
+        self._log(logging.INFO, msg, *args, **kwargs)
+
+    def warning(self, msg, *args, **kwargs):
+        self._log(logging.WARNING, msg, *args, **kwargs)
+
+    def error(self, msg, *args, **kwargs):
+        self._log(logging.ERROR, msg, *args, **kwargs)
+
+    def critical(self, msg, *args, **kwargs):
+        self._log(logging.CRITICAL, msg, *args, **kwargs)
 
 
 class CSSLogger:
-    # Default format
-    default_format: ClassVar[str] = (
-        "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
-        "<level>{level: <8}</level> | "
-        "<m>{extra[domain]: >20}</m> | "
-        "<cyan>{name: >50}</cyan> | "
-        "<cyan>{line: <4}</cyan> | "
-        "<level>{message}</level>"
-    )
+    """Domain-based logging manager backed by stdlib logging.
 
-    def __init__(self):
-        self._parody_logger = ParodyLogger()
+    Each domain maps to a DomainLogger.  Handlers are attached to a single
+    root ``logging.Logger`` instance; domain filtering is done via
+    ``DomainFilter`` on each handler.
+    """
 
-        loguru.logger.remove()
+    _instance_counter: int = 0
 
-        self.logger: loguru.Logger = copy.deepcopy(loguru.logger)
-        # Enable all modules, we'll enforce domain using record filter
-        self.logger.enable("")
+    def __init__(self, logger_name: str = "chipscopy"):
+        # Use a unique internal logger name to avoid interfering with
+        # application-level logging configuration on the same name.
+        CSSLogger._instance_counter += 1
+        internal_name = f"_css.{logger_name}.{CSSLogger._instance_counter}"
+        self._logger = logging.getLogger(internal_name)
+        self._logger.setLevel(logging.DEBUG)  # allow all; handlers do filtering
+        self._logger.propagate = False
 
-        self.logger_for_domain = dict()
+        self.logger_for_domain: dict = {}
+        self.domain_enabled: dict = {}
 
-        self.domain_enabled = dict()
+        self._domain_filter = DomainFilter(self)
 
-        self.default_sink_id: int = None
+        self._default_handler: Optional[logging.Handler] = None
+        self._handlers: dict = {}  # id(handler) -> handler
+        self._next_handler_id: int = 1
 
-        self.current_log_level: loguru.Level = None
+        self.current_log_level: Optional[str] = None
 
-    def __call__(self, *args, **kwargs):
-        if len(args) == 0:
-            return
-        msg = args[0]
-        log["client"].info(msg)
+    # ------------------------------------------------------------------
+    # Domain management
+    # ------------------------------------------------------------------
 
-    def __getattr__(self, item) -> loguru.logger:
-        if not self.domain_enabled.get(item, False):
-            return self._parody_logger
-        return self._get_logger_for_domain(item)
+    def get_logger(self, domain: str) -> DomainLogger:
+        """Return a logger for *domain*, auto-registering if needed.
 
-    def __getitem__(self, item) -> loguru.logger:
-        if not self.domain_enabled.get(item, False):
-            return self._parody_logger
-        return self._get_logger_for_domain(item)
-
-    def _send_record_to_sink(self, record) -> bool:
-        return self.domain_enabled.get(record["extra"]["domain"], False)
-
-    def _get_logger_for_domain(self, domain):
+        Always returns the same DomainLogger instance for a given domain.
+        Filtering of disabled domains is handled by DomainFilter on each
+        handler, so enabling/disabling a domain takes effect immediately
+        regardless of when get_logger was called.
+        """
         if domain not in self.logger_for_domain:
-            new_logger = self.logger.bind(domain=domain)
-            self.logger_for_domain[domain] = new_logger
+            domain_logger = DomainLogger(self._logger, domain)
+            self.logger_for_domain[domain] = domain_logger
             if domain not in self.domain_enabled:
-                # Disable domain logging by default.
                 self.domain_enabled[domain] = False
-
         return self.logger_for_domain[domain]
 
-    def register_domain(self, domain: str):
-        """
-
-        Args:
-            domain: a string (must be unique! to use for logging)
-            No union of list here, just one domain may be registered per call
-
-        Returns: None
-
-            if the domain string already exists, this will raise an error
-            otherwise the new domain will be registered but disabled
-        """
-        if domain in self.logger_for_domain.keys():
-            raise ValueError(f"domain {domain} is already registered")
-        self._get_logger_for_domain(domain)
-
     def is_domain_enabled(self, domain: str, level: str) -> bool:
-        level_info = self.logger.level(level)
-        return self.domain_enabled.get(domain, False) and level_info.no >= self.current_log_level.no
+        level_no = getattr(logging, level.upper(), None)
+        if level_no is None:
+            return False
+        current_no = getattr(logging, self.current_log_level, 0) if self.current_log_level else 0
+        return self.domain_enabled.get(domain, False) and level_no >= current_no
 
     def enable_domain(self, domain_name: Union[str, List[str]]):
         if isinstance(domain_name, str):
             domain_name = [domain_name]
 
         for domain in domain_name:
-            # Need not check if domain is in domain_logging_status.
-            if domain not in self.domain_enabled.keys():
-                if domain == "":
-                    domain = None
+            if domain not in self.domain_enabled:
+                display = None if domain == "" else domain
                 raise KeyError(
-                    f"domain '{domain}' not in {list(self.domain_enabled.keys())}, please choose a supported domain"
+                    f"domain '{display}' not in {list(self.domain_enabled.keys())}, "
+                    f"please choose a supported domain"
                 )
-            # This is in case the user enables the domain before logging any message.
             self.domain_enabled[domain] = True
 
     def disable_domain(self, domain_name: Union[str, List[str]]):
@@ -152,45 +157,112 @@ class CSSLogger:
             if domain in self.domain_enabled:
                 self.domain_enabled[domain] = False
 
+    # ------------------------------------------------------------------
+    # Level management
+    # ------------------------------------------------------------------
+
     def change_log_level(self, level: str):
-        try:
-            _ = self.logger._core.levels[level]
-        except KeyError:
-            # levels = [x.name for x in self.logger._core.levels]
-            levels = ", ".join(self.logger._core.levels)
-            if level == "":
-                level = None
+        level_upper = level.upper() if isinstance(level, str) else None
+        level_no = getattr(logging, level_upper, None) if level_upper else None
+        if not isinstance(level_no, int):
+            display = None if level == "" else level
             raise ValueError(
-                f" --- Level '{level}' is not a valid log level, defined log levels: {levels}, please select a valid log level"
+                f" --- Level '{display}' is not a valid log level, "
+                f"defined log levels: DEBUG, INFO, WARNING, ERROR, CRITICAL, "
+                f"please select a valid log level"
             )
 
-        level_info = self.logger.level(level)
+        # Remove and close previous default (stdout) handler
+        if self._default_handler is not None:
+            self._logger.removeHandler(self._default_handler)
+            self._default_handler.close()
 
-        if self.default_sink_id is not None:
-            # Delete only the stdout sink. Don't touch any others that might have been added by user
-            self.logger.remove(self.default_sink_id)
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(level_no)
+        formatter = CSSFormatter(CSSFormatter.DEFAULT_FORMAT, CSSFormatter.DEFAULT_DATEFMT)
+        handler.setFormatter(formatter)
+        handler.addFilter(self._domain_filter)
+        self._logger.addHandler(handler)
+        self._default_handler = handler
 
-        self.default_sink_id = self.logger.add(
-            sink=sys.stdout,
-            level=level,
-            format=CSSLogger.default_format,
-            filter=self._send_record_to_sink,
-        )
+        self.current_log_level = level_upper
 
-        self.current_log_level = level_info
+    # ------------------------------------------------------------------
+    # Handler management
+    # ------------------------------------------------------------------
 
     def add_file_handler(self, full_path: Union[str, Path], level_name: str) -> int:
-        level_info = self.logger.level(level_name)
-        return self.logger.add(full_path, format=CSSLogger.default_format, level=level_info.name)
+        level_no = getattr(logging, level_name.upper(), None)
+        if level_no is None:
+            raise ValueError(f"Invalid log level: {level_name}")
+
+        handler = logging.FileHandler(str(full_path))
+        handler.setLevel(level_no)
+        formatter = CSSFormatter(CSSFormatter.DEFAULT_FORMAT, CSSFormatter.DEFAULT_DATEFMT)
+        handler.setFormatter(formatter)
+        handler.addFilter(self._domain_filter)
+        self._logger.addHandler(handler)
+
+        handler_id = self._next_handler_id
+        self._next_handler_id += 1
+        self._handlers[handler_id] = handler
+        return handler_id
 
     def add_queue_handler(self, queue, level_name: str) -> int:
-        queue_handler = logging.handlers.QueueHandler(queue)
-        level_info = self.logger.level(level_name)
-        return self.logger.add(
-            queue_handler, format=CSSLogger.default_format, level=level_info.name
-        )
+        level_no = getattr(logging, level_name.upper(), None)
+        if level_no is None:
+            raise ValueError(f"Invalid log level: {level_name}")
+
+        handler = handlers.QueueHandler(queue)
+        handler.setLevel(level_no)
+        handler.addFilter(self._domain_filter)
+        self._logger.addHandler(handler)
+
+        handler_id = self._next_handler_id
+        self._next_handler_id += 1
+        self._handlers[handler_id] = handler
+        return handler_id
 
 
-# NOTE - Server side code should not import this module! Only client side code should use this.
-#  Server side code should import from init in server
-log = CSSLogger()
+# ---------------------------------------------------------------------------
+# Module-level API -- __log is the hidden singleton
+# ---------------------------------------------------------------------------
+
+__log = CSSLogger()
+
+
+def get_logger(domain: str) -> DomainLogger:
+    """Get a domain logger (auto-registers the domain if needed)."""
+    return __log.get_logger(domain)
+
+
+def enable_domain(domain_name: Union[str, List[str]]):
+    __log.enable_domain(domain_name)
+
+
+def disable_domain(domain_name: Union[str, List[str]]):
+    __log.disable_domain(domain_name)
+
+
+def change_log_level(level: str):
+    __log.change_log_level(level)
+
+
+def is_domain_enabled(domain: str, level: str) -> bool:
+    return __log.is_domain_enabled(domain, level)
+
+
+def add_file_handler(full_path: Union[str, Path], level_name: str) -> int:
+    return __log.add_file_handler(full_path, level_name)
+
+
+def add_queue_handler(queue, level_name: str) -> int:
+    return __log.add_queue_handler(queue, level_name)
+
+
+def get_current_log_level() -> Optional[str]:
+    return __log.current_log_level
+
+
+def get_registered_domains() -> List[str]:
+    return list(__log.logger_for_domain.keys())

@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@ import re
 from chipscopy.tcf import protocol
 from chipscopy.tcf.channel import ChannelListener
 from chipscopy.proxies.JtagProxy import JtagProxy as JtagService
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 from . import CsManager, Node, _managers, add_manager, remove_manager
+
+logger = get_logger("jtag2")
 
 MANAGER_TYPE = "jtag"
 
@@ -61,7 +63,7 @@ class JtagListener(object):
         self.manager = manager
 
     def contextAdded(self, contexts):
-        log.jtag2.debug(f"Jtag Event contextAdded {[c.ID for c in contexts]}")
+        logger.debug(f"Jtag Event contextAdded {[c.ID for c in contexts]}")
         for context in contexts:
             parent_ctx = context.ParentID
             if parent_ctx is None:
@@ -73,7 +75,7 @@ class JtagListener(object):
                 self.manager.node_auto_upgrader(node)
 
     def contextChanged(self, contexts):
-        log.jtag2.debug(f"Jtag Event contextChanged {[c.ID for c in contexts]}")
+        logger.debug(f"Jtag Event contextChanged {[c.ID for c in contexts]}")
         for context in contexts:
             parent_ctx = context.ParentID
             if parent_ctx is None:
@@ -83,7 +85,7 @@ class JtagListener(object):
             node.update(context.props)
 
     def contextRemoved(self, context_ids):
-        log.jtag2.debug(f"Jtag Event contextRemoved {context_ids}")
+        logger.debug(f"Jtag Event contextRemoved {context_ids}")
         for context_id in context_ids:
             try:
                 node = self.manager[context_id]

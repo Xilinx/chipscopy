@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import re
 from enum import Enum
 from typing import Union, Optional
@@ -96,6 +97,13 @@ class PercentProgressBar:
         IN_PROGRESS = "[bold blue]In Progress[/]"
 
     def __init__(self):
+        # Under non-interactive / CI execution (e.g. pytest + papermill), the
+        # live rich progress meter floods the Jupyter iopub channel with
+        # refresh messages. That has been observed to make nbclient miss the
+        # cell's terminal `idle` status and block for the full `iopub_timeout`
+        # (~30 min) on otherwise-successful device-programming cells. Disable
+        # the live meter in that case; `disable=True` makes add_task/update/
+        # start/stop no-ops so no iopub traffic is generated.
         self.progress_meter = Progress(
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
@@ -103,6 +111,7 @@ class PercentProgressBar:
             TextColumn("{task.fields[status]}"),
             console=printer.console,
             auto_refresh=False,
+            disable=bool(os.environ.get("CI")),
         )
         self.task_id: TaskID = None
 

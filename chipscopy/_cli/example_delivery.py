@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2024, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,18 +13,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import shutil
-import os
 import argparse
+import os
 import requests
+import shutil
 import sys
+import uuid
 import zipfile
+from enum import IntEnum
 from pathlib import Path
 from shutil import move
 import chipscopy
 
 SOURCE_EXAMPLE_DIR = os.path.abspath(os.path.join(os.path.dirname(chipscopy.__file__), "examples"))
 TARGET_EXAMPLE_DIR = os.path.join(".", "chipscopy-examples")
+WINDOWS_MAX_PATH = 260
+WINDOWS_LONG_PATH_ERROR = (
+    "\nWindows long paths are not enabled for this Python environment. ChipScoPy\n"
+    "examples can contain paths longer than 260 characters, so examples were not\n"
+    "downloaded.\n\n"
+    "Enable Windows long path support, then run chipscopy-get-examples again.\n"
+    'See Microsoft\'s "Maximum Path Length Limitation" documentation for the\n'
+    "PowerShell fix:\n"
+    "https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation"
+    "?tabs=powershell"
+)
+_WINDOWS_LONG_PATH_PROBE_SEGMENT = "chipscopy-long-path-segment_"
+
+
+class ExampleDeliveryExitCode(IntEnum):
+    """Process exit codes used by chipscopy-get-examples."""
+
+    TARGET_ALREADY_EXISTS = 1
+    NO_EXAMPLES_AVAILABLE = 2
+    READ_ONLY_DIRECTORY = 3
+    WINDOWS_LONG_PATHS_DISABLED = 4
 
 
 def _copy_and_move_files(files_to_copy, files_to_move):
@@ -61,9 +84,14 @@ def deliver_examples(src_path, dst_fullpath, name):
     for root, dirs, files in os.walk(src_path):
         if ".ipynb_checkpoints" in dirs:
             dirs.remove(".ipynb_checkpoints")
-        if "__init__.py" in files:
+
+        # Special handling for the MESA package directory: keep __init__.py
+        # so the package remains importable in the delivered examples tree.
+        is_mesa_dir = "mesa" in root.split(os.sep)
+        if not is_mesa_dir and "__init__.py" in files:
             files.remove("__init__.py")
-        keepers = [".ipynb", ".py", ".pdi", ".ltx", ".png"]
+
+        keepers = [".ipynb", ".py", ".pdi", ".ltx", ".png", ".json"]
         for f in files:
             extension = os.path.splitext(f)[1]
             if extension in keepers:
@@ -156,6 +184,46 @@ def download_examples(dst_fullpath):
     print(f"Installed examples to {dst_fullpath}.")
 
 
+def _windows_long_paths_supported(base_path: Path) -> bool:
+    """Return whether this process can create a path longer than MAX_PATH."""
+    # Test by creating a probe directory and file that will exceed MAX_PATH.
+    canonical_base_path = Path(os.path.abspath(base_path))
+    probe_root = canonical_base_path / f".chipscopy-long-path-probe-{uuid.uuid4().hex}"
+    probe_dir_name = _WINDOWS_LONG_PATH_PROBE_SEGMENT
+    probe_dir = probe_root / probe_dir_name
+    probe_file = probe_dir / "probe.txt"
+    while len(str(probe_file)) <= WINDOWS_MAX_PATH:
+        probe_dir_name += _WINDOWS_LONG_PATH_PROBE_SEGMENT
+        probe_dir = probe_root / probe_dir_name
+        probe_file = probe_dir / "probe.txt"
+
+    try:
+        probe_dir.mkdir(parents=True)
+        probe_file.write_text("ok")
+        return True
+    except OSError:
+        return False
+    finally:
+        try:
+            shutil.rmtree(probe_root)
+        except OSError as cleanup_error:
+            print(
+                f"Warning: failed to remove long-path probe directory {probe_root}: {cleanup_error}"
+            )
+
+
+def _check_windows_long_paths_or_exit(delivery_path: str) -> None:
+    """Fail fast on Windows when long paths are not usable."""
+    if sys.platform != "win32":
+        return
+
+    canonical_path = os.path.abspath(delivery_path)
+    base = Path(os.path.dirname(canonical_path))
+    if not _windows_long_paths_supported(base):
+        print(WINDOWS_LONG_PATH_ERROR)
+        sys.exit(ExampleDeliveryExitCode.WINDOWS_LONG_PATHS_DISABLED)
+
+
 class _GetExamplesParser(argparse.ArgumentParser):  # pragma: no cover
     @property
     def epilog(self):
@@ -208,7 +276,7 @@ def main():  # pragma: no cover
             print("Available examples:\n- {}".format("\n- ".join(examples_list)))
         else:
             print("No examples available locally.  The examples can be found on Github.")
-            sys.exit(2)
+            sys.exit(ExampleDeliveryExitCode.NO_EXAMPLES_AVAILABLE)
     if args.path:
         delivery_path = args.path
     else:
@@ -251,7 +319,9 @@ def main():  # pragma: no cover
             f"\nDirectory '{base}' is read-only. Can not extract examples. "
             "Please change do a different directory with write access permissions."
         )
-        sys.exit(3)
+        sys.exit(ExampleDeliveryExitCode.READ_ONLY_DIRECTORY)
+
+    _check_windows_long_paths_or_exit(delivery_path)
 
     # If the delivery path exists and force is used, rename the current folder as a backup.
     if os.path.exists(delivery_path):
@@ -269,7 +339,7 @@ def main():  # pragma: no cover
                 "exists. Specify another path or use "
                 "the 'force' option to proceed"
             )
-            sys.exit(1)
+            sys.exit(ExampleDeliveryExitCode.TARGET_ALREADY_EXISTS)
     try:
         # If the examples folder exists in the chipscopy package, copy the examples from there.
         # Otherwise, download the examples package from github if available.
@@ -286,7 +356,7 @@ def main():  # pragma: no cover
             os.rmdir(delivery_path)
         if not os.path.isdir(delivery_path):
             print("No examples available")
-            sys.exit(2)
+            sys.exit(ExampleDeliveryExitCode.NO_EXAMPLES_AVAILABLE)
 
     sys.exit(0)
 

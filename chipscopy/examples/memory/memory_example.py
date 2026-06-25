@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.<br>
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -34,48 +34,57 @@
 #
 #
 # ## Requirements
-# - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.2 installed and running
+# - Local or remote AMD Versal board, such as a VCK190
+# - AMD hw_server 2026.1 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2025.2 installed
-# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
+# - ChipScoPy 2026.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
-#
-# After this step,
-# - Required functions and classes are imported
-# - Paths to server(s) and files are set correctly
 
 # %%
 import os
-from chipscopy import get_design_files
 from chipscopy import create_session, report_versions, delete_session
+from chipscopy.examples.mesa import resolve_example_design
+
 
 # %%
-# Make sure to start the hw_server prior to running.
-# Specify location of the running hw_server below.
-# The default is localhost - but can be other locations on the network.
+# ============================================================
+# USER CONFIGURATION - Edit these for your own setup / design
+# ============================================================
+CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
-# specify hw and if programming is desired
 HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
+EXAMPLE_ID = "memory_example"
+PROG_DEVICE = True
 
-# The get_design_files() function tries to find the programming and probes
-# files for an included example design.
-PROGRAMMING_FILE = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced").programming_file
+# Direct mode: set these to use your own design files (skips MESA).
+PROGRAMMING_FILE = ""
+PROBES_FILE = ""
 
+# ============================================================
+
+# --- MESA setup (no edits needed below) ---
+example_design = resolve_example_design(
+    HW_PLATFORM,
+    EXAMPLE_ID,
+    programming_file=PROGRAMMING_FILE,
+    probes_file=PROBES_FILE,
+)
+design_manifest = example_design.manifest  # None in direct mode
+DEVICE_FAMILY = example_design.device_family
+PROGRAMMING_FILE = example_design.programming_file
+PROBES_FILE = example_design.probes_file
+
+example_design.print_summary()
 print(f"HW_URL: {HW_URL}")
-print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
+print(f"CS_URL: {CS_URL}")
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server
 #
 # The session is a container that keeps track of devices and debug cores.
-# After this step,
-# - Session is initialized and connected to server(s)
-# - Versions are detected and reported to stdout
-#
-# *NOTE*: No cs_server is required for this example.
 
 # %%
 session = create_session(hw_server_url=HW_URL)
@@ -85,15 +94,20 @@ report_versions(session)
 # ## Step 3 - Get the device from the session
 
 # %%
-# Typical case - one device on the board - get it.
-versal_device = session.devices.filter_by(family="versal").get()
+versal_device = session.devices.filter_by(family=DEVICE_FAMILY).get()
 print(versal_device)
 
 # %% [markdown]
 # ## Step 4 - Program the device
 
+# %% [markdown]
+# `example_design.program_device()` dispatches to the correct flow (flat vs. segmented) based on the manifest. See [program.ipynb](../program/program.ipynb) for the explicit per-flow code.
+
 # %%
-versal_device.program(PROGRAMMING_FILE)
+if PROG_DEVICE:
+    if not example_design.verify_device_idcode(versal_device):
+        raise RuntimeError("Device IDCODE does not match the manifest design.")
+    example_design.program_device(versal_device)
 print("Programming complete.")
 
 # %% [markdown]

@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 """device_scanner.py -
 
 Scans hw_server and cs_server and organize nodes into the devices.
@@ -93,7 +93,9 @@ from typing import Optional, List, Iterator, Dict, TypeVar
 
 from chipscopy.api.device.device_util import get_node_dna
 from chipscopy.client import ServerInfo
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
+
+logger = get_logger("client")
 
 
 @dataclasses.dataclass
@@ -172,13 +174,13 @@ def scan_jtag_view(
         Iterator of devices in jtag chain
 
     """
-    log.client.debug(
+    logger.debug(
         f"scan_jtag_view: hw_server={hw_server}, include_dna={include_dna}, include_arm_dap={include_arm_dap}"
     )
     previous_jtag_device_record: Optional[JtagRecord] = None
     view = hw_server.get_view("jtag")
     for jtag_cable in view.get_children():
-        log.client.debug(f"jtag_scan: scanning cable {jtag_cable.ctx}")
+        logger.debug(f"jtag_scan: scanning cable {jtag_cable.ctx}")
         jtag_index = 0
         error_msg = ""
         if not jtag_cable.props.get("isActive"):
@@ -195,7 +197,7 @@ def scan_jtag_view(
                 error_msg = f"ERROR: {jtag_cable.ctx}: {status}"
         if error_msg:
             # There is some kind of cable error - do not read the cables
-            log.client.error(error_msg)
+            logger.error(error_msg)
             continue
 
         for jtag_device in view.get_children(jtag_cable):
@@ -223,19 +225,17 @@ def scan_jtag_view(
                     jtag_record.dap_ctx = ""
                     if include_dna:
                         jtag_record.dna = get_node_dna(jtag_device)
-                log.client.debug(f"jtag_record: idx={jtag_index}, device={jtag_record.ctx}")
-                log.client.trace(repr(jtag_record))
+                logger.debug(f"jtag_record: idx={jtag_index}, device={jtag_record.ctx}")
+                logger.debug(repr(jtag_record))
                 yield jtag_record
             else:
                 if include_arm_dap:
-                    log.client.debug(f"jtag_record: idx={jtag_index}, ctx={jtag_record.ctx}")
-                    log.client.trace(repr(jtag_record))
+                    logger.debug(f"jtag_record: idx={jtag_index}, ctx={jtag_record.ctx}")
+                    logger.debug(repr(jtag_record))
                     yield jtag_record
                 else:
-                    log.client.debug(
-                        f"jtag_record: idx={jtag_index}, ctx={jtag_record.ctx} (EXCLUDED)"
-                    )
-                    log.client.trace(repr(jtag_record))
+                    logger.debug(f"jtag_record: idx={jtag_index}, ctx={jtag_record.ctx} (EXCLUDED)")
+                    logger.debug(repr(jtag_record))
 
             jtag_index += 1
             previous_jtag_device_record = jtag_record
@@ -252,7 +252,7 @@ def scan_memory_view(hw_server: ServerInfo, include_dna=True) -> Iterator[Memory
     Returns:
 
     """
-    log.client.debug(f"scan_memory_view: hw_server={hw_server}, include_dna={include_dna}")
+    logger.debug(f"scan_memory_view: hw_server={hw_server}, include_dna={include_dna}")
     view = hw_server.get_view("memory")
     for memory_node in view.get_children():
         name = memory_node.props.get("Name", "")
@@ -270,8 +270,8 @@ def scan_memory_view(hw_server: ServerInfo, include_dna=True) -> Iterator[Memory
         )
         if include_dna:
             memory_record.dna = get_node_dna(memory_node)
-        log.client.debug(f"memory_record: name={memory_record.name}, ctx={memory_record.ctx}")
-        log.client.trace(repr(memory_record))
+        logger.debug(f"memory_record: name={memory_record.name}, ctx={memory_record.ctx}")
+        logger.debug(repr(memory_record))
         yield memory_record
 
 
@@ -283,7 +283,7 @@ def scan_debugcore_view(hw_server: ServerInfo, include_dna=True) -> Iterator[Deb
 
     Returns:
     """
-    log.client.debug(f"scan_debugcore_view: hw_server={hw_server}, include_dna={include_dna}")
+    logger.debug(f"scan_debugcore_view: hw_server={hw_server}, include_dna={include_dna}")
     view = hw_server.get_view("debugcore")
     for debugcore_node in view.get_children():
         name = debugcore_node.props.get("Name", "")
@@ -299,10 +299,8 @@ def scan_debugcore_view(hw_server: ServerInfo, include_dna=True) -> Iterator[Deb
         )
         if include_dna:
             debugcore_record.dna = get_node_dna(debugcore_node)
-        log.client.debug(
-            f"debugcore_record: name={debugcore_record.name}, ctx={debugcore_record.ctx}"
-        )
-        log.client.trace(repr(debugcore_record))
+        logger.debug(f"debugcore_record: name={debugcore_record.name}, ctx={debugcore_record.ctx}")
+        logger.debug(repr(debugcore_record))
         yield debugcore_record
 
 
@@ -314,7 +312,7 @@ def scan_chipscope_view(cs_server: ServerInfo, include_dna=True) -> Iterator[Chi
 
     Returns:
     """
-    log.client.debug(f"scan_chipscope_view: cs_server={cs_server}, include_dna={include_dna}")
+    logger.debug(f"scan_chipscope_view: cs_server={cs_server}, include_dna={include_dna}")
     view = cs_server.get_view("chipscope")
     for chipscope_node in view.get_children():
         name = chipscope_node.props.get("Name", "")
@@ -330,10 +328,8 @@ def scan_chipscope_view(cs_server: ServerInfo, include_dna=True) -> Iterator[Chi
         )
         if include_dna:
             chipscope_record.dna = get_node_dna(chipscope_node)
-        log.client.debug(
-            f"chipscope_record: name={chipscope_record.name}, ctx={chipscope_record.ctx}"
-        )
-        log.client.trace(repr(chipscope_record))
+        logger.debug(f"chipscope_record: name={chipscope_record.name}, ctx={chipscope_record.ctx}")
+        logger.debug(repr(chipscope_record))
         yield chipscope_record
 
 

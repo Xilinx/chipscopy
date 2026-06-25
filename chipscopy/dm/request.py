@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,10 @@ import inspect
 from typing import Type, Callable, NewType, Any
 from chipscopy.tcf import protocol
 from chipscopy.tcf.channel import Token
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 from . import Node, CsManager
+
+logger = get_logger("request")
 
 
 def get_request_queue(cs_manager, queue_group):
@@ -132,7 +134,7 @@ class CsRequest(object):
         self.error = None
         self.called = True
 
-        log.request.info(
+        logger.info(
             f"Starting request {self} {self.cs_manager} {self.node_id} {self.node_cls} {self.run_args}"
         )
 
@@ -144,7 +146,7 @@ class CsRequest(object):
 
     def _invoke(self):
         if not self.cs_manager.is_ready:
-            log.request.debug(f"cs_manager not ready {self}")
+            logger.debug(f"cs_manager not ready {self}")
             protocol.invokeLaterWithDelay(1, self._invoke)
             return
 
@@ -157,11 +159,11 @@ class CsRequest(object):
         request_queue = self.get_request_queue(node)
 
         if not request_queue.is_first(self):
-            log.request.info(f"Queuing {self} {node.queue_group}")
+            logger.info(f"Queuing {self} {node.queue_group}")
             return
 
         if not node.is_ready:
-            log.request.debug(f"Node not ready {self}")
+            logger.debug(f"Node not ready {self}")
             protocol.invokeLaterWithDelay(1, self._invoke)
             return
 
@@ -181,14 +183,14 @@ class CsRequest(object):
             return
 
         if not node.is_ready:
-            log.request.debug(f"Node class switch not ready {self}")
+            logger.debug(f"Node class switch not ready {self}")
             protocol.invokeLaterWithDelay(1, self._invoke)
             return
 
         self.node = node
         args, kwargs = self.run_args
         try:
-            log.request.info(f"Running {self} {self.run}")
+            logger.info(f"Running {self} {self.run}")
             result = self.run(*args, **kwargs)
             if result is not None:
                 self.result = result
@@ -219,13 +221,13 @@ class CsRequest(object):
             kwargs["progress_update"] = self.progress_update
 
         if self.run_func:
-            log.request.debug(f"Run func {self.run_func} ({args}, {kwargs}")
+            logger.debug(f"Run func {self.run_func} ({args}, {kwargs})")
             self.run_func(*args, **kwargs)
         else:
             self.error = Exception("No run function set for request")
 
     def done_run(self, token=None, error=None, result=None):
-        log.request.info(f"Done Run {self} {error} {result}")
+        logger.info(f"Done Run {self} {error} {result}")
         self.run_func = self.default_run_func
         if self.request_queue:
             self.request_queue.done_request(self)
@@ -234,7 +236,7 @@ class CsRequest(object):
         self.called = False
 
     def progress_update(self, result=None):
-        log.request.info(f"Progress Update {self} {result}")
+        logger.info(f"Progress Update {self} {result}")
         self.run_func = self.default_run_func
         if self.progress:
             self.progress(result)
@@ -285,7 +287,7 @@ class CsRequestSync(CsRequest):
                         # Case 5
                         should_wait = False
 
-        log.request.info(f"Request sync start {self} timeout {timeout}")
+        logger.info(f"Request sync start {self} timeout {timeout}")
         if not should_wait:
             super(CsRequestSync, self).__call__(*args, **kwargs)
             return self
@@ -293,9 +295,7 @@ class CsRequestSync(CsRequest):
         with self.cond:
             super(CsRequestSync, self).__call__(*args, **kwargs)
             completed = self.cond.wait(timeout)
-        log.request.debug(
-            f"Request sync done {self.error} {self.result} completed {completed} {self}"
-        )
+        logger.debug(f"Request sync done {self.error} {self.result} completed {completed} {self}")
         if self.error:
             if isinstance(self.error, str):
                 self.error = Exception(self.error)
@@ -446,6 +446,10 @@ class CsFuture(object):
             self.set_exception(CancelError("Request Cancelled"))
 
     @property
+    def cancelled(self):
+        return isinstance(self._error, CancelError)
+
+    @property
     def handle_old_done(self):
         future = self
 
@@ -468,20 +472,20 @@ class CsFutureSync(CsFuture):
         return super()._is_current_thread()
 
     def _invoke_done(self):
-        super()._invoke_done()
-        if self.cond:
-            self.cond.set()
+        try:
+            super()._invoke_done()
+        finally:
+            if self.cond:
+                self.cond.set()
 
     @property
     def result(self):
-        if not self._is_current_thread():
-            self.cond.wait(self.timeout)
+        self.wait()
         return super().result
 
     @property
     def error(self):
-        if not self._is_current_thread():
-            self.cond.wait(self.timeout)
+        self.wait()
         return super().error
 
     def run(self, func, *args, **kwargs):
@@ -493,23 +497,45 @@ class CsFutureSync(CsFuture):
         #     return self.result
         return self
 
-    def run_worker(self, func, *args, **kwargs):
-        # Run the function provided in a new non-daemon thread
-        # This should be used when using Future for a non-tcf thread dependent operation in chipscopy APIs
-        thread = threading.Thread(target=func, name=func.__name__, args=args, kwargs=kwargs)
+    def run_worker(self, func, *args, auto_complete=False, **kwargs):
+        # Run the function provided in a new non-daemon thread.
+        # With auto_complete enabled, the worker return value completes the
+        # future and uncaught exceptions become future errors.
+        def worker_target():
+            try:
+                result = func(*args, **kwargs)
+            except Exception as error:
+                if auto_complete and not self.is_done:
+                    self.set_exception(error)
+                    return
+                raise
+
+            if auto_complete and not self.is_done:
+                self.set_result(result)
+
+        target = worker_target if auto_complete else func
+        target_args = () if auto_complete else args
+        target_kwargs = {} if auto_complete else kwargs
+        thread = threading.Thread(
+            target=target,
+            name=getattr(func, "__name__", "run_worker"),
+            args=target_args,
+            kwargs=target_kwargs,
+        )
         super()._set_current_thread(thread)
         thread.start()
         return self
 
     def wait(self, timeout: int = None):
+        if self.is_done:
+            self._finalize()
+            return
         if self._is_current_thread():
             return
         if timeout is not None:
             self.timeout = timeout
         completed = self.cond.wait(self.timeout)
-        log.request.debug(
-            f"Request sync done {self._error} {self._result} completed {completed} {self}"
-        )
+        logger.debug(f"Request sync done {self._error} {self._result} completed {completed} {self}")
         if not completed and not self._error:
             self.cancel()
             raise Exception("Request timed out.")
@@ -561,7 +587,7 @@ class CsFutureRequest(CsFuture):
         self.run_args = (args, kwargs)
         self.called = True
 
-        log.request.info(
+        logger.info(
             f"Starting request {self} {self.cs_manager} {self.node_id} {self.node_cls} {self.run_args}"
         )
 
@@ -573,7 +599,7 @@ class CsFutureRequest(CsFuture):
 
     def _invoke(self):
         if not self.cs_manager.is_ready:
-            log.request.debug(f"cs_manager not ready {self}")
+            logger.debug(f"cs_manager not ready {self}")
             protocol.invokeLaterWithDelay(1, self._invoke)
             return
 
@@ -586,11 +612,11 @@ class CsFutureRequest(CsFuture):
         request_queue = self.get_request_queue(node)
 
         if not request_queue.is_first(self):
-            log.request.info(f"Queuing {self} {node.queue_group}")
+            logger.info(f"Queuing {self} {node.queue_group}")
             return
 
         if not node.is_ready:
-            log.request.debug(f"Node not ready {self}")
+            logger.debug(f"Node not ready {self}")
             protocol.invokeLaterWithDelay(1, self._invoke)
             return
 
@@ -607,14 +633,14 @@ class CsFutureRequest(CsFuture):
             return
 
         if not node.is_ready:
-            log.request.debug(f"Node class switch not ready {self}")
+            logger.debug(f"Node class switch not ready {self}")
             protocol.invokeLaterWithDelay(1, self._invoke)
             return
 
         self.node = node
         args, kwargs = self.run_args
         try:
-            log.request.info(f"Running {self} {self.run}")
+            logger.info(f"Running {self} {self.run}")
             node.request = self
             result = self.run(*args, **kwargs)
             if result is not None:
@@ -656,7 +682,7 @@ class CsFutureRequest(CsFuture):
 
         result = None
         if self.run_func:
-            log.request.debug(f"Run func {self.run_func} ({args}, {kwargs}")
+            logger.debug(f"Run func {self.run_func} ({args}, {kwargs})")
             result = self.run_func(*args, **kwargs)
             if not self.node.is_ready:
                 result = None
@@ -665,7 +691,7 @@ class CsFutureRequest(CsFuture):
         return result
 
     def _invoke_done(self):
-        log.request.info(f"Done Run {self}")
+        logger.info(f"Done Run {self}")
         super()._invoke_done()
         self.node.request = None
         self.run_func = None
@@ -705,18 +731,21 @@ class CsFutureRequestSync(CsFutureRequest):
         self.timeout = timeout
 
     def _invoke_done(self):
-        super()._invoke_done()
-        self.cond.set()
+        try:
+            super()._invoke_done()
+        finally:
+            self.cond.set()
 
     def wait(self, timeout: int = None):
+        if self.is_done:
+            self._finalize()
+            return
         if protocol.isDispatchThread():
             return
         if timeout is not None:
             self.timeout = timeout
         completed = self.cond.wait(self.timeout)
-        log.request.debug(
-            f"Request sync done {self._error} {self._result} completed {completed} {self}"
-        )
+        logger.debug(f"Request sync done {self._error} {self._result} completed {completed} {self}")
         if not completed and not self._error:
             self.cancel()
             raise Exception("Request timed out.")
@@ -725,11 +754,15 @@ class CsFutureRequestSync(CsFutureRequest):
 
     @property
     def result(self):
+        if self.is_done:
+            return super().result
         self.wait()
         return super().result
 
     @property
     def error(self):
+        if self.is_done:
+            return super().error
         self.wait()
         return super().error
 
@@ -757,7 +790,7 @@ class CsFutureRequestSync(CsFutureRequest):
                 if done_index is not None and len(args) > done_index:
                     should_wait = False
 
-        log.request.info(f"Request sync start {self} timeout {self.timeout}")
+        logger.info(f"Request sync start {self} timeout {self.timeout}")
 
         super(CsFutureRequestSync, self).__call__(*args, **kwargs)
 

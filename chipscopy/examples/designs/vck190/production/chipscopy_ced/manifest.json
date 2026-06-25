@@ -1,0 +1,80 @@
+{
+  "extends": "_base/versal_standard_cores.json",
+  "design_info": {
+    "design_name": "chipscopy_ced",
+    "description": "ChipScoPy CED (Configurable Example Design) for VCK190",
+    "hw_platform": "vck190",
+    "programming_flow": "flat",
+    "design_path": "vck190/production/chipscopy_ced",
+    "family": "versal",
+    "device": "xcvc1902",
+    "board": "VCK190",
+    "idcode": "0x14CA8093"
+  },
+  "debug_cores": {
+    "ibert_gty": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_205",
+        "Quad_204",
+        "Quad_201",
+        "Quad_105"
+      ]
+    },
+    "ila": {
+      "core_instances": [
+        {
+          "name": "chipscopy_i/counters/ila_slow_counter_0",
+          "probe_prefix": "chipscopy_i/counters/slow_counter_0",
+          "description": "ILA monitoring slow counter signals"
+        }
+      ]
+    },
+    "vio": {
+      "core_instances": [
+        {
+          "name": "chipscopy_i/counters/vio_slow_counter_0",
+          "probe_prefix": "chipscopy_i/counters/slow_counter_0",
+          "description": "VIO controlling slow counter"
+        }
+      ]
+    },
+    "noc_perfmon": {
+      "node_names": [
+        "DDRMC_X0Y0",
+        "NOC_NMU512_X0Y0"
+      ]
+    },
+    "memory": {
+      "node_names": [
+        "DDRMC_X0Y0",
+        "DDRMC_X1Y0",
+        "DDRMC_X2Y0",
+        "DDRMC_X3Y0"
+      ]
+    }
+  },
+  "supported_examples": [
+    "ddr_2d_eye_scan",
+    "ddr_example",
+    "ila_advanced_trigger",
+    "ila_and_vio",
+    "ila_monitor_status",
+    "link_and_eye_scan",
+    "memory_example",
+    "noc_perfmon",
+    "noc_perfmon_basic",
+    "program",
+    "sptg_example",
+    "sysmon_example",
+    "sysmon_sync_example",
+    "vio"
+  ],
+  "metadata": {
+    "created_date": "2026-02-16",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-05-05",
+    "notes": "VCK190 ChipScoPy CED with ILA, VIO, IBERT GTY, Sysmon, Memory and NoC cores."
+  }
+}

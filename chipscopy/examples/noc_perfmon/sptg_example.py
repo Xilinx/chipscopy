@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -30,20 +30,15 @@
 # This example demonstrates how to configure a Versal for taking NoC performance measurements.
 #
 # ## Requirements
-# - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.2 installed and running
-# - Xilinx cs_server 2025.2 installed and running
+# - Local or remote AMD Versal board, such as a VCK190
+# - AMD hw_server 2026.1 installed and running
+# - AMD cs_server 2026.1 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2025.2 installed
-# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
-# - Matplotlib support installed - Please do so, using the command `pip install chipscopy[core-addons]`
+# - ChipScoPy 2026.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
-#
-# After this step,
-# - Required functions and classes are imported
-# - Paths to server(s) and files are set correctly
 
 # %%
 import os
@@ -54,40 +49,49 @@ from chipscopy.api.noc import (
     TC_BER,
     NoCPerfMonNodeListener,
 )
+from chipscopy.examples.mesa import resolve_example_design
+from chipscopy.api.noc.plotting_utils import MeasurementPlot
+from chipscopy import create_session, report_versions, delete_session
 from chipscopy.api.patg import PATG, PATGInstruction, TransactionType, AddressPattern, PATGTrigger, \
     PATGTriggerInterfaceMode
-from chipscopy.api.noc.plotting_utils import MeasurementPlot
-from chipscopy import create_session, report_versions
-from chipscopy import get_design_files
+
 
 # %%
-# Specify locations of the running hw_server and cs_server below.
+# ============================================================
+# USER CONFIGURATION - Edit these for your own setup / design
+# ============================================================
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
-
-# specify hw and if programming is desired
 HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
-PROG_DEVICE = os.getenv("PROG_DEVICE", 'True').lower() in ('true', '1', 't')
+EXAMPLE_ID = "sptg_example"
+PROG_DEVICE = True
 
-# The get_design_files() function tries to find the PDI and LTX files. In non-standard
-# configurations, you can put the path for PROGRAMMING_FILE and PROBES_FILE below.
-design_files = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced")
+# Direct mode: set these to use your own design files (skips MESA).
+PROGRAMMING_FILE = ""
+PROBES_FILE = ""
 
-PROGRAMMING_FILE = design_files.programming_file
-PROBES_FILE = design_files.probes_file
+# ============================================================
 
+# --- MESA setup (no edits needed below) ---
+example_design = resolve_example_design(
+    HW_PLATFORM,
+    EXAMPLE_ID,
+    programming_file=PROGRAMMING_FILE,
+    probes_file=PROBES_FILE,
+)
+design_manifest = example_design.manifest  # None in direct mode
+DEVICE_FAMILY = example_design.device_family
+PROGRAMMING_FILE = example_design.programming_file
+PROBES_FILE = example_design.probes_file
+
+example_design.print_summary()
 print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
-print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
-print(f"PROBES_FILE:{PROBES_FILE}")
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
-# After this step,
-# - Session is initialized and connected to server(s)
-# - Versions are detected and reported to stdout
 
 # %%
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
@@ -95,29 +99,26 @@ report_versions(session)
 
 # %% [markdown]
 # ## 3 - Program the device with the example design
-#
-# After this step,
-# - Device is programmed with the example programming file
+
+# %% [markdown]
+# `example_design.program_device()` dispatches to the correct flow (flat vs. segmented) based on the manifest. See [program.ipynb](../program/program.ipynb) for the explicit per-flow code.
 
 # %%
-versal_device = session.devices.filter_by(family="versal").get()
+versal_device = session.devices.filter_by(family=DEVICE_FAMILY).get()
+
 if PROG_DEVICE:
-    versal_device.program(PROGRAMMING_FILE)
-else:
-    print("skipping programming")
+    if not example_design.verify_device_idcode(versal_device):
+        raise RuntimeError("Device IDCODE does not match the manifest design.")
+    example_design.program_device(versal_device)
 
 # %% [markdown]
 # ## 4 - Discover Debug Cores
 #
-# Debug core discovery initializes the chipscope server debug cores. This brings debug cores in the chipscope server online.
-#
-# After this step,
-#
-# - The cs_server is initialized and ready for use
+# Debug core discovery initializes the ChipScoPy server debug cores. This brings debug cores in the ChipScoPy server online.
 
 # %%
 versal_device.discover_and_setup_cores(noc_scan=True, ltx_file=PROBES_FILE)
-print(f"Debug cores setup and ready for use.")
+print(f"Debug cores are set up and ready for use.")
 
 # %% [markdown]
 # ## 5 - Setup NoC core
@@ -131,13 +132,20 @@ print(f"Debug cores setup and ready for use.")
 
 noc = versal_device.noc_core.all()[0]
 
-scan_nodes = ["DDRMC_X0Y0", "NOC_NMU512_X0Y0"]
+manifest_nodes = (
+    design_manifest.get_core_config("noc_perfmon", "node_names", None)
+    if design_manifest
+    else None
+)
+scan_nodes = manifest_nodes or ["DDRMC_X0Y0", "NOC_NMU512_X0Y0"]
+print(f"Using NoC nodes from {'design manifest' if manifest_nodes else 'defaults'}: {scan_nodes}")
+
 print("\nEnumerating nodes: ", end="")
 for node in scan_nodes:
     print(f"{node}, ", end="")
 print("...", end="")
 
-# this will setup the nodes on the server side and return the nodes successfully enumerated
+# This sets up nodes on the server side and returns the successfully enumerated nodes
 enable_list = noc.enumerate_noc_elements(scan_nodes)
 print("complete!")
 
@@ -193,8 +201,11 @@ for domain, freq in sampling_intervals.items():
 #
 # The number of samples allows for a burst of measurements to be taken and then the underlying service will tear down the monitors and stop pumping data back to the client. `-1` denotes that sampling shall continue indefinitely.
 
-# total number of samples to capture (-1 for continuous mode)
-num_samples = -1
+# total number of samples to capture per node.
+# A finite value runs a bounded burst: the server tears down the monitors
+# after the burst and the event loop below exits on its own. Use -1 for
+# continuous mode (the loop then runs until the kernel is stopped).
+num_samples = 50
 
 print("Setting up monitors for: ")
 for node in enable_list:
@@ -243,7 +254,8 @@ trigger_base_address = 0x201_8000_0000
 #    This class is designed to aid in controlling and using the Performance AXI Traffic Generator LogicCore IP for
 #    Versal series ACAP devices from AMD. It supports no other architectures or Traffic Generator IPs. There are several
 #    others in the default catalog.
-trigger = PATGTrigger(trigger_base_address, versal_device, tg_instructions, interface_mode=PATGTriggerInterfaceMode.AXI4_LITE, vio=tg_vio)
+#    2026.1 - Now using the Debug Interface Module (DIM) mode of the PATG for this example
+trigger = PATGTrigger(trigger_base_address, versal_device, tg_instructions, interface_mode=PATGTriggerInterfaceMode.DIM, vio=tg_vio)
 
 # %% [markdown]
 # ## 7 - Create plotter and listener
@@ -264,8 +276,14 @@ session.chipscope_view.add_node_listener(node_listener)
 plotter = MeasurementPlot(enable_list, mock=False, figsize=(10, 7.5), trigger=trigger)
 node_listener.link_plotter(plotter)
 
-# Build Plotting Graphs
-matplotlib.use("Qt5Agg")
+# Build Plotting Graphs.
+# Use an interactive Qt backend for normal (interactive) use; under CI (the
+# `CI` environment variable is set) fall back to the non-interactive "Agg"
+# backend so unattended runs don't try to open a window. The event loop below
+# stops on burst completion regardless of backend, so no manual window
+# interaction is ever required.
+_headless = bool(os.environ.get("CI", False))
+matplotlib.use("Agg" if _headless else "Qt5Agg")
 plotter.build_graphs()
 
 # %% [markdown]
@@ -275,7 +293,15 @@ plotter.build_graphs()
 # If you are using a finite amount of measurement samples, you can uncomment the if --> break statement to automatically return from execution of this cell upon completion of the burst.
 
 # %%
-# Run Main Event Loop
+# Run Main Event Loop.
+#
+# Exit conditions:
+#   - Burst mode (finite `num_samples`): stop once the first/fastest monitor has
+#     delivered its samples (the server then tears down all monitors). This is
+#     what lets unattended / headless runs finish without any window action.
+#   - Closing the plot window (interactive GUI) also stops the loop early.
+#   - Continuous mode (`num_samples = -1`): runs until you close the window
+#     (GUI) or stop the kernel (headless).
 loop_count = 0
 while True:
     session.chipscope_view.run_events()
@@ -284,12 +310,21 @@ while True:
     plotter.fig.canvas.flush_events()
     if not plotter.alive:
         break
-    # Below will return on burst completion - uncomment if you want to try.
-    # if all([x <= 0 for x in node_listener.num_samples.values()]):
-    #     break
+    if num_samples > 0 and any(
+        node.num_samples <= 0 for node in node_listener.unique_elements.values()
+    ):
+        break
 
 # %%
 # Reset Traffic Generator
 # This allows for a hard block-level reset of the traffic generator.
 
 trigger.block_reset_tgs()
+
+# %%
+# Detach the perfmon listener before teardown so channel-close invalidation
+# does not dispatch a blocking data-model request on the closing channel
+# (which deadlocks the single TCF event-dispatch thread).
+session.chipscope_view.remove_node_listener(node_listener)
+
+delete_session(session)

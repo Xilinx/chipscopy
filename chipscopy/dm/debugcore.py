@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@ import re
 from chipscopy.tcf import protocol
 from chipscopy.tcf.channel import ChannelListener
 from chipscopy.proxies import DebugCoreProxy as dc_service
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger, is_domain_enabled
 from . import CsManager, Node, add_manager, get_manager, _managers, remove_manager
+
+logger = get_logger("dm")
 from .poll import DebugCorePollScheduler
 from typing import Type, Callable, NewType, Any
 
@@ -78,17 +80,13 @@ def get_manager_from_channel_id(channel_id):
     return get_manager(f"{channel_id}.{MANAGER_TYPE}")
 
 
-def id_domain_enable(param, param1):
-    pass
-
-
 class DebugNodeListener(dc_service.DebugNodeListener):
     def __init__(self, manager):
         self.manager = manager
 
     def node_added(self, node_ctx, props):
-        if log.is_domain_enabled("dm", "DEBUG"):
-            log.dm.debug(f"{self.manager.name}: Adding Node {node_ctx}: {props}")
+        if is_domain_enabled("dm", "DEBUG"):
+            logger.debug(f"{self.manager.name}: Adding Node {node_ctx}: {props}")
         parent_ctx = props.get("ParentID")
         if not parent_ctx:
             parent_ctx = ""
@@ -100,8 +98,8 @@ class DebugNodeListener(dc_service.DebugNodeListener):
                 node.update(additional_props)
 
     def node_changed(self, node_ctx, props):
-        if id_domain_enable("dm", "DEBUG"):
-            log.dm.debug(f"{self.manager.name}: Changing Node {node_ctx}: {props}")
+        if is_domain_enabled("dm", "DEBUG"):
+            logger.debug(f"{self.manager.name}: Changing Node {node_ctx}: {props}")
         parent_ctx = props.get("ParentID")
         if not parent_ctx:
             parent_ctx = ""
@@ -113,7 +111,7 @@ class DebugNodeListener(dc_service.DebugNodeListener):
                 node.update(additional_props)
 
     def node_removed(self, node_ctx):
-        log.dm.debug(f"{self.manager.name}: Removing Node {node_ctx}")
+        logger.debug(f"{self.manager.name}: Removing Node {node_ctx}")
         try:
             node = self.manager[node_ctx]
 
@@ -179,6 +177,74 @@ class DebugCoreManager(CsManager):
 
         if self.dc:
             cs_manager.add_pending(self.dc.get_context(ctx, done_get_context))
+
+    def refresh_subtree(self, root_ctx: str, done=None):
+        """Re-walk the node subtree under root_ctx, calling promote_node
+        and add_node for every discovered context.  Fires *done* only
+        after every outstanding get_children / get_context round-trip
+        has completed and the manager is ready.
+
+        This is equivalent to "wait for all nodes to appear":
+        it forces a synchronous (within the TCF dispatch loop) re-query of
+        hw_server so that any BSCAN or XSDBS-style nodes or other PL nodes
+        that were created between detect_hubs/setup_cores and now are picked up
+        and dispatched as nodesAdded events.
+        """
+        cs_manager = self
+        pending_count = [0]
+        finished = [False]
+
+        def _check_done():
+            if pending_count[0] == 0 and not finished[0]:
+                if cs_manager.is_ready:
+                    finished[0] = True
+                    if done:
+                        done()
+                else:
+                    protocol.invokeLaterWithDelay(1, _check_done)
+
+        def _walk(parent_ctx):
+            def done_get_children(token, error, results):
+                pending_count[0] -= 1
+                if not error and results:
+                    children = results
+                    if isinstance(children, str):
+                        children = [children]
+                    for ctx in children:
+                        _fetch_context(ctx, parent_ctx)
+                        _walk(ctx)
+                _check_done()
+
+            pending_count[0] += 1
+            cs_manager.dc.get_children(parent_ctx, done_get_children)
+
+        def _fetch_context(ctx, parent_ctx):
+            def done_get_context(token, error, props):
+                pending_count[0] -= 1
+                if not error and props:
+                    existing = cs_manager.get_node(ctx)
+                    if existing is None:
+                        promoted = cs_manager.promote_node(ctx, parent_ctx, props)
+                        if not promoted:
+                            node = cs_manager.add_node(ctx, parent_ctx)
+                            node.update(props)
+                            additional_props = props.get("additional_props")
+                            if additional_props and type(additional_props) == dict:
+                                node.update(additional_props)
+                elif error:
+                    logger.warning(f"refresh _fetch_context: ctx={ctx} error={error}")
+                _check_done()
+
+            pending_count[0] += 1
+            cs_manager.dc.get_context(ctx, done_get_context)
+
+        if not self.dc:
+            if done:
+                done()
+            return
+
+        _walk(root_ctx)
+        _check_done()
 
     def promote_node(self, ctx: str, patern_ctx: str, props):
         results = []

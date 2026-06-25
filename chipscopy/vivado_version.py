@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,4 +15,4 @@
 
 # Vivado version - each time a rel branch is cut, this needs to change
 # expected format is 'YYYY.release' e.g.: '2019.2', '2020.1'
-__vivado_version__ = "2025.2"
+__vivado_version__ = "2026.1"

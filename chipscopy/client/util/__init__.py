@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ def start_interactive(local=None):
     console.push("from chipscopy.client.util import *")
     console.push("from chipscopy.client.util.config import *")
     console.push("init_config()")
-    console.push("from chipscopy.utils.logger import log")
+    console.push("from chipscopy.utils import logger")
     console.push("from sys import exit")
     console.interact()
 

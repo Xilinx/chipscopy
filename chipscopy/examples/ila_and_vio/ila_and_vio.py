@@ -6,7 +6,7 @@
 #
 # <p style="font-family: 'Fira Code', monospace; font-size: 1.2rem">
 # Copyright (C) 2022, Xilinx, Inc.<br>
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 # <br><br>
 # Licensed under the Apache License, Version 2.0 (the "License");<br>
 # you may not use this file except in compliance with the License.<br><br>
@@ -32,57 +32,58 @@
 #
 #
 # ## Requirements
-# - Local or remote Xilinx Versal board, such as a VCK190
-# - Xilinx hw_server 2025.2 installed and running
-# - Xilinx cs_server 2025.2 installed and running
+# - Local or remote AMD Versal board, such as a VCK190
+# - AMD hw_server 2026.1 installed and running
+# - AMD cs_server 2026.1 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2025.2 installed
-# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
+# - ChipScoPy 2026.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports and File Paths
-#
-# After this step,
-# - Required functions and classes are imported
-# - URL paths are set correctly
-# - File paths to example files are set correctly
 
 # %%
-import sys
 import os
-from chipscopy import get_design_files
+import sys
 from chipscopy import create_session, report_versions, delete_session
+from chipscopy.examples.mesa import resolve_example_design
 
 # %%
-# Make sure to start the hw_server and cs_server prior to running.
-# Specify locations of the running hw_server and cs_server below.
-# The default is localhost - but can be other locations on the network.
+# ============================================================
+# USER CONFIGURATION - Edit these for your own setup / design
+# ============================================================
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
-
-# specify hw and if programming is desired
 HW_PLATFORM = os.getenv("HW_PLATFORM", "vck190")
-PROG_DEVICE = os.getenv("PROG_DEVICE", True)
+EXAMPLE_ID = "ila_and_vio"
+PROG_DEVICE = True
 
-# The get_design_files() function tries to find the PDI and LTX files. In non-standard
-# configurations, you can put the path for PROGRAMMING_FILE and PROBES_FILE below.
-design_files = get_design_files(f"{HW_PLATFORM}/production/chipscopy_ced")
+# Direct mode: set these to use your own design files (skips MESA).
+PROGRAMMING_FILE = ""
+PROBES_FILE = ""
 
-PROGRAMMING_FILE = design_files.programming_file
-PROBES_FILE = design_files.probes_file
+# ============================================================
 
+# --- MESA setup (no edits needed below) ---
+example_design = resolve_example_design(
+    HW_PLATFORM,
+    EXAMPLE_ID,
+    programming_file=PROGRAMMING_FILE,
+    probes_file=PROBES_FILE,
+)
+design_manifest = example_design.manifest  # None in direct mode
+DEVICE_FAMILY = example_design.device_family
+PROGRAMMING_FILE = example_design.programming_file
+PROBES_FILE = example_design.probes_file
+
+example_design.print_summary()
 print(f"HW_URL: {HW_URL}")
 print(f"CS_URL: {CS_URL}")
-print(f"PROGRAMMING_FILE: {PROGRAMMING_FILE}")
-print(f"PROBES_FILE:{PROBES_FILE}")
 
 # %% [markdown]
 # ## 2 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
-# After this step,
-# - Session is initialized and connected to server(s)
-# - Versions are detected and reported to stdout
 
 # %%
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
@@ -90,28 +91,26 @@ report_versions(session)
 
 # %% [markdown]
 # ## 3 - Program the device with the example design
-#
-# After this step,
-# - Device is programmed with the example programming file
+
+# %% [markdown]
+# `example_design.program_device()` dispatches to the correct flow (flat vs. segmented) based on the manifest. See [program.ipynb](../program/program.ipynb) for the explicit per-flow code.
 
 # %%
-# Typical case - one device on the board - get it.
-device = session.devices.filter_by(family="versal").get()
-device.program(PROGRAMMING_FILE)
+device = session.devices.filter_by(family=DEVICE_FAMILY).get()
+
+if PROG_DEVICE:
+    if not example_design.verify_device_idcode(device):
+        raise RuntimeError("Device IDCODE does not match the manifest design.")
+    example_design.program_device(device)
 
 # %% [markdown]
 # ## 4 - Discover Debug Cores
 #
-# Debug core discovery initializes the chipscope server debug cores. This brings debug cores in the chipscope server online.
-#
-# After this step,
-#
-# - The cs_server is initialized and ready for use
-# - ILA and VIO core instances in the device are reported
+# Debug core discovery brings ILA / VIO cores in the device online via `cs_server`.
 
 # %%
 device.discover_and_setup_cores(ltx_file=PROBES_FILE)
-print(f"Debug cores setup and ready for use.")
+print(f"Debug cores are set up and ready for use.")
 
 # %%
 # Print out the ILA core instance UUIDs and instance names
@@ -140,15 +139,38 @@ for index, vio_core in enumerate(vio_cores):
 # <img src="img/capture_data.png" width="400" align="left">
 
 # %%
-# Grab the two cores we are interested in for the demonstration
-# As shown above, a counter is connected to the ILA core.
-# The VIO core controls the counter.
+# Get ILA instance from design_manifest if available, otherwise use first available
+if design_manifest and design_manifest.has_core("ila"):
+    ila_config = design_manifest.debug_cores["ila"]
+    if hasattr(ila_config, 'core_instances') and ila_config.core_instances:
+        ila_name = ila_config.core_instances[0]["name"]
+        ila = device.ila_cores.get(name=ila_name)
+        print(f"Using ILA from design_manifest: {ila_name}")
+    else:
+        ila = device.ila_cores[0] if device.ila_cores else None
+        print(f"Using first available ILA")
+else:
+    ila = device.ila_cores[0] if device.ila_cores else None
+    print(f"Using first available ILA")
 
-ila = device.ila_cores.get(name="chipscopy_i/counters/ila_slow_counter_0")
-vio = device.vio_cores.get(name="chipscopy_i/counters/vio_slow_counter_0")
+# Get VIO instance from design_manifest if available
+if design_manifest and design_manifest.has_core("vio"):
+    vio_config = design_manifest.debug_cores["vio"]
+    if hasattr(vio_config, 'core_instances') and vio_config.core_instances:
+        vio_name = vio_config.core_instances[0]["name"]
+        vio = device.vio_cores.get(name=vio_name)
+        print(f"Using VIO from design_manifest: {vio_name}")
+    else:
+        vio = device.vio_cores[0] if device.vio_cores else None
+        print(f"Using first available VIO")
+else:
+    vio = device.vio_cores[0] if device.vio_cores else None
+    print(f"Using first available VIO")
 
-print(f"Using ILA: {ila.core_info.uuid}  {ila.name}")
-print(f"Using VIO: {vio.core_info.uuid}  {vio.name}")
+if ila:
+    print(f"ILA: {ila.core_info.uuid}  {ila.name}")
+if vio:
+    print(f"VIO: {vio.core_info.uuid}  {vio.name}")
 
 # %% [markdown]
 # ### 5a - Configure the counter using VIO output probes
@@ -167,16 +189,27 @@ for probe in vio.probes:
         print(f"{probe.port_name} --> {probe.probe_name}")
 
 # %%
+# Probe names match the Vivado hierarchy in your LTX file.
+# To list available probes for your own design:
+#     print([p.probe_name for p in ila.probes])
+ila_probe_prefix = "chipscopy_i/counters/slow_counter_0"
+vio_probe_prefix = "chipscopy_i/counters/slow_counter_0"
+
+if design_manifest and design_manifest.has_core("ila") and hasattr(design_manifest.debug_cores["ila"], 'core_instances') and design_manifest.debug_cores["ila"].core_instances:
+    ila_probe_prefix = design_manifest.debug_cores["ila"].core_instances[0].get("probe_prefix", ila_probe_prefix)
+
+if design_manifest and design_manifest.has_core("vio") and hasattr(design_manifest.debug_cores["vio"], 'core_instances') and design_manifest.debug_cores["vio"].core_instances:
+    vio_probe_prefix = design_manifest.debug_cores["vio"].core_instances[0].get("probe_prefix", vio_probe_prefix)
+
 # Set up the VIO core to enable counting up from 0
-#
 vio.reset_vio()
 vio.write_probes(
     {
-        "chipscopy_i/counters/slow_counter_0_SCLR": 0,
-        "chipscopy_i/counters/slow_counter_0_L": 0x00000000,
-        "chipscopy_i/counters/slow_counter_0_LOAD": 0,
-        "chipscopy_i/counters/slow_counter_0_UP": 1,
-        "chipscopy_i/counters/slow_counter_0_CE": 1,
+        f"{vio_probe_prefix}_SCLR": 0,
+        f"{vio_probe_prefix}_L": 0x00000000,
+        f"{vio_probe_prefix}_LOAD": 0,
+        f"{vio_probe_prefix}_UP": 1,
+        f"{vio_probe_prefix}_CE": 1,
     }
 )
 print("Counter is now free-running and counting up")
@@ -191,7 +224,7 @@ print("Counter is now free-running and counting up")
 # This will show the counter is free running, and counting up
 
 ila.reset_probes()
-ila.set_probe_trigger_value("chipscopy_i/counters/slow_counter_0_Q_1", ["==", "0xXXXX_0000"])
+ila.set_probe_trigger_value(f"{ila_probe_prefix}_Q_1", ["==", "0xXXXX_0000"])
 ila.run_basic_trigger(window_count=1, window_size=32, trigger_position=16)
 print("ILA is running - looking for trigger")
 
@@ -207,7 +240,7 @@ if upload_successful:
     #     slow_counter_0_Q_1 so only the one probe data is returned.
     #
     samples = ila.waveform.get_data(
-        ["chipscopy_i/counters/slow_counter_0_Q_1"],
+        [f"{ila_probe_prefix}_Q_1"],
         include_trigger=True,
         include_sample_info=True,
     )
@@ -234,12 +267,6 @@ else:
 # ILA is set to trigger when UP/DOWN counter signal edge rises or falls.
 # VIO drives the UP/DOWN counter control signal to 0 causing the counter to count down.
 # The signal transition causes ILA to trigger and capture data.
-#
-# After this step,
-# - VIO drives counter to count from UP to DOWN
-# - ILA triggers on the UP to DOWN signal transition
-# - Waveform uploaded with the up/down trigger sample in the center of captured data
-#
 
 # %% [markdown]
 # <img src="img/edge_trigger.png" width="550" align="left">
@@ -249,7 +276,7 @@ else:
 # Once transition happens, trigger in the middle of the buffer.
 
 ila.reset_probes()
-ila.set_probe_trigger_value("chipscopy_i/counters/slow_counter_0_UP_1", ["==", "B"])
+ila.set_probe_trigger_value(f"{ila_probe_prefix}_UP_1", ["==", "B"])
 ila.run_basic_trigger(window_count=1, window_size=32, trigger_position=16)
 
 print("ILA is running - looking for trigger")
@@ -258,7 +285,7 @@ print("ILA is running - looking for trigger")
 # VIO: Turn counter up/down switch to DOWN position.
 # This will cause the running ILA to trigger on the transition edge from up to down.
 
-vio.write_probes({"chipscopy_i/counters/slow_counter_0_UP": 0})
+vio.write_probes({f"{vio_probe_prefix}_UP": 0})
 
 print("VIO changed up/down counter to count down")
 
@@ -270,7 +297,7 @@ ila.wait_till_done(max_wait_minutes=0.1)
 upload_successful = ila.upload()
 if upload_successful:
     samples = ila.waveform.get_data(
-        ["chipscopy_i/counters/slow_counter_0_Q_1"],
+        [f"{ila_probe_prefix}_Q_1"],
         include_trigger=True,
         include_sample_info=True,
     )

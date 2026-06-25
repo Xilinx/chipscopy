@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,13 +14,16 @@
 # limitations under the License.
 
 import copy
+import time
 from collections import deque
 from itertools import islice
 from typing import List, Set, Type, Callable, ClassVar
 from chipscopy import dm
 from chipscopy.dm import request
 from chipscopy.tcf import protocol
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger, is_domain_enabled
+
+logger = get_logger("view_info")
 
 
 class TargetFilter(object):
@@ -172,9 +175,9 @@ class ViewInfo(dm.CsManager):
 
         class NodeListener(dm.NodeListener):
             def nodes_added(self, nodes: List[dm.Node]):
-                if log.is_domain_enabled("view_info", "INFO"):
+                if is_domain_enabled("view_info", "INFO"):
                     names = [node.ctx for node in nodes]
-                    log.view_info.info(f"{mi.name}: Adding nodes {names}")
+                    logger.info(f"{mi.name}: Adding nodes {names}")
                 for node in nodes:
                     props = copy.copy(node._props)
                     mi.queue_event(
@@ -183,15 +186,16 @@ class ViewInfo(dm.CsManager):
                 mi.queue_event(mi._node_added)
 
             def nodes_removed(self, nodes: List[dm.Node]):
-                if log.is_domain_enabled("view_info", "INFO"):
+                if is_domain_enabled("view_info", "INFO"):
                     names = [node.ctx for node in nodes]
-                    log.view_info.info(f"{mi.name}: Removing nodes {names}")
+                    logger.info(f"{mi.name}: Removing nodes {names}")
                 for node in nodes:
                     mi.queue_event(mi.remove_node, node.ctx)
                 mi.queue_event(mi._node_removed)  # notify view node listeners
 
             def node_changed(self, node: dm.Node, updated_keys: Set[str]):
-                log.view_info.info(f"{mi.name}: Changing node {node.ctx}: {updated_keys}")
+                if is_domain_enabled("view_info", "INFO"):
+                    logger.info(f"{mi.name}: Changing node {node.ctx}: {updated_keys}")
                 mi.queue_event(mi.node_changed, node.ctx, copy.copy(updated_keys))
 
         cs_manager.add_node_listener(NodeListener())
@@ -214,7 +218,7 @@ class ViewInfo(dm.CsManager):
                 # before chipscopy #28 was fixed the TCF thread manager was correctly linking children
                 # but the view running on the main thread class was not getting the correct linking
                 # but only when the server was caching state before the chipscopy connected
-                # https://gitenterprise.xilinx.com/chipscope/chipscopy/issues/28
+                # https://github.com/Xilinx/chipscopy/issues/28
                 if not parent:
                     parent = self.cs_manager
                 elif isinstance(parent, str):
@@ -236,7 +240,7 @@ class ViewInfo(dm.CsManager):
         self.run_events()
 
     def queue_event(self, event, *args, **kwargs):
-        log.view_info.debug(f"{self.name}: queue_event {event}")
+        logger.debug(f"{self.name}: queue_event {event}")
         self.event_queue.appendleft((event, args, kwargs))
 
     def run_events(self):
@@ -246,12 +250,126 @@ class ViewInfo(dm.CsManager):
             self.running_events = True
             while True:
                 event, args, kwargs = self.event_queue.pop()
-                log.view_info.debug(f"{self.name}: run_event {event}")
+                logger.debug(f"{self.name}: run_event {event}")
                 event(*args, **kwargs)
         except IndexError:
             pass
         finally:
             self.running_events = False
+
+    def _raise_if_wait_disallowed(self):
+        if protocol.isDispatchThread():
+            raise RuntimeError(
+                "ViewInfo wait helpers cannot be called from the TCF dispatch thread"
+            )
+        if self.invalid or self.cs_manager.invalid:
+            raise RuntimeError(f"View {self.name} is invalid")
+
+    def _wait_for_match(self, resolver, timeout, poll_interval, description):
+        self._raise_if_wait_disallowed()
+        deadline = None if timeout is None else time.monotonic() + timeout
+
+        while True:
+            if self.invalid or self.cs_manager.invalid:
+                raise RuntimeError(f"View {self.name} is invalid")
+
+            self.run_events()
+            node = resolver()
+            if node is not None:
+                return node
+
+            if deadline is not None and time.monotonic() >= deadline:
+                raise TimeoutError(f"Timed out waiting for {description} in {self.name}")
+
+            time.sleep(poll_interval)
+
+    @staticmethod
+    def _get_wait_node_cls(node: dm.Node, cls: Type[dm.Node]) -> Type[dm.Node]:
+        node_cls = getattr(node, "node_cls", dm.Node)
+        if not isinstance(node_cls, type):
+            node_cls = dm.Node
+        if cls == dm.Node:
+            return node_cls
+        return cls
+
+    def _resolve_wait_node(self, ctx: str, cls: Type[dm.Node], ready: bool = False):
+        node = self._nodes.get(ctx)
+        if not node:
+            return None
+
+        view_node_cls = getattr(node, "node_cls", dm.Node)
+        if not isinstance(view_node_cls, type):
+            view_node_cls = dm.Node
+        node_cls = self._get_wait_node_cls(node, cls)
+        if cls != dm.Node and not issubclass(view_node_cls, cls):
+            raw_node = self.cs_manager.get_node(ctx)
+            if not raw_node or not cls.is_compatible(raw_node) or not raw_node.is_ready:
+                return None
+            node = self.get_node(ctx, cls)
+            if not node:
+                return None
+            node_cls = self._get_wait_node_cls(node, cls)
+
+        if ready:
+            raw_node = self.cs_manager.get_node(ctx, node_cls)
+            if not raw_node or not raw_node.is_ready:
+                return None
+
+        return node
+
+    @staticmethod
+    def _filter_matches(node: dm.Node, cls: Type[dm.Node], params) -> bool:
+        return node.ctx and cls.is_compatible(node) and params.items() <= node._props.items()
+
+    def wait_for_node(
+        self,
+        ctx: str,
+        cls: Type[dm.Node] = dm.Node,
+        *,
+        timeout: float = None,
+        ready: bool = False,
+        poll_interval: float = 0.1,
+    ) -> dm.Node:
+        """
+        Wait for a node to exist in the mirrored view and optionally for the underlying DM node
+        to become ready.
+        """
+
+        return self._wait_for_match(
+            lambda: self._resolve_wait_node(ctx, cls, ready=ready),
+            timeout,
+            poll_interval,
+            f"node '{ctx}'",
+        )
+
+    def wait_for_filter(
+        self,
+        *,
+        parent: dm.Node or str = None,
+        cls: Type[dm.Node] = dm.Node,
+        index: int = 0,
+        timeout: float = None,
+        ready: bool = False,
+        poll_interval: float = 0.1,
+        **filters,
+    ) -> dm.Node:
+        """
+        Wait for the index-th node matching the provided raw-node property filters.
+        """
+
+        def resolve():
+            nodes = self.get_children(parent) if parent is not None else self.get_all()
+            matches = []
+            for node in nodes:
+                if self._filter_matches(node, cls, filters):
+                    resolved = self._resolve_wait_node(node.ctx, cls, ready=ready)
+                    if resolved:
+                        matches.append(resolved)
+            if index < len(matches):
+                return matches[index]
+            return None
+
+        return self._wait_for_match(resolve, timeout, poll_interval, f"filter {filters}")
 
     def node_changed(self, ctx, updated_keys):
         try:

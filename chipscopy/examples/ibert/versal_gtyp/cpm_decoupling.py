@@ -24,7 +24,7 @@
 
 # %% [markdown]
 # ## Description
-# This example shows how to interact with Landlocked (CPM5-controlled) GTYP with ChipScoPy APIs.
+# This example shows how to interact with landlocked (CPM5-controlled) GTYP resources using ChipScoPy APIs.
 # - Program the pcie-ced design with Quad104 and Quad105 onto Production vpk120 board.
 # - Verify that the expected IBERT quads are instantiated by the design
 # - Decouple the quads from CPM5
@@ -32,14 +32,13 @@
 # - Plot Eye Scan diagram for these links
 #
 # ## Requirements
-# - Xilinx vpk120 production board
+# - AMD vpk120 production board
 # - PCIE Loopback card
-# - Xilinx hw_server 2025.2 installed and running
-# - Xilinx cs_server 2025.2 installed and running
+# - AMD hw_server 2026.1 installed and running
+# - AMD cs_server 2026.1 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2025.2 installed
-# - Jupyter notebook support installed - Please do so, using the command `pip install chipscopy[jupyter]`
-# - Plotting support installed - Please do so, using the command `pip install chipscopy[core-addons]`
+# - ChipScoPy 2026.1 installed
+# - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
 # ## 1 - Initialization: Imports
@@ -47,10 +46,9 @@
 
 # %%
 import os
-from more_itertools import one
-from itertools import product
 
-from chipscopy import create_session, report_versions, report_hierarchy, get_design_files
+from chipscopy import create_session, delete_session, report_versions, report_hierarchy
+from chipscopy.examples.mesa import resolve_example_design
 from chipscopy.api.ibert.aliases import (
     PATTERN,
     RX_LOOPBACK,
@@ -60,12 +58,13 @@ from chipscopy.api.ibert.aliases import (
     EYE_SCAN_VERT_RANGE,
     EYE_SCAN_TARGET_BER,
 )
-from chipscopy.api.ibert import  create_links, create_eye_scans
+from chipscopy.api.ibert import create_links, create_eye_scans
 
 
 # %% [markdown]
-# ## 2 - Define some helper functions to achieve decoupling
+# ## 2 - Define helper functions for decoupling
 #
+# These helpers wrap the low-level register pokes that detach the GTYP quads from CPM5 control, so the rest of the notebook can decouple a quad with a single call instead of repeating the raw register sequence each time.
 
 # %%
 def is_quad_decoupled(quad):
@@ -88,8 +87,9 @@ def decouple_gtyp_quad(quads):
 
 
 # %% [markdown]
-# ## 3 - Define some helper functions to achieve rate change
+# ## 3 - Define helper functions for rate change
 #
+# Once a quad is decoupled from CPM5 it no longer follows PCIe LTSSM rate negotiation, so we need these helpers to manually reprogram the PLL/dividers and switch the lanes between Gen1/2/3/4 line rates for the eye scans below.
 
 # %%
 def get_current_channel_rate(quad):
@@ -104,7 +104,7 @@ def set_channel_rate_using_prop(quad, rate):
     quad.property.set(**props)
     quad.property.commit(list(props.keys()))
     
-def setRate(quads, rate):
+def set_rate(quads, rate):
     print(f"\n--------> Setting line rate to {rate}")
     for quad in quads:
         set_channel_rate_using_prop(quad, rate)
@@ -112,10 +112,10 @@ def setRate(quads, rate):
 
 
 # %% [markdown]
-# ## 4- Define helper functions to set and report link properties
+# ## 4 - Define helper functions to set and report link properties
 
 # %%
-def setLinkProperties(links):
+def set_link_properties(links):
     print("--------> Setting both Tx and RX patterns to 'PRBS 7' & loopback to 'Near-End PMA' for all links")
     for link in links:
         props = {link.tx.property_for_alias[PATTERN]: "PRBS 7"}
@@ -129,7 +129,7 @@ def setLinkProperties(links):
         link.rx.property.set(**props)
         link.rx.property.commit(list(props.keys()))
 
-def printLinkProperties(links):
+def print_link_properties(links):
     for link in links:
         current_txpattern = list(link.tx.property.refresh(link.tx.property_for_alias[PATTERN]).values())[0]
         current_rxpattern = list(link.tx.property.refresh(link.rx.property_for_alias[PATTERN]).values())[0]
@@ -142,59 +142,99 @@ def printLinkProperties(links):
 
 
 # %% [markdown]
-# ## 5- Create a session and connect to the hw_server and cs_server
+# ## 5 - Create a session and connect to the hw_server and cs_server
 #
 # The session is a container that keeps track of devices and debug cores.
-# After this step,
-# - Session is initialized and connected to server(s)
-# - Versions are detected and reported to stdout
 
 # %%
+# ============================================================
+# USER CONFIGURATION - Edit these for your own setup / design
+# ============================================================
 CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
 HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
+HW_PLATFORM = os.getenv("HW_PLATFORM", "vpk120")
+EXAMPLE_ID = "cpm_decoupling"
+PROG_DEVICE = True
+
+# Direct mode: set these to use your own design files (skips MESA). When
+# direct mode is used, the GTYP quad names cannot be read from a manifest, so
+# the user MUST set IBERT_QUAD_NAMES to a comma-separated list of the two
+# CPM5-controlled quads in the design (e.g. "Quad_104,Quad_105").
+PROGRAMMING_FILE = ""
+PROBES_FILE = ""
+IBERT_QUAD_NAMES = os.getenv("IBERT_QUAD_NAMES", "")
+
+# ============================================================
+
+# --- MESA setup (no edits needed below) ---
+example_design = resolve_example_design(
+    HW_PLATFORM,
+    EXAMPLE_ID,
+    programming_file=PROGRAMMING_FILE,
+    probes_file=PROBES_FILE,
+)
+design_manifest = example_design.manifest  # None in direct mode
+DEVICE_FAMILY = example_design.device_family
+PROGRAMMING_FILE = example_design.programming_file
+PROBES_FILE = example_design.probes_file
+
+example_design.print_summary()
+print(f"HW_URL: {HW_URL}")
+print(f"CS_URL: {CS_URL}")
 
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
 report_versions(session)
 
 # %% [markdown]
-# ## 6 - Program the device with vpk120 pcie-ced design and discover cores
+# ## 6 - Program the device with the VPK120 PCIe CED design and discover cores
 
 # %%
-design_files = get_design_files("vpk120/production/pcie_pio_ced/")
+device = session.devices.filter_by(family=DEVICE_FAMILY).get()
 
-PDI_FILE = design_files.programming_file
-
-print(f"PROGRAMMING_FILE: {PDI_FILE}")
-
-device = session.devices.filter_by(family="versal").get()
-device.program(PDI_FILE)
+if PROG_DEVICE:
+    if not example_design.verify_device_idcode(device):
+        raise RuntimeError("Device IDCODE does not match the manifest design.")
+    example_design.program_device(device)
 
 # %% [markdown]
-# ## 7 - Discover and setup the IBERT core
+# ## 7 - Discover and set up the IBERT core
 #
-# Debug core discovery initializes the chipscope server debug cores.
-#
-# After this step,
-#
-# - The cs_server is initialized and ready for use
-# - The first ibert found is used
+# Debug core discovery initializes the ChipScoPy server debug cores.
 
 # %%
 device.discover_and_setup_cores(ibert_scan=True)
-print("--> Debug core discovery done")
+print("--> Debug core discovery complete")
 
 if len(device.ibert_cores) == 0:
     print("No IBERT core found! Exiting...")
     exit()
 
-# Use the first available IBERT core from the device
-ibert_gtyp = one(device.ibert_cores.filter_by(name="IBERT Versal GTYP"))
+# Resolve the GTYP quad names. In MESA mode they come from the manifest; in
+# direct mode the user supplies them via IBERT_QUAD_NAMES (comma-separated).
+if design_manifest is not None:
+    gtyp_quad_names = design_manifest.get_core_config("ibert_gtyp", "quad_names", [])
+else:
+    gtyp_quad_names = [q.strip() for q in IBERT_QUAD_NAMES.split(",") if q.strip()]
+    if not gtyp_quad_names:
+        raise RuntimeError(
+            "Direct mode (PROGRAMMING_FILE provided) requires IBERT_QUAD_NAMES "
+            "to be set to a comma-separated list of the GTYP quad names in the "
+            "design (e.g. export IBERT_QUAD_NAMES='Quad_104,Quad_105')."
+        )
 
-if len(ibert_gtyp.gt_groups) == 0:
-    print("No GT Groups available for use! Exiting...")
-    exit()
+ibert_core = None
+for idx in range(len(device.ibert_cores)):
+    candidate = device.ibert_cores.at(index=idx)
+    gt_names = [g.name for g in candidate.gt_groups]
+    if any(qn in gt_names for qn in gtyp_quad_names):
+        ibert_core = candidate
+        break
 
-print(f"GT Groups available - {[gt_group_obj.name for gt_group_obj in ibert_gtyp.gt_groups]}")
+if ibert_core is None:
+    raise RuntimeError("No hardware IBERT core matching GTYP quads found on device")
+
+print(f"Matched IBERT core: {ibert_core}")
+print(f"GT Groups available - {[g.name for g in ibert_core.gt_groups]}")
 
 # %% [markdown]
 # ## 8 - Print the hierarchy of the IBERT core
@@ -202,12 +242,21 @@ print(f"GT Groups available - {[gt_group_obj.name for gt_group_obj in ibert_gtyp
 # We also ensure that all the quads instantiated by the ChipScoPy CED design are found by the APIs
 
 # %%
-report_hierarchy(ibert_gtyp)
+report_hierarchy(ibert_core)
 
-gt_group = ibert_gtyp.gt_groups.filter_by(name="Quad_104")[0]
+# Reuse the GTYP quad list resolved above (manifest in MESA mode, IBERT_QUAD_NAMES
+# in direct mode). The decouple flow needs at least two quads (Quad_104, Quad_105).
+quad_names = gtyp_quad_names
+if len(quad_names) < 2:
+    raise RuntimeError(f"Expected at least 2 quads, but only {len(quad_names)} provided")
 
-q104 = one(ibert_gtyp.gt_groups.filter_by(name="Quad_104"))
-q105 = one(ibert_gtyp.gt_groups.filter_by(name="Quad_105"))
+src = "design_manifest" if design_manifest is not None else "IBERT_QUAD_NAMES env var"
+print(f"Using quads from {src}: {quad_names}")
+
+# Retrieve quads by name from design_manifest
+q104 = ibert_core.gt_groups.filter_by(name=quad_names[0])[0]
+q105 = ibert_core.gt_groups.filter_by(name=quad_names[1])[0]
+print(f"Quad 0: {q104.name}, Quad 1: {q105.name}")
 
 # %% [markdown]
 # ## 9 - Create links between following TXs and RXs and set loopback mode
@@ -238,15 +287,15 @@ land_Locked_Quads = [q104,q105]
 decouple_gtyp_quad(land_Locked_Quads)
 
 #set loopback mode with Tx and Rx pattern
-setLinkProperties(links)
+set_link_properties(links)
 
 # %% [markdown]
 # ## 11 - Set rate to Gen1
 
 # %%
 #set line rate
-setRate(land_Locked_Quads, 'Gen1')
-printLinkProperties(links)
+set_rate(land_Locked_Quads, 'Gen1')
+print_link_properties(links)
 
 # %% [markdown]
 # ## 12 - Create Eye Scan Diagrams
@@ -274,42 +323,31 @@ for eye_scan in eye_scans:
     print(f"Started eye scan {eye_scan}")
 
 # %% [markdown]
-# ## 13 - Wait for all the eye scans to get done
+# ## 13 - Wait for all eye scans to complete
 
 # %%
-eye_scans[0].wait_till_done()
-eye_scans[1].wait_till_done()
-eye_scans[2].wait_till_done()
-eye_scans[3].wait_till_done()
-eye_scans[4].wait_till_done()
-eye_scans[5].wait_till_done()
-eye_scans[6].wait_till_done()
-eye_scans[7].wait_till_done()
+for i, eye_scan in enumerate(eye_scans):
+    eye_scan.wait_till_done()
+    print(f"Eye scan {i} complete")
 
 # %% [markdown]
-# ## 14 - View Eye Scan Plot.
+# ## 14 - View the eye-scan plot
 #
-# This requires Plotly to be installed. See how to install it [here](https://pages.gitenterprise.xilinx.com/chipscope/chipscopy/2024.1/ibert/eye_scan.html#scan-plots)
+# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.1/ibert/eye_scan.html#scan-plots)
 #
 # NOTE - The plot may not display if this notebook is run in Jupyter Lab. For details, see [link](https://plotly.com/python/getting-started/#jupyterlab-support-python-35)
 
 # %%
-eye_scans[0].plot.show()
-eye_scans[1].plot.show()
-eye_scans[2].plot.show()
-eye_scans[3].plot.show()
-eye_scans[4].plot.show()
-eye_scans[5].plot.show()
-eye_scans[6].plot.show()
-eye_scans[7].plot.show()
+for eye_scan in eye_scans:
+    eye_scan.plot.show()
 
 # %% [markdown]
 # ## 15 - Set rate to Gen2
 
 # %%
 #set line rate
-setRate(land_Locked_Quads, 'Gen2')
-printLinkProperties(links)
+set_rate(land_Locked_Quads, 'Gen2')
+print_link_properties(links)
 
 # %% [markdown]
 # ## 16 - Create Eye Scan Diagrams
@@ -337,38 +375,28 @@ for eye_scan in eye_scans:
     print(f"Started eye scan {eye_scan}")
 
 # %% [markdown]
-# ## 17 - Wait for all the eye scans to get done
+# ## 17 - Wait for all eye scans to complete
 
 # %%
-eye_scans[0].wait_till_done()
-eye_scans[1].wait_till_done()
-eye_scans[2].wait_till_done()
-eye_scans[3].wait_till_done()
-eye_scans[4].wait_till_done()
-eye_scans[5].wait_till_done()
-eye_scans[6].wait_till_done()
-eye_scans[7].wait_till_done()
+for i, eye_scan in enumerate(eye_scans):
+    eye_scan.wait_till_done()
+    print(f"Eye scan {i} complete")
 
 # %% [markdown]
-# ## 18 - View Eye Scan Plot.
+# ## 18 - View Eye Scan Plot.A 2D Eye Scan helps perform margin analysis on the RX channel
+#
 
 # %%
-eye_scans[0].plot.show()
-eye_scans[1].plot.show()
-eye_scans[2].plot.show()
-eye_scans[3].plot.show()
-eye_scans[4].plot.show()
-eye_scans[5].plot.show()
-eye_scans[6].plot.show()
-eye_scans[7].plot.show()
+for eye_scan in eye_scans:
+    eye_scan.plot.show()
 
 # %% [markdown]
 # ## 19 - Set rate to Gen3
 
 # %%
 #set line rate
-setRate(land_Locked_Quads, 'Gen3')
-printLinkProperties(links)
+set_rate(land_Locked_Quads, 'Gen3')
+print_link_properties(links)
 
 # %% [markdown]
 # ## 20 - Create Eye Scan Diagrams
@@ -396,38 +424,28 @@ for eye_scan in eye_scans:
     print(f"Started eye scan {eye_scan}")
 
 # %% [markdown]
-# ## 21 - Wait for all the eye scans to get done
+# ## 21 - Wait for all eye scans to complete
 
 # %%
-eye_scans[0].wait_till_done()
-eye_scans[1].wait_till_done()
-eye_scans[2].wait_till_done()
-eye_scans[3].wait_till_done()
-eye_scans[4].wait_till_done()
-eye_scans[5].wait_till_done()
-eye_scans[6].wait_till_done()
-eye_scans[7].wait_till_done()
+for i, eye_scan in enumerate(eye_scans):
+    eye_scan.wait_till_done()
+    print(f"Eye scan {i} complete")
 
 # %% [markdown]
-# ## 22 - View Eye Scan Plot.
+# ## 22 - View Eye Scan Plot.A 2D Eye Scan helps perform margin analysis on the RX channel
+#
 
 # %%
-eye_scans[0].plot.show()
-eye_scans[1].plot.show()
-eye_scans[2].plot.show()
-eye_scans[3].plot.show()
-eye_scans[4].plot.show()
-eye_scans[5].plot.show()
-eye_scans[6].plot.show()
-eye_scans[7].plot.show()
+for eye_scan in eye_scans:
+    eye_scan.plot.show()
 
 # %% [markdown]
 # ## 23 - Set rate to Gen4
 
 # %%
 #set line rate
-setRate(land_Locked_Quads, 'Gen4')
-printLinkProperties(links)
+set_rate(land_Locked_Quads, 'Gen4')
+print_link_properties(links)
 
 # %% [markdown]
 # ## 24 - Create Eye Scan Diagrams
@@ -455,27 +473,21 @@ for eye_scan in eye_scans:
     print(f"Started eye scan {eye_scan}")
 
 # %% [markdown]
-# ## 25 - Wait for all the eye scans to get done
+# ## 25 - Wait for all eye scans to complete
 
 # %%
-eye_scans[0].wait_till_done()
-eye_scans[1].wait_till_done()
-eye_scans[2].wait_till_done()
-eye_scans[3].wait_till_done()
-eye_scans[4].wait_till_done()
-eye_scans[5].wait_till_done()
-eye_scans[6].wait_till_done()
-eye_scans[7].wait_till_done()
+for i, eye_scan in enumerate(eye_scans):
+    eye_scan.wait_till_done()
+    print(f"Eye scan {i} complete")
 
 # %% [markdown]
-# ## 26 - View Eye Scan Plot
+# ## 26 - View Eye Scan PlotA 2D Eye Scan helps perform margin analysis on the RX channel
+#
 
 # %%
-eye_scans[0].plot.show()
-eye_scans[1].plot.show()
-eye_scans[2].plot.show()
-eye_scans[3].plot.show()
-eye_scans[4].plot.show()
-eye_scans[5].plot.show()
-eye_scans[6].plot.show()
-eye_scans[7].plot.show()
+for eye_scan in eye_scans:
+    eye_scan.plot.show()
+
+# %%
+delete_session(session)
+

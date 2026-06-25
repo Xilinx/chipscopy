@@ -1,0 +1,39 @@
+{
+  "extends": "_base/ultrascale_plus_standard_cores.json",
+  "design_info": {
+    "design_name": "chipscopy_ced",
+    "description": "ChipScoPy CED (Configurable Example Design) for SCU200 - one LPDDRMC5 and two IBERT GTH quads",
+    "hw_platform": "scu200",
+    "programming_flow": "flat",
+    "design_path": "scu200/production/chipscopy_ced",
+    "family": "spartanu",
+    "device": "xcsu200p",
+    "board": "SCU200",
+    "idcode": "0x04EA0093"
+  },
+  "debug_cores": {
+    "ibert_usp_gth": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_221",
+        "Quad_223"
+      ]
+    },
+    "memory": {
+      "enabled": true,
+      "memory_types": ["LPDDR5"]
+    }
+  },
+  "supported_examples": [
+    "link_and_eye_scan_usp",
+    "lpddr_example",
+    "program"
+  ],
+  "metadata": {
+    "created_date": "2026-05-11",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-05-11",
+    "notes": "SCU200 ChipScoPy CED: two IBERT GTH quads (Quad_221 and Quad_223) and one LPDDRMC5. Programmed via flat PDI flow. JTAG IDCODE 0x04EA0093 (xcsu200p)."
+  }
+}

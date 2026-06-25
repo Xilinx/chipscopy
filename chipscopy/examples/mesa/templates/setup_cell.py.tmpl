@@ -1,0 +1,28 @@
+import os
+from chipscopy import create_session, delete_session, report_versions
+from chipscopy.examples.mesa import resolve_example_design
+
+CS_URL = os.getenv("CS_SERVER_URL", "TCP:localhost:3042")
+HW_URL = os.getenv("HW_SERVER_URL", "TCP:localhost:3121")
+HW_PLATFORM = "vck190"
+EXAMPLE_ID = "${EXAMPLE_ID}"
+PROG_DEVICE = True
+
+# Direct mode: set these to use your own design files (skips MESA).
+PROGRAMMING_FILE = ""
+PROBES_FILE = ""
+
+example_design = resolve_example_design(
+    HW_PLATFORM,
+    EXAMPLE_ID,
+    programming_file=PROGRAMMING_FILE,
+    probes_file=PROBES_FILE,
+)
+design_manifest = example_design.manifest  # None in direct mode
+DEVICE_FAMILY = example_design.device_family
+PROGRAMMING_FILE = example_design.programming_file
+PROBES_FILE = example_design.probes_file
+
+example_design.print_summary()
+print(f"HW_URL: {HW_URL}")
+print(f"CS_URL: {CS_URL}")

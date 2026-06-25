@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -316,7 +316,10 @@ class CsManager(Node):
         props = None
         node = self._nodes.get(ctx)
         if node and node.parent_ctx != parent_ctx:
-            props = node.props
+            try:
+                props = node.props
+            except Exception:
+                props = None
             node.invalidate()
             node = None
 
@@ -427,7 +430,9 @@ class CsManager(Node):
             return None
 
         for child in parent.children:
-            yield self._nodes.get(child)
+            child_node = self._nodes.get(child)
+            if child_node is not None:
+                yield child_node
 
     def get_all(self) -> Node:
         """

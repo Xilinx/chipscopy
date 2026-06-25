@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
 
 from chipscopy.tcf.services import Service, DoneHWCommand
 from chipscopy.proxies.CorePropertyProxy import CorePropertyProxy
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 
 AXIS_PCIE_NODE_NAME = "pcie"
 AXIS_PCIE_SERVICE_NAME = "AxisPCIe"
 
-DOMAIN_NAME = "proxy_pcie"
+logger = get_logger("proxy_pcie")
 
 
 class AxisPCIeService(Service):
@@ -34,7 +34,7 @@ class AxisPCIeProxy(CorePropertyProxy, AxisPCIeService):
         self.listeners = {}
 
     def initialize(self, node_id: str, done: DoneHWCommand) -> None:
-        log[DOMAIN_NAME].debug("Sending initializeCmd")
+        logger.debug("Sending initializeCmd")
         return self.send_xicom_command("initialize", (node_id,), done)
 
     def read_data(self, node_id: str, done: DoneHWCommand) -> bool:

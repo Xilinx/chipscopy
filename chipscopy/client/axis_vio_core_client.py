@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
 # limitations under the License.
 
 import typing
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger
 from chipscopy import dm
 from chipscopy.client import core_property_client
 from chipscopy.tcf.services import DoneHWCommand
 from chipscopy.proxies.AxisVIOProxy import AXIS_VIO_SERVICE_NAME, AXIS_VIO_NODE_NAME
 
-# NOTE: PLEASE USE THIS DOMAIN NAME IN ALL LOG MESSAGES FROM THIS FILE.
-DOMAIN_NAME = "client_axis_vio"
+logger = get_logger("client_axis_vio")
 
 
 class AxisVIOCoreClient(core_property_client.CorePropertyClient):
@@ -41,7 +40,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
     def initialize(self, done: DoneHWCommand = None):
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initializing {AXIS_VIO_SERVICE_NAME} service")
+        logger.info(f"Initializing {AXIS_VIO_SERVICE_NAME} service")
         token = service.initialize(self.ctx, done_cb)
         return self.add_pending(token)
 
@@ -58,7 +57,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
                 then function/method should be provided.
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initiating AXIS VIO core reset")
+        logger.info(f"Initiating AXIS VIO core reset")
         options = {"node_id": self.ctx}
         token = service.reset_core(options, done_cb)
         return self.add_pending(token)
@@ -91,7 +90,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initiating core info fetch")
+        logger.info(f"Initiating core info fetch")
         token = service.get_property_group(self.ctx, "core_info", done_cb)
         return self.add_pending(token)
 
@@ -124,7 +123,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initiating ports info fetch")
+        logger.info(f"Initiating ports info fetch")
         token = service.get_property_group(self.ctx, "static_info", done_cb)
         return self.add_pending(token)
 
@@ -150,7 +149,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initiating control signal fetch")
+        logger.info(f"Initiating control signal fetch")
         token = service.get_property_group(self.ctx, "control", done_cb)
         return self.add_pending(token)
 
@@ -196,7 +195,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initiating port out commit")
+        logger.info(f"Initiating port out commit")
         options = {"port_data": port_data}
         token = service.commit_port_out_data(self.ctx, options, done_cb)
         return self.add_pending(token)
@@ -236,7 +235,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initiating port in refresh")
+        logger.info(f"Initiating port in refresh")
 
         options = {"node_id": self.ctx}
         token = service.refresh_port_in_data(options, done_cb)
@@ -290,7 +289,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initiating port out commit")
+        logger.info(f"Initiating port out commit")
 
         options = {"node_id": self.ctx, "port_out_numbers": port_out_numbers}
         token = service.refresh_port_out_data(options, done_cb)
@@ -331,7 +330,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info(f"Initiating port data fetch")
+        logger.info(f"Initiating port data fetch")
         options = {"node_id": self.ctx}
         token = service.get_port_data(options, done_cb)
         return self.add_pending(token)
@@ -396,7 +395,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info("Initiating probe creation")
+        logger.info("Initiating probe creation")
         options = {"node_id": self.ctx, "probe_options": probe_options}
         token = service.define_probe(options, done_cb)
         return self.add_pending(token)
@@ -450,7 +449,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info("Initiating probe info fetch")
+        logger.info("Initiating probe info fetch")
         options = {"node_id": self.ctx, "probe_name": probe_name}
         token = service.report_probe(options, done_cb)
         return self.add_pending(token)
@@ -471,7 +470,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info("Initiating probe removal destruction")
+        logger.info("Initiating probe removal destruction")
         options = {"node_id": self.ctx, "probe_name": probe_name}
         token = service.undefine_probe(options, done_cb)
         return self.add_pending(token)
@@ -492,7 +491,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info("Initiating probe refresh")
+        logger.info("Initiating probe refresh")
         options = {"node_id": self.ctx, "probe_name": probe_name}
         token = service.refresh_probe(options, done_cb)
         return self.add_pending(token)
@@ -534,7 +533,7 @@ class AxisVIOCoreClient(core_property_client.CorePropertyClient):
 
         """
         service, done_cb = self.make_done(done)
-        log[DOMAIN_NAME].info("Initiating probe addition")
+        logger.info("Initiating probe addition")
         options = {"node_id": self.ctx, "probe_data": probe_options}
         token = service.commit_probe(options, done_cb)
         return self.add_pending(token)

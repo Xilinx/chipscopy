@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "1.0.0",
+  "title": "ChipScoPy MESA Manifest",
+  "description": "Schema for ChipScoPy MESA (Manifest driven Example System for All-platforms) design manifest files that describe hardware platform capabilities and compatible examples.",
+  "type": "object",
+  "required": ["design_info", "debug_cores", "supported_examples", "metadata"],
+  "additionalProperties": false,
+  "properties": {
+    "extends": {
+      "type": "string",
+      "description": "Optional path to a base manifest for inheritance. Resolved relative to this manifest, then to the designs/ directory. The base manifest is loaded and deep-merged with this manifest at runtime and during validation.",
+      "minLength": 1
+    },
+    "design_info": {
+      "type": "object",
+      "description": "Information about the design and platform",
+      "required": ["design_name", "hw_platform", "programming_flow", "design_path", "family", "device"],
+      "additionalProperties": false,
+      "properties": {
+        "design_name": {
+          "type": "string",
+          "description": "Name of the design (e.g., 'chipscopy_ced', 'cross_link_debug')",
+          "minLength": 1,
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the design purpose and features"
+        },
+        "hw_platform": {
+          "type": "string",
+          "description": "Hardware platform identifier (e.g., 'vck190', 'vpk120', 'vmk180', 'vek280', 'vek385', or custom board name). No schema update needed for new platforms.",
+          "pattern": "^[a-z0-9_]+$",
+          "minLength": 3,
+          "examples": ["vck190", "vpk120", "vmk180", "vhk158", "vcu128", "vek280", "vek385", "custom_board"]
+        },
+        "programming_flow": {
+          "type": "string",
+          "description": "Programming flow type: 'flat' for monolithic PDI or 'segmented' for partial reconfiguration. IMPORTANT: Code logic in mesa.py depends on these exact values. Adding new flows requires code changes.",
+          "enum": ["flat", "segmented"]
+        },
+        "design_path": {
+          "type": "string",
+          "description": "Relative path to design files from examples/designs/ directory (e.g., 'vck190/production/chipscopy_ced')",
+          "minLength": 1
+        },
+        "family": {
+          "type": "string",
+          "description": "Device family. IMPORTANT: Must match ChipScoPy session.devices.filter_by(family=...) API values exactly.",
+          "enum": ["versal", "artixuplus", "kintexu", "kintexuplus", "spartanu", "virtexu", "virtexuplus", "zynquplus"]
+        },
+        "device": {
+          "type": "string",
+          "description": "Specific device part number (e.g., 'xcvc1902', 'xcvp1202')",
+          "pattern": "^xc[a-z0-9]+$"
+        },
+        "board": {
+          "type": "string",
+          "description": "Board name or identifier (e.g., 'VCK190', 'VPK120')"
+        },
+        "boot_pdi_pattern": {
+          "type": "string",
+          "description": "For segmented programming flow: glob pattern or filename for boot PDI (e.g., '*_boot.pdi', 'static_boot.pdi'). If not specified, defaults to '*_boot.pdi'",
+          "minLength": 1
+        },
+        "pld_pdi_pattern": {
+          "type": "string",
+          "description": "For segmented programming flow: glob pattern or filename for PLD PDI (e.g., '*_pld.pdi', 'dynamic_pld.pdi'). If not specified, defaults to '*_pld.pdi'",
+          "minLength": 1
+        },
+        "idcode": {
+          "type": "string",
+          "description": "Expected JTAG IDCODE for the target device as a hex string (e.g., '0x14CA8093'). Used to verify the physical device matches the design before programming. If both idcode and idcode_list are present, any match is acceptable.",
+          "pattern": "^0x[0-9A-Fa-f]+$"
+        },
+        "idcode_list": {
+          "type": "array",
+          "description": "List of acceptable JTAG IDCODEs for supporting multiple silicon variants (e.g., production and ES devices). Each entry is a hex string.",
+          "items": {
+            "type": "string",
+            "pattern": "^0x[0-9A-Fa-f]+$"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "debug_cores": {
+      "type": "object",
+      "description": "Available debug cores in the design with their configurations",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["enabled", "description"],
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this debug core is present and enabled in the design"
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description of this debug core's purpose"
+          },
+          "features": {
+            "type": "array",
+            "description": "List of supported features for this debug core",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quad_names": {
+            "type": "array",
+            "description": "For IBERT cores: list of quad names",
+            "items": {
+              "type": "string"
+            }
+          },
+          "memory_types": {
+            "type": "array",
+            "description": "For memory cores: types of memory interfaces (e.g., DDR4, DDR5)",
+            "items": {
+              "type": "string",
+              "enum": ["DDR3", "DDR4", "DDR5", "LPDDR4", "LPDDR5", "HBM"]
+            }
+          },
+          "core_instances": {
+            "type": "array",
+            "description": "For ILA/VIO cores: list of specific core instances with names and properties",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Full hierarchical name of the core instance"
+                },
+                "probe_prefix": {
+                  "type": "string",
+                  "description": "Prefix for probe names in this core instance"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of this core instance"
+                }
+              }
+            }
+          },
+          "node_names": {
+            "type": "array",
+            "description": "For NoC/PerfMon cores: list of NoC node names to monitor",
+            "items": {
+              "type": "string"
+            }
+          },
+          "trigger_base_address": {
+            "type": "string",
+            "description": "For NoC/PerfMon (SPTG) cores: traffic generator base address as a hex string (e.g., '0x20180000000').",
+            "pattern": "^0x[0-9A-Fa-f]+$"
+          },
+          "probe_mapping": {
+            "type": "object",
+            "description": "Common probe name mappings for this debug core",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "vio_hierarchy": {
+            "type": "string",
+            "description": "VIO hierarchy path for dynamic discovery"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "supported_examples": {
+      "type": "array",
+      "description": "List of example IDs that are compatible with this design. Example IDs must match notebook file names (without .ipynb extension). Python files (.py) with the same ID are optional and will be discovered if present.",
+      "items": {
+        "type": "string",
+        "description": "Example ID matching the filename without extension",
+        "pattern": "^[a-z0-9_]+$"
+      },
+      "uniqueItems": true
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Metadata about the manifest file itself",
+      "required": ["created_date", "version"],
+      "additionalProperties": true,
+      "properties": {
+        "created_date": {
+          "type": "string",
+          "description": "Date when manifest was created (ISO format recommended: YYYY-MM-DD or MM-DD-YYYY)",
+          "pattern": "^[0-9]{2,4}[-/][0-9]{1,2}[-/][0-9]{1,4}$"
+        },
+        "version": {
+          "type": "string",
+          "description": "Manifest version using semantic versioning (e.g., '1.0.0')",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "maintainer": {
+          "type": "string",
+          "description": "Team or person responsible for maintaining this manifest"
+        },
+        "last_updated": {
+          "type": "string",
+          "description": "Date of last update (ISO format recommended)",
+          "pattern": "^[0-9]{2,4}[-/][0-9]{1,2}[-/][0-9]{1,4}$"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes or comments about this manifest"
+        }
+      }
+    }
+  }
+}

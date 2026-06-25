@@ -1,0 +1,7 @@
+# Ignore generated py files from jupytext
+*.py
+
+# Keep existing py files
+!ddr/ddr_scan_util.py
+!ddr/__init__.py
+!mesa/*.py

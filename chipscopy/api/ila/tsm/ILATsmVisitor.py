@@ -1,13 +1,5 @@
-# Generated from ILATsm.g4 by ANTLR 4.13.1
-from antlr4 import *
-
-if "." in __name__:
-    from .ILATsmParser import ILATsmParser
-else:
-    from ILATsmParser import ILATsmParser
-
-# Copyright (C) 2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2021-2022, Xilinx, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +12,14 @@ else:
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# Generated from ILATsm.g4 by ANTLR 4.13.1
+from antlr4 import *
+
+if "." in __name__:
+    from .ILATsmParser import ILATsmParser
+else:
+    from ILATsmParser import ILATsmParser
 
 
 # This class defines a complete generic visitor for a parse tree produced by ILATsmParser.

@@ -1,5 +1,5 @@
 # Copyright (C) 2021-2022, Xilinx, Inc.
-# Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@ from typing import Dict, Any, List
 from chipscopy.tcf import channel
 from chipscopy.tcf.services import Service, DoneHWCommand
 from chipscopy.tcf.services.arguments import from_xargs
-from chipscopy.utils.logger import log
+from chipscopy.utils.logger import get_logger, is_domain_enabled
 from chipscopy.utils import words_from_bytes
+
+logger = get_logger("xsdb")
 
 NAME = "xsdb"
 """Xsdb service name."""
@@ -102,14 +104,14 @@ class xsdbProxy(Service):
         :returns: Token of command request
         :results: seq - list of read transactions with resulting values in the order ran.
         """
-        if log.is_domain_enabled("xsdb", "DEBUG"):
-            log.debugcore.debug(f"Running sequence {len(seq)}:")
+        if is_domain_enabled("xsdb", "DEBUG"):
+            logger.debug(f"Running sequence {len(seq)}:")
             for op in seq:
-                log.debugcore.debug(f"\t{op}")
+                logger.debug(f"\t{op}")
                 if "data" in op:
                     words = words_from_bytes(op["data"])
                     hexstr = " ".join(f"{word:08X}" for word in words)
-                    log.debugcore.debug(f"\t\t{hexstr}")
+                    logger.debug(f"\t\t{hexstr}")
         return self.send_xicom_command("sequence", (ctx, seq), done)
 
     def lock(self, ctx: str, done: DoneHWCommand):
