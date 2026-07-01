@@ -55,14 +55,14 @@ jobs:
           echo "::notice::Target path: $TARGET_PATH"
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
 
       - name: Read Poetry version
         id: poetry-version
         run: echo "version=$(cat .poetry-version)" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6.3.0
         with:
           python-version: "3.10"
 
@@ -80,13 +80,13 @@ jobs:
           poetry run make html
 
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: docs-build
           path: docs/_build/html/
 
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
         with:
           ref: gh-pages
           path: gh-pages
@@ -106,7 +106,7 @@ jobs:
           echo "Created folder: ${{ steps.determine-release.outputs.target-path }}"
 
       - name: Download and copy built documentation
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8.0.1
         with:
           name: docs-build
           path: docs-build-temp
@@ -141,7 +141,7 @@ jobs:
 
     steps:
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
         with:
           ref: gh-pages
 
@@ -183,18 +183,18 @@ jobs:
 
     steps:
       - name: Checkout the gh-pages branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.0
         with:
           ref: gh-pages
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6.0.0
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: "."
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5.0.0
