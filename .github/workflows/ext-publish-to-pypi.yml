@@ -207,9 +207,12 @@ jobs:
         shell: bash
       
       # A new version can take minutes to show up on the index, and longer on
-      # some runners, so retry instead of sleeping a fixed time.
+      # some runners, so retry instead of sleeping a fixed time. The loop
+      # bounds the number of tries; timeout-minutes bounds the total time,
+      # including slow pip runs.
       - name: Install from the package index
         if: ${{ inputs.skip-publish != true }}
+        timeout-minutes: 12
         env:
           VERSION: ${{ needs.release-build.outputs.package-version }}
           TARGET: ${{ needs.determine-target.outputs.pypi-target }}
@@ -219,13 +222,13 @@ jobs:
             index_args=(--index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/)
           fi
           for attempt in $(seq 1 40); do
-            if python -m pip install --no-cache-dir "${index_args[@]}" "chipscopy==$VERSION"; then
+            if python -m pip install --no-cache-dir --timeout 30 "${index_args[@]}" "chipscopy==$VERSION"; then
               exit 0
             fi
             echo "chipscopy $VERSION is not installable yet (attempt $attempt of 40), retrying in 15 seconds"
             sleep 15
           done
-          echo "::error::chipscopy $VERSION could not be installed from the $TARGET index after 10 minutes"
+          echo "::error::chipscopy $VERSION could not be installed from the $TARGET index after 40 tries"
           exit 1
         shell: bash
 
