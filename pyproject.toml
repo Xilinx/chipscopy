@@ -15,7 +15,7 @@
 
 [project]
 name = "chipscopy"
-version = "2026.2.0.0"
+version = "2026.2.0.57"
 description = "Open-source project from Xilinx® that enables high-level control of Versal debug IP running in hardware"
 authors = [{ name = "AMD ChipScope Team" }]
 
