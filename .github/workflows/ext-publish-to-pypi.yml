@@ -75,7 +75,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6.3.0
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Set up Poetry
         uses: abatilo/actions-poetry@v3
@@ -162,7 +162,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6.3.0
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Download release distributions from job artifact
         if: ${{ inputs.skip-publish == true }}
