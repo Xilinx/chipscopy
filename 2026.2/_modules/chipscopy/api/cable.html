@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>chipscopy.api.cable &mdash; ChipScoPy 2026.2.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2026.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../jtag.html">JTAG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mesa.html">MESA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../api.html">chipscopy.api</a> &raquo;</li>
+      <li>chipscopy.api.cable</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for chipscopy.api.cable</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2021-2022, Xilinx, Inc.</span>
+<span class="c1"># Copyright (C) 2022-2026, Advanced Micro Devices, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">chipscopy.client.view_info</span> <span class="kn">import</span> <span class="n">ViewInfo</span>
+<span class="kn">from</span> <span class="nn">chipscopy.dm</span> <span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client.jtagdevice</span> <span class="kn">import</span> <span class="n">JtagCable</span>
+<span class="kn">from</span> <span class="nn">chipscopy.client</span> <span class="kn">import</span> <span class="n">ServerInfo</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.device.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">discover_devices</span>
+<span class="kn">from</span> <span class="nn">chipscopy.api.containers</span> <span class="kn">import</span> <span class="n">QueryList</span>
+
+<span class="n">DOMAIN_NAME</span> <span class="o">=</span> <span class="s2">&quot;client&quot;</span>
+
+
+<div class="viewcode-block" id="Cable"><a class="viewcode-back" href="../../../jtag.html#chipscopy.api.cable.Cable">[docs]</a><span class="k">class</span> <span class="nc">Cable</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Cable represents a cable connection. This may be a physical jtag cable, or a virtual cable.</span>
+<span class="sd">    Zero or more devices may be associated with the cable, and each device has a position.</span>
+<span class="sd">    Roughly equivalent to a vivado hw_target.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">props</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No property </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Properties excluded from filter_by. node_cls is a Python class object injected by</span>
+    <span class="c1"># ViewInfo.add_sync_node - it is not a meaningful filter key for users.</span>
+    <span class="n">_FILTER_EXCLUDED_KEYS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;node_cls&quot;</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">filter_by</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Specifies the dict used for filtering cables in the session.</span>
+
+<span class="sd">        Filters the QueryList returned by ``Session.cables``. Both the raw hw_server</span>
+<span class="sd">        property names (``Description``, ``Serial``) and lowercase aliases</span>
+<span class="sd">        (``description``, ``serial``) are accepted. ``name`` is always the cable&#39;s</span>
+<span class="sd">        human readable description, matching :attr:`Cable.name`.</span>
+
+<span class="sd">        Match values are compared by equality, not by regular expression, so pass the</span>
+<span class="sd">        property&#39;s native type.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, value]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_FILTER_EXCLUDED_KEYS</span>
+        <span class="p">}</span>
+        <span class="c1"># Lowercase aliases first, then the original keys win, so &#39;Name&#39; keeps the raw</span>
+        <span class="c1"># hw_server value. &#39;name&#39; is overridden last so it agrees with Cable.name.</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">props</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span> <span class="o">**</span><span class="n">props</span><span class="p">}</span>
+        <span class="n">filters</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="n">filters</span>
+
+<div class="viewcode-block" id="Cable.check_for_filter_match"><a class="viewcode-back" href="../../../jtag.html#chipscopy.api.cable.Cable.check_for_filter_match">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_for_filter_match</span><span class="p">(</span><span class="n">filters_dict</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">,</span> <span class="n">match_value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Matches ``filter_by()`` values by equality rather than by regular expression.</span>
+
+<span class="sd">        Cable serial numbers and descriptions routinely contain regular-expression</span>
+<span class="sd">        metacharacters, and this operation retunes hardware shared with every other</span>
+<span class="sd">        client, so an accidental wildcard match is unacceptable here.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if ``filter_name`` is present in ``filters_dict`` and equal to</span>
+<span class="sd">            ``match_value``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filter_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filters_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">filters_dict</span><span class="p">[</span><span class="n">filter_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">match_value</span></div>
+
+<div class="viewcode-block" id="Cable.get_option"><a class="viewcode-back" href="../../../jtag.html#chipscopy.api.cable.Cable.get_option">[docs]</a>    <span class="k">def</span> <span class="nf">get_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a cable option value from the hw_server.</span>
+
+<span class="sd">        Option values are read live from the hw_server on every call. They are not cached</span>
+<span class="sd">        in the api layer. Supported keys are cable dependent. ``frequency`` (in Hz),</span>
+<span class="sd">        ``frequency_list``, ``skew`` and ``timing_class`` are common.</span>
+
+<span class="sd">        Cable options are hw_server state shared by every client, and they persist for the</span>
+<span class="sd">        life of the hw_server process. Restore anything you change.</span>
+
+<span class="sd">        Examples: ::</span>
+
+<span class="sd">            cable = session.cables.get(Serial=&quot;252502174339A&quot;)</span>
+<span class="sd">            original = cable.get_option(&quot;frequency&quot;)</span>
+<span class="sd">            try:</span>
+<span class="sd">                cable.set_option(&quot;frequency&quot;, 3_000_000)</span>
+<span class="sd">                ...</span>
+<span class="sd">            finally:</span>
+<span class="sd">                cable.set_option(&quot;frequency&quot;, original)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key: Name of the option, for example ``&quot;frequency&quot;``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The current option value.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: If this cable type does not support options.</span>
+<span class="sd">            Exception: If the hw_server rejects the request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support cable options&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cable.set_option"><a class="viewcode-back" href="../../../jtag.html#chipscopy.api.cable.Cable.set_option">[docs]</a>    <span class="k">def</span> <span class="nf">set_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a cable option in the hw_server and returns the value actually applied.</span>
+
+<span class="sd">        The hw_server is free to apply a value different from the one requested. JTAG TCK</span>
+<span class="sd">        frequency in particular is quantized to what the cable hardware can generate. On</span>
+<span class="sd">        the FT4232H cables this was verified against, an out-of-range value was snapped</span>
+<span class="sd">        down to an achievable one rather than rejected, but that is cable-dependent and</span>
+<span class="sd">        another cable may reject the request instead. This method sets the option, reads</span>
+<span class="sd">        it back, and returns the read-back value. It does not raise when the applied value</span>
+<span class="sd">        differs from the requested value, so the caller must compare.</span>
+
+<span class="sd">        The returned value is a best-effort read-back. The set and the read are two</span>
+<span class="sd">        independent unlocked requests, so another client may have intervened.</span>
+
+<span class="sd">        A ``frequency`` of ``0`` is reserved. On some cables it requests auto-negotiation</span>
+<span class="sd">        rather than setting a rate, and on others it does nothing. Read the value back.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key: Name of the option, for example ``&quot;frequency&quot;``.</span>
+<span class="sd">            value: New value for the option. Only ``int`` values are supported today.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The option value as read back from the hw_server after the set.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: If this cable type does not support options.</span>
+<span class="sd">            TypeError: If ``value`` is not an ``int``.</span>
+<span class="sd">            Exception: If the hw_server rejects the set or the read back.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support cable options&quot;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if the underlying cable node is still valid.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">devices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the devices discovered on this cable.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="Cable.to_json"><a class="viewcode-back" href="../../../jtag.html#chipscopy.api.cable.Cable.to_json">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON string representation of this cable&#39;s properties.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Cable.to_dict"><a class="viewcode-back" href="../../../jtag.html#chipscopy.api.cable.Cable.to_dict">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict of this cable&#39;s properties.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the TCF context id of this cable.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the human readable description of this cable.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<span class="k">class</span> <span class="nc">_VirtualCable</span><span class="p">(</span><span class="n">Cable</span><span class="p">):</span>
+    <span class="c1"># TODO: Placeholder - Implement when needed</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">_JtagCable</span><span class="p">(</span><span class="n">Cable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tcf_node</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span>
+        <span class="n">hw_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span>
+        <span class="n">cs_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span>
+        <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span> <span class="o">=</span> <span class="n">tcf_node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server</span> <span class="o">=</span> <span class="n">hw_server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cs_server</span> <span class="o">=</span> <span class="n">cs_server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_disable_core_scan</span> <span class="o">=</span> <span class="n">disable_core_scan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_wait_for_ready</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">assert</span> <span class="n">tcf_node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;node_cls&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">JtagCable</span>
+        <span class="k">assert</span> <span class="n">tcf_node</span><span class="o">.</span><span class="n">is_valid</span> <span class="ow">is</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">is_valid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">devices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_wait_for_ready</span><span class="p">:</span>
+            <span class="c1"># Only wait first time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_should_wait_for_ready</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_cable_ready</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="n">discover_devices</span><span class="p">(</span>
+            <span class="n">hw_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hw_server</span><span class="p">,</span>
+            <span class="n">cs_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_server</span><span class="p">,</span>
+            <span class="n">disable_core_scan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_disable_core_scan</span><span class="p">,</span>
+            <span class="n">cable_ctx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">ctx</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">devices</span>
+
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">props</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">ctx</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">ctx</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Description&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wait_for_cable_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cable_timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Waits for a cable to be ready up to cable_timeout seconds.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cable_timeout: Max seconds to wait</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">cable_timeout</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;jtag&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">cable</span> <span class="ow">in</span> <span class="n">_get_cable_contexts</span><span class="p">(</span><span class="n">view</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">ctx</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">:</span>
+                    <span class="c1"># Wait for cable to become ready</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                    <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">cable_timeout</span><span class="p">:</span>
+                        <span class="n">device_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="n">cable</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">device_nodes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">break</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a cable option value from the hw_server.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a cable option and returns the value the hw_server actually applied.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cable option </span><span class="si">{</span><span class="n">key</span><span class="si">!r}</span><span class="s2"> value must be an int, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">. Only int option values are supported.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcf_node</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_cable_contexts</span><span class="p">(</span><span class="n">view</span><span class="p">:</span> <span class="n">ViewInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Node</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dict of all cable contexts mapped to cable nodes attached to the hw_server&quot;&quot;&quot;</span>
+    <span class="n">cables</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_children</span><span class="p">()</span>
+    <span class="n">cable_ctx_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">cable</span> <span class="ow">in</span> <span class="n">cables</span><span class="p">:</span>
+        <span class="n">cable_ctx_dict</span><span class="p">[</span><span class="n">cable</span><span class="o">.</span><span class="n">ctx</span><span class="p">]</span> <span class="o">=</span> <span class="n">cable</span>
+    <span class="k">return</span> <span class="n">cable_ctx_dict</span>
+
+
+<span class="k">def</span> <span class="nf">wait_for_all_cables_ready</span><span class="p">(</span><span class="n">hw_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span> <span class="n">cable_timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait for all jtag cables to be ready. Simple method - iterate over all the cables. If any</span>
+<span class="sd">    have 0 devices, wait until devices appear. If we get a timeout, there are assumed to be</span>
+<span class="sd">    no devices on the cable.</span>
+
+<span class="sd">    Some cables take a second or two to come up. Don&#39;t have a good way to ask the</span>
+<span class="sd">    cable if it is ready, so we just inspect the device nodes and see if they exist.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cable_timeout: max timeout in seconds to initialize a cable</span>
+<span class="sd">        hw_server: hardware server</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">cable_timeout</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;jtag&quot;</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">keep_trying</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">cables</span> <span class="o">=</span> <span class="n">_get_cable_contexts</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">keep_trying</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">cable_timeout</span><span class="p">:</span>
+            <span class="n">keep_trying</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">cable</span> <span class="ow">in</span> <span class="n">cables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># Wait for cable to become ready</span>
+                <span class="n">device_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="n">cable</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">device_nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">keep_trying</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+                    <span class="k">break</span>
+
+
+<span class="k">def</span> <span class="nf">discover_cables</span><span class="p">(</span>
+    <span class="n">hw_server</span><span class="p">:</span> <span class="n">ServerInfo</span><span class="p">,</span>
+    <span class="n">cs_server</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ServerInfo</span><span class="p">],</span>
+    <span class="n">disable_core_scan</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Cable</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given a hw_server and cs_server, scan for cables in hardware and return the list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        hw_server: hardware server connection</span>
+<span class="sd">        cs_server: chipscope server connection (or None if no connection)</span>
+<span class="sd">        disable_core_scan: Disable scanning debug cores in all devices (global to cable)</span>
+<span class="sd">        timeout: cable device detection timeout in seconds</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        New QueryList of cables</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cables</span><span class="p">:</span> <span class="n">QueryList</span><span class="p">[</span><span class="n">Cable</span><span class="p">]</span> <span class="o">=</span> <span class="n">QueryList</span><span class="p">()</span>
+    <span class="n">view</span> <span class="o">=</span> <span class="n">hw_server</span><span class="o">.</span><span class="n">get_view</span><span class="p">(</span><span class="s2">&quot;jtag&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
+        <span class="n">cables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_JtagCable</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">hw_server</span><span class="p">,</span> <span class="n">cs_server</span><span class="p">,</span> <span class="n">disable_core_scan</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">cables</span>
+</pre></div>
+
+           </div>
+          </div>
+          
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 25, 2026.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

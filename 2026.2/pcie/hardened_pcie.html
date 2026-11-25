@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Hardened Debug PCIe (CPM6) &mdash; ChipScoPy 2026.2.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="References" href="references.html" />
+    <link rel="prev" title="Details" href="pcie.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2026.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../noc.html">NocPerfmon</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../pcie.html">PCIe</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pcie.html">Details</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hardened Debug PCIe (CPM6)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ltssm-state-visit-tracking">LTSSM State Visit Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ltssm-state-transition-tracking">LTSSM State Transition Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ltssm-trace">LTSSM Trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#raw-trace-data">Raw Trace Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convenience-methods">Convenience Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trace-export">Trace Export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reset">Reset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualization">Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#partial-degradation">Partial Degradation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jtag.html">JTAG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mesa.html">MESA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../pcie.html">PCIe</a> &raquo;</li>
+      <li>Hardened Debug PCIe (CPM6)</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hardened-debug-pcie-cpm6">
+<h1>Hardened Debug PCIe (CPM6)<a class="headerlink" href="#hardened-debug-pcie-cpm6" title="Permalink to this heading">¶</a></h1>
+<p>The hardened debug PCIe core provides LTSSM state trace debug for the CPM6
+hardened PCIe controllers built into Versal silicon. Unlike the soft AXIS-PCIE
+debug core (which uses fabric-based BRAM), the hardened core reads trace data
+from NoC-accessible external memory.</p>
+<section id="discovery">
+<h2>Discovery<a class="headerlink" href="#discovery" title="Permalink to this heading">¶</a></h2>
+<p>Hardened PCIe cores are discovered alongside other debug cores:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="o">.</span><span class="n">discover_and_setup_cores</span><span class="p">(</span><span class="n">hardened_pcie_scan</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pcie_cores</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">hardened_pcie_cores</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">hardened_pcie_scan</span></code> keyword controls whether these cores are scanned.
+It is independent of <code class="docutils literal notranslate"><span class="pre">pcie_scan</span></code> which controls the soft AXIS-PCIE cores.</p>
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
+<p>After initialization, register and alias properties are available:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">props</span> <span class="o">=</span> <span class="n">pcie</span><span class="o">.</span><span class="n">get_property</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;LINK_SPEED&quot;</span><span class="p">])</span>      <span class="c1"># Link speed from status register</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;LTSSM_STATE&quot;</span><span class="p">])</span>     <span class="c1"># Current LTSSM state</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;LT_FEATURE_EN&quot;</span><span class="p">])</span>   <span class="c1"># LTSSM feature enable</span>
+</pre></div>
+</div>
+<p>Register and alias properties are named in upper case: <code class="docutils literal notranslate"><span class="pre">LINK_SPEED</span></code>,
+<code class="docutils literal notranslate"><span class="pre">LINK_WIDTH</span></code>, <code class="docutils literal notranslate"><span class="pre">LTSSM_STATE</span></code>, <code class="docutils literal notranslate"><span class="pre">LTSSM_ACTIVE</span></code>, <code class="docutils literal notranslate"><span class="pre">LT_FEATURE_EN</span></code>
+and <code class="docutils literal notranslate"><span class="pre">LT_WRAP_EN</span></code>. Properties the server computes rather than reads from a
+register are named in lower case: <code class="docutils literal notranslate"><span class="pre">link_info</span></code>, <code class="docutils literal notranslate"><span class="pre">cpm_version</span></code>,
+<code class="docutils literal notranslate"><span class="pre">trace_data</span></code> and the <code class="docutils literal notranslate"><span class="pre">state.</span></code> / <code class="docutils literal notranslate"><span class="pre">edge.</span></code> families below.</p>
+<p>Looking an alias up in lower case returns nothing, so prefer
+<code class="docutils literal notranslate"><span class="pre">props.get(name)</span></code> over <code class="docutils literal notranslate"><span class="pre">props[name]</span></code> if you need a default.</p>
+</section>
+<section id="ltssm-state-visit-tracking">
+<h2>LTSSM State Visit Tracking<a class="headerlink" href="#ltssm-state-visit-tracking" title="Permalink to this heading">¶</a></h2>
+<p>Properties starting with <code class="docutils literal notranslate"><span class="pre">state.</span></code> track which LTSSM states have been
+visited. A value of 1 means visited, 2 means most recently visited, and
+0 means never visited. Same convention as the soft PCIe core.</p>
+</section>
+<section id="ltssm-state-transition-tracking">
+<h2>LTSSM State Transition Tracking<a class="headerlink" href="#ltssm-state-transition-tracking" title="Permalink to this heading">¶</a></h2>
+<p>Properties starting with <code class="docutils literal notranslate"><span class="pre">edge.</span></code> count state transitions. For example,
+<code class="docutils literal notranslate"><span class="pre">edge.detect_polling</span></code> counts how many times the LTSSM moved from
+Detect to Polling.</p>
+</section>
+<section id="ltssm-trace">
+<h2>LTSSM Trace<a class="headerlink" href="#ltssm-trace" title="Permalink to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">state.trace</span></code> property contains the full LTSSM trace with substate
+grouping, trace gap markers (for FIFO overflow / NoC back pressure), and
+loop compression:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pcie</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+<span class="n">pcie</span><span class="o">.</span><span class="n">print_trace</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="raw-trace-data">
+<h2>Raw Trace Data<a class="headerlink" href="#raw-trace-data" title="Permalink to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">get_raw_trace()</span></code> method returns decoded per-word data including
+durations (always reported, unlike <code class="docutils literal notranslate"><span class="pre">state.trace</span></code> which suppresses
+rollover-prone states):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">pcie</span><span class="o">.</span><span class="n">get_raw_trace</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;prev_state&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;curr_state&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;  duration=</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;duration_us&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">us&quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;  overflow=</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;overflow&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For the raw hex word list without any decoding, use <code class="docutils literal notranslate"><span class="pre">get_trace_data()</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hex_words</span> <span class="o">=</span> <span class="n">pcie</span><span class="o">.</span><span class="n">get_trace_data</span><span class="p">()</span>  <span class="c1"># [&quot;0x00012345&quot;, &quot;0x0005c38e&quot;, ...]</span>
+</pre></div>
+</div>
+</section>
+<section id="convenience-methods">
+<h2>Convenience Methods<a class="headerlink" href="#convenience-methods" title="Permalink to this heading">¶</a></h2>
+<p>Quick link status and trace summary:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">status</span> <span class="o">=</span> <span class="n">pcie</span><span class="o">.</span><span class="n">get_link_status</span><span class="p">()</span>
+<span class="c1"># {&quot;speed&quot;: &quot;0x2&quot;, &quot;width&quot;: &quot;0x3&quot;, &quot;ltssm_state&quot;: &quot;0x11&quot;, &quot;link_info&quot;: &quot;Gen3x8&quot;}</span>
+
+<span class="k">if</span> <span class="n">pcie</span><span class="o">.</span><span class="n">is_link_up</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Link is trained&quot;</span><span class="p">)</span>
+
+<span class="n">summary</span> <span class="o">=</span> <span class="n">pcie</span><span class="o">.</span><span class="n">get_trace_summary</span><span class="p">()</span>
+<span class="c1"># {&quot;entry_count&quot;: 42, &quot;unique_states&quot;: [&quot;detect&quot;, &quot;polling&quot;, ...],</span>
+<span class="c1">#  &quot;loop_count&quot;: 3, &quot;current_state&quot;: &quot;0x11&quot;, &quot;link_info&quot;: &quot;Gen3x8&quot;}</span>
+</pre></div>
+</div>
+</section>
+<section id="trace-export">
+<h2>Trace Export<a class="headerlink" href="#trace-export" title="Permalink to this heading">¶</a></h2>
+<p>Save trace data to a file for offline analysis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pcie</span><span class="o">.</span><span class="n">save_trace</span><span class="p">(</span><span class="s2">&quot;trace.json&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span>  <span class="c1"># Full decoded trace + summary</span>
+<span class="n">pcie</span><span class="o">.</span><span class="n">save_trace</span><span class="p">(</span><span class="s2">&quot;trace.csv&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>    <span class="c1"># Tabular: raw, duration, states</span>
+</pre></div>
+</div>
+</section>
+<section id="reset">
+<h2>Reset<a class="headerlink" href="#reset" title="Permalink to this heading">¶</a></h2>
+<p>Reset the LTSSM trace capture to clear the trace buffer and restart:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pcie</span><span class="o">.</span><span class="n">reset_core</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This disables LTSSM capture, zeros trace memory, re-enables capture,
+and clears all cached state/edge/trace properties. After reset,
+<code class="docutils literal notranslate"><span class="pre">lt_feature_en</span></code> is restored to 1 and <code class="docutils literal notranslate"><span class="pre">ltssm_active</span></code> should become 1.</p>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading">¶</a></h2>
+<p>Graph topology is data-driven from the server’s LTSSM encoding file.
+The graph automatically adapts to different encodings:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># DOT format (for Graphviz)</span>
+<span class="n">dot_string</span> <span class="o">=</span> <span class="n">pcie</span><span class="o">.</span><span class="n">get_dot</span><span class="p">()</span>
+
+<span class="c1"># matplotlib graph</span>
+<span class="n">plt</span> <span class="o">=</span> <span class="n">pcie</span><span class="o">.</span><span class="n">get_plt</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>States are colored orange (current), green (visited), or gray (unvisited).
+Edge labels show transition counts.</p>
+</section>
+<section id="partial-degradation">
+<h2>Partial Degradation<a class="headerlink" href="#partial-degradation" title="Permalink to this heading">¶</a></h2>
+<p>If initialization detects an unsupported mode (e.g., <code class="docutils literal notranslate"><span class="pre">gt_direct</span></code> or
+<code class="docutils literal notranslate"><span class="pre">hsdp</span></code>), the core remains usable for register property access but
+LTSSM trace reading is disabled with an informative reason. Similarly,
+if the LTSSM feature is not enabled (<code class="docutils literal notranslate"><span class="pre">lt_feature_en=0</span></code>), register
+properties work but trace reading returns an informational message.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pcie.html" class="btn btn-neutral float-left" title="Details" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 25, 2026.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

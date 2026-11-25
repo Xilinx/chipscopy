@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>JTAG &mdash; ChipScoPy 2026.2.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MESA" href="mesa.html" />
+    <link rel="prev" title="Device" href="device.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="index.html" class="icon icon-home"> ChipScoPy
+          </a>
+              <div class="version">
+                2026.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">ChipScoPy Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chipscopy_installation.html">ChipScoPy Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ChipScoPy Debug Core API Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ddr.html">DDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ibert.html">IBERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ila.html">ILA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memory.html">Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="noc.html">NocPerfmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie.html">PCIe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sysmon.html">SysMon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vio.html">VIO</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Misc Classes &amp; Utility Functions</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">JTAG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reaching-a-cable">Reaching a cable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cable">Cable</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#chipscopy.api.cable.Cable"><code class="docutils literal notranslate"><span class="pre">Cable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.check_for_filter_match"><code class="docutils literal notranslate"><span class="pre">Cable.check_for_filter_match()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.context"><code class="docutils literal notranslate"><span class="pre">Cable.context</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.devices"><code class="docutils literal notranslate"><span class="pre">Cable.devices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.filter_by"><code class="docutils literal notranslate"><span class="pre">Cable.filter_by</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.get_option"><code class="docutils literal notranslate"><span class="pre">Cable.get_option()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.is_valid"><code class="docutils literal notranslate"><span class="pre">Cable.is_valid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.name"><code class="docutils literal notranslate"><span class="pre">Cable.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.set_option"><code class="docutils literal notranslate"><span class="pre">Cable.set_option()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.to_dict"><code class="docutils literal notranslate"><span class="pre">Cable.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.cable.Cable.to_json"><code class="docutils literal notranslate"><span class="pre">Cable.to_json()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-chipscopy.api.jtag">JTAG sequences</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#chipscopy.api.jtag.JtagPadding"><code class="docutils literal notranslate"><span class="pre">JtagPadding</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.jtag.JtagPadding.size"><code class="docutils literal notranslate"><span class="pre">JtagPadding.size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.jtag.JtagPadding.value"><code class="docutils literal notranslate"><span class="pre">JtagPadding.value</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chipscopy.api.jtag.JtagSequence"><code class="docutils literal notranslate"><span class="pre">JtagSequence</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.jtag.JtagSequence.clear"><code class="docutils literal notranslate"><span class="pre">JtagSequence.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.jtag.JtagSequence.dr_shift"><code class="docutils literal notranslate"><span class="pre">JtagSequence.dr_shift()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.jtag.JtagSequence.ir_shift"><code class="docutils literal notranslate"><span class="pre">JtagSequence.ir_shift()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.jtag.JtagSequence.run"><code class="docutils literal notranslate"><span class="pre">JtagSequence.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.jtag.JtagSequence.set_state"><code class="docutils literal notranslate"><span class="pre">JtagSequence.set_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chipscopy.api.jtag.JtagSequence.shift"><code class="docutils literal notranslate"><span class="pre">JtagSequence.shift()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chipscopy.api.jtag.JtagState"><code class="docutils literal notranslate"><span class="pre">JtagState</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mesa.html">MESA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html">Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session.html">Session</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ChipScoPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>JTAG</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jtag">
+<h1>JTAG<a class="headerlink" href="#jtag" title="Permalink to this heading">¶</a></h1>
+<p>Cable options such as the TCK clock frequency are read and written through
+<a class="reference internal" href="#chipscopy.api.cable.Cable" title="chipscopy.api.cable.Cable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Cable</span></code></a>. Low-level TAP shift sequences are built with
+<a class="reference internal" href="#chipscopy.api.jtag.JtagSequence" title="chipscopy.api.jtag.JtagSequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">JtagSequence</span></code></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Cable options are hw_server state shared by every connected client, and they persist
+for the life of the hw_server process. A change made by one session is visible to
+every other session and survives session close. Always restore the original value.</p>
+<p>Changing an option is not synchronized with other traffic on the cable. The caller
+is responsible for not retuning a cable while it is in active use elsewhere, for
+example a live ILA capture or a PDI program.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">frequency</span></code> is quantized to what the cable hardware can generate, and
+<code class="docutils literal notranslate"><span class="pre">frequency_list</span></code> is advisory only at this level: hw_server accepts values outside
+the list and snaps them to the nearest achievable rate rather than rejecting them.
+Vivado’s <code class="docutils literal notranslate"><span class="pre">set_property</span> <span class="pre">PARAM.FREQUENCY</span> <span class="pre">&lt;hz&gt;</span> <span class="pre">[current_hw_target]</span></code> reaches the same
+underlying option, but the two surfaces are <strong>not</strong> interchangeable. Vivado models
+<code class="docutils literal notranslate"><span class="pre">PARAM.FREQUENCY</span></code> as an enum whose members are the <code class="docutils literal notranslate"><span class="pre">frequency_list</span></code> values, so it
+validates against the list where hw_server does not, and it caches the value it
+requested rather than rereading it, so a value read back through <code class="docutils literal notranslate"><span class="pre">ChipScoPy</span></code> can
+disagree with what Vivado reports for the same cable.</p>
+<section id="reaching-a-cable">
+<h2>Reaching a cable<a class="headerlink" href="#reaching-a-cable" title="Permalink to this heading">¶</a></h2>
+<p>An ordinary session with no <code class="docutils literal notranslate"><span class="pre">cs_server_url</span></code> is the cheapest safe recipe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">chipscopy</span> <span class="kn">import</span> <span class="n">create_session</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">create_session</span><span class="p">(</span><span class="n">hw_server_url</span><span class="o">=</span><span class="s2">&quot;TCP:my-host:3121&quot;</span><span class="p">)</span>
+<span class="n">cable</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">cables</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Serial</span><span class="o">=</span><span class="s2">&quot;252502174339A&quot;</span><span class="p">)</span>
+
+<span class="n">original</span> <span class="o">=</span> <span class="n">cable</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">cable</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="mi">3_000_000</span><span class="p">)</span>
+    <span class="o">...</span>  <span class="c1"># slow the clock for a marginal-signal experiment</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">cable</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="n">original</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Do not reach for <code class="docutils literal notranslate"><span class="pre">initial_device_scan=False</span></code> as an optimization. It saves very little,
+and it skips the cable-readiness wait, because <code class="docutils literal notranslate"><span class="pre">wait_for_all_cables_ready</span></code> is only
+called from <code class="docutils literal notranslate"><span class="pre">Session.scan_devices</span></code>.</p>
+</section>
+<section id="cable">
+<h2>Cable<a class="headerlink" href="#cable" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.cable.</span></span><span class="sig-name descname"><span class="pre">Cable</span></span><a class="reference internal" href="_modules/chipscopy/api/cable.html#Cable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.cable.Cable" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Cable represents a cable connection. This may be a physical jtag cable, or a virtual cable.
+Zero or more devices may be associated with the cable, and each device has a position.
+Roughly equivalent to a vivado hw_target.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.check_for_filter_match">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_for_filter_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/cable.html#Cable.check_for_filter_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.cable.Cable.check_for_filter_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matches <code class="docutils literal notranslate"><span class="pre">filter_by()</span></code> values by equality rather than by regular expression.</p>
+<p>Cable serial numbers and descriptions routinely contain regular-expression
+metacharacters, and this operation retunes hardware shared with every other
+client, so an accidental wildcard match is unacceptable here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if <code class="docutils literal notranslate"><span class="pre">filter_name</span></code> is present in <code class="docutils literal notranslate"><span class="pre">filters_dict</span></code> and equal to
+<code class="docutils literal notranslate"><span class="pre">match_value</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.context">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.cable.Cable.context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the TCF context id of this cable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.devices">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">devices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><span class="pre">QueryList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="device.html#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><span class="pre">Device</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.cable.Cable.devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the devices discovered on this cable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="containers.html#chipscopy.api.containers.QueryList" title="chipscopy.api.containers.QueryList"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryList</span></code></a>[<a class="reference internal" href="device.html#chipscopy.api.device.device.Device" title="chipscopy.api.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.filter_by">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_by</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chipscopy.api.cable.Cable.filter_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies the dict used for filtering cables in the session.</p>
+<p>Filters the QueryList returned by <code class="docutils literal notranslate"><span class="pre">Session.cables</span></code>. Both the raw hw_server
+property names (<code class="docutils literal notranslate"><span class="pre">Description</span></code>, <code class="docutils literal notranslate"><span class="pre">Serial</span></code>) and lowercase aliases
+(<code class="docutils literal notranslate"><span class="pre">description</span></code>, <code class="docutils literal notranslate"><span class="pre">serial</span></code>) are accepted. <code class="docutils literal notranslate"><span class="pre">name</span></code> is always the cable’s
+human readable description, matching <a class="reference internal" href="#chipscopy.api.cable.Cable.name" title="chipscopy.api.cable.Cable.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Cable.name</span></code></a>.</p>
+<p>Match values are compared by equality, not by regular expression, so pass the
+property’s native type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, value]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.get_option">
+<span class="sig-name descname"><span class="pre">get_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/cable.html#Cable.get_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.cable.Cable.get_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a cable option value from the hw_server.</p>
+<p>Option values are read live from the hw_server on every call. They are not cached
+in the api layer. Supported keys are cable dependent. <code class="docutils literal notranslate"><span class="pre">frequency</span></code> (in Hz),
+<code class="docutils literal notranslate"><span class="pre">frequency_list</span></code>, <code class="docutils literal notranslate"><span class="pre">skew</span></code> and <code class="docutils literal notranslate"><span class="pre">timing_class</span></code> are common.</p>
+<p>Cable options are hw_server state shared by every client, and they persist for the
+life of the hw_server process. Restore anything you change.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cable</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">cables</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Serial</span><span class="o">=</span><span class="s2">&quot;252502174339A&quot;</span><span class="p">)</span>
+<span class="n">original</span> <span class="o">=</span> <span class="n">cable</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">cable</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="mi">3_000_000</span><span class="p">)</span>
+    <span class="o">...</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">cable</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="n">original</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the option, for example <code class="docutils literal notranslate"><span class="pre">&quot;frequency&quot;</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current option value.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NotImplementedError</strong> – If this cable type does not support options.</p></li>
+<li><p><strong>Exception</strong> – If the hw_server rejects the request.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.is_valid">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#chipscopy.api.cable.Cable.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the underlying cable node is still valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.name">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#chipscopy.api.cable.Cable.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the human readable description of this cable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.set_option">
+<span class="sig-name descname"><span class="pre">set_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/cable.html#Cable.set_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.cable.Cable.set_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a cable option in the hw_server and returns the value actually applied.</p>
+<p>The hw_server is free to apply a value different from the one requested. JTAG TCK
+frequency in particular is quantized to what the cable hardware can generate. On
+the FT4232H cables this was verified against, an out-of-range value was snapped
+down to an achievable one rather than rejected, but that is cable-dependent and
+another cable may reject the request instead. This method sets the option, reads
+it back, and returns the read-back value. It does not raise when the applied value
+differs from the requested value, so the caller must compare.</p>
+<p>The returned value is a best-effort read-back. The set and the read are two
+independent unlocked requests, so another client may have intervened.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">frequency</span></code> of <code class="docutils literal notranslate"><span class="pre">0</span></code> is reserved. On some cables it requests auto-negotiation
+rather than setting a rate, and on others it does nothing. Read the value back.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the option, for example <code class="docutils literal notranslate"><span class="pre">&quot;frequency&quot;</span></code>.</p></li>
+<li><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – New value for the option. Only <code class="docutils literal notranslate"><span class="pre">int</span></code> values are supported today.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The option value as read back from the hw_server after the set.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NotImplementedError</strong> – If this cable type does not support options.</p></li>
+<li><p><strong>TypeError</strong> – If <code class="docutils literal notranslate"><span class="pre">value</span></code> is not an <code class="docutils literal notranslate"><span class="pre">int</span></code>.</p></li>
+<li><p><strong>Exception</strong> – If the hw_server rejects the set or the read back.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.to_dict">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/cable.html#Cable.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.cable.Cable.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict of this cable’s properties.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.cable.Cable.to_json">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/cable.html#Cable.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.cable.Cable.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a JSON string representation of this cable’s properties.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-chipscopy.api.jtag">
+<span id="jtag-sequences"></span><h2>JTAG sequences<a class="headerlink" href="#module-chipscopy.api.jtag" title="Permalink to this heading">¶</a></h2>
+<p>JTAG TAP shift-sequence builder, providing <a class="reference internal" href="#chipscopy.api.jtag.JtagState" title="chipscopy.api.jtag.JtagState"><code class="xref py py-class docutils literal notranslate"><span class="pre">JtagState</span></code></a> and
+<a class="reference internal" href="#chipscopy.api.jtag.JtagSequence" title="chipscopy.api.jtag.JtagSequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">JtagSequence</span></code></a>. For cable-level operations such as the TCK clock
+frequency, see <code class="xref py py-mod docutils literal notranslate"><span class="pre">chipscopy.api.cable</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagPadding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.jtag.</span></span><span class="sig-name descname"><span class="pre">JtagPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chipscopy.api.jtag.JtagPadding" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagPadding.size">
+<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#chipscopy.api.jtag.JtagPadding.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagPadding.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#chipscopy.api.jtag.JtagPadding.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagSequence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.jtag.</span></span><span class="sig-name descname"><span class="pre">JtagSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jtag_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/jtag.html#JtagSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.jtag.JtagSequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builder that accumulates TCF JTAG sequence commands and a data payload.</p>
+<p>Commands and data are queued locally and then executed together in a
+single round trip to the JTAG node via <a class="reference internal" href="#chipscopy.api.jtag.JtagSequence.run" title="chipscopy.api.jtag.JtagSequence.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagSequence.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/jtag.html#JtagSequence.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.jtag.JtagSequence.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all commands from JTAG sequence</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagSequence.dr_shift">
+<span class="sig-name descname"><span class="pre">dr_shift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tdi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">JtagState.RESET</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/jtag.html#JtagSequence.dr_shift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.jtag.JtagSequence.dr_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add JTAG sequence command to shift data in DR SHIFT state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Integer or bytearray data to shift</p></li>
+<li><p><strong>tdi</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – TDI value to use for all clocks in shift state</p></li>
+<li><p><strong>size</strong> – Size of data to be shifted in bits</p></li>
+<li><p><strong>capture</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Capture TDO data during shift and return from sequence run command</p></li>
+<li><p><strong>end_state</strong> (<a class="reference internal" href="#chipscopy.api.jtag.JtagState" title="chipscopy.api.jtag.JtagState"><code class="xref py py-class docutils literal notranslate"><span class="pre">JtagState</span></code></a>) – JTAG state to enter after shift is complete. The default is RESET.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagSequence.ir_shift">
+<span class="sig-name descname"><span class="pre">ir_shift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tdi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">JtagState.RESET</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/jtag.html#JtagSequence.ir_shift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.jtag.JtagSequence.ir_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add JTAG sequence command to shift data in IR SHIFT state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Integer or bytearray data to shift</p></li>
+<li><p><strong>tdi</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – TDI value to use for all clocks in shift state</p></li>
+<li><p><strong>size</strong> – Size of data to be shifted in bits</p></li>
+<li><p><strong>capture</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Capture TDO data during shift and return from sequence run command</p></li>
+<li><p><strong>end_state</strong> (<a class="reference internal" href="#chipscopy.api.jtag.JtagState" title="chipscopy.api.jtag.JtagState"><code class="xref py py-class docutils literal notranslate"><span class="pre">JtagState</span></code></a>) – JTAG state to enter after shift is complete. The default is RESET.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagSequence.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/jtag.html#JtagSequence.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.jtag.JtagSequence.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run JTAG operations in sequence for target JTAG node. This method will return the result from IR/DR shift
+commands for which capture is true.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p>TODO: Option to mask and compare data returned after running sequence</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bytearray</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagSequence.set_state">
+<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/jtag.html#JtagSequence.set_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.jtag.JtagSequence.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add JTAG sequence command to move JTAG state machine to a new state and then generate certain number of JTAG
+clocks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<a class="reference internal" href="#chipscopy.api.jtag.JtagState" title="chipscopy.api.jtag.JtagState"><code class="xref py py-class docutils literal notranslate"><span class="pre">JtagState</span></code></a>) – Move JTAG state machine to this state</p></li>
+<li><p><strong>count</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of JTAG clocks to generate after moving to specified JTAG state</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagSequence.shift">
+<span class="sig-name descname"><span class="pre">shift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tdi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">JtagState.RESET</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/jtag.html#JtagSequence.shift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.jtag.JtagSequence.shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add JTAG sequence command to shift data in IR/DR SHIFT state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shift_type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – JTAG state in which data to shift. Valid options: “dr” or “ir”</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Integer or bytearray data to shift</p></li>
+<li><p><strong>tdi</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – TDI value to use for all clocks in shift state</p></li>
+<li><p><strong>size</strong> – Size of data to be shifted in bits</p></li>
+<li><p><strong>capture</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Capture TDO data during shift and return from sequence run command</p></li>
+<li><p><strong>end_state</strong> (<a class="reference internal" href="#chipscopy.api.jtag.JtagState" title="chipscopy.api.jtag.JtagState"><code class="xref py py-class docutils literal notranslate"><span class="pre">JtagState</span></code></a>) – JTAG state to enter after shift is complete. The default is RESET.</p></li>
+</ul>
+</dd>
+</dl>
+<p>TODO: Mask and compare options</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chipscopy.api.jtag.JtagState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chipscopy.api.jtag.</span></span><span class="sig-name descname"><span class="pre">JtagState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chipscopy/api/jtag.html#JtagState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chipscopy.api.jtag.JtagState" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="device.html" class="btn btn-neutral float-left" title="Device" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mesa.html" class="btn btn-neutral float-right" title="MESA" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright (C) 2021-2022, Xilinx, Inc., Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on November 25, 2026.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
