@@ -24,6 +24,11 @@ on:
         required: false
         default: false
         type: boolean
+      skip-existing:
+        description: 'Do not fail when a distribution of this version is already on the index (for re-runs after a partial upload)'
+        required: false
+        default: false
+        type: boolean
 
   pull_request:
     branches:
@@ -144,6 +149,9 @@ jobs:
         with:
           repository-url: 'https://test.pypi.org/legacy/'
           packages-dir: dist/
+          # `== true` always gives 'true' or 'false'. The action treats any
+          # other value, including an empty string, as on.
+          skip-existing: ${{ inputs.skip-existing == true }}
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
       - name: Publish to Prod PyPI
@@ -151,6 +159,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
+          skip-existing: ${{ inputs.skip-existing == true }}
           password: ${{ secrets.PYPI_API_TOKEN }}
 
   verify-install:
