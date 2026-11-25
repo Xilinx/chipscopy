@@ -12,7 +12,6 @@
 
 from .. import Service, ServiceProvider, add_service_provider
 from ..test import NAME, TestListener
-from .. import from_xargs
 from . import add_local_service
 from chipscopy.dm.request import CsRequest, DoneRequest
 from chipscopy import dm
@@ -45,7 +44,7 @@ class TestService(Service):
         return NAME
 
     def addManagerCmd(self, req):
-        args = from_xargs(req.args)
+        args = req.args  # already xargs-decoded by the Rust bridge
         name = args[0]
         manager = debugcore.DebugCoreManager(name)
 
@@ -56,7 +55,7 @@ class TestService(Service):
             req.sendError(f"Could not create manager {name}")
 
     def removeManagerCmd(self, req):
-        args = from_xargs(req.args)
+        args = req.args  # already xargs-decoded by the Rust bridge
 
         name = args[0]
 
@@ -69,7 +68,7 @@ class TestService(Service):
         req.sendXicomResult()
 
     def addNodeCmd(self, req):
-        args = from_xargs(req.args)
+        args = req.args  # already xargs-decoded by the Rust bridge
 
         manager_name = args[0]
         ctx = args[1]
@@ -100,7 +99,7 @@ class TestService(Service):
         cs_req()
 
     def removeNodeCmd(self, req):
-        args = from_xargs(req.args)
+        args = req.args  # already xargs-decoded by the Rust bridge
 
         manager_name = args[0]
         ctx = args[1]
@@ -120,7 +119,7 @@ class TestService(Service):
         cs_req()
 
     def updateNodeCmd(self, req):
-        args = from_xargs(req.args)
+        args = req.args  # already xargs-decoded by the Rust bridge
 
         manager_name = args[0]
         ctx = args[1]

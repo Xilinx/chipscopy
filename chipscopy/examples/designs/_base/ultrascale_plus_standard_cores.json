@@ -20,6 +20,51 @@
         "bit_error_test"
       ]
     },
+    "ibert_usp_isibert_gth": {
+      "enabled": false,
+      "description": "In-System IBERT GTH debug core for UltraScale+ GTH transceivers",
+      "quad_names": [],
+      "features": [
+        "link",
+        "eye_scan",
+        "bit_error_test"
+      ]
+    },
+    "ibert_usp_isibert_gty": {
+      "enabled": false,
+      "description": "In-System IBERT GTY debug core for UltraScale+ GTY transceivers",
+      "quad_names": [],
+      "features": [
+        "link",
+        "eye_scan",
+        "bit_error_test"
+      ]
+    },
+    "ibert_usp_gtm_dual": {
+      "enabled": false,
+      "description": "IBERT GTM Dual debug core for UltraScale+ GTM transceivers",
+      "quad_names": [],
+      "features": [
+        "link",
+        "yk_scan",
+        "bit_error_test"
+      ]
+    },
+    "ila": {
+      "enabled": false,
+      "description": "Classic Integrated Logic Analyzer debug core for UltraScale+ devices",
+      "features": [
+        "trigger",
+        "capture"
+      ]
+    },
+    "vio": {
+      "enabled": false,
+      "description": "Classic Virtual Input/Output debug core for UltraScale+ devices",
+      "features": [
+        "virtual_io"
+      ]
+    },
     "memory": {
       "enabled": false,
       "description": "DDRMC / LPDDRMC debug and calibration",
@@ -38,6 +83,6 @@
     "version": "1.1.0",
     "maintainer": "AMD ChipScoPy Team",
     "last_updated": "2026-05-11",
-    "notes": "Base manifest for UltraScale+ standard cores (IBERT GTY/GTH and memory). Children inherit via the `extends` field and override `enabled`/`quad_names`/`memory_types`/etc."
+    "notes": "Base manifest for UltraScale+ standard cores (classic IBERT GTY/GTH, in-system IBERT GTH/GTY, GTM Dual, and memory). Children inherit via the `extends` field and override `enabled`/`quad_names`/`memory_types`/etc."
   }
 }

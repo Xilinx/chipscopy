@@ -1,5 +1,31 @@
 # ChipScoPy Release Notes
 
+## 2026.2
+
+### 2026.2.0.57 - November 24, 2026
+
+> [!CAUTION]
+> **Breaking change** - Python 3.10 is no longer supported. Minimum required Python version is now 3.11.
+
+- Added support for the AMD Versal Premium Series Gen 2 hardened PCIe debug node, and fixed hardened PCIe reset, LTSSM trace reads, and link width decoding
+- Added a JTAG cable API, including TCK frequency control
+- Added recognition of classic UltraScale+ ILA/VIO cores in LTX files
+- Added a unified UltraScale+ IBERT example notebook and designs
+- Updated example designs, PDI/LTX files, and MESA manifests for 2026.2
+- Improved PCIe client robustness
+- Improved cs_server sharing: the first session to disconnect no longer cuts off the others, and reference counts no longer collide between non-sharing sessions
+- Fixed an error in `JtagDevice.reset()` when hw_server rejects the request
+- Made `Session.disconnect()` safe when errors are raised
+- Fixed crashes when a Versal device's JTAG connection is discovered late
+- Fixed background operations reporting success when their handler failed
+- Fixed node add/remove events arriving out of order when a node is re-added
+- Fixed delayed XSDBS type nodes after device programming
+- Fixed a Jupyter progress bar getting stuck on a non-Done frame (CR-1272627)
+- Fixed the sptg_example to read the NoC traffic generator base address from the MESA manifest (CR-1272552)
+- Fixed the vanilla noc-perfmon example (CR-1267331)
+- Fixed the second VEK385 progress bar failing to display (CR-1257049)
+- Fixed the GTM YK Scan example histogram plot
+
 ## 2026.1
 
 ### 2026.1.0.45 - June 24, 2026

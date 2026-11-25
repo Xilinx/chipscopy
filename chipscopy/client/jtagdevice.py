@@ -423,7 +423,7 @@ class JtagDevice(JtagNode):
         def done_reset(token, error, results):
             self.remove_pending(token)
             if error:
-                self.set_exception(error)
+                self.request.set_exception(error)
             else:
                 self.request.set_result(results)
 
@@ -562,6 +562,7 @@ class JtagCable(JtagNode):
         self.get_option("skew")
         self.get_option("timing_class")
 
+    # TODO: now overlaps Cable.set_option; candidate for retirement in a follow-up.
     def set_freq(self, freq: int, done: request.DoneCallback = None):
         """Sets the frequency of the cable"""
         proc = self.manager.channel.getRemoteService(JtagService)
@@ -574,10 +575,36 @@ class JtagCable(JtagNode):
 
         def done_set_freq(token, error, results):
             self.remove_pending(token)
+            if error:
+                if done:
+                    done(token, error, None)
+                return
             self.get_option("frequency", done_get_freg)
 
         ret_token = self.add_pending(proc.set_option(self.ctx, "frequency", freq, done_set_freq))
         return ret_token
+
+    def set_option(self, key: str, value: Any, done: request.DoneCallback = None):
+        """
+        Sets an option value on the cable in the hw_server.
+
+        The hw_server may apply a value different from the one requested. This method does
+        not cache the requested value - read the option back with get_option() to learn the
+        value that was actually applied.
+
+        :param key: Key of the option
+        :param value: New value for the option
+        :param done: Request callback when complete
+        """
+        proc = self.manager.channel.getRemoteService(JtagService)
+        assert proc
+
+        def done_set_option(token, error, results):
+            self.remove_pending(token)
+            if done:
+                done(token, error, results)
+
+        return self.add_pending(proc.set_option(self.ctx, key, value, done_set_option))
 
     def get_option(self, key: str, done: request.DoneCallback = None):
         """
@@ -591,7 +618,8 @@ class JtagCable(JtagNode):
 
         def done_get_option(token, error, results):
             self.remove_pending(token)
-            self[key] = results
+            if not error:
+                self[key] = results
             if done:
                 done(token, error, results)
 
@@ -603,7 +631,8 @@ class JtagCable(JtagNode):
 
         def done_update_static(token, error, results):
             self.remove_pending(token)
-            self.update(results)
+            if not error and results:
+                self.update(results)
             if done:
                 done(token, error, results)
 

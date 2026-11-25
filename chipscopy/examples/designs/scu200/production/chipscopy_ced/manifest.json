@@ -25,7 +25,7 @@
     }
   },
   "supported_examples": [
-    "link_and_eye_scan_usp",
+    "usp_ibert",
     "lpddr_example",
     "program"
   ],

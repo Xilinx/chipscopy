@@ -53,12 +53,19 @@ class Command(object):
         self.service = service
         self.command = command
         self.args = args
+        # Encode/decode through the channel, so a transport can supply its own
+        # codec (the pure-Python channel delegates to the module functions; the
+        # Rust `RsChannel` passes objects through untouched and lets Rust do the
+        # wire codec). Defaults preserve the old behavior for any channel that
+        # doesn't override these.
+        self.channel = channel
+        to_json = getattr(channel, "toJSONSequence", None)
+        args_wire = to_json(args) if to_json else toJSONSequence(args)
         t = None
         try:
             # TODO zero_copy
             # zero_copy = channel.isZeroCopySupported()
-            t = channel.sendCommand(service, command, toJSONSequence(args),
-                                    self)
+            t = channel.sendCommand(service, command, args_wire, self)
         except Exception as y:
             t = Token()
             protocol.invokeLater(self._error, y)
@@ -74,7 +81,8 @@ class Command(object):
         error = None
         args = None
         try:
-            args = fromJSONSequence(data)
+            from_json = getattr(self.channel, "fromJSONSequence", None)
+            args = from_json(data) if from_json else fromJSONSequence(data)
         except Exception as e:
             error = e
         assert not self.__done
@@ -85,7 +93,8 @@ class Command(object):
         error = None
         args = None
         try:
-            args = fromJSONSequence(data)
+            from_json = getattr(self.channel, "fromJSONSequence", None)
+            args = from_json(data) if from_json else fromJSONSequence(data)
         except Exception as e:
             error = e
         assert not self.__done

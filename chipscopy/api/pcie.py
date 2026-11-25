@@ -150,7 +150,7 @@ class PCIe(DebugCore["AxisPCIeCoreClient"]):
                 m = p.match(key)
                 start = PCIe._cap(m.group(1))
                 end = PCIe._cap(m.group(2))
-                dot_src += f'  {start} -> {end} [label = "{value}"]\n'
+                dot_src += f'  "{start}" -> "{end}" [label = "{value}"]\n'
         dot_src += "}"
         return dot_src
 

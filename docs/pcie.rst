@@ -26,4 +26,5 @@ and associated statistics available though properties on the PCIe object.
    :maxdepth: 3
 
    pcie/pcie.rst
+   pcie/hardened_pcie.rst
    pcie/references.rst

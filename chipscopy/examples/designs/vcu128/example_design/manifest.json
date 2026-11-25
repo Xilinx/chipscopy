@@ -24,7 +24,7 @@
   },
   "supported_examples": [
     "cross_link_debug",
-    "link_and_eye_scan_usp",
+    "usp_ibert",
     "program"
   ],
   "metadata": {

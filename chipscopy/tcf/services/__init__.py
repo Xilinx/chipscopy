@@ -177,13 +177,23 @@ except:
         def send_xicom_command(self, name, args, done, progress=None):
             done = self._makeCallback(done)
             service = self
+            # Some transports (the Rust bridge, pytcf) apply the xargs binary
+            # side-channel themselves. Dispatch on the channel, as Command does
+            # for toJSONSequence, so this works unchanged over the pure-Python
+            # socket transport where nothing else will do it.
+            xargs_done_by_transport = getattr(
+                service.channel, "xargs_in_transport", False)
 
             class XicomCommand(Command):
+                #: Tells the transport this command's arguments are xargs.
+                xicom = True
+
                 def __init__(self):
                     super(XicomCommand, self).__init__(service.channel,
                                                     service.getName(),
                                                     name,
-                                                    to_xargs(args))
+                                                    args if xargs_done_by_transport
+                                                    else to_xargs(args))
 
                 def done(self, error, results):
                     if not error:
@@ -198,7 +208,8 @@ except:
                             except Exception:
                                 pass
                             error = e
-                        results = from_xargs(results[1:]) if len(results) > 1 else None
+                        results = (results[1:] if xargs_done_by_transport
+                                   else from_xargs(results[1:])) if len(results) > 1 else None
                         if results and len(results) == 1:
                             results = results[0]
                     if done:
@@ -217,7 +228,8 @@ except:
                             except Exception:
                                 pass
                             error = e
-                        results = from_xargs(results[1:]) if len(results) > 1 else None
+                        results = (results[1:] if xargs_done_by_transport
+                                   else from_xargs(results[1:])) if len(results) > 1 else None
                         if results and len(results) == 1:
                             results = results[0]
                     if progress:

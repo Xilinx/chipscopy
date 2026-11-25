@@ -1,0 +1,84 @@
+{
+  "extends": "_base/versal_standard_cores.json",
+  "design_info": {
+    "design_name": "chipscopy_ced",
+    "description": "ChipScoPy CED (Configurable Example Design) for VPK180",
+    "hw_platform": "vpk180",
+    "programming_flow": "flat",
+    "design_path": "vpk180/production/chipscopy_ced",
+    "family": "versal",
+    "device": "xcvp1802",
+    "board": "VPK180",
+    "idcode": "0x14D14093"
+  },
+  "debug_cores": {
+    "ibert_gtm": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_208",
+        "Quad_209",
+        "Quad_210",
+        "Quad_211"
+      ]
+    },
+    "ila": {
+      "core_instances": [
+        {
+          "name": "chipscopy_i/counters/ila_slow_counter_0",
+          "probe_prefix": "chipscopy_i/counters/slow_counter_0",
+          "description": "ILA monitoring slow counter signals"
+        }
+      ]
+    },
+    "vio": {
+      "core_instances": [
+        {
+          "name": "chipscopy_i/counters/vio_slow_counter_0",
+          "probe_prefix": "chipscopy_i/counters/slow_counter_0",
+          "description": "VIO controlling slow counter"
+        }
+      ]
+    },
+    "noc_perfmon": {
+      "node_names": [
+        "DDRMC_X0Y0",
+        "NOC_NMU512_X2Y2"
+      ],
+      "trigger_base_address": "0x20140000000"
+    },
+    "memory": {
+      "memory_types": [
+        "LPDDR4"
+      ],
+      "node_names": [
+        "DDRMC_X0Y0",
+        "DDRMC_X1Y0",
+        "DDRMC_X2Y0",
+        "DDRMC_X3Y0"
+      ]
+    }
+  },
+  "supported_examples": [
+    "ddr_2d_eye_scan",
+    "ddr_example",
+    "ila_advanced_trigger",
+    "ila_and_vio",
+    "ila_monitor_status",
+    "memory_example",
+    "noc_perfmon",
+    "noc_perfmon_basic",
+    "program",
+    "sptg_example",
+    "sysmon_example",
+    "sysmon_sync_example",
+    "vio",
+    "yk_scan_example"
+  ],
+  "metadata": {
+    "created_date": "2026-10-13",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-10-13",
+    "notes": "VPK180 ChipScoPy CED with IBERT GTM (yk_scan), LPDDR4 memory, Sysmon and NoC cores."
+  }
+}

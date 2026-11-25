@@ -17,10 +17,9 @@
     "ibert_gtyp": {
       "enabled": true,
       "quad_names": [
-        "Quad_106",
-        "Quad_107",
         "Quad_205",
-        "Quad_206"
+        "Quad_206",
+        "Quad_207"
       ]
     },
     "ila": {
@@ -50,7 +49,7 @@
     },
     "memory": {
       "memory_types": [
-        "DDR5"
+        "LPDDR5"
       ],
       "node_names": [
         "DDRMC5E_X0Y0",
@@ -66,6 +65,7 @@
     "ila_advanced_trigger",
     "ila_and_vio",
     "ila_monitor_status",
+    "link_and_eye_scan",
     "memory_example",
     "noc_perfmon",
     "noc_perfmon_basic",
@@ -79,7 +79,7 @@
     "created_date": "2026-02-20",
     "version": "1.0.0",
     "maintainer": "AMD ChipScoPy Team",
-    "last_updated": "2026-05-05",
-    "notes": "VEK385 ChipScoPy CED with segmented programming (boot + PLD PDI) and DDR5 memory support."
+    "last_updated": "2026-11-19",
+    "notes": "VEK385 ChipScoPy CED with segmented programming (boot + PLD PDI) and LPDDR5 memory support."
   }
 }

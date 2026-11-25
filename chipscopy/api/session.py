@@ -40,6 +40,14 @@ from chipscopy.api.cable import Cable, discover_devices, wait_for_all_cables_rea
 
 logger = get_logger("client")
 
+# Bounded retry for the discovery-time jtag/debugcore view race (#1457): a
+# device can be discovered valid on a debugcore fallback when its jtag view
+# event simply hasn't been drained yet. 0.25s matches the existing
+# wait_for_all_cables_ready() poll interval (cable.py); 2.0s stays under half
+# the default cable_timeout so a scan can't become the slowest step in connect.
+_JTAG_DISCOVERY_RETRY_TIMEOUT = 2.0
+_JTAG_DISCOVERY_RETRY_INTERVAL = 0.25
+
 
 class PostProgramReacquireError(RuntimeError):
     """Raised when a programmed device never reacquires a stable chipscope root."""
@@ -87,6 +95,7 @@ class Session:
         self._xvc_mm_server_url: str = xvc_mm_server_url
         self._cable_timeout = cable_timeout
         self._cables_are_initialized = False
+        self._jtag_discovery_retry_exhausted = False
         self._disable_cache = disable_cache
         self._register_node_listeners = not self._disable_cache
         self._initial_device_scan = initial_device_scan
@@ -167,7 +176,10 @@ class Session:
     @classmethod
     def _remove_connection(cls, session: "Session"):
         with cls._session_lock:
-            del cls._connected_session_dict[hex(id(session))]
+            # pop, not del - disconnect() always reaches this now, so a retried disconnect
+            # would hit an already-removed key. A KeyError here would replace the original,
+            # more diagnostic teardown exception.
+            cls._connected_session_dict.pop(hex(id(session)), None)
 
     @classmethod
     def _get_all_sessions(cls) -> List["Session"]:
@@ -187,6 +199,16 @@ class Session:
     @staticmethod
     def _device_needs_post_program_wait(device: Device) -> bool:
         return bool(device.cs_server) and device.device_family == DeviceFamily.UPLUS
+
+    @staticmethod
+    def _device_missing_expected_jtag_node(device: Device) -> bool:
+        # An XVC cable legitimately has no jtag node (device_spec.py get_arch_name);
+        # every other family is expected to resolve one once its jtag view event
+        # has been drained. Reads only public/duck-typed attributes so this stays
+        # compatible with Mock(spec=Device) doubles that don't set device_family.
+        if getattr(device, "device_family", None) == DeviceFamily.XVC:
+            return False
+        return device.jtag_node is None
 
     @staticmethod
     def _get_stable_chipscope_node(device: Device) -> Optional[Node]:
@@ -331,15 +353,25 @@ class Session:
         sessions_to_disconnect = []
         with cls._session_lock:
             for id_key, (_, _, session) in cls._connected_session_dict.items():
-                sessions_to_disconnect.append(session)
-            for session in sessions_to_disconnect:
+                sessions_to_disconnect.append((id_key, session))
+            for id_key, session in sessions_to_disconnect:
                 try:
                     session.disconnect()
-                except Exception:  # pragma: no cover
-                    # TODO: Look into root cause later - happens intermittently in pytest infra causing tests to fail
-                    pass
-            cls._connected_session_dict = {}
-            cls._cs_server_channel_ref_count = {}
+                except Exception as ex:
+                    # Best effort teardown - one failing session must not strand the rest.
+                    # Log the dict key, never the session object: Session.__str__ reads
+                    # ServerInfo.url, which blocks up to 5s per server on a dead channel.
+                    logger.warning(f"Error disconnecting session {id_key}: {ex}", exc_info=True)
+            # Deliberately not clearing _connected_session_dict. Entries are removed by
+            # each session's own _remove_connection, so whatever remains is a session that
+            # never got that far. Since such a session may not have decremented its shared
+            # ref count, dropping the registry would strand that count with no session left
+            # to reconcile it, and no way to retry.
+            #
+            # Note a disconnect() that fails *inside its own three-step teardown* now also
+            # removes its entry, because that teardown runs under try/finally. Those
+            # failures are no longer distinguishable here - accepted as part of the fix for
+            # issue #1419, since the alternative was leaking the hw_server channel too.
 
     @staticmethod
     def _parse_url(url: str) -> Tuple[str, int]:
@@ -445,67 +477,143 @@ class Session:
         client_disconnect(self.hw_server)
         self.hw_server = None
 
+    def _cs_server_ref_key(self) -> Tuple[str, int]:
+        # Key for the shared cs_server ref count dict. Only used when sharing is on.
+        host, port = Session._parse_url(self._cs_server_url)
+        return socket.gethostbyname(host), port
+
+    def _rollback_cs_server_connect(
+        self,
+        key: Optional[Tuple[str, int]],
+        server: ServerInfo,
+        created: bool,
+        remote_connected: bool,
+    ) -> None:
+        # A connect that fails after the channel exists must not leak the channel or
+        # leave the shared ref count permanently high. self.cs_server is still unset.
+        # Nothing in here may raise: it runs inside an except block, so any exception
+        # would replace the caller's original connect failure.
+        if key is not None:
+            entry = Session._cs_server_channel_ref_count.pop(key, None)
+            if entry is not None and entry[0] - 1 > 0:
+                # Another session is still using this shared channel - leave it open.
+                Session._cs_server_channel_ref_count[key] = (entry[0] - 1, entry[1])
+        if created:
+            try:
+                client_disconnect(server)
+            except Exception as ex:
+                # Rollback is best effort - never mask the original connect failure.
+                logger.warning(f"Error closing cs_server after failed connect: {ex}")
+        elif remote_connected:
+            # Joined an existing shared channel and already attached our hw_server to it.
+            # Closing the channel is not an option - peers are still using it - so detach
+            # just our own remote link, or it leaks for the life of the channel.
+            try:
+                hw_server_url = self.hw_server.url if self.hw_server else self._hw_server_url
+                self._disconnect_remote_hw_server(server, hw_server_url)
+            except Exception as ex:
+                logger.warning(f"Error detaching hw_server after failed connect: {ex}")
+
     def connect_cs_server(self):
         if not self._cs_server_url:
             # A cs_server is OPTIONAL required when creating a session - so no error
             return
-        if self.cs_server:
-            raise RuntimeError("cs_server already connected")
 
-        # Due to a client limitation, we can not connect multiple times to the
-        # server from the same process. This causes errors due to the manager being
-        # removed on second connect.
-        #
-        # WORKAROUND:
-        # Reference count to safely share the cs_server connection
-        #
-        host, port = Session._parse_url(self._cs_server_url)
-        ip = socket.gethostbyname(host)
+        with Session._session_lock:
+            if self.cs_server:
+                raise RuntimeError("cs_server already connected")
 
-        # entry = Tuple(ref_count, cs_server)
-        entry = Session._cs_server_channel_ref_count.get((ip, port))
-        if entry is None or not self._cs_server_sharing:
-            # This is the first session - create ref_cnt entry and server
-            server = Session._connect_server("cs_server", self._cs_server_url, client_connect)
-            entry = (0, server)
+            key = None
+            if self._cs_server_sharing:
+                # Due to a client limitation, we can not connect multiple times to the
+                # server from the same process. This causes errors due to the manager being
+                # removed on second connect.
+                #
+                # WORKAROUND:
+                # Reference count to safely share the cs_server connection
+                #
+                key = self._cs_server_ref_key()
 
-        # Increment reference count for every session connection to same cs_server
-        server = entry[1]
-        entry = (entry[0] + 1, server)
-        Session._cs_server_channel_ref_count[(ip, port)] = entry
+                # entry = Tuple(ref_count, cs_server)
+                entry = Session._cs_server_channel_ref_count.get(key)
+                created = entry is None
+                if created:
+                    # This is the first session - create ref_cnt entry and server
+                    server = Session._connect_server(
+                        "cs_server", self._cs_server_url, client_connect
+                    )
+                    entry = (0, server)
 
-        server.connect_remote(self.hw_server.url)
-        if self._xvc_mm_server_url and server:
-            server.connect_xvc(self._xvc_mm_server_url, self._hw_server_url)
-        self.cs_server = server
+                # Increment reference count for every session connection to same cs_server
+                server = entry[1]
+                Session._cs_server_channel_ref_count[key] = (entry[0] + 1, server)
+            else:
+                # Not sharing - this session owns its cs_server connection outright, so it
+                # is never entered into the shared ref count dict.
+                created = True
+                server = Session._connect_server("cs_server", self._cs_server_url, client_connect)
+
+            remote_connected = False
+            try:
+                server.connect_remote(self.hw_server.url)
+                remote_connected = True
+                if self._xvc_mm_server_url and server:
+                    server.connect_xvc(self._xvc_mm_server_url, self._hw_server_url)
+            except Exception:
+                self._rollback_cs_server_connect(key, server, created, remote_connected)
+                raise
+
+            self.cs_server = server
 
     def disconnect_cs_server(self):
-        if not self.cs_server:
-            # silently ignore disconnect calls if no server was ever connected - no harm
-            return
-        host, port = Session._parse_url(self._cs_server_url)
-        ip = socket.gethostbyname(host)
+        with Session._session_lock:
+            if not self.cs_server:
+                # silently ignore disconnect calls if no server was ever connected - no harm
+                return
 
-        # entry = Tuple(ref_count, cs_server)
-        entry: Tuple[int, ServerInfo] = Session._cs_server_channel_ref_count.get((ip, port))
-        if not entry:
-            # This should not be possible - no entry indicates something unbalanced happened.
-            raise RuntimeError("Error during disconnect - no ref_cnt for session.cs_server")
+            if self._cs_server_sharing:
+                key = self._cs_server_ref_key()
 
-        ref_cnt, server = entry
-        ref_cnt -= 1
+                # entry = Tuple(ref_count, cs_server)
+                entry: Tuple[int, ServerInfo] = Session._cs_server_channel_ref_count.get(key)
+                if not entry:
+                    # This should not be possible - no entry indicates something unbalanced
+                    # happened.
+                    raise RuntimeError("Error during disconnect - no ref_cnt for session.cs_server")
+                ref_cnt, server = entry
+                ref_cnt -= 1
+            else:
+                # Not sharing - this session owns its cs_server connection outright and it was
+                # never entered into the shared ref count dict.
+                server = self.cs_server
 
-        hw_server_url = self.hw_server.url if self.hw_server else self._hw_server_url
-        self._disconnect_remote_hw_server(server, hw_server_url)
-        self.cs_server = None
+            hw_server_url = self.hw_server.url if self.hw_server else self._hw_server_url
 
-        if ref_cnt == 0 or not self._cs_server_sharing:
-            # This is the last session - delete the ref count tracking entry from dict
-            del Session._cs_server_channel_ref_count[(ip, port)]
+            if self._cs_server_sharing:
+                if ref_cnt > 0:
+                    # Not the last session out. _disconnect_remote_hw_server asks
+                    # cs_server to close the shared channel to hw_server, and a peer is
+                    # still using it, so it must not be sent from here. Just decrement.
+                    Session._cs_server_channel_ref_count[key] = (ref_cnt, server)
+                    self.cs_server = None
+                    return
+                # Last session out. The ref count entry is deliberately NOT deleted
+                # before the call below: if it raises, that entry is the only remaining
+                # handle to this channel, and dropping it first would orphan it.
+                try:
+                    self._disconnect_remote_hw_server(server, hw_server_url)
+                finally:
+                    del Session._cs_server_channel_ref_count[key]
+                    self.cs_server = None
+                    client_disconnect(server)
+                return
+
+            # Not sharing - unchanged. A raise below skips the other two statements,
+            # leaving self.cs_server set over an open socket, which is what makes a
+            # retry of disconnect_cs_server() work.
+            self._disconnect_remote_hw_server(server, hw_server_url)
+            self.cs_server = None
             client_disconnect(server)
-        else:
-            # This is not the last session - just decrement the ref count
-            Session._cs_server_channel_ref_count[(ip, port)] = (ref_cnt, server)
 
     def connect(self):
         self.connect_hw_server()
@@ -556,12 +664,22 @@ class Session:
             if self.cs_server:
                 self.cs_server.get_view("chipscope").remove_node_listener(self._dm_node_listener)
 
-        with Session._session_lock:
-            # cs_server changes are locked because they use a reference counted
-            # shared cs_server - this is delicate
-            self.disconnect_cs_server()
-        self.disconnect_hw_server()
-        Session._remove_connection(self)
+        # Teardown is all-or-attempted: a failure in any step must not strand the later
+        # ones. Before this, a raise from disconnect_cs_server() leaked the hw_server
+        # channel and left this session registered for the life of the process.
+        # The lock stays scoped to the cs_server step only, as before - widening it over
+        # disconnect_hw_server()'s unbounded channel close would add global contention
+        # that nothing here needs.
+        try:
+            with Session._session_lock:
+                # cs_server changes are locked because they use a reference counted
+                # shared cs_server - this is delicate
+                self.disconnect_cs_server()
+        finally:
+            try:
+                self.disconnect_hw_server()
+            finally:
+                Session._remove_connection(self)
 
     def set_param(self, params: Dict[str, Any]):
         """Generic parameter get and set for low level chipscope server params"""
@@ -656,10 +774,7 @@ class Session:
         )
         return retval
 
-    def scan_devices(self) -> QueryList[Device]:
-        if not self._cables_are_initialized:
-            wait_for_all_cables_ready(self.hw_server, self._cable_timeout)
-            self._cables_are_initialized = True
+    def _discover_devices_once(self) -> QueryList[Device]:
         devices = discover_devices(
             hw_server=self.hw_server,
             cs_server=self.cs_server,
@@ -668,6 +783,65 @@ class Session:
             disable_cache=self._disable_cache,
             enable_experimental_protocol_decode=self.enable_experimental_protocol_decode,
         )  # Gating logic goes Here
+        return devices
+
+    def _discover_devices_with_jtag_retry(self) -> QueryList[Device]:
+        """Retry discovery when a device is missing its expected jtag node (#1457).
+
+        ViewInfo is an event-queue mirror (chipscopy/client/view_info.py):
+        run_events() only drains events already delivered, and never waits for
+        one still in flight. DeviceSpec.create_from_device_records() reads the
+        jtag and debugcore views independently and non-atomically, so a device
+        can be discovered "valid" on a debugcore fallback purely because its
+        jtag view event hasn't been drained yet -- not because anything is
+        actually wrong with the hardware. This retry gives that event a bounded
+        chance to arrive before the device is handed back to the caller.
+
+        Exhausting the budget never raises: it logs a warning and returns the
+        last discovery result, so a setup that works today still works, only
+        slower in the abnormal case. The retry also gives up permanently after
+        one exhaustion for the life of this session (self._jtag_discovery_retry_exhausted),
+        so a device population that legitimately never resolves a jtag node
+        (e.g. a shared cs_server, a DPC-only connection) pays the penalty once,
+        not on every access.
+        """
+        if getattr(self, "_jtag_discovery_retry_exhausted", False):
+            return self._discover_devices_once()
+
+        devices = self._discover_devices_once()
+        # Deadline starts AFTER the first discovery call, not before it (#1459
+        # review). A slow first call would otherwise consume the whole budget,
+        # leaving zero actual retries for the delayed jtag event to catch up.
+        deadline = time.monotonic() + _JTAG_DISCOVERY_RETRY_TIMEOUT
+
+        while any(self._device_missing_expected_jtag_node(d) for d in devices):
+            offending = next(d for d in devices if self._device_missing_expected_jtag_node(d))
+
+            if time.monotonic() >= deadline:
+                self._jtag_discovery_retry_exhausted = True
+                offending_spec = getattr(offending, "_device_spec", None)
+                device_view = getattr(offending_spec, "device_view", "?")
+                logger.warning(
+                    f"Device {offending} discovered with no jtag node after "
+                    f"{_JTAG_DISCOVERY_RETRY_TIMEOUT}s of retry (device_view="
+                    f"{device_view!r}); returning it as discovered. This can "
+                    "happen when a jtag view event is delayed relative to a "
+                    "debugcore view event (#1457); program()/reset() will "
+                    "raise a clear error if the jtag node is genuinely "
+                    "unavailable."
+                )
+                return devices
+
+            time.sleep(_JTAG_DISCOVERY_RETRY_INTERVAL)
+            devices = self._discover_devices_once()
+
+        return devices
+
+    def scan_devices(self) -> QueryList[Device]:
+        if not self._cables_are_initialized:
+            wait_for_all_cables_ready(self.hw_server, self._cable_timeout)
+            self._cables_are_initialized = True
+        devices = self._discover_devices_with_jtag_retry()
 
         # Register rescan callback on all discovered devices
         # This enables devices to notify the session when they need a rescan (e.g., after programming)

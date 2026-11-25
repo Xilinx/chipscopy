@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+JTAG TAP shift-sequence builder, providing :class:`JtagState` and
+:class:`JtagSequence`. For cable-level operations such as the TCK clock
+frequency, see :mod:`chipscopy.api.cable`.
+"""
+
 import sys
 from collections import namedtuple
 from typing import List
@@ -42,6 +48,12 @@ class JtagState(Enum):
 
 
 class JtagSequence:
+    """Builder that accumulates TCF JTAG sequence commands and a data payload.
+
+    Commands and data are queued locally and then executed together in a
+    single round trip to the JTAG node via :meth:`run`.
+    """
+
     _jtag_node: JtagNode = None
     _commands: list = None
     _data: bytes = None

@@ -79,6 +79,7 @@ Indices and Tables
 
    containers.rst
    device.rst
+   jtag.rst
    mesa.rst
    report.rst
    session.rst

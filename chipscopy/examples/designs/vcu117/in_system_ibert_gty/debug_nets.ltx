@@ -1,0 +1,1180 @@
+{
+    "ltx_root": {
+        "version": 4,
+        "minor": 0,
+        "ltx_data": [
+            {
+                "name": "EDA_PROBESET",
+                "active": true,
+                "debug_cores": [
+                    {
+                        "type": "XSDB_V3",
+                        "name": "dbg_hub",
+                        "spec": "labtools_xsdbm_v3",
+                        "clk_input_freq_hz": "125012504"
+                    },
+                    {
+                        "type": "VIO_V2",
+                        "name": "gty_vcu117_isi_vio_0_inst",
+                        "spec": "labtools_vio_v3",
+                        "ipName": "vio",
+                        "core_location": {
+                            "user_chain": 1,
+                            "slave_index": 0,
+                            "bscan_switch_index": 0
+                        },
+                        "uuid": "DFD04D31017355B2837ADA23962D24B2",
+                        "pins": [
+                            {
+                                "name": "probe_in0",
+                                "id": 0,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 0,
+                                "nets": [
+                                    {
+                                        "name": "link_status_out_OBUF",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_in1",
+                                "id": 1,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 1,
+                                "nets": [
+                                    {
+                                        "name": "link_down_latched_out_OBUF",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_in2",
+                                "id": 2,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 2,
+                                "nets": [
+                                    {
+                                        "name": "init_done_int",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_in3",
+                                "id": 3,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 3,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "init_retry_ctr_int",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "init_retry_ctr_int[3]"
+                                            },
+                                            {
+                                                "name": "init_retry_ctr_int[2]"
+                                            },
+                                            {
+                                                "name": "init_retry_ctr_int[1]"
+                                            },
+                                            {
+                                                "name": "init_retry_ctr_int[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_in4",
+                                "id": 4,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 13,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "gtpowergood_vio_sync",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "gtpowergood_vio_sync[13]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[12]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[11]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[10]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[9]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[8]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[7]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[6]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[5]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[4]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[3]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[2]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[1]"
+                                            },
+                                            {
+                                                "name": "gtpowergood_vio_sync[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_in5",
+                                "id": 5,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 13,
+                                "portIndex": 5,
+                                "nets": [
+                                    {
+                                        "name": "txpmaresetdone_vio_sync",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[13]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[12]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[11]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[10]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[9]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[8]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[7]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[6]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[5]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[4]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[3]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[2]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[1]"
+                                            },
+                                            {
+                                                "name": "txpmaresetdone_vio_sync[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_in6",
+                                "id": 6,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 13,
+                                "portIndex": 6,
+                                "nets": [
+                                    {
+                                        "name": "rxpmaresetdone_vio_sync",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[13]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[12]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[11]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[10]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[9]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[8]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[7]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[6]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[5]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[4]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[3]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[2]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[1]"
+                                            },
+                                            {
+                                                "name": "rxpmaresetdone_vio_sync[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_in7",
+                                "id": 7,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 7,
+                                "nets": [
+                                    {
+                                        "name": "gtwiz_reset_tx_done_vio_sync",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "gtwiz_reset_tx_done_vio_sync[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_in8",
+                                "id": 8,
+                                "type": "DATA",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 8,
+                                "nets": [
+                                    {
+                                        "name": "gtwiz_reset_rx_done_vio_sync",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "gtwiz_reset_rx_done_vio_sync[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out0",
+                                "id": 9,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 0,
+                                "nets": [
+                                    {
+                                        "name": "hb_gtwiz_reset_all_vio_int",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out1",
+                                "id": 10,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 1,
+                                "nets": [
+                                    {
+                                        "name": "hb0_gtwiz_reset_tx_pll_and_datapath_int",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "hb0_gtwiz_reset_tx_pll_and_datapath_int[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out2",
+                                "id": 11,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 2,
+                                "nets": [
+                                    {
+                                        "name": "hb0_gtwiz_reset_tx_datapath_int",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "hb0_gtwiz_reset_tx_datapath_int[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out3",
+                                "id": 12,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "hb_gtwiz_reset_rx_pll_and_datapath_vio_int",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out4",
+                                "id": 13,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "hb_gtwiz_reset_rx_datapath_vio_int",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out5",
+                                "id": 14,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 5,
+                                "nets": [
+                                    {
+                                        "name": "link_down_latched_reset_vio_int",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out6",
+                                "id": 15,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 69,
+                                "portIndex": 6,
+                                "nets": [
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[69]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[68]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[67]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[66]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[65]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[64]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[63]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[62]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[61]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[60]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[59]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[58]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[57]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[56]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[55]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[54]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[53]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[52]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[51]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[50]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[49]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[48]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[47]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[46]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[45]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[44]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[43]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[42]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[41]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[40]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[39]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[38]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[37]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[36]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[35]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[34]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[33]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[32]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[31]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[30]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[29]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[28]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[27]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[26]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[25]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[24]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[23]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[22]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[21]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[20]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[19]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[18]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[17]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[16]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[15]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[14]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[13]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[12]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[11]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[10]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[9]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[8]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[7]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[6]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[5]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[4]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[3]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[2]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[1]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out6[0]",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out7",
+                                "id": 16,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 69,
+                                "portIndex": 7,
+                                "nets": [
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[69]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[68]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[67]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[66]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[65]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[64]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[63]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[62]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[61]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[60]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[59]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[58]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[57]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[56]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[55]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[54]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[53]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[52]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[51]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[50]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[49]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[48]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[47]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[46]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[45]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[44]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[43]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[42]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[41]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[40]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[39]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[38]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[37]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[36]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[35]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[34]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[33]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[32]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[31]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[30]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[29]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[28]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[27]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[26]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[25]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[24]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[23]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[22]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[21]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[20]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[19]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[18]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[17]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[16]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[15]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[14]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[13]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[12]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[11]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[10]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[9]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[8]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[7]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[6]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[5]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[4]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[3]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[2]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[1]",
+                                        "isBus": false
+                                    },
+                                    {
+                                        "name": "gty_vcu117_isi_vio_0_inst/probe_out7[0]",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe_out8",
+                                "id": 17,
+                                "type": "DATA",
+                                "direction": "OUT",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 41,
+                                "portIndex": 8,
+                                "nets": [
+                                    {
+                                        "name": "loopback_int",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "loopback_int[41]"
+                                            },
+                                            {
+                                                "name": "loopback_int[40]"
+                                            },
+                                            {
+                                                "name": "loopback_int[39]"
+                                            },
+                                            {
+                                                "name": "loopback_int[38]"
+                                            },
+                                            {
+                                                "name": "loopback_int[37]"
+                                            },
+                                            {
+                                                "name": "loopback_int[36]"
+                                            },
+                                            {
+                                                "name": "loopback_int[35]"
+                                            },
+                                            {
+                                                "name": "loopback_int[34]"
+                                            },
+                                            {
+                                                "name": "loopback_int[33]"
+                                            },
+                                            {
+                                                "name": "loopback_int[32]"
+                                            },
+                                            {
+                                                "name": "loopback_int[31]"
+                                            },
+                                            {
+                                                "name": "loopback_int[30]"
+                                            },
+                                            {
+                                                "name": "loopback_int[29]"
+                                            },
+                                            {
+                                                "name": "loopback_int[28]"
+                                            },
+                                            {
+                                                "name": "loopback_int[27]"
+                                            },
+                                            {
+                                                "name": "loopback_int[26]"
+                                            },
+                                            {
+                                                "name": "loopback_int[25]"
+                                            },
+                                            {
+                                                "name": "loopback_int[24]"
+                                            },
+                                            {
+                                                "name": "loopback_int[23]"
+                                            },
+                                            {
+                                                "name": "loopback_int[22]"
+                                            },
+                                            {
+                                                "name": "loopback_int[21]"
+                                            },
+                                            {
+                                                "name": "loopback_int[20]"
+                                            },
+                                            {
+                                                "name": "loopback_int[19]"
+                                            },
+                                            {
+                                                "name": "loopback_int[18]"
+                                            },
+                                            {
+                                                "name": "loopback_int[17]"
+                                            },
+                                            {
+                                                "name": "loopback_int[16]"
+                                            },
+                                            {
+                                                "name": "loopback_int[15]"
+                                            },
+                                            {
+                                                "name": "loopback_int[14]"
+                                            },
+                                            {
+                                                "name": "loopback_int[13]"
+                                            },
+                                            {
+                                                "name": "loopback_int[12]"
+                                            },
+                                            {
+                                                "name": "loopback_int[11]"
+                                            },
+                                            {
+                                                "name": "loopback_int[10]"
+                                            },
+                                            {
+                                                "name": "loopback_int[9]"
+                                            },
+                                            {
+                                                "name": "loopback_int[8]"
+                                            },
+                                            {
+                                                "name": "loopback_int[7]"
+                                            },
+                                            {
+                                                "name": "loopback_int[6]"
+                                            },
+                                            {
+                                                "name": "loopback_int[5]"
+                                            },
+                                            {
+                                                "name": "loopback_int[4]"
+                                            },
+                                            {
+                                                "name": "loopback_int[3]"
+                                            },
+                                            {
+                                                "name": "loopback_int[2]"
+                                            },
+                                            {
+                                                "name": "loopback_int[1]"
+                                            },
+                                            {
+                                                "name": "loopback_int[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "XSDBS_V2",
+                        "name": "insys_inst",
+                        "spec": "labtools_xsdbslavelib_v2",
+                        "ipName": "in_system_ibert",
+                        "core_location": {
+                            "user_chain": 1,
+                            "slave_index": 10,
+                            "bscan_switch_index": 0
+                        },
+                        "uuid": "E148D4CE56D25407BAB4AB9528B62BBD"
+                    }
+                ]
+            }
+        ]
+    }
+}
