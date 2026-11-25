@@ -132,18 +132,26 @@ jobs:
           name: release-dists
           path: dist/
 
+      # Trusted Publishing is the default. Setting TEST_PYPI_API_TOKEN or
+      # PYPI_API_TOKEN as a secret of the publish-to-pypi environment makes the
+      # upload use that project-scoped API token instead. Use it only while
+      # Trusted Publishing is failing, and delete the secret afterwards: an
+      # upload with a token has no PEP 740 attestations. An unset secret is
+      # an empty password, which makes the action use Trusted Publishing.
       - name: Publish to Test PyPI
         if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: 'https://test.pypi.org/legacy/'
           packages-dir: dist/
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
       - name: Publish to Prod PyPI
         if: ${{ needs.determine-target.outputs.pypi-target == 'prod' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
+          password: ${{ secrets.PYPI_API_TOKEN }}
 
   verify-install:
     name: Verify Installation (${{ matrix.os }})
