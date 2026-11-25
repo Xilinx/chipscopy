@@ -166,3 +166,21 @@ except:
             else:
                 props.append(args[i])
         return props
+
+
+# ---------------------------------------------------------------------------
+# tcf-rs override: run the xargs binary side-channel in Rust (operating on the
+# same Python object lists). Shadows the pure-Python to_xargs/from_xargs above;
+# skipped when tcf_rs is absent. services/__init__ re-exports these via
+# `from .arguments import *`, so default_core_service/proxies use them unchanged.
+# ---------------------------------------------------------------------------
+try:
+    import tcf_rs as _tcf_rs
+
+    def to_xargs(args):
+        return _tcf_rs.to_xargs(args)
+
+    def from_xargs(args):
+        return _tcf_rs.from_xargs(args)
+except ImportError:
+    pass

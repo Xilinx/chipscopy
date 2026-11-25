@@ -22,7 +22,7 @@ except:
     from typing import ClassVar
     from ... import channel, transport
     from ...channel import fromJSONSequence, toJSONSequence
-    from .. import to_xargs, ServiceProvider, Service, add_service_provider
+    from .. import to_xargs, from_xargs, ServiceProvider, Service, add_service_provider
 
 
     class CommandRequest(object):
@@ -32,7 +32,11 @@ except:
             self.data = data
             if node is not None:
                 self.node = node
-            self.args = fromJSONSequence(data) if data else None
+            # Splice the xargs binary side-channel here, so `req.args` means the
+            # same thing on every transport: the fully decoded argument list.
+            # pytcf and the Rust bridge both hand it over already decoded, and
+            # services therefore no longer call from_xargs themselves.
+            self.args = from_xargs(fromJSONSequence(data)) if data else None
 
         def sendError(self, error, *result):
             if type(error) is list:
@@ -112,3 +116,83 @@ except:
         if str(service) not in _local_services_added:
             add_service_provider(LocalServiceProvider(service))
             _local_services_added.add(str(service))
+
+
+# ---------------------------------------------------------------------------
+# tcf-rs transport override
+#
+# When running inside the chipscope-pyrs server, the Rust `tcf_rs` bridge module
+# is importable. In that case the incoming-command dispatch is driven by the Rust
+# TCF event loop, which calls a registered handler `(token, channel, data)` where
+# `channel` is a bridge channel handle and `data` the raw argument bytes. We keep
+# chipscopy's own byte-level codec (`toJSONSequence`/`fromJSONSequence`): the
+# bridge only moves raw payloads. These definitions shadow the pure-Python ones
+# above; standalone chipscopy has no `tcf_rs`, so this block is skipped.
+# ---------------------------------------------------------------------------
+try:
+    import tcf_rs as _tcf_rs
+except ImportError:
+    _tcf_rs = None
+
+if _tcf_rs is not None:
+    # Object-level bridge: Python hands Rust plain Python objects and does no
+    # formatting. Rust decodes the wire into a Python list (req.args) and, on the
+    # way out, writes the error slot, applies the xargs binary side-channel and
+    # encodes the sequence — so there is no toJSONSequence/fromJSONSequence, no
+    # hand-built `(None, *result)` and no to_xargs call here.
+    class CommandRequest(object):
+        def __init__(self, _channel, token, args, node=None):
+            self.channel = _channel  # bridge server-channel handle
+            self.token = token
+            self.data = args
+            if node is not None:
+                self.node = node
+            self.args = args  # already the decoded argument list
+
+        def sendError(self, error, *result):
+            # Rust builds the error object from `error` itself, keeping Class and
+            # Module so the client can reconstruct the exception type.
+            self.channel.send_error(self.token, error, result)
+
+        def sendResult(self, *result):
+            self.channel.send_result(self.token, result)
+
+        def sendXicomResult(self, *results):
+            self.channel.send_xicom_result(self.token, results)
+
+        def sendXicomProgress(self, *progress):
+            self.channel.send_xicom_progress(self.token, progress)
+
+    def send_xicom_event(service_name, event_name, args):
+        # Node property dicts routinely carry bytes, which is what the side
+        # channel exists to extract; Rust applies it.
+        _tcf_rs.send_event(service_name, event_name, args, xicom=True)
+
+    def _to_camel_case(name):
+        m = name.split("_")
+        return m[0] + "".join(i.title() for i in m[1:-1])
+
+    def _wrap_command(callback):
+        def handle_command(token, channel, args):
+            callback(CommandRequest(channel, token, args))
+        return handle_command
+
+    _local_services_added = set()
+
+    def add_local_service(service):
+        convert_camel_case = getattr(service, "convert_camel_case", True)
+        if str(service) in _local_services_added:
+            return
+        _local_services_added.add(str(service))
+        for c in [c for c in dir(service)
+                  if not c.startswith("__") and c.endswith("_cmd")]:
+            name = _to_camel_case(c) if convert_camel_case else c[:c.find("_cmd")]
+            _tcf_rs.add_command_handler(
+                service.getName(), name, _wrap_command(getattr(service, c))
+            )
+        for c in [c for c in dir(service)
+                  if not c.startswith("__") and c.endswith("Cmd")]:
+            name = c[:c.find("Cmd")]
+            _tcf_rs.add_command_handler(
+                service.getName(), name, _wrap_command(getattr(service, c))
+            )

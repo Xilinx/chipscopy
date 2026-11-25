@@ -365,7 +365,7 @@ class Manifest:
 
     @staticmethod
     def _first_match_or_raise(directory: Path, pattern: str, label: str) -> str:
-        matches = list(directory.glob(pattern))
+        matches = sorted(directory.glob(pattern))
         if not matches:
             raise RuntimeError(
                 f"{label} not found in {directory} with pattern '{pattern}'\n"
@@ -375,7 +375,7 @@ class Manifest:
 
     @staticmethod
     def _first_match_optional(directory: Path, pattern: str) -> str:
-        matches = list(directory.glob(pattern))
+        matches = sorted(directory.glob(pattern))
         return str(matches[0]) if matches else ""
 
     _FLOW_HANDLERS: ClassVar[Dict[str, Callable[..., None]]] = {

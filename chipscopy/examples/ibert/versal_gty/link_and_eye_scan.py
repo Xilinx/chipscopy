@@ -43,10 +43,10 @@
 #
 # ## Requirements
 # - Local or remote AMD Versal board (VCK190, VMK180, VPK120, VHK158, VEK280, VEK385, etc.)
-# - AMD hw_server 2026.1+ installed and running
-# - AMD cs_server 2026.1+ installed and running
+# - AMD hw_server 2026.2 installed and running
+# - AMD cs_server 2026.2 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2026.1+ installed
+# - ChipScoPy 2026.2 installed
 # - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 # - Optional - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/) (For the sweep example only).
 
@@ -358,7 +358,7 @@ else:
 # ## 10 - View Eye Scan Plot.
 #
 # A 2D Eye Scan helps perform margin analysis on the RX channel
-# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.1/ibert/eye_scan.html#scan-plots)
+# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.2/ibert/eye_scan.html#scan-plots)
 #
 # NOTE - The plot may not display if this notebook is run in Jupyter Lab. For details, see [link](https://plotly.com/python/getting-started/#jupyterlab-support-python-35)
 

@@ -32,10 +32,10 @@
 #
 # ### Requirements
 # - VCK190 and VCU128 boards
-# - AMD hw_server 2026.1 installed and running
-# - AMD cs_server 2026.1 installed and running
+# - AMD hw_server 2026.2 installed and running
+# - AMD cs_server 2026.2 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2026.1 installed
+# - ChipScoPy 2026.2 installed
 # - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 #
 # ### Setup
@@ -319,7 +319,7 @@ for eye_scan in eye_scans:
 # ## 14 - View Eye Scan Plot.
 #
 # A 2D Eye Scan helps perform margin analysis on the RX channel
-# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.1/ibert/scan.html#scan-plots)
+# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.2/ibert/scan.html#scan-plots)
 #
 # NOTE - The plot may not display if this notebook is run in Jupyter Lab. For details, see [link](https://plotly.com/python/getting-started/#jupyterlab-support-python-35)
 
@@ -426,7 +426,7 @@ for eye_scan in eye_scans:
 # ## 22 - View Eye Scan Plot.
 #
 # A 2D Eye Scan helps perform margin analysis on the RX channel
-# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.1/ibert/scan.html#scan-plots)
+# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.2/ibert/scan.html#scan-plots)
 #
 # NOTE - The plot may not display if this notebook is run in Jupyter Lab. For details, see [link](https://plotly.com/python/getting-started/#jupyterlab-support-python-35)
 
@@ -542,7 +542,7 @@ for eye_scan in eye_scans:
 # ## 30 - View Eye Scan Plot.
 #
 # A 2D Eye Scan helps perform margin analysis on the RX channel
-# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.1/ibert/scan.html#scan-plots)
+# This requires Plotly to be installed. See how to install it [here](https://xilinx.github.io/chipscopy/2026.2/ibert/scan.html#scan-plots)
 #
 # NOTE - The plot may not display if this notebook is run in Jupyter Lab. For details, see [link](https://plotly.com/python/getting-started/#jupyterlab-support-python-35)
 

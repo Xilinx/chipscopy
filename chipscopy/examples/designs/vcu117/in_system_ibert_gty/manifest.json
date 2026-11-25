@@ -1,0 +1,33 @@
+{
+  "extends": "_base/ultrascale_plus_standard_cores.json",
+  "design_info": {
+    "design_name": "in_system_ibert_gty_vcu117",
+    "description": "In-System IBERT GTY example design for VCU117",
+    "hw_platform": "vcu117",
+    "programming_flow": "flat",
+    "design_path": "vcu117/in_system_ibert_gty",
+    "family": "virtexuplus",
+    "device": "xcvu3p",
+    "idcode": "0x04B39093",
+    "board": "VCU117"
+  },
+  "debug_cores": {
+    "ibert_usp_isibert_gty": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_125"
+      ]
+    }
+  },
+  "supported_examples": [
+    "usp_ibert",
+    "program"
+  ],
+  "metadata": {
+    "created_date": "2026-09-17",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-09-17",
+    "notes": "VCU117 16 Gb/s In-System IBERT GTY design using a 156.25 MHz reference clock."
+  }
+}

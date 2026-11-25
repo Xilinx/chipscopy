@@ -1,0 +1,89 @@
+{
+  "extends": "_base/versal_standard_cores.json",
+  "design_info": {
+    "design_name": "chipscopy_ced",
+    "description": "ChipScoPy CED (Configurable Example Design) for VPK360 with segmented programming",
+    "hw_platform": "vpk360",
+    "programming_flow": "segmented",
+    "design_path": "vpk360/production/chipscopy_ced",
+    "family": "versal",
+    "device": "xc2vp3602",
+    "board": "VPK360",
+    "idcode": "0x04C74093",
+    "boot_pdi_pattern": "*_boot.pdi",
+    "pld_pdi_pattern": "*_pld.pdi"
+  },
+  "debug_cores": {
+    "ibert_gtm": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_202",
+        "Quad_204",
+        "Quad_207",
+        "Quad_208"
+      ]
+    },
+    "ila": {
+      "core_instances": [
+        {
+          "name": "chipscopy_i/counters/ila_slow_counter_0",
+          "probe_prefix": "chipscopy_i/counters/slow_counter_0",
+          "description": "ILA monitoring slow counter signals"
+        }
+      ]
+    },
+    "vio": {
+      "core_instances": [
+        {
+          "name": "chipscopy_i/counters/vio_slow_counter_0",
+          "probe_prefix": "chipscopy_i/counters/slow_counter_0",
+          "description": "VIO controlling slow counter"
+        }
+      ]
+    },
+    "noc_perfmon": {
+      "node_names": [
+        "DDRMC5E_X0Y0",
+        "NOC2_NMU512_X8Y2"
+      ],
+      "trigger_base_address": "0x20140000000"
+    },
+    "memory": {
+      "memory_types": [
+        "LPDDR5"
+      ],
+      "node_names": [
+        "DDRMC5E_X0Y0",
+        "DDRMC5E_X1Y0",
+        "DDRMC5E_X2Y0",
+        "DDRMC5E_X3Y0",
+        "DDRMC5E_X4Y0",
+        "DDRMC5E_X5Y0",
+        "DDRMC5E_X6Y0",
+        "DDRMC5E_X7Y0"
+      ]
+    }
+  },
+  "supported_examples": [
+    "ddr_example",
+    "ila_advanced_trigger",
+    "ila_and_vio",
+    "ila_monitor_status",
+    "memory_example",
+    "noc_perfmon",
+    "noc_perfmon_basic",
+    "program",
+    "sptg_example",
+    "sysmon_example",
+    "sysmon_sync_example",
+    "vio",
+    "yk_scan_example"
+  ],
+  "metadata": {
+    "created_date": "2026-10-13",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-10-13",
+    "notes": "VPK360 ChipScoPy CED with segmented programming (boot + PLD PDI), IBERT GTM2 quads (treated as ibert_gtm) and LPDDR5 memory support."
+  }
+}

@@ -28,10 +28,10 @@
 #
 # ## Requirements
 # - SCU200 board with the ChipScoPy CED design (or another UltraScale+ board with an LPDDRMC and a matching MESA manifest)
-# - AMD hw_server 2026.1 installed and running
-# - AMD cs_server 2026.1 installed and running
+# - AMD hw_server 2026.2 installed and running
+# - AMD cs_server 2026.2 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2026.1 installed
+# - ChipScoPy 2026.2 installed
 # - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
@@ -105,20 +105,16 @@ else:
     print("Skipping programming")
 
 # %% [markdown]
-# ## 4 - Re-pick the BSCAN-downstream alias for LPDDRMC discovery
+# ## 4 - Re-pick the device for LPDDRMC discovery
 #
-# On SCU200 the same physical `xcsu200p` appears in `session.devices` as **two distinct aliases**:
-#
-# - the **JTAG-programmable** alias, family `spartanu`, used above to load the PDI, and
-# - the **BSCAN-downstream** alias, family `uplus`, which is the only alias that exposes the xsdb-based LPDDRMC debug hub.
-#
-# We close and recreate the session to let `cs_server` re-scan the freshly programmed XSDB topology, then filter by `family="uplus"` to grab the BSCAN-downstream alias before discovering the LPDDRMC.
+# On SCU200 the `xcsu200p` JTAG and BSCAN-downstream (DPC) records merge into a single `family="spartanu"` device (shared DNA) that both loads the PDI and exposes the xsdb-based LPDDRMC debug hub. We close and recreate the session so `cs_server` re-scans the freshly programmed XSDB topology, then re-pick `filter_by(family=DEVICE_FAMILY)` before discovering the LPDDRMC.
 
 # %%
 delete_session(session)
 session = create_session(cs_server_url=CS_URL, hw_server_url=HW_URL)
 
-device = session.devices.filter_by(family="uplus").get()
+# DEVICE_FAMILY from manifest: "spartanu" for SCU200, "virtexuplus" for VCU128, etc.
+device = session.devices.filter_by(family=DEVICE_FAMILY).get()
 device.discover_and_setup_cores(ddr_scan=True)
 print(f"Debug cores are set up and ready for use on {device}")
 

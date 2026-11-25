@@ -21,6 +21,7 @@ import time
 from collections import defaultdict, deque
 from enum import Enum
 from pathlib import Path
+from queue import Empty, SimpleQueue
 from typing import Optional, Union, Dict, List, Set, Any, NewType, Literal, Callable
 from struct import pack, unpack
 
@@ -36,12 +37,14 @@ from chipscopy.api.ibert import IBERT
 from chipscopy.api.ila import ILA
 from chipscopy.api.memory import Memory
 from chipscopy.api.noc.noc import NocPerfmon
+from chipscopy.api.hardened_pcie import HardenedDebugPCIe
 from chipscopy.api.pcie import PCIe
 from chipscopy.api.sysmon import Sysmon
 from chipscopy.api.vio import VIO
 from chipscopy.client import ServerInfo
 from chipscopy.client.axis_ila_core_client import AxisIlaCoreClient
 from chipscopy.client.axis_pcie_core_client import AxisPCIeCoreClient
+from chipscopy.client.pcie_core_client import PCIeCoreClient
 from chipscopy.client.axis_trace_core_client import AxisTraceClient
 from chipscopy.client.axis_vio_core_client import AxisVIOCoreClient
 from chipscopy.client.core import CoreParent
@@ -117,6 +120,7 @@ class Device:
         "sysmon": SysMonCoreClient,
         "ddrmc_main": DDRMCClient,
         "hbm": HBMClient,
+        "cpm6_pcie_core": PCIeCoreClient,
     }
 
     def __init__(
@@ -251,6 +255,25 @@ class Device:
     def _raise_if_state_invalid(self):
         if self.state == DeviceState.INVALID:
             raise DeviceException(f"Device {str(self)} is invalid - session rescan required")
+
+    def _require_jtag_programming_node(self, operation: str) -> JtagDevice:
+        # Discovery can mark a device valid on a debugcore fallback when its jtag
+        # view event simply hasn't been drained yet (#1457, see
+        # Session._discover_devices_with_jtag_retry). That retry already gives the
+        # event a bounded chance to arrive; if the jtag node is still missing here,
+        # it's genuinely unavailable and deserves a diagnostic error, not a bare
+        # AssertionError with no message.
+        node = self.jtag_node
+        if node is None:
+            device_view = getattr(self._device_spec, "device_view", "?")
+            raise DeviceException(
+                f"Device {str(self)} has no jtag node available for {operation} "
+                f"(device_view={device_view!r}). This can happen when a jtag view "
+                "event was delayed during discovery. Call session.scan_devices() "
+                "and fetch a fresh device from session.devices -- this object "
+                "will not update in place -- or reconnect the session."
+            )
+        return node
 
     def refresh(self, *, force_update=True):
         # Refresh device properties from hardware
@@ -478,6 +501,14 @@ class Device:
         return self._get_debug_core_wrappers(AxisPCIeCoreClient)
 
     @property
+    def hardened_pcie_cores(self) -> QueryList[HardenedDebugPCIe]:
+        """Returns:
+        list of detected hardened debug PCIe cores in the device"""
+        self._raise_if_family_not(DeviceFamily.VERSAL)
+        self._raise_if_state_invalid()
+        return self._get_debug_core_wrappers(PCIeCoreClient)
+
+    @property
     def noc_core(self) -> QueryList[NocPerfmon]:
         """Returns:
         List with NOC roots for the device"""
@@ -609,6 +640,8 @@ class Device:
             debug_core_wrapper = DDR(node)
         elif node.type == "hbm":
             debug_core_wrapper = HBM(node)
+        elif node.type == "cpm6_pcie_core":
+            debug_core_wrapper = HardenedDebugPCIe(node)
         else:
             # TODO: extend this factory to other core types with a plugin model for additional types
             debug_core_wrapper = None
@@ -691,6 +724,7 @@ class Device:
             vio_scan: True=Scan Device for VIOs
             ibert_scan: True=Scan Device for IBERTs
             pcie_scan: True=Scan Device for PCIEs
+            hardened_pcie_scan: True=Scan Device for Hardened Debug PCIe cores
             noc_scan: True=Scan Device for NOC
             ddr_scan: True=Scan Device for DDRs
             hbm_scan: True=Scan Device for HBMs
@@ -714,6 +748,7 @@ class Device:
                 "ddrmc_main": kwargs.get("ddr_scan", True),
                 "hbm": kwargs.get("hbm_scan", True),
                 "pcie": kwargs.get("pcie_scan", True),
+                "cpm6_pcie_core": kwargs.get("hardened_pcie_scan", True),
                 "ibert": kwargs.get("ibert_scan", True),
                 "sysmon": kwargs.get("sysmon_scan", False),
             }
@@ -1004,8 +1039,7 @@ class Device:
         """Reset the device to a non-programmed state."""
         self._raise_if_family_not(DeviceFamily.VERSAL, DeviceFamily.UPLUS)
         self._raise_if_state_invalid()
-        jtag_programming_node = self.jtag_node
-        assert jtag_programming_node is not None
+        jtag_programming_node = self._require_jtag_programming_node("reset")
         self.state = DeviceState.NEEDS_REFRESH
         jtag_programming_node.future().reset()
         time.sleep(0.5)
@@ -1037,6 +1071,13 @@ class Device:
         program_future = request.CsFutureSync(done=done, progress=progress)
         self.state = DeviceState.NEEDS_REFRESH
 
+        # Resolved before _programming_in_progress is set (#1459 review): if this
+        # raises, program() exits before any completion callback ever runs, so a
+        # flag set first would be stuck True forever -- node_callback() ignores
+        # node removals for as long as it's set, silently masking the device
+        # becoming genuinely invalid later.
+        jtag_programming_node = self._require_jtag_programming_node("program")
+
         # Mark programming in progress
         self._programming_in_progress = True
 
@@ -1057,15 +1098,40 @@ class Device:
                 status=PercentProgressBar.Status.STARTING,
                 visible=show_progress_bar,
             )
+            # Rich progress widgets repaint via the thread that calls update().
+            # In a Jupyter kernel, updates fired from the TCF dispatch thread do
+            # not visibly refresh after the first cell render, so we ferry sync
+            # updates back to the main thread via this queue (CR-1257049).
+            progress_bar_updates = SimpleQueue()
+
+        def update_progress_bar(*, completed=None, status=PercentProgressBar.Status.IN_PROGRESS):
+            if completed is None:
+                progress_.update(status=status)
+            else:
+                progress_.update(completed=completed, status=status)
+
+        def handle_progress_bar_update(
+            *, completed=None, status=PercentProgressBar.Status.IN_PROGRESS
+        ):
+            if done:
+                update_progress_bar(completed=completed, status=status)
+            else:
+                progress_bar_updates.put((completed, status))
+
+        def drain_progress_bar_updates():
+            while True:
+                try:
+                    completed, status = progress_bar_updates.get_nowait()
+                except Empty:
+                    break
+                update_progress_bar(completed=completed, status=status)
 
         def progress_update(future):
             if program_future:
                 program_future.set_progress(future.progress)
 
             if show_progress_bar:
-                progress_.update(
-                    completed=future.progress * 100, status=PercentProgressBar.Status.IN_PROGRESS
-                )
+                handle_progress_bar_update(completed=future.progress * 100)
 
         def pre_done_programming(future):
             # refresh jtag node properties after program (1190699)
@@ -1088,7 +1154,7 @@ class Device:
             if self.programming_error is not None:
                 self._programming_in_progress = False
                 if show_progress_bar:
-                    progress_.update(status=PercentProgressBar.Status.ABORTED)
+                    handle_progress_bar_update(status=PercentProgressBar.Status.ABORTED)
                 complete_program_future_failure(self.programming_error)
 
                 return
@@ -1098,7 +1164,7 @@ class Device:
                 self._programming_in_progress = False
 
                 if show_progress_bar:
-                    progress_.update(status=PercentProgressBar.Status.ABORTED)
+                    handle_progress_bar_update(status=PercentProgressBar.Status.ABORTED)
                 complete_program_future_failure(error)
 
             def finalize_program_success():
@@ -1106,7 +1172,7 @@ class Device:
                 self._programming_in_progress = False
 
                 if show_progress_bar:
-                    progress_.update(completed=100, status=PercentProgressBar.Status.DONE)
+                    handle_progress_bar_update(completed=100, status=PercentProgressBar.Status.DONE)
                 complete_program_future_success()
 
             for i in range(delay_after_program):
@@ -1162,8 +1228,6 @@ class Device:
             if self.programming_error is not None and not program_future.is_done:
                 raise RuntimeError(self.programming_error)
 
-        jtag_programming_node = self.jtag_node
-        assert jtag_programming_node is not None
         if not skip_reset:
             jtag_programming_node.future().reset()
 
@@ -1171,7 +1235,21 @@ class Device:
             progress=progress_update, done=pre_done_programming, final=finalize_program
         ).config(str(programming_file.resolve()))
 
-        return program_future if done else program_future.result
+        if done:
+            return program_future
+
+        # Skip the main-thread drain loop if we are already on the TCF dispatch
+        # thread. Blocking here would prevent the dispatch thread from ever
+        # firing the callbacks that flip program_future.is_done; the fallback
+        # call to program_future.result preserves the pre-existing
+        # "CsFuture not done" fast-fail in that case.
+        if show_progress_bar and not protocol.isDispatchThread():
+            while not program_future.is_done:
+                drain_progress_bar_updates()
+                program_future.cond.wait(0.1)
+            drain_progress_bar_updates()
+
+        return program_future.result
 
     def _raise_if_family_not(self, *args):
         if self.device_family == DeviceFamily.XVC:

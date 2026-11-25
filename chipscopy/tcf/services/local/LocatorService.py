@@ -469,14 +469,31 @@ class LocatorService(locator.LocatorService):
                         break
 
                 if chan:
-                    chan.close()
+                    # connectPeer reference counts this channel through
+                    # linked_channels: _openPeer() links the first requester and
+                    # the branch above links every later one. Honour that count
+                    # here - closing outright tears the shared channel down for
+                    # every other client still using it, and the next client to
+                    # disconnect then finds nothing and gets the error below.
+                    listener = chan.linked_channels.pop(channel, None)
+                    if listener is not None:
+                        try:
+                            channel.removeChannelListener(listener)
+                        except ValueError:
+                            # Client channel already dropped it; nothing to detach.
+                            pass
+                    if not chan.linked_channels:
+                        # Last user - now it is safe to close.
+                        chan.close()
                 else:
                     err = "Could not find channel to disconnect."
 
                 if err:
                     channel.sendResult(token, toJSONSequence((err, None)))
                 else:
-                    channel.sendResult(token, toJSONSequence((None, chan.getState() == STATE_CLOSED)))
+                    # True means "this client is detached", not "the channel is
+                    # closed" - the channel legitimately stays open for peers.
+                    channel.sendResult(token, toJSONSequence((None, True)))
 
             else:
                 channel.rejectCommand(token)

@@ -145,6 +145,18 @@ class CsRequest(object):
         return self
 
     def _invoke(self):
+        if self.cs_manager.invalid:
+            logger.debug(f"cs_manager invalidated {self}")
+            self.done_run(
+                None,
+                Exception(
+                    f"Manager {self.cs_manager.name} was invalidated before "
+                    f"{self.node_id} could be dispatched"
+                ),
+                None,
+            )
+            return
+
         if not self.cs_manager.is_ready:
             logger.debug(f"cs_manager not ready {self}")
             protocol.invokeLaterWithDelay(1, self._invoke)
@@ -423,7 +435,27 @@ class CsFuture(object):
     def _invoke_done(self):
         self.is_done = True
         if self._done_callback:
-            self._done_callback(self)
+            try:
+                self._done_callback(self)
+            except Exception as e:
+                # Issue #1464: an exception raised in the caller's done callback
+                # used to be discarded. On the run_worker path it became an
+                # unhandled thread exception and the future still reported
+                # success, so callers were told an operation worked when their
+                # own handler had failed. Record it instead - but never replace
+                # an error the operation itself already set, or a real failure
+                # gets overwritten by its downstream symptom.
+                # Record before logging, so a logging failure cannot cost us
+                # the exception we are here to preserve.
+                #
+                # Test against None, not truthiness: an exception instance is a
+                # real recorded error even when it is falsey, and a plain
+                # `if not self._error` lets a custom __bool__ or __len__ defeat
+                # the do-not-replace rule. None is this class's only unset
+                # sentinel - __init__ and unset() both use it.
+                if self._error is None:
+                    self._error = e
+                logger.error(f"Exception in done callback for {self}", exc_info=True)
 
     def _invoke_progress(self):
         if self._progress_callback:
@@ -598,6 +630,16 @@ class CsFutureRequest(CsFuture):
         return self
 
     def _invoke(self):
+        if self.cs_manager.invalid:
+            logger.debug(f"cs_manager invalidated {self}")
+            self.set_exception(
+                Exception(
+                    f"Manager {self.cs_manager.name} was invalidated before "
+                    f"{self.node_id} could be dispatched"
+                )
+            )
+            return
+
         if not self.cs_manager.is_ready:
             logger.debug(f"cs_manager not ready {self}")
             protocol.invokeLaterWithDelay(1, self._invoke)
@@ -693,9 +735,17 @@ class CsFutureRequest(CsFuture):
     def _invoke_done(self):
         logger.info(f"Done Run {self}")
         super()._invoke_done()
-        self.node.request = None
+        # self.node is still None on the early-failure paths in _invoke(), where
+        # set_exception() fires before a node was ever resolved. Reaching
+        # self.node.request there raises AttributeError and loses the real
+        # error. That crash predates the #1464 guard - it already happened
+        # whenever the done callback did not raise - but the guard makes it
+        # reachable with a raising callback too, so fix it here rather than
+        # leave a path that reports AttributeError instead of the failure.
+        if self.node is not None:
+            self.node.request = None
+            self.node.remove_pending(self)
         self.run_func = None
-        self.node.remove_pending(self)
         if self.request_queue:
             self.request_queue.done_request(self)
         self.called = False

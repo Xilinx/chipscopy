@@ -1,0 +1,33 @@
+{
+  "extends": "_base/ultrascale_plus_standard_cores.json",
+  "design_info": {
+    "design_name": "in_system_ibert_gth_zcu102",
+    "description": "In-System IBERT GTH example design for ZCU102",
+    "hw_platform": "zcu102",
+    "programming_flow": "flat",
+    "design_path": "zcu102/in_system_ibert_gth",
+    "family": "zynquplus",
+    "device": "xczu9eg",
+    "idcode": "0x24738093",
+    "board": "ZCU102"
+  },
+  "debug_cores": {
+    "ibert_usp_isibert_gth": {
+      "enabled": true,
+      "quad_names": [
+        "Quad_129"
+      ]
+    }
+  },
+  "supported_examples": [
+    "usp_ibert",
+    "program"
+  ],
+  "metadata": {
+    "created_date": "2026-09-17",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-09-17",
+    "notes": "ZCU102 12 Gb/s In-System IBERT GTH design using a 156.25 MHz reference clock."
+  }
+}

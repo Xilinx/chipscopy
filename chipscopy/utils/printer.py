@@ -114,6 +114,10 @@ class PercentProgressBar:
             disable=bool(os.environ.get("CI")),
         )
         self.task_id: TaskID = None
+        # Tasks that have reached a terminal (Done/Aborted) state. A single
+        # PercentProgressBar can host several tasks, so we only stop the shared
+        # live meter once every task has finished (see update()).
+        self._terminal_task_ids = set()
 
     def add_task(
         self,
@@ -158,7 +162,15 @@ class PercentProgressBar:
             PercentProgressBar.Status.DONE.value,
             PercentProgressBar.Status.ABORTED.value,
         }:
-            self.progress_meter.stop()
+            # A single PercentProgressBar can host several tasks: the IBERT eye
+            # scan path shares one `common_progress` and adds one task per scan.
+            # Only stop the shared live meter once EVERY task has reached a
+            # terminal state. Stopping on the first Done/Aborted stops the whole
+            # rich Live, so the remaining scans' bars stop repainting and freeze
+            # at "Not started" even though they finish (CR-1272627).
+            self._terminal_task_ids.add(task_id)
+            if all(t in self._terminal_task_ids for t in self.progress_meter.task_ids):
+                self.progress_meter.stop()
 
 
 if __name__ == "__main__":

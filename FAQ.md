@@ -20,8 +20,7 @@ This document covers frequently asked questions about ChipScoPy.
 ---
 **Q: What is the minimum Python version required to use ChipScoPy?**
 
-**A:** Python 3.8 or above is required. To install Python, Go to python.org or the Microsoft Store and download Python 3.8 or better. 
-
+**A:** Python 3.11 or above is required. To install Python, go to python.org or the Microsoft Store and download Python 3.11 or better.
 
 ---
 **Q: How do I know which version of ChipScoPy to use with Vivado cs_server and hw_server?**
@@ -132,7 +131,7 @@ Note: This is a windows fix only and does not apply to Linux.
 **A:**
 The 3rd party Pandas 1.5 library is not pre-built for Python 3.12. Installing Pandas requires C++ build tools to be installed on Windows.
 
-Option 1: Use a Python interpreter less than 3.12. Versions 3.8 through 3.11 have pre-built wheels available.
+Option 1: Use a Python interpreter less than 3.12. Version 3.11 has pre-built wheels available.
 
 Option 2: Install Microsoft Build Tools as described in the error message. This is a free download from Microsoft from:
 

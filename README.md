@@ -10,7 +10,7 @@ ChipScoPy was created for Versal devices but contains some limited support for U
 
 ---
 
-![](https://github.com/Xilinx/chipscopy/blob/2026.1/docs/images/chipscopy_overview.png?raw=true)
+![](https://github.com/Xilinx/chipscopy/blob/2026.2/docs/images/chipscopy_overview.png?raw=true)
 
 ---
 
@@ -21,21 +21,21 @@ ChipScoPy was created for Versal devices but contains some limited support for U
 
 ## Python Version Support
 
-Python versions 3.10, 3.11, 3.12, or 3.13 will work with ChipScoPy.
+Python versions 3.11, 3.12, 3.13, or 3.14 will work with ChipScoPy.
 
 ## Quick Links
 
-[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2026.1/overview.html)
+[ChipScoPy Overview](https://xilinx.github.io/chipscopy/2026.2/overview.html)
 
-[System Requirements](https://xilinx.github.io/chipscopy/2026.1/system_requirements.html)
+[System Requirements](https://xilinx.github.io/chipscopy/2026.2/system_requirements.html)
 
-[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2026.1/chipscopy_installation.html)
+[ChipScoPy Installation](https://xilinx.github.io/chipscopy/2026.2/chipscopy_installation.html)
 
-[ChipScoPy Examples](https://github.com/Xilinx/chipscopy/tree/2026.1/chipscopy)
+[ChipScoPy Examples](https://github.com/Xilinx/chipscopy/tree/2026.2/chipscopy)
 
-[FAQ](https://github.com/Xilinx/chipscopy/blob/2026.1/FAQ.md)
+[FAQ](https://github.com/Xilinx/chipscopy/blob/2026.2/FAQ.md)
 
-[API Documentation](https://xilinx.github.io/chipscopy/2026.1/_modules/index.html)
+[API Documentation](https://xilinx.github.io/chipscopy/2026.2/_modules/index.html)
 
 
 ## **ChipScoPy Installation PyPI Package Dependencies**

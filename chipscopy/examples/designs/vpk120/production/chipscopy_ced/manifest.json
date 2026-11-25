@@ -56,6 +56,9 @@
         "DDRMC_X1Y0",
         "DDRMC_X2Y0",
         "DDRMC_X3Y0"
+      ],
+      "memory_types": [
+        "LPDDR4"
       ]
     }
   },
@@ -80,7 +83,7 @@
     "created_date": "2026-02-16",
     "version": "1.0.0",
     "maintainer": "AMD ChipScoPy Team",
-    "last_updated": "2026-05-05",
+    "last_updated": "2026-10-13",
     "notes": "VPK120 ChipScoPy CED with IBERT GTM (yk_scan) and IBERT GTYP transceiver support."
   }
 }

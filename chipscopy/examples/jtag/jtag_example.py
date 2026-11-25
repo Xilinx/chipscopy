@@ -31,9 +31,9 @@
 #
 # ## Requirements
 # - Local or remote AMD Versal board, such as a VCK190
-# - AMD hw_server 2026.1 or greater
+# - AMD hw_server 2026.2 or greater
 # - Python 3.10 or greater installed
-# - ChipScoPy 2026.1 or greater installed
+# - ChipScoPy 2026.2 or greater installed
 # - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 #
 # This notebook intentionally does not use the MESA design-manifest flow because it demonstrates low-level JTAG cable/scan-chain operations without programming a design.

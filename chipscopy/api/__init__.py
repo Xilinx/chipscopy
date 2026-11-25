@@ -32,6 +32,7 @@ class CoreType(Enum):
     AXIS_ILA = "AXIS ILA"
     AXIS_VIO = "AXIS VIO"
     AXIS_PCIE = "AXIS PCIE"
+    PCIE = "PCIE"
     AXIS_TRACE = "AXIS TRACE"
     AXI_DEBUG_HUB = "AXI_DEBUG HUB"
     SYSMON = "SYSMON"

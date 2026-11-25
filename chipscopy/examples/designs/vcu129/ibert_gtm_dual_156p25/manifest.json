@@ -1,0 +1,33 @@
+{
+  "extends": "_base/ultrascale_plus_standard_cores.json",
+  "design_info": {
+    "design_name": "ibert_gtm_dual_156p25_vcu129",
+    "description": "IBERT GTM Dual example design for VCU129",
+    "hw_platform": "vcu129",
+    "programming_flow": "flat",
+    "design_path": "vcu129/ibert_gtm_dual_156p25",
+    "family": "virtexuplus",
+    "device": "xcvu29p",
+    "idcode": "0x04B41093",
+    "board": "VCU129"
+  },
+  "debug_cores": {
+    "ibert_usp_gtm_dual": {
+      "enabled": true,
+      "quad_names": [
+        "Dual_121"
+      ]
+    }
+  },
+  "supported_examples": [
+    "usp_ibert",
+    "program"
+  ],
+  "metadata": {
+    "created_date": "2026-09-17",
+    "version": "1.0.0",
+    "maintainer": "AMD ChipScoPy Team",
+    "last_updated": "2026-09-17",
+    "notes": "VCU129 GTM121 25 Gb/s NRZ design using a 156.25 MHz reference clock; supports YK scan."
+  }
+}

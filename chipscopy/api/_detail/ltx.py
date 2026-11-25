@@ -145,6 +145,12 @@ class Ltx:
         "axi_dbg_hub": CoreType.AXI_DEBUG_HUB,
         "axis_ila": CoreType.AXIS_ILA,
         "axis_vio": CoreType.AXIS_VIO,
+        # Classic (non-AXIS) XSDB ILA/VIO cores use "ila"/"vio" as their ipName
+        # (see e.g. debug_nets.ltx ipName for a "type": "ILA_V3" core). They use
+        # the same generic LtxCore shape as their AXIS counterparts, so they map
+        # to the same CoreType.
+        "ila": CoreType.AXIS_ILA,
+        "vio": CoreType.AXIS_VIO,
         "trace": CoreType.AXIS_TRACE,
         "hw_trace": CoreType.AXIS_TRACE,
     }

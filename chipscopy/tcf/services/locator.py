@@ -216,11 +216,17 @@ class LocatorService(services.Service):
         raise NotImplementedError("Abstract method")
 
     def disconnect_remote_peer(self, peer_attrib: Dict[str, str], done: services.DoneHWCommand) -> bool:
-        """Attempts to disconnect and close channel of given peer.
+        """Attempts to disconnect the caller from the channel of the given peer.
+
+        The channel to a peer is shared by every caller that connected to it.
+        It is closed once the last of them disconnects, so a successful call
+        does not imply the channel itself is now closed. The result is a
+        postcondition rather than a record of work done, so it is also True
+        when the caller was not attached to the peer to begin with.
 
         :param peer_attrib: Attributes of the desired peer to which to disconnect.
         :param done: Callback with result and any error.
-        :returns: True if channel is closed.
+        :returns: True if the caller is not attached to the peer's channel.
         """
         raise NotImplementedError("Abstract method")
 

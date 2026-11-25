@@ -36,10 +36,10 @@
 #
 # ## Requirements
 # - Local or remote AMD Versal board with GTM transceivers (VPK120, VHK158)
-# - AMD hw_server 2026.1+ installed and running
-# - AMD cs_server 2026.1+ installed and running
+# - AMD hw_server 2026.2 installed and running
+# - AMD cs_server 2026.2 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2026.1+ installed
+# - ChipScoPy 2026.2 installed
 # - Jupyter notebook support and extra libs needed - Please do so, using the command pip install chipscopy[jupyter, core-addons]
 # - [External loopback](https://www.samtec.com/kits/optics-fpga/hspce-fmcp/) (recommended) or internal loopback
 #

@@ -22,3 +22,4 @@ References
    :titlesonly:
 
    references/pcie.rst
+   references/hardened_pcie.rst

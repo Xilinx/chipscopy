@@ -31,10 +31,10 @@
 #
 # ## Requirements
 # - Local or remote AMD Versal board, such as a VCK190
-# - AMD hw_server 2026.1 installed and running
-# - AMD cs_server 2026.1 installed and running
+# - AMD hw_server 2026.2 installed and running
+# - AMD cs_server 2026.2 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2026.1 installed
+# - ChipScoPy 2026.2 installed
 # - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
@@ -250,7 +250,12 @@ tg_instructions = {
                     loop=1, loop_start=1, loop_count=0x86A0, addr_incr_by="AUTO_INCR", address_pattern=AddressPattern.INCREMENT_BY_VALUE)]
 }
 
-trigger_base_address = 0x201_8000_0000
+manifest_tba = (
+    design_manifest.get_core_config("noc_perfmon", "trigger_base_address", None)
+    if design_manifest
+    else None
+)
+trigger_base_address = int(manifest_tba, 16) if manifest_tba else 0x201_8000_0000
 #    This class is designed to aid in controlling and using the Performance AXI Traffic Generator LogicCore IP for
 #    Versal series ACAP devices from AMD. It supports no other architectures or Traffic Generator IPs. There are several
 #    others in the default catalog.

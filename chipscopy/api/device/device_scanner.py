@@ -220,8 +220,15 @@ def scan_jtag_view(
                     jtag_record.dap_ctx = previous_jtag_device_record.ctx
                     if include_dna:
                         jtag_record.dna = get_node_dna(jtag_device)
-                elif jtag_record.arch_name in ["kintexuplus", "kintexu", "virtexuplus", "virtexu"]:
-                    # Virtex, Kintex US+, no arm-dap
+                elif jtag_record.arch_name in [
+                    "kintexuplus",
+                    "kintexu",
+                    "virtexuplus",
+                    "virtexu",
+                    "spartanu",
+                    "artixuplus",
+                ]:
+                    # Virtex, Kintex, Spartan, Artix US+, no arm-dap
                     jtag_record.dap_ctx = ""
                     if include_dna:
                         jtag_record.dna = get_node_dna(jtag_device)

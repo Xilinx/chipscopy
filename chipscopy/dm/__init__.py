@@ -498,6 +498,10 @@ class CsManager(Node):
 
     def notify_node_added(self, node: Node):
         if self._node_listeners:
+            # A removal of this ctx is still waiting to be sent. Send it now so
+            # listeners see remove -> add, not add -> remove.
+            if any(removed.ctx == node.ctx for removed in self._removed_nodes):
+                self._node_removed()
             if node.ctx not in self._added_nodes:
                 should_post = len(self._added_nodes) == 0
                 self._added_nodes.append(node.ctx)
@@ -521,6 +525,10 @@ class CsManager(Node):
 
     def notify_node_removed(self, node: Node):
         if self._node_listeners:
+            # An add of this ctx is still waiting to be sent. Drop it so it is
+            # not sent after this removal or merged with a later re-add.
+            if node.ctx in self._added_nodes:
+                self._added_nodes.remove(node.ctx)
             if node not in self._removed_nodes:
                 should_post = len(self._removed_nodes) == 0
                 self._removed_nodes.append(node)

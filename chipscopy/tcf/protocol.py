@@ -470,3 +470,74 @@ except:
             pass
         except Exception as x:
             log("Exception in TCF dispatch loop", x)
+
+
+# ---------------------------------------------------------------------------
+# tcf-rs transport override
+#
+# When running inside the chipscope-pyrs server the Rust `tcf_rs` bridge module
+# is importable; back the framework primitives with it (the Rust TCF event loop
+# owns the dispatch thread) instead of the pure-Python EventQueue. These module
+# functions shadow the definitions above. Standalone chipscopy has no `tcf_rs`,
+# so this block is skipped and the pure-Python (or native pytcf) path is used.
+# ---------------------------------------------------------------------------
+try:
+    import tcf_rs as _tcf_rs
+except ImportError:
+    _tcf_rs = None
+
+if _tcf_rs is not None:
+    def isDispatchThread():
+        return _tcf_rs.is_dispatch_thread()
+
+    def invokeLater(c, *args, **kwargs):
+        _tcf_rs.post_event(c, *args, **kwargs)
+
+    def invokeLaterWithDelay(delay, c, *args, **kwargs):
+        _tcf_rs.post_event_with_delay(delay, c, *args, **kwargs)
+
+    def invokeAndWait(c, *args, **kwargs):
+        return _tcf_rs.post_event_and_wait(c, *args, **kwargs)
+
+    def startEventQueue():
+        # The Rust event loop is already running (started by the orchestration).
+        pass
+
+    def stopEventQueue():
+        pass
+
+    def getEventQueue():
+        return _tcf_rs
+
+    def startDiscovery():
+        pass
+
+    def shutdownDiscovery():
+        pass
+
+    def getOpenChannels():
+        # Return the Python channel shims for outbound peers (built by
+        # _rs_channel.on_peer_connected); these carry getRemoteService/proxies.
+        try:
+            from . import _rs_channel
+            return list(_rs_channel.open_channels)
+        except Exception:
+            return []
+
+    def sendEvent(service_name, event_name, data):
+        # Object-level: `data` is a Python sequence of already-xargs'd values.
+        _tcf_rs.send_event(service_name, event_name, data)
+
+    def _on_peer_connected(bridge_channel):
+        # Deferred import avoids an import cycle at module load
+        # (protocol → _rs_channel → services → protocol).
+        from . import _rs_channel
+        _rs_channel.on_peer_connected(bridge_channel)
+
+    _tcf_rs.set_peer_connected_listener(_on_peer_connected)
+
+    def _on_peer_disconnected(url):
+        from . import _rs_channel
+        _rs_channel.on_peer_disconnected(url)
+
+    _tcf_rs.set_peer_disconnected_listener(_on_peer_disconnected)

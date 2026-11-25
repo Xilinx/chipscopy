@@ -15,7 +15,7 @@ from typing import Tuple
 from chipscopy import dm
 from chipscopy.dm import request
 from chipscopy.tcf import services
-from chipscopy.tcf.services import local, from_xargs
+from chipscopy.tcf.services import local
 
 
 class CsRequestDone(request.DoneRequest):
@@ -57,7 +57,7 @@ class DefaultCoreService(services.Service):
     def _get_args(
         self, req: local.CommandRequest, in_arg_count: int, function_name: str = ""
     ) -> Tuple:
-        args = from_xargs(req.args)
+        args = req.args  # already xargs-decoded by the Rust bridge
         if len(args) < in_arg_count:
             raise Exception(
                 f"Insufficient arguments. Need {in_arg_count} argument(s),"
@@ -79,6 +79,14 @@ class DefaultCoreService(services.Service):
         )
         return (cs_req, *args[1:])
 
+    # These validate `req.args`, which under the Rust bridge is the *decoded*
+    # argument list — the binary side-channel has already been spliced back in,
+    # so there is no trailing blob element and no "(N)" placeholder string. They
+    # used to see the raw wire list while `_get_args` saw the decoded one.
+    # Indices are unaffected: a blob only ever follows the argument that produced
+    # it, and every caller validates argument 1, which is that producer. What
+    # does change is that the length checks now count logical arguments, which is
+    # what they were always meant to do.
     def _require_dict(self, req: local.CommandRequest, arg_index: int) -> None:
         if len(req.args) < arg_index + 1 or not isinstance(req.args[arg_index], dict):
             raise ValueError(

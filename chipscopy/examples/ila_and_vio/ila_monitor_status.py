@@ -37,10 +37,10 @@
 #
 # ## Requirements
 # - Local or remote AMD Versal board, such as a VCK190
-# - AMD hw_server 2026.1 installed and running
-# - AMD cs_server 2026.1 installed and running
+# - AMD hw_server 2026.2 installed and running
+# - AMD cs_server 2026.2 installed and running
 # - Python 3.10 or greater installed
-# - ChipScoPy 2026.1 installed
+# - ChipScoPy 2026.2 installed
 # - Jupyter notebook support and extra libs needed - Please do so, using the command `pip install chipscopy[jupyter, core-addons]`
 
 # %% [markdown]
