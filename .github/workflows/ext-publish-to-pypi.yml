@@ -114,10 +114,6 @@ jobs:
       - determine-target
       - release-build
 
-    permissions:
-      # IMPORTANT: this permission is mandatory for trusted publishing
-      id-token: write
-
     # Dedicated environments with protections for publishing are strongly recommended.
     # For more information, see: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules
     environment:
@@ -132,12 +128,31 @@ jobs:
           name: release-dists
           path: dist/
 
-      # Trusted Publishing is the default. Setting TEST_PYPI_API_TOKEN or
-      # PYPI_API_TOKEN as a secret of the publish-to-pypi environment makes the
-      # upload use that project-scoped API token instead. Use it only while
-      # Trusted Publishing is failing, and delete the secret afterwards: an
-      # upload with a token has no PEP 740 attestations. An unset secret is
-      # an empty password, which makes the action use Trusted Publishing.
+      # Uploads use project-scoped API tokens, stored as the TEST_PYPI_API_TOKEN
+      # and PYPI_API_TOKEN secrets of the publish-to-pypi environment. With an
+      # empty password the action would try Trusted Publishing instead, which
+      # this project doesn't use, so a missing secret fails here first.
+      # Both secrets are passed and the shell picks one. An expression like
+      # `prod && secrets.PYPI_API_TOKEN || secrets.TEST_PYPI_API_TOKEN` would
+      # fall through to the test token when the prod one is empty.
+      - name: Check the API token is set
+        env:
+          TARGET: ${{ needs.determine-target.outputs.pypi-target }}
+          PROD_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          TEST_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: |
+          if [[ "$TARGET" == "prod" ]]; then
+            token="$PROD_TOKEN"
+            secret_name=PYPI_API_TOKEN
+          else
+            token="$TEST_TOKEN"
+            secret_name=TEST_PYPI_API_TOKEN
+          fi
+          if [[ -z "$token" ]]; then
+            echo "::error::Secret $secret_name is not set in the publish-to-pypi environment"
+            exit 1
+          fi
+
       - name: Publish to Test PyPI
         if: ${{ needs.determine-target.outputs.pypi-target == 'test' }}
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -147,6 +162,8 @@ jobs:
           # Files already on the index don't fail the upload, so a re-run
           # after a partial upload can finish.
           skip-existing: true
+          # Signed attestations need Trusted Publishing.
+          attestations: false
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
       - name: Publish to Prod PyPI
@@ -155,6 +172,7 @@ jobs:
         with:
           packages-dir: dist/
           skip-existing: true
+          attestations: false
           password: ${{ secrets.PYPI_API_TOKEN }}
 
   verify-install:
