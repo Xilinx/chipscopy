@@ -24,6 +24,11 @@ on:
         required: false
         default: false
         type: boolean
+      expected-version:
+        description: 'Fail the build unless pyproject.toml has this version (for example 2026.2.0.57). Leave empty to skip the check.'
+        required: false
+        default: ''
+        type: string
 
   pull_request:
     branches:
@@ -98,6 +103,19 @@ jobs:
           VERSION=$(poetry version -s)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "::notice::Package version: $VERSION"
+
+      # Stops a wrong version (such as a 2026.2.0.0 placeholder) before
+      # anything is uploaded: a version number can be used only once on PyPI.
+      - name: Check package version
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.expected-version != '' }}
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
+          EXPECTED_VERSION: ${{ inputs.expected-version }}
+        run: |
+          if [[ "$VERSION" != "$EXPECTED_VERSION" ]]; then
+            echo "::error::Built version $VERSION, expected $EXPECTED_VERSION. Fix the version in pyproject.toml."
+            exit 1
+          fi
 
       - name: Upload distributions as job artifact
         uses: actions/upload-artifact@v7.0.1
@@ -188,25 +206,32 @@ jobs:
         run: python -m pip install dist/*.whl
         shell: bash
       
-      - name: Wait for package to be available
+      # A new version can take minutes to show up on the index, and longer on
+      # some runners, so retry instead of sleeping a fixed time. The loop
+      # bounds the number of tries; timeout-minutes bounds the total time,
+      # including slow pip runs.
+      - name: Install from the package index
         if: ${{ inputs.skip-publish != true }}
+        timeout-minutes: 12
+        env:
+          VERSION: ${{ needs.release-build.outputs.package-version }}
+          TARGET: ${{ needs.determine-target.outputs.pypi-target }}
         run: |
-          echo "Waiting 120 seconds for package to propagate..."
-          sleep 120
+          index_args=()
+          if [[ "$TARGET" == "test" ]]; then
+            index_args=(--index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/)
+          fi
+          for attempt in $(seq 1 40); do
+            if python -m pip install --no-cache-dir --timeout 30 "${index_args[@]}" "chipscopy==$VERSION"; then
+              exit 0
+            fi
+            echo "chipscopy $VERSION is not installable yet (attempt $attempt of 40), retrying in 15 seconds"
+            sleep 15
+          done
+          echo "::error::chipscopy $VERSION could not be installed from the $TARGET index after 40 tries"
+          exit 1
         shell: bash
-      
-      - name: Install from Test PyPI
-        if: ${{ inputs.skip-publish != true && needs.determine-target.outputs.pypi-target == 'test' }}
-        run: |
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ chipscopy==${{ needs.release-build.outputs.package-version }}
-        shell: bash
-      
-      - name: Install from Prod PyPI
-        if: ${{ inputs.skip-publish != true && needs.determine-target.outputs.pypi-target == 'prod' }}
-        run: |
-          pip install chipscopy==${{ needs.release-build.outputs.package-version }}
-        shell: bash
-      
+
       - name: Verify installation
         run: |
           python -c "import chipscopy; print(f'Successfully installed chipscopy version: {chipscopy.__version__}')"
