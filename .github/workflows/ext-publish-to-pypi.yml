@@ -144,6 +144,9 @@ jobs:
         with:
           repository-url: 'https://test.pypi.org/legacy/'
           packages-dir: dist/
+          # Files already on the index don't fail the upload, so a re-run
+          # after a partial upload can finish.
+          skip-existing: true
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
       - name: Publish to Prod PyPI
@@ -151,6 +154,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
+          skip-existing: true
           password: ${{ secrets.PYPI_API_TOKEN }}
 
   verify-install:
